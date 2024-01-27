@@ -4,13 +4,16 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+    pull_policy: build
     network_mode: "host"
     volumes:
-      - /usr/src/backend/sql:/usr/src/backend/sql
+      - ./:/usr/src/backend/sql
+      - ./static:/usr/src/backend/static
     restart: always
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+    pull_policy: build
     network_mode: "host"
     restart: always    
