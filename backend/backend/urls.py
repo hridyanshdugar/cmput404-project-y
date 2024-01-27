@@ -15,9 +15,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from index.views import main
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', main, name='index'),
 ]
-# Add 'prefix' to all urlpatterns
-urlpatterns = [path(r'^api/', include(urlpatterns))]
