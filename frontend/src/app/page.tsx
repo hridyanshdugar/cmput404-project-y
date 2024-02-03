@@ -7,7 +7,7 @@ import Card from 'react-bootstrap/Card';
 
 export default function Home() {
   return (
-    <div className={styles.main}>
+    <div className={"main"}>
       <div >
       <Card style={{ width: '18rem' }}>
       <Card.Img variant="top" src="holder.js/100px180" />

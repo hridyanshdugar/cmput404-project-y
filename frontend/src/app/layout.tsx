@@ -1,6 +1,7 @@
 "use client"
 import { Inter } from "next/font/google";
 import style from "./page.module.css";
+import "./global.css";
 import SideBar from "@/components/sidebar";
 
 const inter = Inter({ subsets: ["latin"] });

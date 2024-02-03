@@ -1,0 +1,7 @@
+.main {
+    display: inline-block;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    vertical-align:top
+}
