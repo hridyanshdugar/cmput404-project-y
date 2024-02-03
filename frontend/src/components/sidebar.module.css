@@ -117,6 +117,13 @@
         display: none;
     }
 
+    .myName {
+        display: none;
+    }
+    .dotdotdoticon {
+        display: none;
+    }    
+
     .sidenav button {
         background-color: rgb(29, 155, 240);
         width: 80%;
