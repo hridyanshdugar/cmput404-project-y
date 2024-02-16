@@ -20,4 +20,5 @@ from index.views import main
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', main, name='index'),
+    path('followers/', include('followers.urls'))
 ]
