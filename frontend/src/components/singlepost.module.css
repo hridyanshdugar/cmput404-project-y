@@ -1,137 +1,84 @@
-.sidenav {
-    display: inline-block;
-    margin-left: 20%;
-    height : 100vh;
-    width: 13rem;
-    z-index: 1;
-    top: 0;
-    left: 0;
-    border-right: 1px solid gray;
-  }
-
-.sidenav ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
+.blockImage {
+    width: 4rem;
+    vertical-align: top;
 }
 
-.sidenav li {
-    margin-bottom: 1rem;
-    font-size: 1.5rem;
+.img {
+    vertical-align: unset!important;
+    border-radius: 50%;
 }
 
-.sidenav FontAwesomeIcon {
-    margin-right: 3rem;
+.blockContent {
+    width: 100%;
+    vertical-align: top;
 }
 
-.sidenav a  {
+.blockFlexContent {
+    display: flex;
+}
+
+.overflow {
+    display: flex;
+    background-color: black;
+    border-bottom: 1px solid gray;
+    padding-right: 0.5rem;
+}
+
+.topText {
+    font-size: 15px;
     color: white;
-    text-decoration: none; 
+    height: 23px;
 }
 
-.inline {
-    display: inline-block;
-}
-
-.myName {
-    display: inline-block;
-    margin-left: 1rem;
-    width: 5rem;
-}
-
-.inlinetitle {
-    margin-left: 1rem;
-}
-
-.sidenav button {
-    background-color: rgb(29, 155, 240);
-    width: 90%;
-    border: none;
+.topBottom {
+    font-size: 15px;
     color: white;
-    text-align: center;
-    text-decoration: none;
-    border-radius: 4rem;
+    text-align: left;
 }
 
-
-.post {
-    margin: 0!important;
+.topUserText {
+    color: rgb(113, 118, 123)!important;
 }
 
-.logo {
-    font-size: 2.8rem;
-    margin: 0!important;
+.topLeft {
+    float: left;
+}
+.topRight {
+    float: right;
 }
 
-.avatarBottom {
-    position: absolute; 
-    bottom: 0;
-    margin-bottom: 1rem;
-    width: 13rem;
-}
-
-.avatarImage {
-    border-radius: 100%;
+.inlineBlock {
     display: inline-block;
-    background-color: gray;
-    width: 2.5rem;
-    height: 2.5rem;
+    padding-right: 0.3rem;
 }
 
-.dotdotdoticon {
-    position:absolute;
-    right:0;
-    margin-right: 0.5rem;
-    font-size: 1.5rem;
-    top:50%;
-    transform:translateY(-50%);
-}
-
-.atNameText {
-    color: gray;
-    font-size: 1rem;
-}
-
-
-@media screen and (min-width: 651px) {
-    .postButtonSmall {
-        display: none;
-    }
+.flexContainer {
+    display: flex;
+    justify-content: flex-start;
+    font-size: 16px;
+    color: rgb(113, 118, 123);
   }
   
-  @media screen and (max-width: 650px) {
-    .sidenav {
-        margin-left: 4rem;
-        height : 100vh;
-        width: 3rem!important;
-        z-index: 1;
-        top: 0;
-        left: 0;
-        border-right: 1px solid gray;
-      }
-
-    .inlinetitle {
-        display: none;
-    }
-    .postButtonBig {
-        display: none;
-    }
-
-    .myName {
-        display: none;
-    }
-    .dotdotdoticon {
-        display: none;
-    }    
-
-    .sidenav button {
-        background-color: rgb(29, 155, 240);
-        width: 80%;
-        border: none;
-        color: white;
-        text-align: center;
-        text-decoration: none;
-        border-radius: 100%;
-        font-size: 1.5rem;
-    }
+  .flexContainer::before {
+    content: "";
   }
+  
+  .flexContainer::after {
+    content: "";
+  }
+
+.flexItem {
+    height: 30px;
+    width: 75px;
+    margin-right: 1%;
+    text-align: left;
+  }
+  .flexItem2 {
+    height: 30px;
+    width: 75px;
+    text-align: right;
+  }  
+  .separator{
+    flex-grow:1;
+  }
+  
