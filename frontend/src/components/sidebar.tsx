@@ -25,7 +25,7 @@ export default function SideBar() {
             </a></li>
         </ul>
         <div className={style.avatarBottom}>
-        <a href="#">
+        <a href="/settings">
                 <div className={style.avatarImage}>
                 </div>
                 <div className={style.myName}>
