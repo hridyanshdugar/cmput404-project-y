@@ -3,6 +3,8 @@ import { Inter } from "next/font/google";
 import style from "./page.module.css";
 import "./global.css";
 import SideBar from "@/components/sidebar";
+import { Stack } from "react-bootstrap";
+import Rightbar from "@/components/rightbar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -14,8 +16,9 @@ export default function RootLayout({
   return (
       <html lang="en">
           <body className={style.backgroundColer}>
-              <SideBar/>
-              {children}
+                <SideBar/>
+                {children}
+                <Rightbar/>
           </body>
     </html>
   );

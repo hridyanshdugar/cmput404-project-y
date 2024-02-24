@@ -1,5 +1,6 @@
 .sidenav {
-    display: inline-block;
+    display: inline;
+    float: left;
     margin-left: 20%;
     height : 100vh;
     width: 13rem;
@@ -7,6 +8,7 @@
     top: 0;
     left: 0;
     border-right: 1px solid gray;
+    position: fixed;
   }
 
 .sidenav ul {
@@ -92,16 +94,22 @@
     font-size: 1rem;
 }
 
+@media screen and (max-width: 1030px) {
+    .sidenav {
+        margin-left: 10%;
+      }
+}
 
-@media screen and (min-width: 651px) {
+
+@media screen and (min-width: 1000px) {
     .postButtonSmall {
         display: none;
     }
   }
   
-  @media screen and (max-width: 650px) {
+  @media screen and (max-width: 1000px) {
     .sidenav {
-        margin-left: 4rem;
+        margin-left: 5%;
         height : 100vh;
         width: 3rem!important;
         z-index: 1;

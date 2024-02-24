@@ -1,20 +1,15 @@
-.flexSpaceBetween {
-    display: flex;
-    width: 59rem;
-    justify-content: space-between;
-}
-
 .mainContentView {
     background-color: #f4f4f4;
-    width: 37.5rem;
+    max-width: 37.5rem;
     text-align: center;
     font-size: 40px;
+    margin-left: 13rem;
     border-right: 1px solid gray;
+    overflow: scroll;
 }
 
-.trending {
-    background-color: #f4f4f4;
-    width: 20rem;
-    text-align: center;
-    font-size: 40px;
-}
+  @media screen and (max-width: 1000px) {
+    .mainContentView {
+        margin-left: 3rem;
+    }
+  }

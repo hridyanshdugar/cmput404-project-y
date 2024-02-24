@@ -1,7 +1,18 @@
 .main {
-    display: inline-block;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    vertical-align:top
+    min-height: 100%;
+    margin-left: 20%;
 }
+
+
+  @media screen and (max-width: 1030px) {
+    .main {
+        margin-left: 10%;
+    }
+}
+
+  
+  @media screen and (max-width: 1000px) {
+    .main {
+        margin-left: 5%;
+    }
+  }
