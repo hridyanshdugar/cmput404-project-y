@@ -20,8 +20,9 @@
 .overflow {
     display: flex;
     background-color: black;
-    border-bottom: 1px solid gray;
+    border-bottom: 1px solid rgb(47, 51, 54);
     padding-right: 0.5rem;
+    padding-top: 0.5rem;
 }
 
 .topText {
@@ -57,6 +58,7 @@
     justify-content: space-between;
     font-size: 16px;
     color: rgb(113, 118, 123);
+    padding-top: 0.25rem;
   }
   
   .flexContainer::before {
