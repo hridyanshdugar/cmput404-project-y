@@ -15,8 +15,8 @@ export default function Profile() {
                   <div className={styles.container}>
                     <h1 id="profileName" className={styles.title}>Profile</h1>
                     <div className={styles.postCount}>0 posts</div>
-                    <div id="profileBackround">IMAGE</div>
-                    <div id="profilePicture">IMAGE</div>
+                    <div id="profileBackround" className={styles.profileBackround}>IMAGE</div>
+                    <div id="profilePicture" className={styles.profilePicture}>IMAGE</div>
                     <header id="profileName" className={styles.title}>Profile</header>
                     <div id="username" className={styles.username}>@Username</div>
                     <text id="bio" className={styles.bio}>Bio</text>
