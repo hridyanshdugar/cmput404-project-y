@@ -8,9 +8,9 @@ URL_MAX_LENGTH = 300
 class Follower(models.Model):
     name = models.CharField(max_length=USERNAME_MAX_LENGTH)  # Need to set max user length
     follower = models.CharField(max_length=USERNAME_MAX_LENGTH)
-    url = models.CharField(max_length=URL_MAX_LENGTH)
+    followerUrl = models.CharField(max_length=URL_MAX_LENGTH)
 
 class NewFollowRequest(models.Model):
     name = models.CharField(max_length=USERNAME_MAX_LENGTH)  # Need to set max user length
     follower = models.CharField(max_length=USERNAME_MAX_LENGTH)
-    url = models.CharField(max_length=URL_MAX_LENGTH)
+    followerUrl = models.CharField(max_length=URL_MAX_LENGTH)
