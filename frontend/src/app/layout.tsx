@@ -1,25 +1,13 @@
-"use client"
-import { Inter } from "next/font/google";
-import style from "./page.module.css";
-import "./global.css";
-import SideBar from "@/components/sidebar";
-import { Stack } from "react-bootstrap";
-import Rightbar from "@/components/rightbar";
-
-const inter = Inter({ subsets: ["latin"] });
+import './global.css';
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: {
+  children: React.ReactNode
+}) {
   return (
-      <html lang="en">
-          <body className={style.backgroundColer}>
-                <SideBar/>
-                {children}
-                <Rightbar/>
-          </body>
+    <html lang="en">
+      <body className='base'>{children}</body>
     </html>
-  );
+  )
 }
