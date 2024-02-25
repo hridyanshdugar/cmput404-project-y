@@ -4,10 +4,15 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 from .models import User
-from .serializers import UserSerializer
+from .serializers import UserSerializer, AuthorSerializer
 from django.shortcuts import get_object_or_404
-from drf_spectacular.utils import extend_schema
-from unione_libs.views import BaseAPIViewSet
+
+
+from rest_framework.pagination import PageNumberPagination
+
+class Pager(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'size'
 
 class UsersViewPK(APIView):
 
@@ -15,8 +20,9 @@ class UsersViewPK(APIView):
      GET /users
      '''
      def get(self, request,id):
-        user = get_object_or_404(User,id=id,data={"title":"No user with this id exists"})
-        return user
+        user = get_object_or_404(User,id=id)
+        serializer = AuthorSerializer(user,context={'request': request})
+        return serializer.data
 
      '''
      POST /users
@@ -27,17 +33,30 @@ class UsersViewPK(APIView):
             serializer.save()
             return Response(serializer.data, status = status.HTTP_200_OK)
         else:
-            return Response("title": "Invalid Fields", "message": serializer.errors, status = status.HTTP_400_BAD_REQUEST) # Need to change the error message
+            return Response({"title": "Invalid Fields", "message": serializer.errors}, status = status.HTTP_400_BAD_REQUEST) # Need to change the error message
+     '''
+     delete /users
+     '''
+     def delete(self, request,id):
+        user = get_object_or_404(User,id=id)
+        user.delete()
+        return Response({"title": "Successfully Deleted", "message": "User was deleted"}, status = status.HTTP_200_OK)
 
 class UsersView(APIView):
-
+     pagination = Pager()
      '''
      GET /users
      '''
      def get(self, request):
-        users = User.objects.all()
-        serializer = UserSerializer(users, many=True)
-        return Response(serializer.data, status = status.HTTP_200_OK)
+        users = User.objects.filter(is_superuser=False,approved=True) # No admins
+        page_number = request.GET.get('page') or 1
+
+        page = self.pagination_class.paginate_queryset(users, request, view=self)
+        if page is not None:
+            serializer = AuthorSerializer(page,many=True,context={'request': request})
+            return Response(serializer.data, status = status.HTTP_200_OK)
+        else:
+            return Response(serializer.data, status = status.HTTP_400_BAD_REQUEST)
 
      '''
      POST /users
@@ -48,4 +67,4 @@ class UsersView(APIView):
             serializer.save()
             return Response(serializer.data, status = status.HTTP_200_OK)
         else:
-            return Response("title": "Invalid Fields", "message": serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+            return Response({"title": "Invalid Fields", "message": serializer.errors}, status = status.HTTP_400_BAD_REQUEST)

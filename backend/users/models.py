@@ -6,6 +6,12 @@ class User(AbstractBaseUser):
     password=models.CharField(max_length=100, blank=False, null=False)
     is_superuser=models.BooleanField(default=False)
 
+    profileImage=models.TextField()
+    github=models.TextField()
+    displayName=models.TextField()
+    followers = models.ManyToManyField('self', blank=True)
+    approved=models.BooleanField(default=False)
+
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
     

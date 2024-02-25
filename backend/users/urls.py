@@ -4,6 +4,6 @@ from .views import UsersViewPK, UsersView
 
 urlpatterns = [
     # use the matching view in views.py
-    path('generic', UsersView),
-    path('generic/<int:pk>', UsersViewPK)
+    path('', UsersView.as_view()),
+    path('<int:pk>', UsersViewPK.as_view())
 ]

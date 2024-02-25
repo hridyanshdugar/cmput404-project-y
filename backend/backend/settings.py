@@ -35,6 +35,7 @@ ALLOWED_HOSTS = ['*']
 
 CORS_ALLOW_ALL_ORIGINS = True # Change When release
 
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -49,6 +50,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'users',
     'userauth',
+    'followers',
 ]
 
 MIDDLEWARE = [
