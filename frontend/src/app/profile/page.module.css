@@ -1,0 +1,135 @@
+.mainContentView {
+    background-color: #000000;
+    color: white;
+    height : 100vh;
+    max-width: 37.5rem;
+    text-align: center;
+    font-size: 40px;
+    margin-left: 13rem;
+    border-left: 1px solid gray;
+    border-right: 1px solid gray;
+    overflow: scroll;
+    overflow: hidden;
+}
+
+  @media screen and (max-width: 1000px) {
+    .mainContentView {
+        margin-left: 3rem;
+    }
+  }
+
+  @media screen and (max-width: 500px) {
+    .mainContentView {
+        overflow-y: scroll;
+    }
+  }
+
+.container {
+  width: 100%;
+  display: inline-block;
+}
+
+.title {
+    text-align: left;
+    margin-top: 2rem;
+    margin-left: 2rem;
+    margin-right: 2rem;
+    font-size: 2rem;
+    font-weight: 500;
+}
+
+.postCount {
+    text-align: left;
+    color: grey;
+    margin-left: 2rem;
+    margin-right: 2rem;
+    font-size: 1.5rem;
+    font-weight: 500;
+}
+
+
+
+.username {
+    text-align: left;
+    color: grey;
+    margin-left: 2rem;
+    margin-right: 2rem;
+    font-size: 1.5rem;
+    font-weight: 500;
+}
+
+.bio {
+    width: 100%;
+    display: inline-block;
+    text-align: left;
+    margin-left: 2rem;
+    margin-right: 2rem;
+    font-size: 1.5rem;
+}
+
+.website {
+    text-align: left;
+    margin-left: 2rem;
+    margin-right: 2rem;
+    font-size: 1.5rem;
+}
+
+.followersContainer {
+  margin-left: 2rem;
+  margin-right: 2rem;
+  display: flex;
+  flex-direction: row;
+}
+
+.followCount {
+  margin-right: 2rem;
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.profileNav {
+  display: inline;
+  border-bottom: 1px solid grey;
+}
+
+.profileNav ul {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: 2rem;
+  padding: 0;
+  border-bottom: 1px solid grey;
+}
+
+.profileNav ul li {
+  height: 100%;
+  width: 100%;
+  list-style: none;
+  flex: 1;
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 500;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.profileNav ul li a {
+  display: block;
+  height: 100%;
+  text-decoration: none;
+  color: grey;
+  margin: 0;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  box-sizing: border-box;
+  border: none;
+  cursor: pointer;
+}
+
+.profileNav ul li a:hover {
+  background-color: hsl(0, 0%, 13%);
+}
