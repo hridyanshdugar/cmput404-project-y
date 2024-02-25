@@ -5,7 +5,7 @@ from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
 
 from .helper import body_to_json, addToNewFollowRequestTable
-from .models import NewFollowRequest
+from .models import NewFollowRequest, Follower
 
 val = URLValidator()
 
@@ -38,8 +38,15 @@ def getNewFollowRequests(request):
     # Get the name
     try:
         name = request.GET['name']
-        new_follower_list = NewFollowRequest.objects.filter(name=name).values()
-        return JsonResponse(new_follower_list[0])
+        new_follower_list = list(NewFollowRequest.objects.filter(name=name).values())
+        return JsonResponse(new_follower_list, safe=False)
     except:
         return HttpResponseBadRequest("Something went wrong!")
 
+def getFollowers(request):
+    try:
+        name = request.GET['name']
+        new_follower_list = list(Follower.objects.filter(name=name).values())
+        return JsonResponse(new_follower_list, safe=False)
+    except:
+        return HttpResponseBadRequest("Something went wrong!")    
