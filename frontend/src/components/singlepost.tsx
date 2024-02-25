@@ -109,7 +109,6 @@ export default class SinglePost extends React.Component<Props> {
                     <div className={style.flexItem}>
                     <FontAwesomeIcon icon={faHeart} fixedWidth/> {this.props.likes}
                     </div>
-                    <div className={style.separator}></div>
                     <div className={style.flexItem2}>
                     <FontAwesomeIcon icon={faArrowUpFromBracket} fixedWidth/>
                     </div>                   

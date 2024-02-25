@@ -54,7 +54,7 @@
 
 .flexContainer {
     display: flex;
-    justify-content: flex-start;
+    justify-content: space-between;
     font-size: 16px;
     color: rgb(113, 118, 123);
   }
@@ -69,16 +69,15 @@
 
 .flexItem {
     height: 30px;
-    width: 75px;
-    margin-right: 1%;
     text-align: left;
+    width: calc(100% + 12px);
   }
   .flexItem2 {
     height: 30px;
-    width: 75px;
     text-align: right;
+    width: calc(100% + 12px);
   }  
   .separator{
-    flex-grow:1;
+    flex-grow: 1;
   }
   
