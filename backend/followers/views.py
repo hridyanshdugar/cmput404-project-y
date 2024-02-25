@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
@@ -33,4 +33,13 @@ def follow(request):
     addToNewFollowRequestTable(body)
 
     return HttpResponse()
+
+def getNewFollowRequests(request):
+    # Get the name
+    try:
+        name = request.GET['name']
+        new_follower_list = NewFollowRequest.objects.filter(name=name).values()
+        return JsonResponse(new_follower_list[0])
+    except:
+        return HttpResponseBadRequest("Something went wrong!")
 
