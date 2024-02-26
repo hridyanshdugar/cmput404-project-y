@@ -14,7 +14,7 @@ export default function RootLayout({
 }>) {
   return (
       <html lang="en">
-          <body className={style.backgroundColer}>
+          <body className={style.backgroundColor}>
                 <SideBar/>
                 {children}
                 <Rightbar/>

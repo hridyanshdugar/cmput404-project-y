@@ -21,7 +21,7 @@ export default function SideBar() {
 	};
 	return (
 		<>
-			<PopupPanel innerRef={popupPanelRef} />
+			<PopupPanel innerRef={popupPanelRef} style={{ display: "none" }} />
 			<nav className={style.sidenav}>
 				<ul>
 					<li>

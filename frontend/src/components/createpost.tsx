@@ -12,6 +12,7 @@ interface CreatePostProps {
 	profileImage: string;
 	username: string;
 	style?: React.CSSProperties;
+	reply?: boolean | undefined;
 }
 
 const CreatePost: React.FC<CreatePostProps> = (props) => {
@@ -24,7 +25,7 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 	};
 
 	const onCreateClick = (event: MouseEvent<HTMLDivElement>) => {
-		if (dropdownRef.current && horizontalLineRef.current) {
+		if (dropdownRef.current && horizontalLineRef.current && !props.reply) {
 			dropdownRef.current.style.display = "flex";
 			horizontalLineRef.current.style.display = "block";
 		}
@@ -68,7 +69,7 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 					</div>
 					<Button
 						onClick={() => {}}
-						text="Post"
+						text={props.reply ? "Reply" : "Post"}
 						type="tertiary"
 						size="small"
 						roundness="very"

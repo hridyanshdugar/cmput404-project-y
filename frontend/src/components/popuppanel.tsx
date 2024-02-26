@@ -7,6 +7,7 @@ import CreatePost from "@/components/createpost";
 
 interface PopupPanelProps {
 	innerRef: React.RefObject<HTMLDivElement>;
+	style: React.CSSProperties;
 }
 const PopupPanel: React.FC<PopupPanelProps> = (props) => {
 	const onClose = () => {
@@ -16,8 +17,8 @@ const PopupPanel: React.FC<PopupPanelProps> = (props) => {
 		}
 	};
 	return (
-		<div className={style.overlay} ref={props.innerRef}>
-			<div className={style.main} ref={props.innerRef}>
+		<div className={style.overlay} ref={props.innerRef} style={props.style}>
+			<div className={style.main}>
 				<Close onClick={onClose} style={{ marginTop: 0 }} />
 				<div className={style.paddedContainer}>
 					<CreatePost

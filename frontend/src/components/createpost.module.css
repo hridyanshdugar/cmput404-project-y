@@ -17,7 +17,7 @@
 .createPost {
 	display: flex;
 	background-color: black;
-	border-bottom: 1px solid gray;
+	border-bottom: 1px solid rgb(47, 51, 54);
 	padding-right: 2rem;
 	overflow: visible;
 }
