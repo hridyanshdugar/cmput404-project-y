@@ -1,7 +1,39 @@
 .main {
-    display: inline-block;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    vertical-align:top
+    min-height: 100%;
+    margin-left: 20%;
 }
+
+
+  @media screen and (max-width: 1030px) {
+    .main {
+        margin-left: 10%;
+    }
+}
+
+
+  @media screen and (max-width: 1000px) {
+    .main {
+        margin-left: 5%;
+    }
+  }
+
+  @media screen and (max-width: 410px) {
+    .main {
+        margin-left: 1%;
+    }
+  }
+
+.base {
+    background: #000;
+    margin:0;
+    font-family: "Chirp";
+}
+
+@font-face {
+    font-family: 'Chirp';
+    src: url('/fonts/chirp-regular-web.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
