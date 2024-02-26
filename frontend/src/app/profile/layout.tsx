@@ -16,7 +16,7 @@ export default function ProfileLayout({
   }>) {
     return (
         <div>
-            <Profile/>
+            <Profile name={'John Dowe'} username={'@beacon'} bio={'bio'} website={'website'} followers={0} following={0} profileImage={'https://image.spreadshirtmedia.com/image-server/v1/products/T1459A839PA3861PT28D1031336018W5625H10000/views/1,width=550,height=550,appearanceId=839,backgroundColor=F2F2F2/gamer-sticker.jpg'} profileBackround={"https://i0.wp.com/www.thewrap.com/wp-content/uploads/2023/06/spider-man-across-the-spider-verse-group-shot.jpg?fit=990%2C557&ssl=1"}/>
             {children}
         </div>
     );
