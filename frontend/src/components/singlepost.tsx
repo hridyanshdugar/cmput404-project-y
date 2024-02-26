@@ -74,7 +74,7 @@ export default class SinglePost extends React.Component<Props> {
         const date = new Date(0);
         date.setUTCSeconds(this.props.date);
         return <div className={style.overflow}>
-            <div className={style.blockImage}><Image className={style.img} src={this.props.profileImage} alt={''} width={40} height={40}/></div>
+            <div className={style.blockImage}><img className={style.img} src={this.props.profileImage} alt={''} width={40} height={40}/></div>
             <div className={style.blockContent}>
                 <div className={[style.topText, style.blockFlexContent].join(' ')}>
                     <div className={style.topLeft}>
