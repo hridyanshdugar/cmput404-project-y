@@ -1,5 +1,5 @@
 import json
-from .models import NewFollowRequest
+from .models import NewFollowRequest, Follower
 
 
 def body_to_json(body):
@@ -13,3 +13,10 @@ def addToNewFollowRequestTable(body):
     nfr.follower = body['friend']
     nfr.followerUrl = body['url']
     nfr.save()
+
+def addToFollowerTable(name, follower, url):
+    f = Follower()
+    f.name = name
+    f.follower = follower
+    f.followerUrl = url
+    f.save()
