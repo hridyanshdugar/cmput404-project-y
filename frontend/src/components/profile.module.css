@@ -130,11 +130,24 @@
     font-size: 1.25rem;
 }
 
+.informationContainer {
+  margin-left: 1rem;
+  margin-right: 2rem;
+  display: flex;
+  flex-direction: row;
+}
+
 .website {
     text-align: left;
-    margin-left: 1rem;
-    margin-right: 2rem;
+    margin-right: 1rem;
     font-size: 1.25rem;
+}
+
+.dateJoined {
+    text-align: left;
+    margin-right: 1rem;
+    font-size: 1.25rem;
+    color: grey;
 }
 
 .followersContainer {
