@@ -25,7 +25,7 @@ class AuthorSerializer(serializers.ModelSerializer):
 
      class Meta:
           model = User
-          fields = ["id","global_id", "host","url","type","displayName","email"]
+          fields = ["id","global_id", "host","url","type","displayName","email","profileImage","github"]
 
      def get_host(self, obj):
         request = self.context.get('request')

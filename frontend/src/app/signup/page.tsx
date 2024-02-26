@@ -4,13 +4,11 @@ import Button from "@/components/buttons/button";
 import Close from "@/components/buttons/close";
 import Input from "@/components/inputs/input";
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation'; 
-import { signup, login } from "@/utils/utils";
+import { signup, login, navigate } from "@/utils/utils";
 import WarningModal from "@/components/modals/warning";
 import Cookies from 'universal-cookie';
 
 export default function Home() {
-  const router = useRouter();
   const [WarningData, setWarningData] = useState<any>(null);
 
   const [Email, setEmail] = useState<string>('');
@@ -41,7 +39,7 @@ export default function Home() {
         cookies.set("auth",Data["auth"],{ path: '/' });
         cookies.set("user",Data["user"],{ path: '/' });
 
-        router.replace('/home')
+        navigate('/home')
       }).catch(async (result: any) => {
         const Data = await result.json();
         console.log(Data);
@@ -62,7 +60,7 @@ export default function Home() {
         <div style={{ border: "1px solid #333", backgroundColor: "#000", borderRadius: "30px", height: "80vh", width: "80vh", fontSize: "50vh", margin: "auto", display: "flex", flexDirection: "column", justifyContent: "space-between"}}>
           <div style={{marginLeft: "20px", marginRight: "50px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-between", height: "100%"}}>
             <div style={{display: "flex", flexDirection: "row", justifyContent: "space-between", width: "100%"}}>
-              <Close onClick={()=>{router.replace('/')}}/>
+              <Close onClick={()=>{navigate('/')}}/>
               <div style={{color: "#FFF", height: "5vh", fontSize: "5vh", display: "flex"}}>𝕐</div>
               <div/>
             </div>

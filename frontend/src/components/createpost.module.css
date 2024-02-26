@@ -1,0 +1,51 @@
+.blockImage {
+	width: 4rem;
+	vertical-align: top;
+	padding-top: 0.5rem;
+}
+
+.img {
+	vertical-align: unset !important;
+	border-radius: 50%;
+}
+
+.blockContent {
+	width: 100%;
+	align-items: flex-start;
+}
+
+.createPost {
+	display: flex;
+	background-color: black;
+	border-bottom: 1px solid rgb(47, 51, 54);
+	padding-right: 2rem;
+	overflow: visible;
+}
+
+.textarea {
+	padding: 10px;
+	font-size: 2vh;
+	color: #fff;
+	background-color: black;
+	border: none;
+	width: 100%;
+	outline: none;
+	resize: none;
+}
+
+.bottomBar {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.iconBar {
+	text-align: left;
+	width: calc(100% + 12px);
+}
+
+.horizontalLine {
+	border: 1px solid gray;
+	width: 100%;
+	margin: 0;
+}

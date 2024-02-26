@@ -54,7 +54,7 @@ def signup(request):
     if 'password' not in request.data or 'email' not in request.data:
         return Response(status=status.HTTP_400_BAD_REQUEST,data={'title': 'No Password','message': 'A password is required for signing up'})
     print(request.data)
-    serializer = UserSerializer(data=request.data, context={'request': request})
+    serializer = UserSerializer(data=request.data)
 
     if serializer.is_valid():
         user = serializer.save()

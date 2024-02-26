@@ -19,16 +19,18 @@ class UsersViewPK(APIView):
      '''
      GET /users
      '''
-     def get(self, request,id):
-        user = get_object_or_404(User,id=id)
+     def get(self, request,pk):
+        print(pk)
+        user = get_object_or_404(User,id=pk)
         serializer = AuthorSerializer(user,context={'request': request})
-        return serializer.data
+        return Response(serializer.data, status = status.HTTP_200_OK)
 
      '''
      POST /users
      '''
-     def post(self, request):
-        serializer = UserSerializer(data = request.data, partial=True)
+     def post(self, request,pk):
+        user = get_object_or_404(User,id=pk)
+        serializer = UserSerializer(user,data = request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status = status.HTTP_200_OK)
@@ -37,8 +39,8 @@ class UsersViewPK(APIView):
      '''
      delete /users
      '''
-     def delete(self, request,id):
-        user = get_object_or_404(User,id=id)
+     def delete(self, request,pk):
+        user = get_object_or_404(User,id=pk)
         user.delete()
         return Response({"title": "Successfully Deleted", "message": "User was deleted"}, status = status.HTTP_200_OK)
 
