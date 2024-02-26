@@ -110,3 +110,4 @@ def declineFollowRequest(request):
             return HttpResponseBadRequest("Not able to decline request, follows="+ str(follows) + " newRequest=" + str(newRequest)) 
     except:
         return HttpResponseBadRequest("Something went wrong!") 
+
