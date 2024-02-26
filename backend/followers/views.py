@@ -34,6 +34,22 @@ def follow(request):
 
     return HttpResponse()
 
+@csrf_exempt
+def unfollow(request):
+    # This is supposed to be a post
+    if request.method != "PUT":
+        return HttpResponseBadRequest("Invalid Request: Please send a put request with author 'name' and 'follower' name as headers")
+    
+    # TODO: Add apikey handling
+
+    # delete from followers table
+    try:
+        Follower.objects.filter(follower=request.headers['follower'], name= request.headers['name']).delete()
+    except:
+        return HttpResponseBadRequest("Invalid Request: Follower not found, are you sending 'name' and 'follower' in the headers")
+
+    return HttpResponse()
+
 def getNewFollowRequests(request):
     # Get the name
     try:
