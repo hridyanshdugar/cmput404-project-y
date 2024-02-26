@@ -24,5 +24,36 @@
     }
 
   .bottomMargin {
-    margin-bottom: 0.2rem;
+    margin-bottom: 12px;
+  }
+
+  .topMargin {
+    margin-top: 6px;
+  }
+
+  .searchBar1 {
+    border-top-left-radius: 9999px!important;
+    border-bottom-left-radius: 9999px!important;
+    background-color: rgba(32,35,39,255)!important;
+    border:rgb(22, 24, 28)!important;
+    color: grey!important;
+  }
+
+  .searchBar2 {
+    border-top-right-radius: 9999px!important;
+    border-bottom-right-radius: 9999px!important;
+    background-color: rgba(32,35,39,255)!important;
+    border:rgb(22, 24, 28)!important;
+    color: white!important;
+
+  }  
+
+  .boxes {
+    border-radius: 16px!important;
+    background-color: rgb(22, 24, 28)!important;
+    color: white!important;
+  }
+
+  .searchBar2::placeholder {
+    color: gray!important;
   }

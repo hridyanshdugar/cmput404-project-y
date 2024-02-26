@@ -1,0 +1,19 @@
+.backgroundColor {
+    background: #000;
+}
+
+
+.signInButton {
+    color: #000;
+    position: relative;
+    background-color: #FFF;
+    font-size: 2vh;
+    border-radius: 1000px;
+    border: 1px solid grey;
+    padding: 10px 50px;
+    text-align: center;
+    width: 500px;
+    text-decoration: none;
+    cursor: pointer;
+    align-self: center;
+  }

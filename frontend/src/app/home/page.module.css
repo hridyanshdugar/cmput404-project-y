@@ -4,8 +4,8 @@
     text-align: center;
     font-size: 40px;
     margin-left: 13rem;
-    border-right: 1px solid rgb(83, 83, 83);
-    border-left: 1px solid rgb(83, 83, 83);
+    border-right: 1px solid rgb(47, 51, 54);
+    border-left: 1px solid rgb(47, 51, 54);
     overflow: hidden;
 }
 
@@ -14,3 +14,19 @@
         margin-left: 3rem;
     }
   }
+
+  .mainContentViewSticky {
+    border-right: 1px solid rgb(47, 51, 54);
+    border-left: 1px solid rgb(47, 51, 54);    
+    max-width: 37.5rem;
+    margin-left: 13rem;
+    position: sticky;
+    top: 0; 
+    z-index: 1;
+}
+
+  @media screen and (max-width: 1000px) {
+    .mainContentViewSticky {
+        margin-left: 3rem;
+    }
+  }  

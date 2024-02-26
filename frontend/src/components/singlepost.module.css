@@ -20,8 +20,9 @@
 .overflow {
     display: flex;
     background-color: black;
-    border-bottom: 1px solid gray;
+    border-bottom: 1px solid rgb(47, 51, 54);
     padding-right: 0.5rem;
+    padding-top: 0.5rem;
 }
 
 .topText {
@@ -54,9 +55,10 @@
 
 .flexContainer {
     display: flex;
-    justify-content: flex-start;
+    justify-content: space-between;
     font-size: 16px;
     color: rgb(113, 118, 123);
+    padding-top: 0.25rem;
   }
   
   .flexContainer::before {
@@ -69,16 +71,15 @@
 
 .flexItem {
     height: 30px;
-    width: 75px;
-    margin-right: 1%;
     text-align: left;
+    width: calc(100% + 12px);
   }
   .flexItem2 {
     height: 30px;
-    width: 75px;
     text-align: right;
+    width: calc(100% + 12px);
   }  
   .separator{
-    flex-grow:1;
+    flex-grow: 1;
   }
   
