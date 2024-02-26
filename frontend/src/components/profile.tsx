@@ -17,8 +17,13 @@ export default function Profile() {
                       <h1 id="profileName" className={styles.title}>Profile</h1>
                       <div className={styles.postCount}>0 posts</div>
                     </div>
-                    <div id="profileBackround" className={styles.profileBackround}>IMAGE</div>
-                    <div id="profilePicture" className={styles.profilePicture}>IMAGE</div>
+                    <div id="profileBackround"><Image className={styles.profileBackround} src={'https://i0.wp.com/www.thewrap.com/wp-content/uploads/2023/06/spider-man-across-the-spider-verse-group-shot.jpg?fit=990%2C557&ssl=1'} alt={''} width={500} height={500}/></div>
+                    <div className={styles.pictureButtonContainer}>
+                      <div id="profilePicture"><Image className={styles.profilePicture} src={'https://image.spreadshirtmedia.com/image-server/v1/products/T1459A839PA3861PT28D1031336018W5625H10000/views/1,width=550,height=550,appearanceId=839,backgroundColor=F2F2F2/gamer-sticker.jpg'} alt={''} width={400} height={40}/></div>
+                      <div className={styles.profileButton}>
+                        <Button id="profileActionButton" variant="primary">Edit Profile</Button>
+                      </div>
+                    </div>
                     <header id="profileName" className={styles.title}>Profile</header>
                     <div id="username" className={styles.username}>@Username</div>
                     <text id="bio" className={styles.bio}>Bio</text>

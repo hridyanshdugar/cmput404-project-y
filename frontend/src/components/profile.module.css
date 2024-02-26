@@ -6,7 +6,6 @@
     text-align: center;
     font-size: 40px;
     margin-left: 13rem;
-    overflow: scroll;
     overflow: hidden;
 }
 
@@ -30,7 +29,7 @@
 
 .titleContainer {
   height: auto;
-  width: 598px;
+  width: calc(37.5rem - 0.5px);
   background-color: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(5px);
   position: fixed;
@@ -44,7 +43,7 @@
 .title {
     text-align: left;
     margin-top: 1rem;
-    margin-left: 2rem;
+    margin-left: 1rem;
     margin-right: 2rem;
     font-size: 2rem;
     font-weight: 500;
@@ -53,7 +52,7 @@
 .postCount {
     text-align: left;
     color: grey;
-    margin-left: 2rem;
+    margin-left: 1rem;
     margin-right: 2rem;
     font-size: 1.5rem;
     font-weight: 500;
@@ -63,8 +62,12 @@
     background-image: url(https://i0.wp.com/www.thewrap.com/wp-content/uploads/2023/06/spider-man-across-the-spider-verse-group-shot.jpg?fit=990%2C557&ssl=1);
     width: 100%;
     height: 15rem;
-    margin-top: 6.5rem;
+    margin-top: 6.15rem;
     background-color: grey;
+}
+
+.pictureButtonContainer {
+  display: flex;
 }
 
 .profilePicture {
@@ -79,10 +82,38 @@
     border: 3px solid black;
 }
 
+.profileButton {
+    display: flex;
+    flex-grow: 1;
+    justify-content: flex-end;
+    margin-top: 1rem;
+    margin-left: auto;
+    margin-right: 1rem;
+}
+
+.profileButton Button {
+    width: 10rem;
+    height: 3rem;
+    font-size: 1.25rem;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    background-color: hsl(0, 0%, 13%);
+    border: none;
+    border-radius: 32px;
+    color: white;
+}
+
+.profileButton button:hover,
+.profileButton button:active,
+.profileButton button:focus {
+  background-color: rgb(29, 155, 240);
+}
+
 .username {
     text-align: left;
     color: grey;
-    margin-left: 2rem;
+    margin-left: 1rem;
     margin-right: 2rem;
     font-size: 1.5rem;
     font-weight: 500;
@@ -92,20 +123,21 @@
     width: 100%;
     display: inline-block;
     text-align: left;
-    margin-left: 2rem;
+    margin-left: 1rem;
     margin-right: 2rem;
     font-size: 1.5rem;
 }
 
 .website {
     text-align: left;
-    margin-left: 2rem;
+    margin-left: 1rem;
     margin-right: 2rem;
     font-size: 1.5rem;
 }
 
 .followersContainer {
-  margin-left: 2rem;
+  margin-top: 1rem;
+  margin-left: 1rem;
   margin-right: 2rem;
   display: flex;
   flex-direction: row;
@@ -128,7 +160,7 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  margin-top: 2rem;
+  margin-top: 1rem;
   padding: 0;
   border-bottom: 1px solid grey;
 }
