@@ -1,0 +1,182 @@
+.mainContentView {
+    background-color: #000000;
+    color: white;
+    height : 100%;
+    max-width: 37.5rem;
+    text-align: center;
+    font-size: 40px;
+    margin-left: 13rem;
+    border-left: 1px solid gray;
+    border-right: 1px solid gray;
+    overflow: scroll;
+    overflow: hidden;
+}
+
+  @media screen and (max-width: 1000px) {
+    .mainContentView {
+        margin-left: 3rem;
+    }
+  }
+
+  @media screen and (max-width: 500px) {
+    .mainContentView {
+        overflow-y: scroll;
+    }
+  }
+
+
+
+.container {
+  height: fit-content;
+  width: 100%;
+  display: inline-block;
+}
+
+.titleContainer {
+  height: auto;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+  position: fixed;
+  top: 0;
+  z-index: 10;
+  padding: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.title {
+    text-align: left;
+    margin-top: 1rem;
+    margin-left: 2rem;
+    margin-right: 2rem;
+    font-size: 2rem;
+    font-weight: 500;
+}
+
+.postCount {
+    text-align: left;
+    color: grey;
+    margin-left: 2rem;
+    margin-right: 2rem;
+    font-size: 1.5rem;
+    font-weight: 500;
+}
+
+.profileBackround {
+    background-image: url(https://i0.wp.com/www.thewrap.com/wp-content/uploads/2023/06/spider-man-across-the-spider-verse-group-shot.jpg?fit=990%2C557&ssl=1);
+    width: 100%;
+    height: 15rem;
+    margin-top: 6.5rem;
+    background-color: grey;
+}
+
+.profilePicture {
+    width: 10rem;
+    height: 10rem;
+    border-radius: 50%;
+    margin-top: -5rem;
+    margin-left: 2rem;
+    margin-right: 2rem;
+    z-index: 1;
+    background-color: tomato;
+    border: 3px solid black;
+}
+
+.username {
+    text-align: left;
+    color: grey;
+    margin-left: 2rem;
+    margin-right: 2rem;
+    font-size: 1.5rem;
+    font-weight: 500;
+}
+
+.bio {
+    width: 100%;
+    display: inline-block;
+    text-align: left;
+    margin-left: 2rem;
+    margin-right: 2rem;
+    font-size: 1.5rem;
+}
+
+.website {
+    text-align: left;
+    margin-left: 2rem;
+    margin-right: 2rem;
+    font-size: 1.5rem;
+}
+
+.followersContainer {
+  margin-left: 2rem;
+  margin-right: 2rem;
+  display: flex;
+  flex-direction: row;
+}
+
+.followCount {
+  margin-right: 2rem;
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.profileNav {
+  display: inline;
+  border-bottom: 1px solid grey;
+}
+
+.profileNav ul {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: 2rem;
+  padding: 0;
+  border-bottom: 1px solid grey;
+}
+
+.profileNav ul li {
+  height: 100%;
+  width: 100%;
+  list-style: none;
+  flex: 1;
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 500;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.profileNav ul li a {
+  display: block;
+  height: 100%;
+  text-decoration: none;
+  color: grey;
+  margin: 0;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  box-sizing: border-box;
+  border: none;
+  cursor: pointer;
+}
+
+.profileNav ul li a:hover {
+  background-color: hsl(0, 0%, 13%);
+}
+
+.tabContent{
+  display: none;
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  border: none;
+}
+
+.tabContent:target {
+  display: block;
+}
