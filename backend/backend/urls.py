@@ -23,4 +23,6 @@ urlpatterns = [
 
     path('auth/', include('userauth.urls')),
     path('users/', include('users.urls')),
+  
+    path('followers/', include('followers.urls'))
 ]

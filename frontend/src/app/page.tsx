@@ -4,6 +4,7 @@ import Button from "@/components/buttons/button";
 import Close from "@/components/buttons/close";
 import Input from "@/components/inputs/input";
 import React, { useState } from 'react';
+
 import { signup, login, navigate } from "@/utils/utils";
 import Cookies from 'universal-cookie';
 
@@ -29,4 +30,3 @@ export default function Home() {
     </div>
     
   );
-}

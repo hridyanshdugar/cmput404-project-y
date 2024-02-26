@@ -6,8 +6,8 @@
     text-align: center;
     font-size: 40px;
     margin-left: 13rem;
-    border-right: 1px solid gray;
-    overflow: scroll;
+    border-right: 1px solid rgb(47, 51, 54);
+    border-left: 1px solid rgb(47, 51, 54);
     overflow: hidden;
 }
 
@@ -56,8 +56,7 @@
   flex-direction: column;
   margin-left : 2rem;
   margin-right: 2rem;
-  border-color: grey;
-  border : 1px solid grey;
+  border : 1px solid rgb(47, 51, 54);
   border-radius: 0.5rem;
   margin-bottom: 1rem;
 }
