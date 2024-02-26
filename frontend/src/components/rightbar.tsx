@@ -14,6 +14,7 @@ import { Card, Form } from 'react-bootstrap'
 export default function Rightbar() {
     return <>
         <div className={"main"}>
+            <div className={style.borderContainer}>
             <nav className={style.rightnav}>
                                 <Form.Control
                         type="text"
@@ -29,7 +30,8 @@ export default function Rightbar() {
                 <Card className={style.bottomMargin}>
       <Card.Body>This is some text within a card body.</Card.Body>
     </Card>
-            </nav>               
+            </nav>   
+            </div>            
         </div>
     </>;
 }
