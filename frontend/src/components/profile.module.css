@@ -105,8 +105,7 @@
 }
 
 .profileButton button:hover,
-.profileButton button:active,
-.profileButton button:focus {
+.profileButton button:active {
   background-color: rgb(29, 155, 240);
 }
 
