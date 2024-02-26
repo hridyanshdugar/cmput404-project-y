@@ -17,6 +17,7 @@ type Props = {
     profileBackround: string;
     bio: string;
     website: string;
+    dateJoined: string;
     followers: number;
     following: number;
     //posts: Array<SinglePost>;
@@ -32,7 +33,7 @@ export default class Profile extends React.Component<Props> {
                   
                   <div className={styles.container}>
                     <div className={styles.titleContainer}>
-                      <h1 id="profileName" className={styles.title}>Profile</h1>
+                      <h1 id="profileName" className={styles.title}>{this.props.name}</h1>
                       <div className={styles.postCount}>0 posts</div>
                     </div>
                     <div id="profileBackround"><img className={styles.profileBackround} src={this.props.profileBackround} alt={''} width={500} height={500}/></div>
@@ -42,15 +43,18 @@ export default class Profile extends React.Component<Props> {
                         <Button id="profileActionButton" variant="primary">Edit Profile</Button>
                       </div>
                     </div>
-                    <header id="profileName" className={styles.title}>Profile</header>
-                    <div id="username" className={styles.username}>@Username</div>
-                    <text id="bio" className={styles.bio}>Bio</text>
-                    <div id="website" className={styles.website}>Website</div>
+                    <header id="profileName" className={styles.title}>{this.props.name}</header>
+                    <div id="username" className={styles.username}>{this.props.username}</div>
+                    <text id="bio" className={styles.bio}>{this.props.bio !== "" ? this.props.bio : "No Bio"}</text>
+                    <div className={styles.informationContainer}>
+                      <div id="website" className={styles.website}>{this.props.website}</div>
+                      <div id="dateJoined" className={styles.dateJoined}>Date Joined</div>
+                    </div>
                     <div className={styles.followersContainer}>
-                      <div id="followers" className={styles.followCount}>0 
+                      <div id="followers" className={styles.followCount}>{this.props.followers} 
                       <span style={{color: "grey"}}> Followers</span>
                       </div>
-                      <div id="following" className={styles.followCount}>0  
+                      <div id="following" className={styles.followCount}>{this.props.following}
                           <span style={{color: "grey"}}> Following</span>
                       </div>
                     </div>
