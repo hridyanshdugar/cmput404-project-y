@@ -5,6 +5,8 @@ from .models import Post
 from rest_framework.pagination import PageNumberPagination
 from .serializers import PostSerializer
 from django.shortcuts import get_object_or_404
+from users.models import User
+from django.db.models import Q
 
 
 class Pager(PageNumberPagination):
@@ -27,9 +29,17 @@ class PostsViewPK(APIView):
      '''
      def put(self, request, pk):
         post = get_object_or_404(Post, id=pk)
-        serializer = PostSerializer(post, data = request.data, partial=True)
+        if request.data.get(author):
+            author = None
+            try:
+                author = User.objects.get(id=request.data.get(author))
+            except User.DoesNotExist:
+                return Response({"title": "Author not found.","message": "No valid author for the post was provided"}, status=status.HTTP_404_NOT_FOUND)
+
+        request.data["author"] = author
+        serializer = PostSerializer(post, data = request.data, partial=True, context={'request': request})
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(author=author)
             return Response(serializer.data, status = status.HTTP_200_OK)
         else:
             return Response({"title": "Invalid Fields", "message": serializer.errors}, status = status.HTTP_400_BAD_REQUEST) # Need to change the error message
@@ -47,7 +57,12 @@ class PostsView(APIView):
      GET /authors/{id}/posts/ and /posts/
      '''
      def get(self, request):
-        posts = Post.objects.filter(visibility="PUBLIC") # No private and unlisted
+        posts=None
+        if request.GET.get('local',False):
+            posts = Post.objects.filter(Q(visibility="PUBLIC", host=request.GET.get('host')) | Q(visibility="FRIENDS")) # FINISH UP
+        else:
+            posts = Post.objects.filter(visibility="PUBLIC").order_by('-published') # No private and unlisted
+        
         page_number = request.GET.get('page') or 1
         page = self.pagination.paginate_queryset(posts, request, view=self)
         if page is not None:
@@ -60,9 +75,17 @@ class PostsView(APIView):
      POST /authors/{id}/posts/ and /posts/
      '''
      def post(self, request):
-        serializer = PostSerializer(data = request.data)
+        author = None
+        try:
+            author = User.objects.get(id=request.data.get("author"))
+        except User.DoesNotExist:
+            return Response({"title": "Author not found.","message": "No valid author for the post was provided"}, status=status.HTTP_404_NOT_FOUND)
+
+        request.data["author"] = author
+        serializer = PostSerializer(data = request.data, context={'request': request})
+        
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(author=author)
             return Response(serializer.data, status = status.HTTP_200_OK)
         else:
             return Response({"title": "Invalid Fields", "message": serializer.errors}, status = status.HTTP_400_BAD_REQUEST)
