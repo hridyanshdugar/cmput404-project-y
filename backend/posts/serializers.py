@@ -14,7 +14,7 @@ class PostSerializer(serializers.ModelSerializer):
         """
         Create and return a new `Post` instance, given the validated data
         """
-        return Post.object.create(**validated_data)
+        return Post.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
         """
@@ -32,7 +32,7 @@ class PostSerializer(serializers.ModelSerializer):
         instance.visibility = validated_data.get('visibility', instance.visibility)
 
         instance.save()
-        
+
         return instance
 
     def delete(self, instance):
