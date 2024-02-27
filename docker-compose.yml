@@ -8,6 +8,7 @@ services:
     network_mode: "host"
     volumes:
       - ./:/usr/src/backend/sql
+      - ./:/usr/src/backend/media
     restart: always
   frontend:
     build:

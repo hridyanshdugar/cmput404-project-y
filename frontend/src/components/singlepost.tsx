@@ -64,6 +64,7 @@ type Props = {
 	comments: number;
 	postID: string;
 	onPostPage?: boolean | undefined;
+	contentType?: string;
 };
 
 export default class SinglePost extends React.Component<Props> {
