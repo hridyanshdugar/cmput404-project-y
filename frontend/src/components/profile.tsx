@@ -8,6 +8,8 @@ import { Col, Row } from 'react-bootstrap';
 import { title } from 'process';
 import React from 'react'
 import SinglePost from '@/components/singlepost';
+import SideBar from "@/components/sidebar";
+import Rightbar from "@/components/rightbar";
 
 
 type Props = {
@@ -28,9 +30,8 @@ export default class Profile extends React.Component<Props> {
         super(props);
     }
     render() {
-      return <div className={"main"}>
+      return  <div className={"main"}>
                 <div className={styles.mainContentView}> 
-                  
                   <div className={styles.container}>
                     <div className={styles.titleContainer}>
                       <h1 id="profileName" className={styles.title}>{this.props.name}</h1>
@@ -62,13 +63,13 @@ export default class Profile extends React.Component<Props> {
                   <div className={styles.container}>
                     <nav className={styles.profileNav}>
                       <ul>
-                        <li><a href="/profile">Posts</a></li>
-                        <li><a href="/profile/media">Media</a></li>
-                        <li><a href="/profile/likes">Likes</a></li>
+                        <li><a href="/profile/profile">Posts</a></li>
+                        <li><a href="/profile/profile/media">Media</a></li>
+                        <li><a href="/profile/profile/likes">Likes</a></li>
                       </ul>
                     </nav>
                   </div>
-                </div>                       
+                </div>                     
           </div>;
     }
 }
