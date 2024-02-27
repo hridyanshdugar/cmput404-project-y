@@ -20,7 +20,8 @@ from userauth import urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-
+    path('authors/<str:author_id>/posts/', include('posts.urls')),
+    path('posts/', include('posts.urls')),
     path('auth/', include('userauth.urls')),
     path('users/', include('users.urls')),
   
