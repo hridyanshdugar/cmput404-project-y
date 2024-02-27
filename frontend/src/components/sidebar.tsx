@@ -16,24 +16,23 @@ import { useRef } from "react";
 import { API } from "@/utils/utils";
 
 export default function SideBar() {
-  	const [userData, setUser] = useState<any>(null);
+	const [userData, setUser] = useState<any>(null);
+	const [popupOpen, setPopupOpen] = useState(false);
+
 	useEffect(() => {
-	  const cookies = new Cookies();
-	  setUser(cookies.get("user"));
-	  
+		const cookies = new Cookies();
+		setUser(cookies.get("user"));
 	}, []);
 
 	const popupPanelRef = useRef<HTMLDivElement>(null);
 	const onPostClick = () => {
-		if (popupPanelRef.current) {
-			document.body.style.overflow = "hidden"; // Bad
-			popupPanelRef.current.style.display = "block";
-		}
+		document.body.style.overflow = "hidden";
+		setPopupOpen(true);
 	};
 
 	return (
 		<>
-			<PopupPanel innerRef={popupPanelRef} style={{ display: "none" }} />
+			{popupOpen && <PopupPanel setPopupOpen={setPopupOpen} />}
 			<nav className={style.sidenav}>
 				<ul>
 					<li>
@@ -106,7 +105,11 @@ export default function SideBar() {
 				</ul>
 				<div className={style.avatarBottom}>
 					<a href="/settings">
-						<img src={API + userData?.profileImage || ''} className={style.avatarImage} style={{verticalAlign: "-10%"}}></img>
+						<img
+							src={API + userData?.profileImage || ""}
+							className={style.avatarImage}
+							style={{ verticalAlign: "-10%" }}
+						></img>
 						<div className={style.myName}>
 							<div>{`${userData?.displayName}`}</div>
 							<div className={style.atNameText}>{`${userData?.email}`}</div>
