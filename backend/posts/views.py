@@ -48,7 +48,6 @@ class PostsView(APIView):
      '''
      def get(self, request):
         posts = Post.objects.filter(visibility="PUBLIC") # No private and unlisted
-        page_number = request.GET.get('page') or 1
         page = self.pagination.paginate_queryset(posts, request, view=self)
         if page is not None:
             serializer = PostSerializer(page, many=True, context={'request': request})
