@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'userauth',
     'followers',
     'posts',
+    'comments',
 ]
 
 MIDDLEWARE = [

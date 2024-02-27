@@ -48,6 +48,11 @@ def profilebackground_upload_path(instance, filename):
     return os.path.join('profilebackgrounds', f'profilebackground_{uuid.uuid4()}{file_extension}')
 
 class User(AbstractBaseUser, PermissionsMixin):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
+    global_id = models.CharField(max_length=300,unique=True,default=uuid.uuid4)
+    url=models.TextField(blank=True,default='')
+    host=models.TextField(blank=True,default='')
+
     email=models.CharField(max_length=100, blank=False, null=False, unique=True)
     password=models.CharField(max_length=100, blank=False, null=False)
 
@@ -79,10 +84,12 @@ def delete_media_on_user_delete(sender, instance, **kwargs):
 
 @receiver(pre_save, sender=User)
 def delete_media_on_user_save(sender, instance, **kwargs):
-    if not instance.id:
+    obj = None
+    try:
+        obj = User.objects.get(id=instance.id)
+    except:
         return False
-
-    obj = User.objects.get(id=instance.id)
+        
     if instance.profileImage and obj and obj.profileImage and os.path.isfile(obj.profileImage.path) and obj.profileImage != instance.profileImage:
         os.remove(obj.profileImage.path)
     if instance.profileBackgroundImage and obj and obj.profileBackgroundImage and os.path.isfile(obj.profileBackgroundImage.path) and obj.profileBackgroundImage != instance.profileBackgroundImage:

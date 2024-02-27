@@ -62,7 +62,7 @@ type Props = {
 	likes: number;
 	retweets: number;
 	comments: number;
-	postID: number;
+	postID: string;
 	onPostPage?: boolean | undefined;
 };
 

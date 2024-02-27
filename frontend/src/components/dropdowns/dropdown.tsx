@@ -8,6 +8,7 @@ import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
 interface DropdownProps {
 	label: string | null;
 	options: string[];
+	onChange: (selection: string | null) => void;
 	innerRef: React.RefObject<HTMLDivElement> | undefined;
 	styles: React.CSSProperties | undefined;
 }
@@ -16,6 +17,7 @@ const Dropdown: React.FC<DropdownProps> = ({
 	options,
 	innerRef,
 	styles,
+	onChange
 }) => {
 	const [isOpen, setIsOpen] = useState(false);
 	const [selectedOption, setSelectedOption] = useState(label);
@@ -24,10 +26,12 @@ const Dropdown: React.FC<DropdownProps> = ({
 		setIsOpen(!isOpen);
 	};
 
-	const handleOptionClick = (event: MouseEvent<HTMLButtonElement>) => {
+	const handleOptionClick = (event: MouseEvent<HTMLButtonElement>,option:string) => {
 		const target = event.target as HTMLButtonElement;
 		setSelectedOption(target.textContent);
 		setIsOpen(false);
+		console.log(option);
+		onChange(option);
 	};
 
 	return (
@@ -42,7 +46,7 @@ const Dropdown: React.FC<DropdownProps> = ({
 					{options.map((option: string, index: number) => (
 						<button
 							className={style.dropdownOptions}
-							onClick={handleOptionClick}
+							onClick={(e:MouseEvent<HTMLButtonElement>)=>{handleOptionClick(e,option)}}
 							key={index}
 						>
 							{option}

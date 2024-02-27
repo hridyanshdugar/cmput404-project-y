@@ -106,7 +106,7 @@ export default function SideBar() {
 				</ul>
 				<div className={style.avatarBottom}>
 					<a href="/settings">
-						<img src={API + userData?.profileImage || ''} className={style.avatarImage} style={{verticalAlign: ""}}></img>
+						<img src={API + userData?.profileImage || ''} className={style.avatarImage} style={{verticalAlign: "-10%"}}></img>
 						<div className={style.myName}>
 							<div>{`${userData?.displayName}`}</div>
 							<div className={style.atNameText}>{`${userData?.email}`}</div>
