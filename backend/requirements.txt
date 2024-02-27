@@ -1,9 +1,22 @@
 asgiref==3.7.2
+<<<<<<< HEAD
 Django==5.0.2
 django-cors-headers==4.3.1
 djangorestframework==3.14.0
 djangorestframework-simplejwt==5.3.1
+=======
+Django==5.0.1
+django-cors-headers==4.3.1
+djangorestframework==3.14.0
+djangorestframework-simplejwt==5.3.1
+gunicorn==21.2.0
+packaging==23.2
+>>>>>>> f9f1f5beb3d2dd0c486f2089e45a13e842570ff7
 pillow==10.2.0
 PyJWT==2.8.0
 pytz==2024.1
 sqlparse==0.4.4
+<<<<<<< HEAD
+=======
+typing_extensions==4.9.0
+>>>>>>> f9f1f5beb3d2dd0c486f2089e45a13e842570ff7
