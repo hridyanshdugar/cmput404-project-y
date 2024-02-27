@@ -38,7 +38,7 @@ export default class Profile extends React.Component<Props> {
                     </div>
                     <div id="profileBackround"><img className={styles.profileBackround} src={this.props.profileBackround} alt={''} width={500} height={500}/></div>
                     <div className={styles.pictureButtonContainer}>
-                      <div id="profilePicture"><img className={styles.profilePicture} src={this.props.profileImage} alt={''} width={400} height={40}/></div>
+                      <div id="profilePicture"><img className={styles.profilePicture} src={this.props.profileImage} alt={''} width={400} height={400}/></div>
                       <div className={styles.profileButton}>
                         <Button id="profileActionButton" variant="primary">Edit Profile</Button>
                       </div>
