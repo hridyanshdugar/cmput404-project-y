@@ -12,10 +12,10 @@ export default function Profile() {
   const cookie = new Cookies();
   const allcookies = cookie.getAll();
   if (allcookies.auth && allcookies.user) {
-    const userName = cookie.get("user")
-    console.log(userName.email)
+    const userName = cookie.get("user").email
+    console.log(userName)
     //!!Change to userName.username once implemented
-    navigate('/profile/' + userName.email);
+    navigate('/profile/' + userName);
   }
   else {
     navigate('/');
