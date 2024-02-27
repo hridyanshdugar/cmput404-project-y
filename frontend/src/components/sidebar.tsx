@@ -62,7 +62,7 @@ export default function SideBar() {
 						</a>
 					</li>
 					<li>
-						<a href="/notification">
+						<a href="/notifications">
 							<div className={style.inline}>
 								<FontAwesomeIcon icon={faBell} inverse fixedWidth />
 							</div>

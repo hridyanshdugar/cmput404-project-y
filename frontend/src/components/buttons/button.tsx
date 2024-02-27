@@ -7,7 +7,7 @@ interface ButtonProps {
     onClick: () => void;
     text?: string;
     type?: "primary" | "secondary" | "tertiary";
-    size?: "small" | "medium" | "large";
+    size?: "verySmall" | "small" | "medium" | "large";
     roundness?: "very" | "moderate";
     style?: React.CSSProperties;
   }
@@ -15,6 +15,7 @@ interface ButtonProps {
 const Button: React.FC<ButtonProps> = ({onClick, text, type = "primary", size = "medium",roundness="very",style}) => {
 
     const sizeStyles = {
+        verySmall: styles.verySmallButton,
         small: styles.smallButton,
         medium: styles.mediumButton,
         large: styles.largeButton,
