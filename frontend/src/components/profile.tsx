@@ -64,9 +64,9 @@ export default class Profile extends React.Component<Props> {
                   <div className={styles.container}>
                     <nav className={styles.profileNav}>
                       <ul>
-                        <li><a href="/profile/profile">Posts</a></li>
-                        <li><a href="/profile/profile/media">Media</a></li>
-                        <li><a href="/profile/profile/likes">Likes</a></li>
+                        <li><a href={"/profile/" + this.props.username.slice(1)}>Posts</a></li>
+                        <li><a href={"/profile/" + this.props.username.slice(1) + "/media"}>Media</a></li>
+                        <li><a href={"/profile/" + this.props.username.slice(1) + "/likes"}>Likes</a></li>
                       </ul>
                     </nav>
                   </div>
