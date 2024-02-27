@@ -1,9 +1,10 @@
 "use strict";
 
-import React, { useState, MouseEvent, forwardRef } from "react";
+import React, { useState, useContext } from "react";
 import style from "./popuppanel.module.css";
 import Close from "@/components/buttons/close";
 import CreatePost from "@/components/createpost";
+import { PostContext } from "@/utils/postcontext";
 
 interface PopupPanelProps {
 	setPopupOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -11,7 +12,7 @@ interface PopupPanelProps {
 }
 
 const PopupPanel: React.FC<PopupPanelProps> = (props) => {
-	const [posts, setPosts] = useState<any>([]);
+	const [posts, setPosts] = useContext(PostContext);
 	const onClose = () => {
 		document.body.style.overflow = "auto"; // Bad
 		props.setPopupOpen(false);
@@ -28,6 +29,7 @@ const PopupPanel: React.FC<PopupPanelProps> = (props) => {
 					<CreatePost
 						updatePosts={updatePosts}
 						style={{ borderBottom: "none" }}
+						setPopupOpen={props.setPopupOpen}
 					/>
 				</div>
 			</div>

@@ -24,7 +24,6 @@ export default function SideBar() {
 		setUser(cookies.get("user"));
 	}, []);
 
-	const popupPanelRef = useRef<HTMLDivElement>(null);
 	const onPostClick = () => {
 		document.body.style.overflow = "hidden";
 		setPopupOpen(true);

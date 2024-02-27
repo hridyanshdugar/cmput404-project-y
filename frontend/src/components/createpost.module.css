@@ -18,7 +18,8 @@
 	display: flex;
 	background-color: black;
 	padding-right: 2rem;
-	overflow: visible;
+	overflow: scroll;
+	max-height: 500px;
 }
 
 .textarea {

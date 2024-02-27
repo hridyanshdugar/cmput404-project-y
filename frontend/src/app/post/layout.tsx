@@ -4,6 +4,7 @@ import style from "./page.module.css";
 import "./../global.css";
 import SideBar from "@/components/sidebar";
 import Rightbar from "@/components/rightbar";
+import { PostContextProvider } from "@/utils/postcontext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,9 +16,11 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<body className={style.backgroundColor}>
-				<SideBar />
-				{children}
-				<Rightbar />
+				<PostContextProvider>
+					<SideBar />
+					{children}
+					<Rightbar />
+				</PostContextProvider>
 			</body>
 		</html>
 	);
