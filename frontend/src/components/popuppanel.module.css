@@ -1,7 +1,7 @@
 .main {
 	position: fixed;
 	left: 30%;
-	top: 45%;
+	top: 25%;
 	/* transform: translate(-50%, -50%); */
 	z-index: 8;
 	width: 500px;
@@ -17,7 +17,7 @@
 	height: 100%;
 	position: absolute;
 	background-color: rgba(0, 23, 36, 0.8);
-	overflow: hiddenl;
+	overflow: hidden;
 	z-index: 5;
 }
 

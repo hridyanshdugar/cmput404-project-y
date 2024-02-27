@@ -15,22 +15,9 @@ import React, {
 	useContext,
 	useEffect,
 } from "react";
-import Button from "react-bootstrap/Button";
-import Card from "react-bootstrap/Card";
-import { Col, Row } from "react-bootstrap";
-import SinglePost from "@/components/singlepost";
-import HomeSelector from "@/components/contentChoice";
-import CreatePost from "@/components/createpost";
-import React, {
-	ChangeEvent,
-	MouseEvent,
-	useState,
-	useContext,
-	useEffect,
-} from "react";
 import { getHomePosts, API } from "@/utils/utils";
 import Cookies from "universal-cookie";
-import {PostContext} from "@/utils/postcontext";
+import { PostContext } from "@/utils/postcontext";
 
 export default function Home() {
 	const [page, setPage] = useState<number>(1);
@@ -72,9 +59,16 @@ export default function Home() {
 				<HomeSelector />
 			</div>
 			<div className={styles.mainContentView}>
-				<CreatePost updatePosts={updatePosts} style={{border: "1px solid rgb(47, 51, 54)", paddingBottom: "10px", backgroundColor: "black"}}/>
+				<CreatePost
+					updatePosts={updatePosts}
+					style={{
+						border: "1px solid rgb(47, 51, 54)",
+						paddingBottom: "10px",
+						backgroundColor: "black",
+					}}
+				/>
 				{posts.map((item: any, index: any) => (
-  					<SinglePost
+					<SinglePost
 						name={item.author.displayName}
 						profileImage={API + item.author.profileImage}
 						username={item.author.email}
@@ -84,8 +78,8 @@ export default function Home() {
 						likes={0}
 						retweets={0}
 						comments={0}
-						postID={item.global_id} 
-            contentType={item.contentType} 
+						postID={item.global_id}
+						contentType={item.contentType}
 					/>
 				))}
 				<SinglePost
