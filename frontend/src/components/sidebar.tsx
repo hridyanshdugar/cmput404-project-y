@@ -70,7 +70,7 @@ export default function SideBar() {
 						</a>
 					</li>
 					<li>
-						<a href="/profile">
+						<a href="/profile/profile">
 							<div className={style.inline}>
 								<FontAwesomeIcon icon={faPerson} inverse fixedWidth />
 							</div>
