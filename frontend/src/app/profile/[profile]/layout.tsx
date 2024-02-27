@@ -23,7 +23,18 @@ export default function ProfileLayout({
 
     //Query username
     //If username not in database, return 404 / user not found
-
+    /*
+    if (username === 'usernotfound') {
+        return (
+            <div>
+                <SideBar/>
+                <Profile name={''} username={'@' + username} bio={''} website={''} dateJoined={''} followers={0} following={0} profileImage={''} profileBackround={''}/>
+                {children}
+                <Rightbar/>
+            </div>
+        );
+    }
+    */
     return (
         <div>
             <SideBar/>

@@ -65,7 +65,7 @@
     height: 15rem;
     margin-top: 4.18rem;
     z-index: 1;
-    background-color: black;
+    background-color: grey;
     object-fit: cover;
     overflow: hidden;
 }
@@ -82,7 +82,7 @@
     margin-left: 2rem;
     margin-right: 2rem;
     z-index: 2;
-    background-color: black;
+    background-color: darkgrey;
     border: 3px solid black;
 }
 
