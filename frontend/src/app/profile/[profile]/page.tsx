@@ -5,9 +5,14 @@ import styles from "./page.module.css";
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import { Col, Row } from 'react-bootstrap';
+import { useRouter } from 'next/router';
+import Profile from "@/components/profile";
 import SinglePost from '@/components/singlepost';
 
-export default function Posts() {
+export default function Posts({ params }: { params: { profile: string } }) {
+
+    const username = params.profile;
+
     return (
       <>
             <div className={"main"}>
