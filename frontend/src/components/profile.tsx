@@ -22,6 +22,7 @@ type Props = {
     dateJoined: string;
     followers: number;
     following: number;
+    activeUser: boolean;
     //posts: Array<SinglePost>;
 }
 
