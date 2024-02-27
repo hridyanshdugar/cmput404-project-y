@@ -35,6 +35,7 @@
     font-size: 15px;
     color: white;
     text-align: left;
+    white-space: pre-line;
 }
 
 .topUserText {

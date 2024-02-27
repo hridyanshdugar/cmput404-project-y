@@ -62,8 +62,9 @@ type Props = {
 	likes: number;
 	retweets: number;
 	comments: number;
-	postID: number;
+	postID: string;
 	onPostPage?: boolean | undefined;
+	contentType?: string;
 };
 
 export default class SinglePost extends React.Component<Props> {

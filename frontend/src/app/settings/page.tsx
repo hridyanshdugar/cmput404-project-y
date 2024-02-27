@@ -1,12 +1,12 @@
 "use client"
-import React, { useState,useEffect } from 'react';
+import React, { useState,useEffect, ChangeEvent } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Image from "next/image";
 import styles from "./page.module.css";
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import { Col, Row } from 'react-bootstrap';
-import { saveSettings, getUserLocalInfo, navigate } from "@/utils/utils";
+import { saveSettings, getUserLocalInfo, navigate, updateCookies, API } from "@/utils/utils";
 import Cookies from 'universal-cookie';
 
 export default function Home() {
@@ -15,7 +15,12 @@ export default function Home() {
 
   const [Name, setName] = useState<string>('');
   const [Github, setGithub] = useState<string>('');
-  const [PFP, setPFP] = useState<string>('');
+
+  const [PFP, setPFP] = useState<File | null>(null);
+  const [PFPurl, setPFPurl] = useState<string | null>(null);
+
+  const [PFPbackground, setPFPbackground] = useState<File | null>(null);
+  const [PFPbackgroundurl, setPFPbackgroundurl] = useState<string | null>(null);
 
   useEffect(() => {
     const auth = cookies.get("auth")["access"];
@@ -26,7 +31,8 @@ export default function Home() {
 
       setName(Data?.displayName || '');
       setGithub(Data?.github || '');
-      setPFP(Data?.profileImage || '');
+      setPFPurl(Data?.profileImage ? (Data?.profileImage) : '');
+      setPFPbackgroundurl(Data?.profileBackgroundImage ? (Data?.profileBackgroundImage) : ''); 
     }).catch(async (result: any) => {
       const Data = await result.json();
       console.log(Data);
@@ -40,16 +46,46 @@ export default function Home() {
   const handleGithub = (event: React.ChangeEvent<HTMLInputElement>) => {
     setGithub(event.target.value);
   };
-  const handlePFP = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPFP(event.target.value);
+
+  const handlePFP = (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0];
+      setPFP(file);
+
+      const fileReader = new FileReader();
+      fileReader.onload = () => {
+        setPFPurl(fileReader.result as string);
+      };
+      fileReader.readAsDataURL(file);
+    }
+  };
+
+  const handlePFPbackground = (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0];
+      setPFPbackground(file);
+
+      const fileReader = new FileReader();
+      fileReader.onload = () => {
+        setPFPbackgroundurl(fileReader.result as string);
+      };
+      fileReader.readAsDataURL(file);
+    }
   };
 
   const handleSave = async (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     const auth = cookies.get("auth")["access"];
     const id = cookies.get("user")["id"];
-    saveSettings(Name,Github,PFP,auth,id).then(async (result:any) => {
-      console.log("Ran");
+    saveSettings(Name,Github,PFP,PFPbackground,auth,id).then(async (result:any) => {
+      const Data = await result.json()
+      updateCookies({"displayName": Data["displayName"], "github": Data["github"], "profileImage": Data["profileImage"], "profileBackgroundImage": Data["profileBackgroundImage"]});
+
+      setName(Data?.displayName || '');
+      setGithub(Data?.github || '');
+      setPFPurl(Data?.profileImage || '');
+      setPFPbackgroundurl(Data?.profileBackgroundImage || ''); 
+
       navigate('/home');
     }).catch(async (result: any) => {
       const Data = await result.json();
@@ -72,8 +108,13 @@ export default function Home() {
                         <label className={styles.form}>Github
                           <input className={styles.input} value={Github} onChange={handleGithub} type="text" id="github" name="github" placeholder="Enter your github" required></input>
                         </label>
-                        <label className={styles.form}>PFP
-                          <input className={styles.input} value={PFP} onChange={handlePFP} type="text" id="PFP" name="PFP" placeholder="Enter your PFP"></input>
+                        <label className={styles.form}>Profile Banner
+                          <img src={PFPbackgroundurl || ''} alt="No Banner Provided" style={{width:"90%",height:"auto",aspectRatio:"4",margin:"5%",backgroundColor:"#CCC",borderRadius:"10px"}}/>
+                          <input className={styles.input} onChange={handlePFPbackground} type="file" id="PFP" name="PFP" accept="image/*"></input>
+                        </label>
+                        <label className={styles.form} style={{width:"45%"}}>Profile Picture
+                          <img src={PFPurl || ''}style={{width:"90%",height:"auto",aspectRatio:"1",margin:"5%",backgroundColor:"#CCC",borderRadius:"10px"}}/>
+                          <input className={styles.input} onChange={handlePFP} type="file" id="PFP" name="PFP" accept="image/*"></input>
                         </label>
 
                         <input className={styles.submit} onClick={handleSave} type="submit" value="Save"></input>
