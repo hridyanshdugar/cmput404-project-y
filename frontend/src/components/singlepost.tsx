@@ -86,7 +86,7 @@ export default class SinglePost extends React.Component<Props> {
 				style={{ cursor: this.props.onPostPage ? "default" : "pointer" }}
 			>
 				<div className={style.blockImage}>
-					<Image
+					<img
 						className={style.img}
 						src={this.props.profileImage}
 						alt={""}

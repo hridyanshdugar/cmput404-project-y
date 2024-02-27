@@ -8,6 +8,7 @@ import { Card, Form, InputGroup } from 'react-bootstrap'
 export default function Rightbar() {
     return <>
         <div className={"main"}>
+            <div className={style.borderContainer}>
             <nav className={style.rightnav}>
                 <InputGroup className={["mr-sm-2", style.bottomMargin, style.topMargin].join(' ')}>
                     <InputGroup.Text  className={[style.searchBar1].join(' ')}><FontAwesomeIcon icon={faSearch} fixedWidth/></InputGroup.Text>
@@ -25,7 +26,8 @@ export default function Rightbar() {
                 <Card className={[style.bottomMargin, style.boxes].join(' ')}>
       <Card.Body>This is some text within a card body.</Card.Body>
     </Card>
-            </nav>               
+            </nav>   
+            </div>            
         </div>
     </>;
 }
