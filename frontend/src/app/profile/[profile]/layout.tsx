@@ -9,6 +9,7 @@ import { title } from 'process';
 import Profile from "@/components/profile";
 import SideBar from "@/components/sidebar";
 import Rightbar from "@/components/rightbar";
+import Cookies from 'universal-cookie';
 
 
 export default function ProfileLayout({
@@ -20,25 +21,27 @@ export default function ProfileLayout({
   }) {
 
     const username = params.profile;
+    let activeUser: boolean = false;
+
+    const cookies = new Cookies()
+    const allcookies = cookies.getAll()
+    if (allcookies.auth && allcookies.user) {
+        //!!Change to userName when added!!//
+        const userNameCookie = cookies.get("user").email
+        if (username == userNameCookie) {
+            activeUser = true;
+        }
+    }
+
+
 
     //Query username
-    //If username not in database, return 404 / user not found
-    /*
-    if (username === 'usernotfound') {
-        return (
-            <div>
-                <SideBar/>
-                <Profile name={''} username={'@' + username} bio={''} website={''} dateJoined={''} followers={0} following={0} profileImage={''} profileBackround={''}/>
-                {children}
-                <Rightbar/>
-            </div>
-        );
-    }
-    */
+    //If username not in database, return 404 / user not found page
+
     return (
         <div>
             <SideBar/>
-            <Profile name={'John Dowe'} username={'@' + username} bio={'bio'} website={'website'} dateJoined={''} followers={0} following={0} profileImage={'https://image.spreadshirtmedia.com/image-server/v1/products/T1459A839PA3861PT28D1031336018W5625H10000/views/1,width=550,height=550,appearanceId=839,backgroundColor=F2F2F2/gamer-sticker.jpg'} profileBackround={"https://i0.wp.com/www.thewrap.com/wp-content/uploads/2023/06/spider-man-across-the-spider-verse-group-shot.jpg?fit=990%2C557&ssl=1"}/>
+            <Profile name={'John Dowe'} username={'@' + username} bio={'bio'} website={'website'} dateJoined={''} followers={0} following={0} activeUser={activeUser} profileImage={'https://image.spreadshirtmedia.com/image-server/v1/products/T1459A839PA3861PT28D1031336018W5625H10000/views/1,width=550,height=550,appearanceId=839,backgroundColor=F2F2F2/gamer-sticker.jpg'} profileBackround={"https://i0.wp.com/www.thewrap.com/wp-content/uploads/2023/06/spider-man-across-the-spider-verse-group-shot.jpg?fit=990%2C557&ssl=1"}/>
             {children}
             <Rightbar/>
         </div>
