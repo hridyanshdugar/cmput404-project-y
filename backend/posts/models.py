@@ -4,7 +4,7 @@ from django.db import models
 # Constants
 TEXT_MAX_LENGTH = 300
 CHOICES_MAX_LENGTH = 8
-VISIBILITY_CHOICES = [(1, "PUBLIC"), (2, "FRIENDS"), (3, "UNLISTED")]
+VISIBILITY_CHOICES = [("PUBLIC", "PUBLIC"), ("FRIENDS", "FRIENDS"), ("UNLISTED", "UNLISTED")]
 
 class Post(models.Model):
     title = models.CharField(max_length=TEXT_MAX_LENGTH, blank=True, null=True)
