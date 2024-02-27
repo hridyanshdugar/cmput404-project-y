@@ -5,6 +5,7 @@ import "./../global.css";
 import SideBar from "@/components/sidebar";
 import Rightbar from "@/components/rightbar";
 
+
 const inter = Inter({ subsets: ["latin"] });
 
 export default function RootLayout({
@@ -12,6 +13,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  
   return (
       <html lang="en">
           <body className={style.backgroundColor}>

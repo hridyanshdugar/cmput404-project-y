@@ -1,3 +1,4 @@
+"use client";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import style from "./sidebar.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -9,9 +10,19 @@ import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
 import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import PopupPanel from "@/components/popuppanel";
+import Cookies from "universal-cookie";
+import { useEffect, useState } from "react";
 import { useRef } from "react";
+import { API } from "@/utils/utils";
 
 export default function SideBar() {
+  	const [userData, setUser] = useState<any>(null);
+	useEffect(() => {
+	  const cookies = new Cookies();
+	  setUser(cookies.get("user"));
+	  
+	}, []);
+
 	const popupPanelRef = useRef<HTMLDivElement>(null);
 	const onPostClick = () => {
 		if (popupPanelRef.current) {
@@ -19,6 +30,7 @@ export default function SideBar() {
 			popupPanelRef.current.style.display = "block";
 		}
 	};
+
 	return (
 		<>
 			<PopupPanel innerRef={popupPanelRef} style={{ display: "none" }} />
@@ -94,10 +106,10 @@ export default function SideBar() {
 				</ul>
 				<div className={style.avatarBottom}>
 					<a href="/settings">
-						<div className={style.avatarImage}></div>
+						<img src={API + userData?.profileImage || ''} className={style.avatarImage} style={{verticalAlign: ""}}></img>
 						<div className={style.myName}>
-							<div>John Dowe</div>
-							<div className={style.atNameText}>@beacon</div>
+							<div>{`${userData?.displayName}`}</div>
+							<div className={style.atNameText}>{`${userData?.email}`}</div>
 						</div>
 						<div className={style.dotdotdoticon}>
 							<FontAwesomeIcon icon={faEllipsis} inverse fixedWidth />
