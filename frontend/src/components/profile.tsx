@@ -11,7 +11,7 @@ import SinglePost from '@/components/singlepost';
 import SideBar from "@/components/sidebar";
 import Rightbar from "@/components/rightbar";
 import Cookies from 'universal-cookie';
-import {navigate} from '@/utils/utils';
+import {getAPIEndpoint, navigate} from '@/utils/utils';
 import Link from 'next/link';
 
 
@@ -92,9 +92,9 @@ export default class Profile extends React.Component<Props> {
                       <h1 id="profileName" className={styles.title}>{this.props.name}</h1>
                       <div className={styles.postCount}>0 posts</div>
                     </div>
-                    <div id="profileBackround"><img className={styles.profileBackround} src={this.props.profileBackround} alt={''} width={500} height={500}/></div>
+                    <div id="profileBackround"><img className={styles.profileBackround} src={getAPIEndpoint() + this.props.profileBackround} alt={''} width={500} height={500}/></div>
                     <div className={styles.pictureButtonContainer}>
-                      <div id="profilePicture"><img className={styles.profilePicture} src={this.props.profileImage} alt={''} width={400} height={400}/></div>
+                      <div id="profilePicture"><img className={styles.profilePicture} src={getAPIEndpoint() + this.props.profileImage} alt={''} width={400} height={400}/></div>
                       <div id="profileButton" className={this.props.followingStatus? styles.profileButtonFollowed : styles.profileButton}>
                         <Button 
                         id="profileActionButton" variant="primary" onClick={this.handleButtonClick}>{this.props.activeUser? "Edit Profile" : this.followStatus}</Button>
