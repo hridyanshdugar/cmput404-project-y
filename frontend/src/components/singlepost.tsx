@@ -12,7 +12,11 @@ import React from "react";
 import { Card } from "react-bootstrap";
 import Dropdown from "@/components/dropdowns/dropdown";
 import { navigate } from "@/utils/utils";
-import MarkdownPreview from '@uiw/react-markdown-preview';
+import MarkdownPreview from "@uiw/react-markdown-preview";
+import { deletePost } from "@/utils/utils";
+import Cookies from "universal-cookie";
+import { useContext } from "react";
+import { PostContext } from "@/utils/postcontext";
 
 export function TimeConverter(date: Date) {
 	var now = new Date();
@@ -70,103 +74,109 @@ type Props = {
 	contentType: string;
 };
 
-export default class SinglePost extends React.Component<Props> {
-	constructor(props: Props) {
-		super(props);
-	}
+const SinglePost: React.FC<Props> = (props) => {
+	const onClick = () => {
+		if (!props.onPostPage) {
+			navigate("/post/" + props.postID);
+		}
+	};
 
-	render() {
-		const onClick = () => {
-			if (!this.props.onPostPage) {
-				navigate("/post/" + this.props.postID);
-			}
-		};
+	const onPostOptionSelect = (selection: string | null) => {
+		const cookies = new Cookies();
+		const auth = cookies.get("auth")["access"];
+		if (selection === "Delete") {
+			deletePost(auth, props.postID).then((result) => {
+				console.log(result);
+			});
+			setPosts(posts.filter((post: any) => post.id !== props.postID));
+		} else if (selection === "Edit") {
+			console.log("edit");
+		}
+	};
 
-		const onPostOptionSelect = (selection: string | null) => {
-			if (selection === "Delete") {
-				console.log("delete");
-			} else if (selection === "Edit") {
-				console.log("edit");
-			}
-		};
-
-		const date = new Date(0);
-		date.setUTCSeconds(this.props.date);
-		return (
-			<div
-				className={style.overflow}
-				onClick={onClick}
-				style={{ cursor: this.props.onPostPage ? "default" : "pointer" }}
-			>
-				<div className={style.blockImage}>
-					<img
-						className={style.img}
-						src={this.props.profileImage}
-						alt={""}
-						width={40}
-						height={40}
-					/>
-				</div>
-				<div className={style.blockContent}>
-					<div className={[style.topText, style.blockFlexContent].join(" ")}>
-						<div className={style.topLeft}>
-							<div className={style.inlineBlock}>{this.props.name}</div>
-							<div className={[style.topUserText, style.inlineBlock].join(" ")}>
-								{this.props.username}
-							</div>
-							<div className={[style.topUserText, style.inlineBlock].join(" ")}>
-								{" "}
-								· {TimeConverter(date)}
-							</div>
+	const date = new Date(0);
+	const [posts, setPosts] = useContext(PostContext);
+	date.setUTCSeconds(props.date);
+	return (
+		<div
+			className={style.overflow}
+			onClick={onClick}
+			style={{ cursor: props.onPostPage ? "default" : "pointer" }}
+		>
+			<div className={style.blockImage}>
+				<img
+					className={style.img}
+					src={props.profileImage}
+					alt={""}
+					width={40}
+					height={40}
+				/>
+			</div>
+			<div className={style.blockContent}>
+				<div className={[style.topText, style.blockFlexContent].join(" ")}>
+					<div className={style.topLeft}>
+						<div className={style.inlineBlock}>{props.name}</div>
+						<div className={[style.topUserText, style.inlineBlock].join(" ")}>
+							{props.username}
 						</div>
-						<div className={style.separator} />
-						<div>
-							<Dropdown
-								icon={faEllipsis}
-								options={["Delete", "Edit"]}
-								onChange={onPostOptionSelect}
-							/>
+						<div className={[style.topUserText, style.inlineBlock].join(" ")}>
+							{" "}
+							· {TimeConverter(date)}
 						</div>
-                    </div>
-                    {
-                        this.props.contentType.includes("image") ? <Card className="bg-dark text-white">
-                        <Card.Img src={this.props.text} alt="Card image" />
-                    </Card> : <></>
-
-                    }
-                    {
-                        this.props.contentType === "text/markdown" ? <MarkdownPreview source={this.props.text} className={style.markdownColor}/> : <></>
-
-                    }
-                    {
-                        this.props.contentType === "text/plain" ? <div className={style.topBottom}>{this.props.text}</div> : <></>
-
-                    }                    
-					<div>
-						{this.props.postImage && (
-							<Card className="bg-dark text-white">
-								<Card.Img src={this.props.postImage} alt="Card image" />
-							</Card>
-						)}
 					</div>
-					<div className={style.flexContainer}>
-						<div className={style.flexItem}>
-							<FontAwesomeIcon icon={faComment} fixedWidth />{" "}
-							{this.props.comments}
-						</div>
-						<div className={style.flexItem}>
-							<FontAwesomeIcon icon={faRepeat} fixedWidth />{" "}
-							{this.props.retweets}
-						</div>
-						<div className={style.flexItem}>
-							<FontAwesomeIcon icon={faHeart} fixedWidth /> {this.props.likes}
-						</div>
-						<div className={style.flexItem2}>
-							<FontAwesomeIcon icon={faArrowUpFromBracket} fixedWidth />
-						</div>
+					<div className={style.separator} />
+					<div>
+						<Dropdown
+							icon={faEllipsis}
+							options={["Delete", "Edit"]}
+							onChange={onPostOptionSelect}
+						/>
+					</div>
+				</div>
+				{props.contentType.includes("image") ? (
+					<Card className="bg-dark text-white">
+						<Card.Img src={props.text} alt="Card image" />
+					</Card>
+				) : (
+					<></>
+				)}
+				{props.contentType === "text/markdown" ? (
+					<MarkdownPreview
+						source={props.text}
+						className={style.markdownColor}
+					/>
+				) : (
+					<></>
+				)}
+				{props.contentType === "text/plain" ? (
+					<div className={style.topBottom}>{props.text}</div>
+				) : (
+					<></>
+				)}
+				<div>
+					{props.postImage && (
+						<Card className="bg-dark text-white">
+							<Card.Img src={props.postImage} alt="Card image" />
+						</Card>
+					)}
+				</div>
+				<div className={style.flexContainer}>
+					<div className={style.flexItem}>
+						<FontAwesomeIcon icon={faComment} fixedWidth /> {props.comments}
+					</div>
+					<div className={style.flexItem}>
+						<FontAwesomeIcon icon={faRepeat} fixedWidth /> {props.retweets}
+					</div>
+					<div className={style.flexItem}>
+						<FontAwesomeIcon icon={faHeart} fixedWidth /> {props.likes}
+					</div>
+					<div className={style.flexItem2}>
+						<FontAwesomeIcon icon={faArrowUpFromBracket} fixedWidth />
 					</div>
 				</div>
 			</div>
-		);
-	}
-}
+		</div>
+	);
+};
+
+export default SinglePost;

@@ -96,7 +96,8 @@ export default function Home() {
 					likes={35}
 					retweets={3}
 					comments={4}
-					postID={"0"} contentType={"plain"}
+					postID={"0"}
+					contentType={"plain"}
 				/>
 				<SinglePost
 					name={"Kolby"}
@@ -114,7 +115,8 @@ export default function Home() {
 					likes={35}
 					retweets={3}
 					comments={4}
-					postID={"0"} contentType={"plain"}
+					postID={"0"}
+					contentType={"plain"}
 				/>
 				<SinglePost
 					name={"Kolby"}
@@ -130,7 +132,8 @@ export default function Home() {
 					likes={35}
 					retweets={3}
 					comments={4}
-					postID={"0"} contentType={"plain"}
+					postID={"0"}
+					contentType={"plain"}
 				/>
 				<SinglePost
 					name={"Kolby"}
@@ -148,7 +151,8 @@ export default function Home() {
 					likes={35}
 					retweets={3}
 					comments={4}
-					postID={"0"} contentType={"plain"}
+					postID={"0"}
+					contentType={"plain"}
 				/>
 				<SinglePost
 					name={"Kolby"}
@@ -164,7 +168,8 @@ export default function Home() {
 					likes={35}
 					retweets={3}
 					comments={4}
-					postID={"0"} contentType={"plain"}
+					postID={"0"}
+					contentType={"plain"}
 				/>
 				<SinglePost
 					name={"Kolby"}
@@ -182,7 +187,8 @@ export default function Home() {
 					likes={35}
 					retweets={3}
 					comments={4}
-					postID={"0"} contentType={"plain"}
+					postID={"0"}
+					contentType={"plain"}
 				/>
 				<SinglePost
 					name={"Kolby"}
@@ -198,7 +204,8 @@ export default function Home() {
 					likes={35}
 					retweets={3}
 					comments={4}
-					postID={"0"} contentType={"plain"}
+					postID={"0"}
+					contentType={"plain"}
 				/>
 				<SinglePost
 					name={"Kolby"}
@@ -216,7 +223,8 @@ export default function Home() {
 					likes={35}
 					retweets={3}
 					comments={4}
-					postID={"0"} contentType={"plain"}
+					postID={"0"}
+					contentType={"plain"}
 				/>
 				<SinglePost
 					name={"Kolby"}
@@ -232,7 +240,8 @@ export default function Home() {
 					likes={35}
 					retweets={3}
 					comments={4}
-					postID={"0"} contentType={"plain"}
+					postID={"0"}
+					contentType={"plain"}
 				/>
 				<SinglePost
 					name={"Kolby"}
@@ -250,7 +259,8 @@ export default function Home() {
 					likes={35}
 					retweets={3}
 					comments={4}
-					postID={"0"} contentType={"plain"}
+					postID={"0"}
+					contentType={"plain"}
 				/>
 				<SinglePost
 					name={"Kolby"}
@@ -268,7 +278,8 @@ export default function Home() {
 					likes={35}
 					retweets={3}
 					comments={4}
-					postID={"0"} contentType={"plain"}
+					postID={"0"}
+					contentType={"plain"}
 				/>
 				<SinglePost
 					name={"Kolby"}
@@ -284,7 +295,8 @@ export default function Home() {
 					likes={35}
 					retweets={3}
 					comments={4}
-					postID={"0"} contentType={"plain"}
+					postID={"0"}
+					contentType={"plain"}
 				/>
 				<SinglePost
 					name={"Kolby"}
@@ -302,7 +314,8 @@ export default function Home() {
 					likes={35}
 					retweets={3}
 					comments={4}
-					postID={"0"} contentType={"plain"}
+					postID={"0"}
+					contentType={"plain"}
 				/>
 				<SinglePost
 					name={"Kolby"}
@@ -318,7 +331,8 @@ export default function Home() {
 					likes={35}
 					retweets={3}
 					comments={4}
-					postID={"0"} contentType={"plain"}
+					postID={"0"}
+					contentType={"plain"}
 				/>
 				<SinglePost
 					name={"Kolby"}
@@ -336,7 +350,8 @@ export default function Home() {
 					likes={35}
 					retweets={3}
 					comments={4}
-					postID={"0"} contentType={"plain"}
+					postID={"0"}
+					contentType={"plain"}
 				/>
 			</div>
 		</div>

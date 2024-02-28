@@ -118,7 +118,6 @@ export async function getPost(auth: string, postId:string) {
   return await fetch(API + `/posts/${postId}`, options);
 }
 
-
 export async function imageUploadHandler(image: File, auth: string) {
   const formData = new FormData();
 
@@ -132,4 +131,14 @@ export async function imageUploadHandler(image: File, auth: string) {
     body: formData
   };
   return await fetch(API + `/images/`, options);
+
+export async function deletePost(auth: string, postId:string) {
+  const options: RequestInit = {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${auth}`,
+    }
+  };
+  return await fetch(API + `/posts/${postId}`, options);
 }
