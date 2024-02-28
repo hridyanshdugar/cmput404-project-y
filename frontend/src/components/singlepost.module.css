@@ -1,5 +1,5 @@
 .blockImage {
-	width: 4rem;
+	width: 10%;
 	vertical-align: top;
 }
 
@@ -9,9 +9,9 @@
 }
 
 .blockContent {
-	width: 100%;
+	width: 90%;
 	vertical-align: top;
-	overflow: auto;
+	overflow-wrap: break-word;
 }
 
 .blockFlexContent {
@@ -46,7 +46,7 @@
 }
 
 .markdownColor {
-    background-color: black!important;
+	background-color: black !important;
 }
 
 .topUserText {
