@@ -1,6 +1,5 @@
 from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
-from users.models import User
 
 
 class PostTestCase(APITestCase):
