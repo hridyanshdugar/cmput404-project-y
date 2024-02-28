@@ -67,7 +67,7 @@ export default function Home() {
 						backgroundColor: "black",
 					}}
 				/>
-				{posts ? posts.length === 0 ? <>There are no posts avaliable</>: posts.map((item: any, index: any) => (
+				{posts ? posts.length === 0 ? <div className={styles.noPosts}>There are no posts avaliable</div>: posts.map((item: any, index: any) => (
                     <SinglePost
                         key={index}
                         name={item.author.displayName}
