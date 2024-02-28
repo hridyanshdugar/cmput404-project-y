@@ -9,6 +9,7 @@ services:
     volumes:
       - ./:/usr/src/backend/database
       - ./media:/usr/src/backend/media
+      - ./static:/usr/src/backend/static
     restart: always
   frontend:
     build:
