@@ -13,7 +13,7 @@ import PopupPanel from "@/components/popuppanel";
 import Cookies from "universal-cookie";
 import { useEffect, useState } from "react";
 import { useRef } from "react";
-import { API } from "@/utils/utils";
+import { getAPIEndpoint } from "@/utils/utils";
 
 export default function SideBar() {
 	const [userData, setUser] = useState<any>(null);
@@ -105,7 +105,7 @@ export default function SideBar() {
 				<div className={style.avatarBottom}>
 					<a href="/settings">
 						<img
-							src={API + userData?.profileImage || ""}
+							src={getAPIEndpoint() + userData?.profileImage || ""}
 							className={style.avatarImage}
 							style={{ verticalAlign: "-10%" }}
 						></img>

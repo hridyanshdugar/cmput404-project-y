@@ -15,7 +15,7 @@ import React, {
 	useContext,
 	useEffect,
 } from "react";
-import { getHomePosts, API } from "@/utils/utils";
+import { getHomePosts, getAPIEndpoint } from "@/utils/utils";
 import Cookies from "universal-cookie";
 import { PostContext } from "@/utils/postcontext";
 
@@ -71,7 +71,7 @@ export default function Home() {
                     <SinglePost
                         key={index}
 						name={item.author.displayName}
-						profileImage={API + item.author.profileImage}
+						profileImage={getAPIEndpoint() + item.author.profileImage}
 						username={item.author.email}
 						text={item.content}
 						postImage={undefined}

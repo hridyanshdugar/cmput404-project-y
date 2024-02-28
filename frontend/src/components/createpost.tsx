@@ -15,7 +15,7 @@ import Button from "@/components/buttons/button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMarkdown } from "@fortawesome/free-brands-svg-icons";
 import { faFileLines } from "@fortawesome/free-regular-svg-icons";
-import { createPost, API, getHomePosts, imageUploadHandler } from "@/utils/utils";
+import { createPost, getAPIEndpoint, getHomePosts, imageUploadHandler } from "@/utils/utils";
 import Cookies from "universal-cookie";
 import { Card } from "react-bootstrap";
 import MDEditor from "@uiw/react-md-editor";
@@ -94,7 +94,7 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 			const response = await imageUploadHandler(myfile,auth);
 			const data = await response.json();
 			console.log(data);
-			const url = API + data.image;
+			const url = getAPIEndpoint() + data.image;
 			event.preventDefault();
 			if (url) {
 			document.execCommand(
@@ -162,14 +162,14 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 	};
 
 	console.log(contentTypeMinimal);
-	// src={`${pfp ? API + pfp : ''}`}
+	// src={`${pfp ? getAPIEndpoint() + pfp : ''}`}
 	return (
 		<div style={props.style}>
 			<div className={style.createPost} onClick={onCreateClick}>
 				<div className={style.blockImage}>
 					<img
 						className={style.img}
-						src={`${user ? API + user.profileImage : ""}`}
+						src={`${user ? getAPIEndpoint() + user.profileImage : ""}`}
 						style={{ width: "40px", height: "40px" }}
 					/>
 				</div>

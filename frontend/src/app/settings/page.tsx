@@ -6,7 +6,7 @@ import styles from "./page.module.css";
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import { Col, Row } from 'react-bootstrap';
-import { saveSettings, getUserLocalInfo, navigate, updateCookies, API } from "@/utils/utils";
+import { saveSettings, getUserLocalInfo, navigate, updateCookies, getAPIEndpoint } from "@/utils/utils";
 import Cookies from 'universal-cookie';
 
 export default function Home() {

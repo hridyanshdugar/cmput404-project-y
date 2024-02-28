@@ -1,8 +1,20 @@
 import Cookie from "universal-cookie";
 
-const DOMAIN = "127.0.0.1:8000";
-export const FRONTEND = "http://localhost:3000"
-export const API = `http://${DOMAIN}`;
+export function getFrontend() {
+    if (process.env.NODE_ENV === "production") {
+        return `https://y.kolbyml.com`;
+    } else {
+        return `http://localhost:3000`;
+    }
+}
+
+export function getAPIEndpoint() {
+    if (process.env.NODE_ENV === "production") {
+        return `https://y.kolbyml.com/api`;
+    } else {
+        return `http://127.0.0.1:8000`;
+    }
+}
 
 export async function login(email: string, password: string) {
   const options: RequestInit = {
@@ -12,7 +24,7 @@ export async function login(email: string, password: string) {
     },
     body: JSON.stringify({ "email": email, "password": password })
   };
-  return await fetch(API + `/auth/login`, options);
+  return await fetch(getAPIEndpoint() + `/auth/login`, options);
 }
 
 export function formatDateToYYYYMMDD(date: Date): string {
@@ -36,7 +48,7 @@ export async function updateCookies(data:any) {
 }
 
 export async function navigate(suffix:string) {
-  window.location.href = `${FRONTEND}${suffix}`
+  window.location.href = `${getFrontend()}${suffix}`
 }
 
 export async function signup(email: string, password: string) {
@@ -47,7 +59,7 @@ export async function signup(email: string, password: string) {
     },
     body: JSON.stringify({ "email": email, "password": password })
   };
-  return await fetch(API + `/auth/signup`, options);
+  return await fetch(getAPIEndpoint() + `/auth/signup`, options);
 }
 
 export async function saveSettings(Name: string, Github: string, PFP: File | null, PFPbackground: File | null, auth: string, id:string) {
@@ -69,7 +81,7 @@ export async function saveSettings(Name: string, Github: string, PFP: File | nul
     },
     body: formData
   };
-  return await fetch(API + `/users/${id}`, options);
+  return await fetch(getAPIEndpoint() + `/users/${id}`, options);
 }
 
 
@@ -81,7 +93,7 @@ export async function getUserLocalInfo(auth: string, id:string) {
       'Authorization': `Bearer ${auth}`,
     }
   };
-  return await fetch(API + `/users/${id}`, options);
+  return await fetch(getAPIEndpoint() + `/users/${id}`, options);
 }
 
 export async function createPost(title:string, description:string,contentType:string, content:string, visibility:string , auth: string, id:string) {
@@ -93,7 +105,7 @@ export async function createPost(title:string, description:string,contentType:st
     },
     body: JSON.stringify({ "title": title, "description": description, "contentType": contentType, "content": content, "author": id, "visibility": visibility })
   };
-  return await fetch(API + `/posts/`, options);
+  return await fetch(getAPIEndpoint() + `/posts/`, options);
 }
 
 export async function getHomePosts(host: string, page:number, size: number , auth: string, id:string) {
@@ -104,7 +116,7 @@ export async function getHomePosts(host: string, page:number, size: number , aut
       'Authorization': `Bearer ${auth}`,
     }
   };
-  return await fetch(API + `/posts/?page=${page}&size=${size}&host=${host}&id=${id}`, options);
+  return await fetch(getAPIEndpoint() + `/posts/?page=${page}&size=${size}&host=${host}&id=${id}`, options);
 }
 
 export async function getPost(auth: string, postId:string) {
@@ -115,7 +127,7 @@ export async function getPost(auth: string, postId:string) {
       'Authorization': `Bearer ${auth}`,
     }
   };
-  return await fetch(API + `/posts/${postId}`, options);
+  return await fetch(getAPIEndpoint() + `/posts/${postId}`, options);
 }
 
 export async function imageUploadHandler(image: File, auth: string) {
@@ -130,7 +142,7 @@ export async function imageUploadHandler(image: File, auth: string) {
         },
         body: formData
     };
-    return await fetch(API + `/images/`, options);
+    return await fetch(getAPIEndpoint() + `/images/`, options);
 }
     
 export async function deletePost(auth: string, postId:string) {
@@ -141,5 +153,5 @@ export async function deletePost(auth: string, postId:string) {
       'Authorization': `Bearer ${auth}`,
     }
   };
-  return await fetch(API + `/posts/${postId}`, options);
+  return await fetch(getAPIEndpoint() + `/posts/${postId}`, options);
 }
