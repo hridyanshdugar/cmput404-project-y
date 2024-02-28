@@ -49,7 +49,7 @@ export default function Posts({ params }: { params: { profile: string } }) {
         <>
             <div className={"main"}>
                 <div className={styles.mainContentView}> 
-                    {posts ? posts.length === 0 ? <>There are no posts avaliable</> : posts.map((item: any, index: any) => (
+                    {posts ? posts.length === 0 ? <>There are no posts available</> : posts.map((item: any, index: any) => (
                     item.author.id === username ?
                     <SinglePost
                         key={index}
