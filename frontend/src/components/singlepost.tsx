@@ -90,7 +90,9 @@ const SinglePost: React.FC<Props> = (props) => {
 					const Data = await result.json();
 					console.log(Data);
 
-					setPosts(posts.filter((post: any) => post.id !== props.postID));
+					if (result.status === 200) {
+						setPosts(posts.filter((post: any) => post.id !== props.postID));
+					}
 				})
 				.catch(async (result: any) => {
 					console.log(result);
