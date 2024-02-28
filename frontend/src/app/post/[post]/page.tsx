@@ -16,7 +16,7 @@ export default function Home({ params }: { params: { post: string } }) {
 	const [replies, setReplies] = useContext(PostContext);
 	const [auth, setAuth] = useState<any>(null);
 	const postID = params.post;
-	
+
 	useEffect(() => {
 		const cookies = new Cookies();
 		setAuth(cookies.get("auth"));
@@ -69,6 +69,7 @@ export default function Home({ params }: { params: { post: string } }) {
 				{auth && (
 					<CreatePost
 						updatePosts={updateReplies}
+						reply={true}
 						style={{
 							border: "1px solid rgb(47, 51, 54)",
 							paddingBottom: "10px",

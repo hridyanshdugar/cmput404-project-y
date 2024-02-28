@@ -81,6 +81,11 @@
 	font-size: 20px;
 	width: 50px;
 	color: rgb(113, 118, 123);
+	cursor: pointer;
+}
+
+.flexItem > label {
+	cursor: pointer;
 }
 
 .selectItem {

@@ -1,86 +1,86 @@
 .blockImage {
-    width: 4rem;
-    vertical-align: top;
+	width: 4rem;
+	vertical-align: top;
 }
 
 .img {
-    vertical-align: unset!important;
-    border-radius: 50%;
+	vertical-align: unset !important;
+	border-radius: 50%;
 }
 
 .blockContent {
-    width: 100%;
-    vertical-align: top;
+	width: 100%;
+	vertical-align: top;
+	overflow: auto;
 }
 
 .blockFlexContent {
-    display: flex;
+	display: flex;
 }
 
 .overflow {
-    display: flex;
-    background-color: black;
-    border-bottom: 1px solid rgb(47, 51, 54);
-    padding-right: 0.5rem;
-    padding-top: 0.5rem;
+	display: flex;
+	background-color: black;
+	border-bottom: 1px solid rgb(47, 51, 54);
+	padding-right: 0.5rem;
+	padding-top: 0.5rem;
 }
 
 .topText {
-    font-size: 15px;
-    color: white;
-    height: 23px;
+	font-size: 15px;
+	color: white;
+	height: 23px;
 }
 
 .topBottom {
-    font-size: 15px;
-    color: white;
-    text-align: left;
-    white-space: pre-line;
+	font-size: 15px;
+	color: white;
+	text-align: left;
+	white-space: pre-line;
 }
 
 .topUserText {
-    color: rgb(113, 118, 123)!important;
+	color: rgb(113, 118, 123) !important;
 }
 
 .topLeft {
-    float: left;
+	float: left;
 }
 .topRight {
-    float: right;
+	float: right;
 }
 
 .inlineBlock {
-    display: inline-block;
-    padding-right: 0.3rem;
+	display: inline-block;
+	padding-right: 0.3rem;
 }
 
 .flexContainer {
-    display: flex;
-    justify-content: space-between;
-    font-size: 16px;
-    color: rgb(113, 118, 123);
-    padding-top: 0.25rem;
-  }
-  
-  .flexContainer::before {
-    content: "";
-  }
-  
-  .flexContainer::after {
-    content: "";
-  }
+	display: flex;
+	justify-content: space-between;
+	font-size: 16px;
+	color: rgb(113, 118, 123);
+	padding-top: 0.25rem;
+}
+
+.flexContainer::before {
+	content: "";
+}
+
+.flexContainer::after {
+	content: "";
+}
 
 .flexItem {
-    height: 30px;
-    text-align: left;
-    width: calc(100% + 12px);
-  }
-  .flexItem2 {
-    height: 30px;
-    text-align: right;
-    width: calc(100% + 12px);
-  }  
-  .separator{
-    flex-grow: 1;
-  }
-  
+	height: 30px;
+	text-align: left;
+	width: calc(100% + 12px);
+}
+.flexItem2 {
+	height: 30px;
+	text-align: right;
+	width: calc(100% + 12px);
+}
+.separator {
+	flex-grow: 1;
+}
