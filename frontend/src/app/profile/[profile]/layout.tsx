@@ -11,7 +11,7 @@ import SideBar from "@/components/sidebar";
 import Rightbar from "@/components/rightbar";
 import Cookies from 'universal-cookie';
 import { useState, useEffect } from 'react';
-import { getUserLocalInfo, navigate, API} from '@/utils/utils';
+import { getUserLocalInfo, navigate, getAPIEndpoint} from '@/utils/utils';
 import { error } from 'console';
 import { userInfo } from 'os';
 
