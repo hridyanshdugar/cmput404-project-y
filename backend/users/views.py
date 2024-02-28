@@ -53,7 +53,7 @@ class UsersView(APIView):
         users = User.objects.filter(is_superuser=False,approved=True) # No admins
         page_number = request.GET.get('page') or 1
 
-        page = self.pagination_class.paginate_queryset(users, request, view=self)
+        page = self.pagination.paginate_queryset(users, request, view=self)
         if page is not None:
             serializer = AuthorSerializer(page,many=True,context={'request': request})
             return Response(serializer.data, status = status.HTTP_200_OK)
