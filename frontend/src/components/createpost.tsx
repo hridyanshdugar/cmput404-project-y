@@ -15,7 +15,7 @@ import Button from "@/components/buttons/button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMarkdown } from "@fortawesome/free-brands-svg-icons";
 import { faFileLines } from "@fortawesome/free-regular-svg-icons";
-import { createPost, API, getHomePosts } from "@/utils/utils";
+import { createPost, API, getHomePosts, imageUploadHandler } from "@/utils/utils";
 import Cookies from "universal-cookie";
 import { Card } from "react-bootstrap";
 import MDEditor from "@uiw/react-md-editor";
@@ -91,21 +91,24 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 		const clipboardData = event.clipboardData;
 		if (clipboardData.files.length === 1) {
 			const myfile = clipboardData.files[0] as File;
-			//   const url = await imageUploadHandler(myfile);
-			//   event.preventDefault();
-			//   if (url) {
-			//     document.execCommand(
-			//       "insertText",
-			//       false,
-			//       `![${url.alt}](${url.url})\n`
-			//     );
-			//   } else {
-			//     document.execCommand(
-			//       "insertText",
-			//       false,
-			//       "ERROR Image has not been stored on server"
-			//     );
-			//   }
+			const response = await imageUploadHandler(myfile,auth);
+			const data = await response.json();
+			console.log(data);
+			const url = API + data.image;
+			event.preventDefault();
+			if (url) {
+			document.execCommand(
+				"insertText",
+				false,
+				`![${url}](${url})\n`
+			);
+			} else {
+			document.execCommand(
+				"insertText",
+				false,
+				"ERROR Image has not been stored on server"
+			);
+			}
 		}
 	};
 
