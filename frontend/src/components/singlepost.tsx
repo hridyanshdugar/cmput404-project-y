@@ -11,6 +11,7 @@ import { faHeart } from "@fortawesome/free-regular-svg-icons";
 import React from "react";
 import { Card } from "react-bootstrap";
 import Dropdown from "@/components/dropdowns/dropdown";
+import { navigate } from "@/utils/utils";
 
 export function TimeConverter(date: Date) {
 	var now = new Date();
@@ -76,7 +77,7 @@ export default class SinglePost extends React.Component<Props> {
 	render() {
 		const onClick = () => {
 			if (!this.props.onPostPage) {
-				window.location.href = "/post/";
+				navigate("/post/" + this.props.postID);
 			}
 		};
 

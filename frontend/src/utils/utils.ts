@@ -106,3 +106,14 @@ export async function getHomePosts(host: string, page:number, size: number , aut
   };
   return await fetch(API + `/posts/?page=${page}&size=${size}&host=${host}&id=${id}`, options);
 }
+
+export async function getPost(auth: string, postId:string) {
+  const options: RequestInit = {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${auth}`,
+    }
+  };
+  return await fetch(API + `/posts/${postId}`, options);
+}

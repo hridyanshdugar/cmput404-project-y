@@ -78,7 +78,7 @@ export default function Home() {
 						likes={0}
 						retweets={0}
 						comments={0}
-						postID={item.global_id}
+						postID={item.id}
 						contentType={item.contentType}
 					/>
 				))}
