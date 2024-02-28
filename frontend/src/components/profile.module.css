@@ -88,7 +88,8 @@
     border: 3px solid black;
 }
 
-.profileButton {
+.profileButton,
+.profileButtonFollowed {
     display: flex;
     flex-grow: 1;
     justify-content: flex-end;
@@ -111,8 +112,24 @@
     border: 1px solid black;
 }
 
+.profileButtonFollowed Button {
+  width: 10rem;
+  height: 3rem;
+  font-size: 1.25rem;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  background-color: black;
+  border: none;
+  border-radius: 32px;
+  color: white;
+  border: 1px solid white;
+}
+
 .profileButton button:hover,
-.profileButton button:active {
+.profileButton button:active,
+.profileButtonFollowed button:hover,
+.profileButtonFollowed button:active{
   background-color: rgb(29, 155, 240);
 }
 

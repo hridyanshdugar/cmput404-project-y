@@ -83,6 +83,7 @@ export default function ProfileLayout({
             followers={0} 
             following={0} 
             activeUser={activeUser} 
+            followingStatus={false}
             profileImage={userInformation?.profileImage || ""} 
             profileBackround={userInformation?.profileBackgroundImage || ""}/>
             {children}

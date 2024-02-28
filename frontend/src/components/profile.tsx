@@ -27,45 +27,60 @@ type Props = {
     followers: number;
     following: number;
     activeUser: boolean;
+    followingStatus: boolean;
     //posts: Array<SinglePost>;
 }
 
 export default class Profile extends React.Component<Props> {
+    followStatus: string = "Follow";
     constructor(props: Props) {
         super(props);
         console.log(props);
+
+        //Change to reflect follow status using API if not activeUser !!NEEDED!!
+        //FollowingStatus should be aquired in /profile/[profile]/layout.tsx
+        this.followStatus = this.props.followingStatus ? "Following" : "Follow"
     }
 
-    //Change to reflect follow status using API if not activeUser !!NEEDED!!
-    followStatus = "Follow"
+    following = (request: boolean) => {
+        const cookies = new Cookies()
+        const activeUserId = cookies.get("user").id
+        const externalUserId = this.props.userid
+        if (request) {
+          //API unfollow request !!NEEDED!!
+        }
+        this.followStatus = "Follow"
+        var div = document.getElementById("profileButton");
+        div!.classList.remove(styles.profileButtonFollowed);
+        div!.classList.add(styles.profileButton)
+        var button = document.getElementById("profileActionButton");
+        button!.innerHTML = this.followStatus;
+    }
+
+    notFollowing = (request: boolean) => {
+        const cookies = new Cookies()
+        const activeUserId = cookies.get("user").id
+        const externalUserId = this.props.userid
+        if (request) {
+          //API follow request !!NEEDED!!
+        }
+        this.followStatus = "Following"
+        var div = document.getElementById("profileButton");
+        div!.classList.remove(styles.profileButton);
+        div!.classList.add(styles.profileButtonFollowed)
+        var button = document.getElementById("profileActionButton");
+        button!.innerHTML = this.followStatus;
+    }
 
     handleButtonClick = () => {
       if (this.props.activeUser) {
         navigate('/settings');
       } 
       else if (this.followStatus == "Follow"){
-        //API follow request !!NEEDED!!
-        const cookies = new Cookies()
-        const activeUserId = cookies.get("user").id
-        const externalUserId = this.props.userid
-        var button = document.getElementById("profileActionButton");
-        this.followStatus = "Following"
-        button!.innerHTML = this.followStatus
-        button!.style.backgroundColor = "black"
-        button!.style.color = "white"
-        button!.style.border = "1px solid white";
+        this.notFollowing(true);
       }
       else {
-        //API unfollow request !!NEEDED!!
-        const cookies = new Cookies()
-        const activeUserId = cookies.get("user").id
-        const externalUserId = this.props.userid
-        var button = document.getElementById("profileActionButton");
-        this.followStatus = "Follow"
-        button!.innerHTML = this.followStatus
-        button!.style.backgroundColor = "white"
-        button!.style.color = "black"
-        button!.style.border = "1px solid black";
+        this.following(true);
       }
     };
 
@@ -80,8 +95,9 @@ export default class Profile extends React.Component<Props> {
                     <div id="profileBackround"><img className={styles.profileBackround} src={this.props.profileBackround} alt={''} width={500} height={500}/></div>
                     <div className={styles.pictureButtonContainer}>
                       <div id="profilePicture"><img className={styles.profilePicture} src={this.props.profileImage} alt={''} width={400} height={400}/></div>
-                      <div className={styles.profileButton}>
-                        <Button id="profileActionButton" variant="primary" onClick={this.handleButtonClick}>{this.props.activeUser? "Edit Profile" : this.followStatus}</Button>
+                      <div id="profileButton" className={this.props.followingStatus? styles.profileButtonFollowed : styles.profileButton}>
+                        <Button 
+                        id="profileActionButton" variant="primary" onClick={this.handleButtonClick}>{this.props.activeUser? "Edit Profile" : this.followStatus}</Button>
                       </div>
                     </div>
                     <header id="profileName" className={styles.title}>{this.props.name}</header>
