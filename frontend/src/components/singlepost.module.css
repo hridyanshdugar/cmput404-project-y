@@ -37,6 +37,12 @@
 	color: white;
 	text-align: left;
 	white-space: pre-line;
+	overflow-wrap: break-word;
+	overflow: auto;
+}
+
+.markdownColor {
+	background-color: black !important;
 }
 
 .markdownColor {
