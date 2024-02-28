@@ -57,6 +57,7 @@ const Dropdown: React.FC<DropdownProps> = ({
 						<button
 							className={style.dropdownOptions}
 							onClick={(e: MouseEvent<HTMLButtonElement>) => {
+								e.stopPropagation();
 								handleOptionClick(e, option);
 							}}
 							key={index}

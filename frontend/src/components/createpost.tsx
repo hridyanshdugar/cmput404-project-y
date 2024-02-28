@@ -111,7 +111,9 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 
 	const onSubmit = () => {
 		const VisibilityMap: { [key: string]: string } = {
+			Everyone: "PUBLIC",
 			Unlisted: "UNLISTED",
+			Friends: "FRIENDS",
 		};
 		var contentToSend: string = "";
 		if (contentTypeMinimal === "picture") {
@@ -136,8 +138,7 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 		)
 			.then(async (result: any) => {
 				const Data = await result.json();
-				console.log(Data);
-				if (VisibilityMap[visibility] == "PUBLIC") {
+				if (VisibilityMap[visibility] === "PUBLIC") {
 					props.updatePosts(Data);
 				}
 				if (props.setPopupOpen) {
