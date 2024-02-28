@@ -14,6 +14,7 @@ import Cookies from "universal-cookie";
 import { useEffect, useState } from "react";
 import { useRef } from "react";
 import { getAPIEndpoint } from "@/utils/utils";
+import { Spinner } from "react-bootstrap";
 
 export default function SideBar() {
 	const [userData, setUser] = useState<any>(null);
@@ -103,19 +104,29 @@ export default function SideBar() {
 					</li>
 				</ul>
 				<div className={style.avatarBottom}>
-					<a href="/settings">
-						<img
-							src={getAPIEndpoint() + userData?.profileImage || ""}
-							className={style.avatarImage}
-							style={{ verticalAlign: "-10%" }}
-						></img>
-						<div className={style.myName}>
-							<div>{`${userData?.displayName}`}</div>
-							<div className={style.atNameText}>{`${userData?.email}`}</div>
-						</div>
-						<div className={style.dotdotdoticon}>
-							<FontAwesomeIcon icon={faEllipsis} inverse fixedWidth />
-						</div>
+                    <a href="/settings">
+                        {
+                            userData ? <>
+                            
+                                <img
+                                    src={getAPIEndpoint() + userData?.profileImage || ""}
+                                    className={style.avatarImage}
+                                    style={{ verticalAlign: "-10%" }}
+                                ></img>
+                                <div className={style.myName}>
+                                    <div>{`${userData?.displayName}`}</div>
+                                    <div className={style.atNameText}>{`${userData?.email}`}</div>
+                                </div>
+                                <div className={style.dotdotdoticon}>
+                                    <FontAwesomeIcon icon={faEllipsis} inverse fixedWidth />
+                                </div>                            
+                            
+                            </>
+                        :     <Spinner animation="border" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                      </Spinner>
+                        }
+
 					</a>
 				</div>
 			</nav>

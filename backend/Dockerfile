@@ -8,4 +8,4 @@ COPY . .
 EXPOSE 9000
 RUN chmod +x docker_entry.sh
 
-ENTRYPOINT ["/docker_entry.sh"]
+ENTRYPOINT ["./docker_entry.sh"]
