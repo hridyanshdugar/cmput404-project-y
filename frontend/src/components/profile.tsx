@@ -10,9 +10,13 @@ import React from 'react'
 import SinglePost from '@/components/singlepost';
 import SideBar from "@/components/sidebar";
 import Rightbar from "@/components/rightbar";
+import Cookies from 'universal-cookie';
+import {navigate} from '@/utils/utils';
+import Link from 'next/link';
 
 
 type Props = {
+    userid: string;
     name: string;
     username: string;
     profileImage: string;
@@ -29,7 +33,42 @@ type Props = {
 export default class Profile extends React.Component<Props> {
     constructor(props: Props) {
         super(props);
+        console.log(props);
     }
+
+    //Change to reflect follow status using API if not activeUser !!NEEDED!!
+    followStatus = "Follow"
+
+    handleButtonClick = () => {
+      if (this.props.activeUser) {
+        navigate('/settings');
+      } 
+      else if (this.followStatus == "Follow"){
+        //API follow request !!NEEDED!!
+        const cookies = new Cookies()
+        const activeUserId = cookies.get("user").id
+        const externalUserId = this.props.userid
+        var button = document.getElementById("profileActionButton");
+        this.followStatus = "Following"
+        button!.innerHTML = this.followStatus
+        button!.style.backgroundColor = "black"
+        button!.style.color = "white"
+        button!.style.border = "1px solid white";
+      }
+      else {
+        //API unfollow request !!NEEDED!!
+        const cookies = new Cookies()
+        const activeUserId = cookies.get("user").id
+        const externalUserId = this.props.userid
+        var button = document.getElementById("profileActionButton");
+        this.followStatus = "Follow"
+        button!.innerHTML = this.followStatus
+        button!.style.backgroundColor = "white"
+        button!.style.color = "black"
+        button!.style.border = "1px solid black";
+      }
+    };
+
     render() {
       return  <div className={"main"}>
                 <div className={styles.mainContentView}> 
@@ -42,7 +81,7 @@ export default class Profile extends React.Component<Props> {
                     <div className={styles.pictureButtonContainer}>
                       <div id="profilePicture"><img className={styles.profilePicture} src={this.props.profileImage} alt={''} width={400} height={400}/></div>
                       <div className={styles.profileButton}>
-                        <Button id="profileActionButton" variant="primary">Edit Profile</Button>
+                        <Button id="profileActionButton" variant="primary" onClick={this.handleButtonClick}>{this.props.activeUser? "Edit Profile" : this.followStatus}</Button>
                       </div>
                     </div>
                     <header id="profileName" className={styles.title}>{this.props.name}</header>
@@ -64,9 +103,9 @@ export default class Profile extends React.Component<Props> {
                   <div className={styles.container}>
                     <nav className={styles.profileNav}>
                       <ul>
-                        <li><a href={"/profile/" + this.props.username.slice(1)}>Posts</a></li>
-                        <li><a href={"/profile/" + this.props.username.slice(1) + "/media"}>Media</a></li>
-                        <li><a href={"/profile/" + this.props.username.slice(1) + "/likes"}>Likes</a></li>
+                        <li><Link href={"/profile/" + this.props.userid!}>Posts</Link></li>
+                        <li><Link href={"/profile/" + this.props.userid + "/media"}>Media</Link></li>
+                        <li><Link href={"/profile/" + this.props.userid + "/likes"}>Likes</Link></li>
                       </ul>
                     </nav>
                   </div>
