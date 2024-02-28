@@ -155,3 +155,28 @@ export async function deletePost(auth: string, postId:string) {
   };
   return await fetch(getAPIEndpoint() + `/posts/${postId}`, options);
 }
+
+export async function getNewFollowRequests(email: string){
+    const options: RequestInit = {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    };
+  return await fetch(getAPIEndpoint() + `/followers/get/new/follow/requests?name=${email}`, options)
+}
+
+export async function processFollowRequest(email:any, followerEmail:any, action:any) {
+  const options: RequestInit = {
+    method: 'PUT',
+    headers: {
+      'name': email,
+      'follower': followerEmail
+    }
+  };
+  await fetch(getAPIEndpoint() + `/followers/decline/follow/request/`, options).then((res) => {
+    console.log(res);
+  }).catch((err) => {
+    console.log(err);
+  });
+}

@@ -6,12 +6,17 @@ import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import { faArrowUpFromBracket } from "@fortawesome/free-solid-svg-icons";
 import React from "react";
 import Button from "./buttons/button";
+import { processFollowRequest } from "@/utils/utils";
+import Cookies from "universal-cookie";
 
 type Props = {
 	name: string;
 	profileImage: string;
 	username: string;
 };
+
+const cookies = new Cookies();
+const user = cookies.get("user");
 
 export default class FollowRequestNotification extends React.Component<Props> {
 	constructor(props: Props) {
@@ -42,8 +47,8 @@ export default class FollowRequestNotification extends React.Component<Props> {
 						</div>
 						<div className={style.separator} />
 						<div className={style.topRight}>
-							<Button text="✓" type="primary" size="verySmall" roundness="very" onClick={() => {}} style={{}}/>
-							<Button text="⨉" type="primary" size="verySmall" roundness="very" onClick={() => {}} style={{marginLeft:"10px"}}/>
+							<Button text="✓" type="primary" size="verySmall" roundness="very" onClick={() => processFollowRequest(user["email"], this.props.username, "accept")} style={{}}/>
+							<Button text="⨉" type="primary" size="verySmall" roundness="very" onClick={() => processFollowRequest(user["email"], this.props.username, "decline")} style={{marginLeft:"10px"}}/>
 					</div>
 					</div>
 					<div className={[style.topBottom].join(" ")}>
