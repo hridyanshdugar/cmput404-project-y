@@ -63,6 +63,7 @@ type Props = {
 	name: string;
 	profileImage: string;
 	username: string;
+	userId: string;
 	text: string;
 	postImage: string | undefined;
 	date: number;
@@ -75,11 +76,20 @@ type Props = {
 };
 
 const SinglePost: React.FC<Props> = (props) => {
-	const onClick = () => {
-		if (!props.onPostPage) {
-			navigate("/post/" + props.postID);
-		}
-	};
+    const onClickF = (event: React.MouseEvent<HTMLElement>) => {
+        let id = event.target as any;
+        id = id.id;
+        console.log(id)
+        if (id.includes("profile")) {
+            navigate("/profile/" + props.userId);
+        } else {
+            if (!props.onPostPage) {
+                navigate("/post/" + props.postID);
+            }            
+        }
+    };
+
+
 
 	const onPostOptionSelect = (selection: string | null) => {
 		const cookies = new Cookies();
@@ -108,11 +118,12 @@ const SinglePost: React.FC<Props> = (props) => {
 	return (
 		<div
 			className={style.overflow}
-			onClick={onClick}
+			onClick={onClickF}
 			style={{ cursor: props.onPostPage ? "default" : "pointer" }}
 		>
-			<div className={style.blockImage}>
-				<img
+            <div className={style.blockImage}>
+                <img
+                     id="profile6"
 					className={style.img}
 					src={props.profileImage}
 					alt={""}
@@ -122,12 +133,12 @@ const SinglePost: React.FC<Props> = (props) => {
 			</div>
 			<div className={style.blockContent}>
 				<div className={[style.topText, style.blockFlexContent].join(" ")}>
-					<div className={style.topLeft}>
-						<div className={style.inlineBlock}>{props.name}</div>
-						<div className={[style.topUserText, style.inlineBlock].join(" ")}>
+					<div className={style.topLeft} id="profile2">
+						<div className={style.inlineBlock}  id="profile3">{props.name}</div>
+						<div  id="profile4" className={[style.topUserText, style.inlineBlock].join(" ")}>
 							{props.username}
 						</div>
-						<div className={[style.topUserText, style.inlineBlock].join(" ")}>
+						<div  id="profile5" className={[style.topUserText, style.inlineBlock].join(" ")}>
 							{" "}
 							· {TimeConverter(date)}
 						</div>

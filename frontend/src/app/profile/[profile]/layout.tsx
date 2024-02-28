@@ -14,7 +14,7 @@ import { useState, useEffect } from 'react';
 import { getUserLocalInfo, navigate, getAPIEndpoint} from '@/utils/utils';
 import { error } from 'console';
 import { userInfo } from 'os';
-
+import { PostContextProvider } from "@/utils/postcontext";
 
 export default function ProfileLayout({
     children,
@@ -71,23 +71,26 @@ export default function ProfileLayout({
     //If username not in database, return 404 / user not found page
 
     return (
-        <div>
-            <SideBar/>
-            <Profile 
-            userid={userId}
-            name={userInformation?.displayName} 
-            username={'@' + userInformation?.email} 
-            bio={userInformation?.bio? userInformation?.bio : 'No Bio'}
-            website={userInformation?.github? userInformation?.github : 'No Website'} 
-            dateJoined={''} 
-            followers={0} 
-            following={0} 
-            activeUser={activeUser} 
-            followingStatus={false}
-            profileImage={userInformation?.profileImage || ""} 
-            profileBackround={userInformation?.profileBackgroundImage || ""}/>
-            {children}
-            <Rightbar/>
-        </div>
+        <PostContextProvider>
+            <div>
+                <SideBar/>
+                <Profile 
+                userid={userId}
+                name={userInformation?.displayName} 
+                username={'@' + userInformation?.email} 
+                bio={userInformation?.bio? userInformation?.bio : 'No Bio'}
+                website={userInformation?.github? userInformation?.github : 'No Website'} 
+                dateJoined={''} 
+                followers={0} 
+                following={0} 
+                activeUser={activeUser} 
+                followingStatus={false}
+                profileImage={userInformation?.profileImage || ""} 
+                profileBackround={userInformation?.profileBackgroundImage || ""}/>
+                {children}
+                <Rightbar/>
+            </div>            
+        </PostContextProvider>
+
     );
   }

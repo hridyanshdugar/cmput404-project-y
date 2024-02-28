@@ -42,8 +42,9 @@ export default function Notifications() {
                     ( requests.length == 0 ? 
                       (<NoNewNotifications />) : 
                       (
-                        requests.map((request: any) => (
-                          <FollowRequestNotification 
+                        requests.map((request: any, index: any) => (
+                            <FollowRequestNotification 
+                                key={index}
                           name={request["displayName"]} 
                           profileImage={request["profileImage"]} 
                           username={request["email"]} />

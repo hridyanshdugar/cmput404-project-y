@@ -50,7 +50,8 @@ export default function Home({ params }: { params: { post: string } }) {
 			<div className={style.mainContentView}>
 				{post && (
 					<SinglePost
-						name={post.author.displayName}
+                        name={post.author.displayName}
+                        userId={post.author.id}
 						profileImage={getAPIEndpoint() + post.author.profileImage}
 						username={post.author.email}
 						text={post.content}

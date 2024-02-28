@@ -7,7 +7,7 @@ export const PostContextProvider = ({
 }: Readonly<{
 	children: React.ReactNode;
 }>) => {
-	const [posts, setPosts] = useState<any>([]);
+	const [posts, setPosts] = useState<any | undefined>(undefined);
 
 	return (
 		<PostContext.Provider value={[posts, setPosts]}>

@@ -13,7 +13,7 @@ export default function Home() {
   const cookie = new Cookies();
   const allcookies = cookie.getAll();
   if (allcookies.auth && allcookies.user) {
-    //navigate('/home');
+    navigate('/home');
   }
 
   return (
