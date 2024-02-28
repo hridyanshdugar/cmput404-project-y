@@ -5,6 +5,7 @@ ENV PYTHONUNBUFFERED 1
 RUN pip install --upgrade pip  
 COPY . .
 RUN pip install -r requirements.txt  
+RUN python manage.py migrate   
 
 EXPOSE 9000
 CMD gunicorn --bind 0.0.0.0:9000 backend.wsgi:application --env SCRIPT_NAME=/api
