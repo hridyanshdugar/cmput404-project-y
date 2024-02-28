@@ -68,7 +68,8 @@ export default function Home() {
 					}}
 				/>
 				{posts.map((item: any, index: any) => (
-					<SinglePost
+                    <SinglePost
+                        key={index}
 						name={item.author.displayName}
 						profileImage={API + item.author.profileImage}
 						username={item.author.email}
