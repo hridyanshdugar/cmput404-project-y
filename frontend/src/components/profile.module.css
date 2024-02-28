@@ -6,6 +6,8 @@
     text-align: center;
     font-size: 40px;
     margin-left: 13rem;
+    border-right: 1px solid rgb(47, 51, 54);
+    border-left: 1px solid rgb(47, 51, 54); 
     overflow: hidden;
 }
 
@@ -86,7 +88,8 @@
     border: 3px solid black;
 }
 
-.profileButton {
+.profileButton,
+.profileButtonFollowed {
     display: flex;
     flex-grow: 1;
     justify-content: flex-end;
@@ -106,10 +109,27 @@
     border: none;
     border-radius: 32px;
     color: black;
+    border: 1px solid black;
+}
+
+.profileButtonFollowed Button {
+  width: 10rem;
+  height: 3rem;
+  font-size: 1.25rem;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  background-color: black;
+  border: none;
+  border-radius: 32px;
+  color: white;
+  border: 1px solid white;
 }
 
 .profileButton button:hover,
-.profileButton button:active {
+.profileButton button:active,
+.profileButtonFollowed button:hover,
+.profileButtonFollowed button:active{
   background-color: rgb(29, 155, 240);
 }
 
@@ -167,7 +187,7 @@
 
 .profileNav {
   display: inline;
-  border-bottom: 1px solid grey;
+  border-bottom: 1px solid rgb(47, 51, 54);
 }
 
 .profileNav ul {
@@ -178,7 +198,7 @@
   justify-content: space-between;
   margin-top: 1rem;
   padding: 0;
-  border-bottom: 1px solid grey;
+  border-bottom: 1px solid rgb(47, 51, 54);
 }
 
 .profileNav ul li {
