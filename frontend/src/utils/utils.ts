@@ -119,19 +119,20 @@ export async function getPost(auth: string, postId:string) {
 }
 
 export async function imageUploadHandler(image: File, auth: string) {
-  const formData = new FormData();
+    const formData = new FormData();
 
-  formData.append('image', image);
+    formData.append('image', image);
 
-  const options: RequestInit = {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${auth}`,
-    },
-    body: formData
-  };
-  return await fetch(API + `/images/`, options);
-
+    const options: RequestInit = {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${auth}`,
+        },
+        body: formData
+    };
+    return await fetch(API + `/images/`, options);
+}
+    
 export async function deletePost(auth: string, postId:string) {
   const options: RequestInit = {
     method: 'DELETE',
