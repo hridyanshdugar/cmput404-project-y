@@ -8,6 +8,7 @@ import React from "react";
 import Button from "./buttons/button";
 import { processFollowRequest } from "@/utils/utils";
 import Cookies from "universal-cookie";
+import { getAPIEndpoint } from "@/utils/utils";
 
 type Props = {
 	name: string;
@@ -31,7 +32,7 @@ export default class FollowRequestNotification extends React.Component<Props> {
 				<div className={style.blockImage}>
 					<img
 						className={style.img}
-						src={this.props.profileImage}
+						src={getAPIEndpoint() + "/media/" + this.props.profileImage || ""}
 						alt={""}
 						width={40}
 						height={40}
