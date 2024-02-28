@@ -2,10 +2,10 @@ FROM python:3.11
 WORKDIR /usr/src/backend
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1 
+RUN apt update && apt install python3-pip python3-dev build-essential libssl-dev libffi-dev python3-setuptools python3-venv -y
 RUN pip install --upgrade pip  
 COPY . .
-RUN pip install -r requirements.txt  
-RUN python manage.py migrate   
-
 EXPOSE 9000
-CMD gunicorn --bind 0.0.0.0:9000 backend.wsgi:application --env SCRIPT_NAME=/api
+RUN chmod +x docker_entry.sh
+
+ENTRYPOINT ["/docker_entry.sh"]
