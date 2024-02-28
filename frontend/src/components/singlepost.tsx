@@ -85,10 +85,16 @@ const SinglePost: React.FC<Props> = (props) => {
 		const cookies = new Cookies();
 		const auth = cookies.get("auth")["access"];
 		if (selection === "Delete") {
-			deletePost(auth, props.postID).then((result) => {
-				console.log(result);
-			});
-			setPosts(posts.filter((post: any) => post.id !== props.postID));
+			deletePost(auth, props.postID)
+				.then(async (result: any) => {
+					const Data = await result.json();
+					console.log(Data);
+
+					setPosts(posts.filter((post: any) => post.id !== props.postID));
+				})
+				.catch(async (result: any) => {
+					console.log(result);
+				});
 		} else if (selection === "Edit") {
 			console.log("edit");
 		}

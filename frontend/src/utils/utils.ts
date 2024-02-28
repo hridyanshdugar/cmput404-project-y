@@ -151,7 +151,7 @@ export async function deletePost(auth: string, postId:string) {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${auth}`,
-    }
+    },
   };
   return await fetch(getAPIEndpoint() + `/posts/${postId}`, options);
 }

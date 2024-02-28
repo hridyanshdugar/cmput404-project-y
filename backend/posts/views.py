@@ -7,6 +7,7 @@ from .serializers import PostSerializer
 from django.shortcuts import get_object_or_404
 from users.models import User
 from django.db.models import Q
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 
 class Pager(PageNumberPagination):
@@ -47,7 +48,13 @@ class PostsViewPK(APIView):
      DELETE /authors/{id}/posts/{id} and /posts/{id}
      '''
      def delete(self, request, pk):
+        JWT_authenticator = JWTAuthentication()
+        response = JWT_authenticator.authenticate(request)
         post = get_object_or_404(Post, id=pk)
+        serializer = PostSerializer(post, context={'request': request})
+        realAuthor = serializer.get_author(post)["id"]
+        if realAuthor != response[1]["user_id"]:
+            return Response({"title": "Unauthorized", "message": "You are not authorized to delete this post"}, status = status.HTTP_401_UNAUTHORIZED)
         post.delete()
         return Response({"title": "Successfully Deleted", "message": "Post was deleted"}, status = status.HTTP_200_OK)
 
