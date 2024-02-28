@@ -135,7 +135,7 @@ export default class SinglePost extends React.Component<Props> {
 
                     }
                     {
-                        this.props.contentType === "text/markdown" ? <MarkdownPreview source={this.props.text}/> : <></>
+                        this.props.contentType === "text/markdown" ? <MarkdownPreview source={this.props.text} className={style.markdownColor}/> : <></>
 
                     }
                     {

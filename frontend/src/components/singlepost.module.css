@@ -39,6 +39,10 @@
 	white-space: pre-line;
 }
 
+.markdownColor {
+    background-color: black!important;
+}
+
 .topUserText {
 	color: rgb(113, 118, 123) !important;
 }

@@ -184,6 +184,7 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
                                 value={markdownValue}
                                 onChange={setMarkdownValue}
                                 onPaste={handlePaste}
+                                className={style.markdownColor}
                             />
                             : ''}
                     </div>
