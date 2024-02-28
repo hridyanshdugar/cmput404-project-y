@@ -10,6 +10,7 @@ import { faComment } from "@fortawesome/free-regular-svg-icons";
 import { faHeart } from "@fortawesome/free-regular-svg-icons";
 import React from "react";
 import { Card } from "react-bootstrap";
+import Dropdown from "@/components/dropdowns/dropdown";
 
 export function TimeConverter(date: Date) {
 	var now = new Date();
@@ -78,6 +79,15 @@ export default class SinglePost extends React.Component<Props> {
 				window.location.href = "/post/";
 			}
 		};
+
+		const onPostOptionSelect = (selection: string | null) => {
+			if (selection === "Delete") {
+				console.log("delete");
+			} else if (selection === "Edit") {
+				console.log("edit");
+			}
+		};
+
 		const date = new Date(0);
 		date.setUTCSeconds(this.props.date);
 		return (
@@ -109,7 +119,11 @@ export default class SinglePost extends React.Component<Props> {
 						</div>
 						<div className={style.separator} />
 						<div>
-							<FontAwesomeIcon icon={faEllipsis} inverse fixedWidth />
+							<Dropdown
+								icon={faEllipsis}
+								options={["Delete", "Edit"]}
+								onChange={onPostOptionSelect}
+							/>
 						</div>
 					</div>
 					<div className={style.topBottom}>{this.props.text}</div>

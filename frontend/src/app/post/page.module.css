@@ -6,7 +6,6 @@
 	margin-left: 13rem;
 	border-right: 1px solid rgb(47, 51, 54);
 	border-left: 1px solid rgb(47, 51, 54);
-	overflow: hidden;
 }
 
 @media screen and (max-width: 1000px) {

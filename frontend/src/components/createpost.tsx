@@ -178,6 +178,7 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 			</div>
 			<Dropdown
 				label="Everyone"
+				dropdownTitle="Choose Audience"
 				onChange={handleVisibilityChange}
 				options={["Everyone", "Friends", "Unlisted"]}
 				innerRef={dropdownRef}
