@@ -36,7 +36,7 @@ class ImageViewPK(APIView):
      def delete(self, request,pk):
         user = get_object_or_404(Image,image=pk)
         user.delete()
-        return Response({"title": "Successfully Deleted", "message": "User was deleted"}, status = status.HTTP_200_OK)
+        return Response({"title": "Successfully Deleted", "message": "Image was deleted"}, status = status.HTTP_200_OK)
 
 class ImageView(APIView):
      
