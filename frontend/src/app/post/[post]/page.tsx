@@ -53,11 +53,8 @@ export default function Home({ params }: { params: { post: string } }) {
 						name={post.author.displayName}
 						profileImage={API + post.author.profileImage}
 						username={post.author.email}
-						text={post.contentType === "text/plain" && post.content}
-						postImage={
-							post.contentType ===
-								("image/png;base64" || "image/jpeg;base64") && post.content
-						}
+						text={post.content}
+						postImage={undefined}
 						date={Math.floor(new Date(post.published).getTime() / 1000)}
 						likes={0}
 						retweets={0}
