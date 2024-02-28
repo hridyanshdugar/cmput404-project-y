@@ -1,32 +1,67 @@
 from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
-
 from users.models import User
-from .models import Post
+
 
 class PostTestCase(APITestCase):
     def setUp(self):
-        self.user = User.objects.create(
-            firstName="Test", 
-            lastName="User", 
-            bio="Test user", 
-            email="test@email.com", 
-            url="https://localhost:8000/"
-        )
-        self.user2 = User.objects.create(
-            firstName="Test2",
-            lastName="User2",
-            bio="Test user2",
-            email="test2@email.com",
-            url="https://localhost:8000/"
-        )
-        self.client.force_authenticate(user=self.user)
+        response = self.client.post(f"/auth/signup", {"email": "test@email.com", "password": "test"})
+        self.user = response.data["user"]
+        self.auth = response.data["auth"]
+        response = self.client.post(f"/auth/signup", {"email": "test2@email.com", "password": "test"})
+        self.user2 = response.data["user"]
+        self.auth2 = response.data["auth"]
 
     ############################
-    # Positive tests
+    # tests
     ############################
-
-    def getPost(self):
-        response = self.client.get("/posts/49c8f6c0-ddcd-4656-9afc-d02a92dbd24e", format="json")
-
+    def testGetAllPosts(self):
+        response = self.client.get(f"/posts/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 0)
+
+    def testCreatePostNoAuthor(self):
+        response = self.client.post(
+            f"/posts/", {"content": "This is a test post"}
+        )
+        # assert
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def testCreatePostWithAuthor(self):
+        response = self.client.post(
+            f"/posts/", {"content": "This is a test post", "author": self.user["id"]}
+        )
+        # assert
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def testCreateGoodPost(self):
+        response = self.client.post(
+            f"/posts/", {"content": "This is a test post", "author": self.user["id"], "contentType": "text/plain"}
+        )
+        # assert
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response = self.client.get(f"/posts/")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+
+    def testDeletePost(self):
+        response = self.client.post(
+            f"/posts/", {"content": "This is a test post", "author": self.user["id"], "contentType": "text/plain"}
+        )
+        postId = response.data["id"]
+        headers = {
+            "HTTP_AUTHORIZATION": f"Bearer {self.auth['access']}"
+        }
+        response = self.client.delete(f"/posts/{postId}", **headers)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def testDeletePostUnauthorized(self):
+        response = self.client.post(
+            f"/posts/", {"content": "This is a test post", "author": self.user["id"], "contentType": "text/plain"}
+        )
+        postId = response.data["id"]
+        headers = {
+            "HTTP_AUTHORIZATION": f"Bearer {self.auth2['access']}"
+        }
+        response = self.client.delete(f"/posts/{postId}", **headers)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)

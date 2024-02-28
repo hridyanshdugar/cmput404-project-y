@@ -53,10 +53,10 @@ class PostsViewPK(APIView):
         post = get_object_or_404(Post, id=pk)
         serializer = PostSerializer(post, context={'request': request})
         realAuthor = serializer.get_author(post)["id"]
-        if realAuthor != response[1]["user_id"]:
-            return Response({"title": "Unauthorized", "message": "You are not authorized to delete this post"}, status = status.HTTP_401_UNAUTHORIZED)
-        post.delete()
-        return Response({"title": "Successfully Deleted", "message": "Post was deleted"}, status = status.HTTP_200_OK)
+        if response and realAuthor == response[1]["user_id"]:
+            post.delete()
+            return Response({"title": "Successfully Deleted", "message": "Post was deleted"}, status = status.HTTP_200_OK)
+        return Response({"title": "Unauthorized", "message": "You are not authorized to delete this post"}, status = status.HTTP_401_UNAUTHORIZED)
 
 class PostsView(APIView):
      pagination = Pager()
@@ -69,7 +69,6 @@ class PostsView(APIView):
             posts = Post.objects.filter(Q(visibility="PUBLIC", host=request.GET.get('host')) | Q(visibility="FRIENDS")) # FINISH UP
         else:
             posts = Post.objects.filter(visibility="PUBLIC").order_by('-published') # No private and unlisted
-        
         page_number = request.GET.get('page') or 1
         page = self.pagination.paginate_queryset(posts, request, view=self)
         if page is not None:
@@ -88,6 +87,7 @@ class PostsView(APIView):
         except User.DoesNotExist:
             return Response({"title": "Author not found.","message": "No valid author for the post was provided"}, status=status.HTTP_404_NOT_FOUND)
 
+        request.data._mutable = True
         request.data["author"] = author
         serializer = PostSerializer(data = request.data, context={'request': request})
         
