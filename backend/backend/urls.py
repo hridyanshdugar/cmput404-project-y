@@ -19,9 +19,12 @@ from index.views import main
 from userauth import urls
 from django.conf import settings
 from django.conf.urls.static import static
+from drf_spectacular.views import SpectacularAPIView
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('schema/', SpectacularAPIView.as_view(), name='schema'),
     path('authors/<str:author_id>/posts/', include('posts.urls')),
     path('posts/', include('posts.urls')),
     path('auth/', include('userauth.urls')),
