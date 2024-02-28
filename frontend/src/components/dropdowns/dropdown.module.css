@@ -1,7 +1,5 @@
 .dropdown {
 	display: flex;
-	padding-bottom: 0.5rem;
-	padding-right: 0.5rem;
 	position: relative;
 	border: none !important;
 	background-color: black;
@@ -50,10 +48,7 @@
 
 .dropdownToggle {
 	font-size: 1.5vh;
-	padding-top: 5px;
-	padding-bottom: 5px;
 	padding-left: 12px;
-	padding-right: 12px;
 	background-color: black;
 	color: rgb(29, 155, 240);
 	border-radius: 1000px;

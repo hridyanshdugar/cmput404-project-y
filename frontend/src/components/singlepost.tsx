@@ -12,6 +12,7 @@ import React from "react";
 import { Card } from "react-bootstrap";
 import Dropdown from "@/components/dropdowns/dropdown";
 import { navigate } from "@/utils/utils";
+import MarkdownPreview from '@uiw/react-markdown-preview';
 
 export function TimeConverter(date: Date) {
 	var now = new Date();
@@ -66,7 +67,7 @@ type Props = {
 	comments: number;
 	postID: string;
 	onPostPage?: boolean | undefined;
-	contentType?: string;
+	contentType: string;
 };
 
 export default class SinglePost extends React.Component<Props> {
@@ -126,8 +127,21 @@ export default class SinglePost extends React.Component<Props> {
 								onChange={onPostOptionSelect}
 							/>
 						</div>
-					</div>
-					<div className={style.topBottom}>{this.props.text}</div>
+                    </div>
+                    {
+                        this.props.contentType.includes("image") ? <Card className="bg-dark text-white">
+                        <Card.Img src={this.props.text} alt="Card image" />
+                    </Card> : <></>
+
+                    }
+                    {
+                        this.props.contentType === "text/markdown" ? <MarkdownPreview source={this.props.text}/> : <></>
+
+                    }
+                    {
+                        this.props.contentType === "text/plain" ? <div className={style.topBottom}>{this.props.text}</div> : <></>
+
+                    }                    
 					<div>
 						{this.props.postImage && (
 							<Card className="bg-dark text-white">
