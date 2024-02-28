@@ -10,6 +10,10 @@ import Profile from "@/components/profile";
 import SideBar from "@/components/sidebar";
 import Rightbar from "@/components/rightbar";
 import Cookies from 'universal-cookie';
+import { useState, useEffect } from 'react';
+import { getUserLocalInfo, navigate, API} from '@/utils/utils';
+import { error } from 'console';
+import { userInfo } from 'os';
 
 
 export default function ProfileLayout({
@@ -20,19 +24,47 @@ export default function ProfileLayout({
     params: { profile: string };
   }) {
 
-    const username = params.profile;
+    const userId = params.profile;
     let activeUser: boolean = false;
 
     const cookies = new Cookies()
     const allcookies = cookies.getAll()
     if (allcookies.auth && allcookies.user) {
         //!!Change to userName when added!!//
-        const userNameCookie = cookies.get("user").email
-        if (username == userNameCookie) {
+        const userIdCookie = cookies.get("user").id
+        if (userId == userIdCookie) {
             activeUser = true;
         }
     }
 
+    const [userInformation, setUserInformation] = useState<any>(null);
+    
+    useEffect(() => {
+
+      getUserLocalInfo(allcookies.auth, userId).then((result) => {
+          if (result.status == 200) {
+              return result.json();
+          }
+          else {
+              navigate('/');
+          }
+      }).catch((error) => {
+          console.log(error);
+          navigate('/');
+      }).then((data) => {
+          setUserInformation(data);
+          //console.log(data);
+      });
+    }, []);
+
+    if (!userInformation) {
+      return (<div>
+        <SideBar/>
+        <Rightbar/>
+        </div>);
+    }
+
+    console.log(userInformation);
 
 
     //Query username
@@ -41,7 +73,18 @@ export default function ProfileLayout({
     return (
         <div>
             <SideBar/>
-            <Profile name={'John Dowe'} username={'@' + username} bio={'bio'} website={'website'} dateJoined={''} followers={0} following={0} activeUser={activeUser} profileImage={'https://image.spreadshirtmedia.com/image-server/v1/products/T1459A839PA3861PT28D1031336018W5625H10000/views/1,width=550,height=550,appearanceId=839,backgroundColor=F2F2F2/gamer-sticker.jpg'} profileBackround={"https://i0.wp.com/www.thewrap.com/wp-content/uploads/2023/06/spider-man-across-the-spider-verse-group-shot.jpg?fit=990%2C557&ssl=1"}/>
+            <Profile 
+            userid={userId}
+            name={userInformation?.displayName} 
+            username={'@' + userInformation?.email} 
+            bio={userInformation?.bio? userInformation?.bio : 'No Bio'}
+            website={userInformation?.github? userInformation?.github : 'No Website'} 
+            dateJoined={''} 
+            followers={0} 
+            following={0} 
+            activeUser={activeUser} 
+            profileImage={userInformation?.profileImage || ""} 
+            profileBackround={userInformation?.profileBackgroundImage || ""}/>
             {children}
             <Rightbar/>
         </div>
