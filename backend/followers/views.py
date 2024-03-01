@@ -3,7 +3,7 @@ from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
-
+from django.db.models import Q
 from users.models import User
 
 from .helper import body_to_json, addToNewFollowRequestTable, addToFollowerTable
@@ -46,7 +46,7 @@ def unfollow(request):
 
     # delete from followers table
     try:
-        Follower.objects.filter(follower=request.headers['follower'], name= request.headers['name']).delete()
+        Follower.objects.filter(Q(follower=request.headers['follower']) & Q(name= request.headers['name'])).delete()
     except:
         return HttpResponseBadRequest("Invalid Request: Follower not found, are you sending 'name' and 'follower' in the headers")
 
@@ -83,12 +83,12 @@ def acceptFollowRequest(request):
         follower = request.headers['follower']
         url = request.headers['url']
         # Check if the follow request is not already accepted
-        follows = True if list(Follower.objects.filter(name=name,follower=follower)) else False
-        newRequest = True if list(NewFollowRequest.objects.filter(name=name, follower=follower)) else False
+        follows = True if list(Follower.objects.filter(Q(name=name) & Q(follower=follower))) else False
+        newRequest = True if list(NewFollowRequest.objects.filter(Q(name=name) & Q(follower=follower))) else False
 
         if not follows and newRequest:
             addToFollowerTable(name=name, follower=follower, url=url)
-            NewFollowRequest.objects.filter(name=name, follower=follower).delete()
+            NewFollowRequest.objects.filter(Q(name=name) & Q(follower=follower)).delete()
             return HttpResponse()
         else:
             return HttpResponseBadRequest("Not able to follow, follows="+ str(follows) + " newRequest=" + str(newRequest)) 
@@ -106,11 +106,11 @@ def declineFollowRequest(request):
         url = request.headers['url']
 
         # Check if the follow request is not already accepted
-        follows = True if list(Follower.objects.filter(name=name,follower=follower)) else False
-        newRequest = True if list(NewFollowRequest.objects.filter(name=name, follower=follower)) else False
+        follows = True if list(Follower.objects.filter(Q(name=name) & Q(follower=follower))) else False
+        newRequest = True if list(NewFollowRequest.objects.filter(Q(name=name) & Q(follower=follower))) else False
 
         if not follows and newRequest:
-            NewFollowRequest.objects.filter(name=name, follower=follower).delete()
+            NewFollowRequest.objects.filter(Q(name=name) & Q(follower=follower)).delete()
             return HttpResponse()
         else:
             return HttpResponseBadRequest("Not able to decline request, follows="+ str(follows) + " newRequest=" + str(newRequest)) 
