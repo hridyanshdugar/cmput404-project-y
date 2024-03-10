@@ -14,6 +14,7 @@ from pathlib import Path
 import os
 from datetime import timedelta
 import django_on_heroku
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -34,7 +35,6 @@ ALLOWED_HOSTS = ['*']
 
 CORS_ALLOW_ALL_ORIGINS = True # Change When release
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'followers',
     'posts',
     'comments',
+    'storages',
     'image',
     'whitenoise.runserver_nostatic',
 ]
@@ -174,9 +175,30 @@ USE_I18N = True
 
 USE_TZ = True
 
+S3_ENABLED = config('S3_ENABLED', cast=bool, default=False)
+LOCAL_SERVE_MEDIA_FILES = config('LOCAL_SERVE_MEDIA_FILES', cast=bool, default=not S3_ENABLED)
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.1/howto/static-files/
+if (not LOCAL_SERVE_MEDIA_FILES) and not S3_ENABLED:
+    raise ValueError('S3_ENABLED must be true if either media files are not served locally')
+
+if S3_ENABLED:
+    AWS_ACCESS_KEY_ID = config('BUCKETEER_AWS_ACCESS_KEY_ID')
+    AWS_SECRET_ACCESS_KEY = config('BUCKETEER_AWS_SECRET_ACCESS_KEY')
+    AWS_STORAGE_BUCKET_NAME = config('BUCKETEER_BUCKET_NAME')
+    AWS_S3_REGION_NAME = config('BUCKETEER_AWS_REGION')
+    AWS_DEFAULT_ACL = None
+    AWS_S3_SIGNATURE_VERSION = config('S3_SIGNATURE_VERSION', default='s3v4')
+    AWS_S3_ENDPOINT_URL = f'https://{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
+    AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400'}
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+if not LOCAL_SERVE_MEDIA_FILES:
+    PUBLIC_MEDIA_DEFAULT_ACL = 'public-read'
+    PUBLIC_MEDIA_LOCATION = 'media'
+
+    MEDIA_URL = f'{AWS_S3_ENDPOINT_URL}/{PUBLIC_MEDIA_LOCATION}/'
+    DEFAULT_FILE_STORAGE = 'image.utils.PublicMediaStorage'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
@@ -191,8 +213,7 @@ STATICFILES_FINDERS = [
      'django.contrib.staticfiles.finders.FileSystemFinder',
      'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 ]
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
+
 
 AUTH_USER_MODEL = 'users.User'
 

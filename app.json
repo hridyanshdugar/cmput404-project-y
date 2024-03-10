@@ -1,0 +1,26 @@
+{
+    "name": "y.com",
+    "scripts": {},
+    "env": {
+        "S3_ENABLED": {
+            "description": "Enable to upload & serve static and media files from S3",
+            "value": "True"
+        }
+    },
+    "addons": [
+        {
+            "plan": "heroku-postgresql:mini",
+            "as": "POSTGRESQL"
+        },
+        {
+            "plan": "bucketeer:hobbyist",
+            "as": "BUCKETEER"
+        }
+    ],
+    "buildpacks": [
+        {
+            "url": "heroku/python"
+        }
+    ],
+    "stack": "heroku-22"
+}

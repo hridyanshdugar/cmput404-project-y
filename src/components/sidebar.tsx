@@ -13,7 +13,7 @@ import PopupPanel from "./popuppanel";
 import Cookies from "universal-cookie";
 import { useEffect, useState } from "react";
 import { useRef } from "react";
-import { getAPIEndpoint, getFrontend } from "../utils/utils";
+import { getAPIEndpoint, getFrontend, getMediaEndpoint } from "../utils/utils";
 import { Spinner } from "react-bootstrap";
 
 export default function SideBar() {
@@ -109,7 +109,7 @@ export default function SideBar() {
                             userData ? <>
                             
                                 <img
-                                    src={getFrontend() + userData?.profileImage || ""}
+                                    src={getMediaEndpoint() + userData?.profileImage || ""}
                                     className={style.avatarImage}
                                     style={{ verticalAlign: "-10%" }}
                                 ></img>

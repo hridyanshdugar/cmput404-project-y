@@ -37,4 +37,9 @@ urlpatterns = [
         path('images/', include('image.urls')),
         path('followers/', include('followers.urls')),
     ])),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + heroku_react_django_urls
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+if settings.LOCAL_SERVE_MEDIA_FILES:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+urlpatterns += heroku_react_django_urls

@@ -4,7 +4,7 @@ import style from "./page.module.css";
 import BackSelector from "../components/backSelector";
 import CreatePost from "../components/createpost";
 import SinglePost from "../components/singlepost";
-import { getPost, getAPIEndpoint, getFrontend } from "../utils/utils";
+import { getPost, getAPIEndpoint, getFrontend, getMediaEndpoint } from "../utils/utils";
 import Cookies from "universal-cookie";
 import { useEffect, useState, useContext } from "react";
 import { navigate } from "../utils/utils";
@@ -52,7 +52,7 @@ export default function Post() {
 					<SinglePost
                         name={post.author.displayName}
                         userId={post.author.id}
-						profileImage={getFrontend() + post.author.profileImage}
+						profileImage={getMediaEndpoint() + post.author.profileImage}
 						username={post.author.email}
 						text={post.content}
 						postImage={undefined}

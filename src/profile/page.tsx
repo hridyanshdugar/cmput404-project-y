@@ -6,7 +6,7 @@ import Profile from "../components/profile";
 import SinglePost from "../components/singlepost";
 import React, { useContext, useEffect, useState } from 'react';
 import { PostContext } from "../utils/postcontext";
-import { getAPIEndpoint, getFrontend, getHomePosts } from "../utils/utils";
+import { getAPIEndpoint, getFrontend, getHomePosts, getMediaEndpoint } from "../utils/utils";
 import Cookies from 'universal-cookie';
 import { useOutletContext, useParams } from 'react-router-dom';
 
@@ -52,7 +52,7 @@ export default function Profiles() {
                         key={index}
                         name={item.author.displayName}
                         userId={item.author.id}
-						profileImage={getFrontend() + item.author.profileImage}
+						profileImage={getMediaEndpoint() + item.author.profileImage}
 						username={item.author.email}
 						text={item.content}
 						postImage={undefined}

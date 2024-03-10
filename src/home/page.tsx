@@ -14,7 +14,7 @@ import React, {
 	useContext,
 	useEffect,
 } from "react";
-import { getHomePosts, getAPIEndpoint, getFrontend } from "../utils/utils";
+import { getHomePosts, getAPIEndpoint, getFrontend, getMediaEndpoint } from "../utils/utils";
 import Cookies from "universal-cookie";
 import { PostContext } from "../utils/postcontext";
 
@@ -71,7 +71,7 @@ export default function Home() {
                         key={index}
                         name={item.author.displayName}
                         userId={item.author.id}
-						profileImage={getFrontend() + item.author.profileImage}
+						profileImage={getMediaEndpoint() + item.author.profileImage}
 						username={item.author.email}
 						text={item.content}
 						postImage={undefined}
