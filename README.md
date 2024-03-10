@@ -27,4 +27,4 @@ Contributors:
     Ashwin Shreekumar
     Hridyansh Dugar
 
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/uofa-cmput404/w24-project-y/tree/2024)
