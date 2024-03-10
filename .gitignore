@@ -12,7 +12,6 @@ backend/__pycache__
 
 # Distribution / packaging
 .Python
-build/
 develop-eggs/
 dist/
 downloads/
@@ -31,6 +30,7 @@ share/python-wheels/
 MANIFEST
 
 node_modules
+**/node_modules
 
 # PyInstaller
 #  Usually these files are written by a python script from a template

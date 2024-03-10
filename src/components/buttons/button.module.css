@@ -1,0 +1,70 @@
+.button {
+    text-align: center;
+    cursor: "pointer";
+}
+
+.very {
+    border-radius: 1000px;
+}
+
+.moderate {
+    border-radius: 5px;
+}
+.verySmallButton {
+    font-size: 3vh;
+    width:50px;
+    height:50px;
+}
+
+.smallButton {
+    font-size: 2vh;
+    width:150px;
+    height:50px;
+}
+
+.mediumButton {
+    font-size: 2vh;
+    width:500px;
+    height:50px;
+}
+
+.largeButton {
+    font-size: 3vh;
+    padding: 15px 75px;
+}
+
+.primary {
+    color: #FFF;
+    background-color: #333;
+    border: 1px solid grey;
+    transition: background-color 0.3s;
+}
+
+.primary:hover {
+    background-color: #BBB;
+    transition: background-color 0.3s;
+}
+
+.secondary {
+    color: rgb(29, 155, 240);
+    background-color: #FFF;
+    border: 1px solid #333;
+    transition: background-color 0.3s;
+}
+
+.secondary:hover {
+    background-color: #AAA;
+    transition: background-color 0.3s;
+}
+
+.tertiary {
+    color: #FFF;
+    background-color: rgb(29, 155, 240);
+    border: 1px solid #333;
+    transition: background-color 0.3s;
+}
+
+.tertiary:hover {
+    background-color: rgb(16, 77, 117);
+    transition: background-color 0.3s;
+}
