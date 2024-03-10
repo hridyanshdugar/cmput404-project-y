@@ -8,10 +8,7 @@
         }
     },
     "addons": [
-        {
-            "plan": "heroku-postgresql:mini",
-            "as": "POSTGRESQL"
-        },
+        "heroku-postgresql:mini",
         {
             "plan": "bucketeer:hobbyist",
             "as": "BUCKETEER"
