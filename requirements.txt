@@ -3,6 +3,7 @@ attrs==23.2.0
 dj-database-url==2.1.0
 Django==5.0.1
 django-cors-headers==4.3.1
+django-extensions==3.2.3
 django-on-heroku==1.1.2
 djangorestframework==3.14.0
 djangorestframework-simplejwt==5.3.1
