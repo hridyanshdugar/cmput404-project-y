@@ -26,3 +26,5 @@ Contributors:
     Mark Usmanov
     Ashwin Shreekumar
     Hridyansh Dugar
+
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
