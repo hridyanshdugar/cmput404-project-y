@@ -77,10 +77,10 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 @receiver(post_delete, sender=User)
 def delete_media_on_user_delete(sender, instance, **kwargs):
-    if instance.profileImage and os.path.isfile(instance.profileImage.path):
-        os.remove(instance.profileImage.path)
-    if instance.profileBackgroundImage and os.path.isfile(instance.profileBackgroundImage.path):
-        os.remove(instance.profileBackgroundImage.path)
+    if instance.profileImage:
+        instance.profileImage.delete()
+    if instance.profileBackgroundImage:
+        instance.profileBackgroundImage.delete()
 
 @receiver(pre_save, sender=User)
 def delete_media_on_user_save(sender, instance, **kwargs):
@@ -90,7 +90,7 @@ def delete_media_on_user_save(sender, instance, **kwargs):
     except:
         return False
         
-    if instance.profileImage and obj and obj.profileImage and os.path.isfile(obj.profileImage.path) and obj.profileImage != instance.profileImage:
-        os.remove(obj.profileImage.path)
-    if instance.profileBackgroundImage and obj and obj.profileBackgroundImage and os.path.isfile(obj.profileBackgroundImage.path) and obj.profileBackgroundImage != instance.profileBackgroundImage:
-        os.remove(obj.profileBackgroundImage.path)
+    if instance.profileImage and obj and obj.profileImage and obj.profileImage != instance.profileImage:
+        obj.profileImage.delete()
+    if instance.profileBackgroundImage and obj and obj.profileBackgroundImage and obj.profileBackgroundImage != instance.profileBackgroundImage:
+        obj.profileBackgroundImage.delete()

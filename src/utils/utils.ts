@@ -10,7 +10,7 @@ export function getFrontend() {
 
 export function getMediaEndpoint() {
     if (process.env.NODE_ENV === "production") {
-        return window.location.origin;
+        return '';
     } else {
         return `http://127.0.0.1:8000`;
     }
