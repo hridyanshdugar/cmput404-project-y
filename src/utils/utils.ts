@@ -2,7 +2,7 @@ import Cookie from "universal-cookie";
 
 export function getFrontend() {
     if (process.env.NODE_ENV === "production") {
-        return ``;
+        return window.location.origin;
     } else {
         return `http://localhost:3000`;
     }
@@ -10,7 +10,7 @@ export function getFrontend() {
 
 export function getAPIEndpoint() {
     if (process.env.NODE_ENV === "production") {
-        return `/api`;
+        return window.location.origin + `/api`;
     } else {
         return `http://127.0.0.1:8000/api`;
     }
