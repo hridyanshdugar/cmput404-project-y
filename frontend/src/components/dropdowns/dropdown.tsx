@@ -1,6 +1,5 @@
 "use strict";
 import React, { useState, MouseEvent, forwardRef } from "react";
-import Button from "@/components/buttons/button";
 import style from "./dropdown.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IconDefinition, faAngleDown } from "@fortawesome/free-solid-svg-icons";

@@ -9,11 +9,11 @@ import { faPerson } from "@fortawesome/free-solid-svg-icons";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
 import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
-import PopupPanel from "@/components/popuppanel";
+import PopupPanel from "../components/popuppanel";
 import Cookies from "universal-cookie";
 import { useEffect, useState } from "react";
 import { useRef } from "react";
-import { getAPIEndpoint } from "@/utils/utils";
+import { getAPIEndpoint } from "../utils/utils";
 import { Spinner } from "react-bootstrap";
 
 export default function SideBar() {
@@ -81,7 +81,7 @@ export default function SideBar() {
 						</a>
 					</li>
 					<li>
-						<a href="/profile">
+                        <a href={"/profile/" +  (userData ? userData.id : "null")}>
 							<div className={style.inline}>
 								<FontAwesomeIcon icon={faPerson} inverse fixedWidth />
 							</div>

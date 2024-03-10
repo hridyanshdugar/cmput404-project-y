@@ -1,0 +1,92 @@
+.mainContentView {
+	background-color: #000000;
+	color: white;
+	max-width: 37.5rem;
+	text-align: center;
+	font-size: 40px;
+	margin-left: 13rem;
+	border-right: 1px solid rgb(47, 51, 54);
+	border-left: 1px solid rgb(47, 51, 54);
+}
+
+@media screen and (max-width: 1000px) {
+	.mainContentView {
+		margin-left: 3rem;
+	}
+}
+
+@media screen and (max-width: 500px) {
+	.mainContentView {
+		overflow-y: scroll;
+	}
+}
+
+.container {
+	width: 100%;
+	display: inline-block;
+}
+.title {
+	text-align: left;
+	margin-top: 2rem;
+	margin-left: 2rem;
+	font-size: 3rem;
+	font-weight: 500;
+}
+
+.header {
+	text-align: left;
+	margin-top: 1rem;
+	margin-bottom: 1rem;
+	margin-left: 2rem;
+	font-size: 2rem;
+	font-weight: 500;
+}
+
+.form {
+	width: 90%;
+	align-self: start;
+	text-align: left;
+	text-indent: 0.5rem;
+	font-size: large;
+	display: flex;
+	flex-direction: column;
+	margin-left: 2rem;
+	margin-right: 2rem;
+	border: 1px solid rgb(47, 51, 54);
+	border-radius: 0.5rem;
+	margin-bottom: 1rem;
+}
+
+.form:focus-within {
+	border-color: rgb(29, 155, 240);
+	color: rgb(29, 155, 240);
+}
+
+.input {
+	margin-bottom: 1rem;
+	font-size: 1.5rem;
+	padding: 0.5rem 1rem;
+	border-radius: 5px;
+	background-color: black;
+	color: white;
+	border: none;
+	outline: none;
+}
+
+.input::placeholder {
+	color: grey;
+}
+
+.input:not(:placeholder-shown) {
+	color: white;
+}
+
+.submit {
+	font-size: 1.5rem;
+	padding: 0.5rem 1rem;
+	border-radius: 5px;
+	background-color: white;
+	color: black;
+	border: none;
+	cursor: pointer;
+}

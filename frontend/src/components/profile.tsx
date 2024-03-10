@@ -1,19 +1,11 @@
 "use client"
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Image from "next/image";
 import styles from "./profile.module.css";
 import Button from 'react-bootstrap/Button';
-import Card from 'react-bootstrap/Card';
-import { Col, Row } from 'react-bootstrap';
-import { title } from 'process';
 import React from 'react'
-import SinglePost from '@/components/singlepost';
-import SideBar from "@/components/sidebar";
-import Rightbar from "@/components/rightbar";
 import Cookies from 'universal-cookie';
-import {navigate} from '@/utils/utils';
-import Link from 'next/link';
-
+import {navigate} from "../utils/utils";
+import { Link } from 'react-router-dom';
 
 type Props = {
     userid: string;
@@ -119,9 +111,9 @@ export default class Profile extends React.Component<Props> {
                   <div className={styles.container}>
                     <nav className={styles.profileNav}>
                       <ul>
-                        <li><Link href={"/profile/" + this.props.userid!}>Posts</Link></li>
-                        <li><Link href={"/profile/" + this.props.userid + "/media"}>Media</Link></li>
-                        <li><Link href={"/profile/" + this.props.userid + "/likes"}>Likes</Link></li>
+                        <li><Link to={"/profile/" + this.props.userid!}>Posts</Link></li>
+                        <li><Link to={"/profile/" + this.props.userid + "/media"}>Media</Link></li>
+                        <li><Link to={"/profile/" + this.props.userid + "/likes"}>Likes</Link></li>
                       </ul>
                     </nav>
                   </div>

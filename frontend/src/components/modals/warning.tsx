@@ -1,9 +1,9 @@
 "use client";
 import styles from './input.module.css'
 import React from 'react';
-import Close from "@/components/buttons/close";
-import Button from "@/components/buttons/button";
-import "@/app/global.css";
+import Close from "../../components/buttons/close";
+import Button from "../../components/buttons/button";
+import "../../global.css";
 
 interface InputProps {
     onClick: () => void;

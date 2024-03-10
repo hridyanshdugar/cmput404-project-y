@@ -1,7 +1,6 @@
 "use strict";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import style from "./createpost.module.css";
-import Image from "next/image";
 import { faImage } from "@fortawesome/free-regular-svg-icons";
 import React, {
 	ChangeEvent,
@@ -10,12 +9,12 @@ import React, {
 	useRef,
 	useEffect,
 } from "react";
-import Dropdown from "@/components/dropdowns/dropdown";
-import Button from "@/components/buttons/button";
+import Dropdown from "../components/dropdowns/dropdown";
+import Button from "../components/buttons/button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMarkdown } from "@fortawesome/free-brands-svg-icons";
 import { faFileLines } from "@fortawesome/free-regular-svg-icons";
-import { createPost, getAPIEndpoint, getHomePosts, imageUploadHandler } from "@/utils/utils";
+import { createPost, getAPIEndpoint, getHomePosts, imageUploadHandler } from "../utils/utils";
 import Cookies from "universal-cookie";
 import { Card } from "react-bootstrap";
 import MDEditor from "@uiw/react-md-editor";

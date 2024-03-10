@@ -1,7 +1,7 @@
 "use client";
 import styles from './input.module.css'
 import React from 'react';
-import "@/app/global.css";
+import "../../global.css";
 
 interface InputProps {
     onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;

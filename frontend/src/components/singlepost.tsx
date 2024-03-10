@@ -1,7 +1,6 @@
 "use client";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import style from "./singlepost.module.css";
-import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import { faArrowUpFromBracket } from "@fortawesome/free-solid-svg-icons";
@@ -10,13 +9,13 @@ import { faComment } from "@fortawesome/free-regular-svg-icons";
 import { faHeart } from "@fortawesome/free-regular-svg-icons";
 import React from "react";
 import { Card } from "react-bootstrap";
-import Dropdown from "@/components/dropdowns/dropdown";
-import { navigate } from "@/utils/utils";
+import Dropdown from "../components/dropdowns/dropdown";
+import { navigate } from "../utils/utils";
 import MarkdownPreview from "@uiw/react-markdown-preview";
-import { deletePost } from "@/utils/utils";
+import { deletePost } from "../utils/utils";
 import Cookies from "universal-cookie";
 import { useContext } from "react";
-import { PostContext } from "@/utils/postcontext";
+import { PostContext } from "../utils/postcontext";
 
 export function TimeConverter(date: Date) {
 	var now = new Date();

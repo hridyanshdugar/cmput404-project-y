@@ -2,9 +2,9 @@
 
 import React, { useState, useContext } from "react";
 import style from "./popuppanel.module.css";
-import Close from "@/components/buttons/close";
-import CreatePost from "@/components/createpost";
-import { PostContext } from "@/utils/postcontext";
+import Close from "../components/buttons/close";
+import CreatePost from "../components/createpost";
+import { PostContext } from "../utils/postcontext";
 
 interface PopupPanelProps {
 	setPopupOpen: React.Dispatch<React.SetStateAction<boolean>>;

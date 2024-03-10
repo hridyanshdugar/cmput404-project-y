@@ -6,9 +6,9 @@ import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import { faArrowUpFromBracket } from "@fortawesome/free-solid-svg-icons";
 import React from "react";
 import Button from "./buttons/button";
-import { processFollowRequest } from "@/utils/utils";
+import { processFollowRequest } from "../utils/utils";
 import Cookies from "universal-cookie";
-import { getAPIEndpoint } from "@/utils/utils";
+import { getAPIEndpoint } from "../utils/utils";
 
 type Props = {
 	name: string;
