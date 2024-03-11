@@ -52,7 +52,7 @@ export default function Post() {
 					<SinglePost
                         name={post.author.displayName}
                         userId={post.author.id}
-						profileImage={getMediaEndpoint() + post.author.profileImage}
+						profileImage={getMediaEndpoint() + post.author.profileImage.split("?")[0]}
 						username={post.author.email}
 						text={post.content}
 						postImage={undefined}

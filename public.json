@@ -1,0 +1,11 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": "s3:*",
+            "Resource": "arn:aws:s3:::bucketeer-16715a17-97c5-4882-91ed-18ab363df76f/*"
+        }
+    ]
+}

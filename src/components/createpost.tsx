@@ -87,20 +87,20 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 	};
 
 	const handlePaste = async (event: React.ClipboardEvent<HTMLDivElement>) => {
-		const clipboardData = event.clipboardData;
-		if (clipboardData.files.length === 1) {
-			const myfile = clipboardData.files[0] as File;
+        const clipboardData = event.clipboardData;
+        if (clipboardData.files.length === 1) {
+            const myfile = clipboardData.files[0] as File;
 			const response = await imageUploadHandler(myfile,auth);
 			const data = await response.json();
-			console.log(data);
-			const url = getMediaEndpoint() + data.image;
+            let url = getMediaEndpoint() + data.image;
+            url = url.split("?")[0]
 			event.preventDefault();
 			if (url) {
 			document.execCommand(
 				"insertText",
 				false,
 				`![${url}](${url})\n`
-			);
+            );
 			} else {
 			document.execCommand(
 				"insertText",
@@ -168,7 +168,7 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 				<div className={style.blockImage}>
 					<img
 						className={style.img}
-						src={`${user ? getMediaEndpoint() + user.profileImage : ""}`}
+						src={`${user ? getMediaEndpoint() + user.profileImage.split("?")[0] : ""}`}
 						style={{ width: "40px", height: "40px" }}
 					/>
 				</div>
