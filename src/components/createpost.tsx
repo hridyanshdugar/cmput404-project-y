@@ -93,7 +93,7 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 			const response = await imageUploadHandler(myfile,auth);
 			const data = await response.json();
             let url = getMediaEndpoint() + data.image;
-            url = url.split("?")[0]
+            url = url?.split("?")[0]
 			event.preventDefault();
 			if (url) {
 			document.execCommand(
@@ -120,7 +120,7 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 		var contentToSend: string = "";
 		if (contentTypeMinimal === "picture") {
 			var contentTypeF =
-				PFPbackgroundurl.split("base64")[0].split("data:")[1] + "base64";
+				PFPbackgroundurl?.split("base64")[0]?.split("data:")[1] + "base64";
 			contentToSend = PFPbackgroundurl;
 		} else if (contentTypeMinimal === "markdown") {
 			var contentTypeF = "text/markdown";
@@ -168,7 +168,7 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 				<div className={style.blockImage}>
 					<img
 						className={style.img}
-						src={`${user ? getMediaEndpoint() + user.profileImage.split("?")[0] : ""}`}
+						src={`${user ? getMediaEndpoint() + user.profileImage?.split("?")[0] : ""}`}
 						style={{ width: "40px", height: "40px" }}
 					/>
 				</div>

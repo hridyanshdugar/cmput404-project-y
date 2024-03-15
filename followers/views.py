@@ -5,7 +5,8 @@ from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
 from django.db.models import Q
 from users.models import User
-
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.permissions import AllowAny
 from .helper import body_to_json, addToNewFollowRequestTable, addToFollowerTable
 from .models import NewFollowRequest, Follower
 
@@ -14,13 +15,13 @@ val = URLValidator()
 def index(request):
     return HttpResponse("Hello, world. from followers")
 
-@csrf_exempt
+@api_view(['POST'])
+@authentication_classes([])
+@permission_classes((AllowAny,))
 def follow(request):
     # This is supposed to be a post
     if request.method != "POST":
         return HttpResponseBadRequest("Invalid Request: Please send a post request")
-    
-    # TODO: Add apikey handling
     
     # Get the request body and send follow request
     body = body_to_json(request.body)
@@ -36,7 +37,9 @@ def follow(request):
 
     return HttpResponse()
 
-@csrf_exempt
+@api_view(['PUT'])
+@authentication_classes([])
+@permission_classes((AllowAny,))
 def unfollow(request):
     # This is supposed to be a post
     if request.method != "PUT":
@@ -73,7 +76,9 @@ def getFollowers(request):
     except:
         return HttpResponseBadRequest("Something went wrong!")    
 
-@csrf_exempt
+@api_view(['PUT'])
+@authentication_classes([])
+@permission_classes((AllowAny,))
 def acceptFollowRequest(request):
     if request.method != "PUT":
         return HttpResponseBadRequest("Invalid Request: Please send a put request")
@@ -95,7 +100,9 @@ def acceptFollowRequest(request):
     except:
         return HttpResponseBadRequest("Something went wrong!") 
 
-@csrf_exempt
+@api_view(['PUT'])
+@authentication_classes([])
+@permission_classes((AllowAny,))
 def declineFollowRequest(request):
     if request.method != "PUT":
         return HttpResponseBadRequest("Invalid Request: Please send a put request")
