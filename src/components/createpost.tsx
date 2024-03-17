@@ -14,7 +14,14 @@ import Button from "./buttons/button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMarkdown } from "@fortawesome/free-brands-svg-icons";
 import { faFileLines } from "@fortawesome/free-regular-svg-icons";
-import { createPost, getAPIEndpoint, getFrontend, getHomePosts, getMediaEndpoint, imageUploadHandler } from "../utils/utils";
+import {
+	createPost,
+	getAPIEndpoint,
+	getFrontend,
+	getHomePosts,
+	getMediaEndpoint,
+	imageUploadHandler,
+} from "../utils/utils";
 import Cookies from "universal-cookie";
 import { Card } from "react-bootstrap";
 import MDEditor from "@uiw/react-md-editor";
@@ -87,26 +94,22 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 	};
 
 	const handlePaste = async (event: React.ClipboardEvent<HTMLDivElement>) => {
-        const clipboardData = event.clipboardData;
-        if (clipboardData.files.length === 1) {
-            const myfile = clipboardData.files[0] as File;
-			const response = await imageUploadHandler(myfile,auth);
+		const clipboardData = event.clipboardData;
+		if (clipboardData.files.length === 1) {
+			const myfile = clipboardData.files[0] as File;
+			const response = await imageUploadHandler(myfile, auth);
 			const data = await response.json();
-            let url = getMediaEndpoint() + data.image;
-            url = url?.split("?")[0]
+			let url = getMediaEndpoint() + data.image;
+			url = url?.split("?")[0];
 			event.preventDefault();
 			if (url) {
-			document.execCommand(
-				"insertText",
-				false,
-				`![${url}](${url})\n`
-            );
+				document.execCommand("insertText", false, `![${url}](${url})\n`);
 			} else {
-			document.execCommand(
-				"insertText",
-				false,
-				"ERROR Image has not been stored on server"
-			);
+				document.execCommand(
+					"insertText",
+					false,
+					"ERROR Image has not been stored on server"
+				);
 			}
 		}
 	};
@@ -155,7 +158,7 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 				}
 			})
 			.catch(async (result: any) => {
-				const Data = await result.json();
+				const Data = await result?.json();
 				console.log(Data);
 			});
 	};
@@ -168,7 +171,9 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 				<div className={style.blockImage}>
 					<img
 						className={style.img}
-						src={`${user ? getMediaEndpoint() + user.profileImage?.split("?")[0] : ""}`}
+						src={`${
+							user ? getMediaEndpoint() + user.profileImage?.split("?")[0] : ""
+						}`}
 						style={{ width: "40px", height: "40px" }}
 					/>
 				</div>

@@ -4,7 +4,12 @@ import style from "./page.module.css";
 import BackSelector from "../components/backSelector";
 import CreatePost from "../components/createpost";
 import SinglePost from "../components/singlepost";
-import { getPost, getAPIEndpoint, getFrontend, getMediaEndpoint } from "../utils/utils";
+import {
+	getPost,
+	getAPIEndpoint,
+	getFrontend,
+	getMediaEndpoint,
+} from "../utils/utils";
 import Cookies from "universal-cookie";
 import { useEffect, useState, useContext } from "react";
 import { navigate } from "../utils/utils";
@@ -15,7 +20,7 @@ export default function Post() {
 	const [post, setPost] = useState<any>(null);
 	const [replies, setReplies] = useContext(PostContext);
 	const [auth, setAuth] = useState<any>(null);
-    const { postID } = useParams();
+	const { postID } = useParams();
 
 	useEffect(() => {
 		const cookies = new Cookies();
@@ -29,7 +34,7 @@ export default function Post() {
 					setPost(Data);
 				})
 				.catch(async (result: any) => {
-					const Data = await result.json();
+					const Data = await result?.json();
 					console.log(Data);
 				});
 		} else {
@@ -50,9 +55,11 @@ export default function Post() {
 			<div className={style.mainContentView}>
 				{post && (
 					<SinglePost
-                        name={post.author.displayName}
-                        userId={post.author.id}
-						profileImage={getMediaEndpoint() + post.author.profileImage.split("?")[0]}
+						name={post.author.displayName}
+						userId={post.author.id}
+						profileImage={
+							getMediaEndpoint() + post.author.profileImage.split("?")[0]
+						}
 						username={post.author.email}
 						text={post.content}
 						postImage={undefined}

@@ -1,9 +1,10 @@
 .mainContentView {
-	background-color: #f4f4f4;
+	background-color: black;
 	max-width: 37.5rem;
 	text-align: center;
 	font-size: 40px;
 	margin-left: 13rem;
+	min-height: 101vh;
 	border-right: 1px solid rgb(47, 51, 54);
 	border-left: 1px solid rgb(47, 51, 54);
 }

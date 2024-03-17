@@ -1,9 +1,9 @@
 body {
-    background-color: black;
-    height: fit-content;
+	background-color: black;
+	height: fit-content;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+	font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+		monospace;
 }
