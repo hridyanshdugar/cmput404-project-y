@@ -53,6 +53,11 @@ export default function Home() {
 				console.log(Data);
 			});
 		}
+		else {
+			//get following users
+			//get posts from following users
+			//as well as posts that are friends only
+		}
 	};
 
 	const updatePosts = (State: any) => {
