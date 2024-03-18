@@ -15,6 +15,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMarkdown } from "@fortawesome/free-brands-svg-icons";
 import { faFileLines } from "@fortawesome/free-regular-svg-icons";
 import {
+	createComment,
 	createPost,
 	getAPIEndpoint,
 	getFrontend,
@@ -28,7 +29,7 @@ import MDEditor from "@uiw/react-md-editor";
 
 interface CreatePostProps {
 	style?: React.CSSProperties;
-	reply?: boolean | undefined;
+	postId?: string | undefined;
 	setPopupOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 	updatePosts: (State: any) => void;
 }
@@ -87,7 +88,7 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 	};
 
 	const onCreateClick = (event: MouseEvent<HTMLDivElement>) => {
-		if (dropdownRef.current && horizontalLineRef.current && !props.reply) {
+		if (dropdownRef.current && horizontalLineRef.current && !props.postId) {
 			dropdownRef.current.style.display = "flex";
 			horizontalLineRef.current.style.display = "block";
 		}
@@ -132,35 +133,57 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 			var contentTypeF = "text/plain";
 			contentToSend = content;
 		}
-		createPost(
-			title,
-			description,
-			contentTypeF,
-			contentToSend,
-			VisibilityMap[visibility],
-			auth,
-			user.id
-		)
-			.then(async (result: any) => {
-				const Data = await result.json();
-				if (VisibilityMap[visibility] === "PUBLIC") {
+		if (props.postId) {
+			createComment(contentTypeF, contentToSend, auth, user.id, props.postId)
+				.then(async (result: any) => {
+					const Data = await result.json();
 					props.updatePosts(Data);
-				}
-				if (props.setPopupOpen) {
-					props.setPopupOpen(false);
-				}
-				if (contentTypeMinimal === "plain") {
-					setcontent("");
-				} else if (contentTypeMinimal === "markdown") {
-					setMarkdownValue("");
-				} else if (contentTypeMinimal === "picture") {
-					setPFPbackgroundurl("");
-				}
-			})
-			.catch(async (result: any) => {
-				const Data = await result?.json();
-				console.log(Data);
-			});
+					if (props.setPopupOpen) {
+						props.setPopupOpen(false);
+					}
+					if (contentTypeMinimal === "plain") {
+						setcontent("");
+					} else if (contentTypeMinimal === "markdown") {
+						setMarkdownValue("");
+					} else if (contentTypeMinimal === "picture") {
+						setPFPbackgroundurl("");
+					}
+				})
+				.catch(async (result: any) => {
+					const Data = await result.json();
+					console.log(Data);
+				});
+		} else {
+			createPost(
+				title,
+				description,
+				contentTypeF,
+				contentToSend,
+				VisibilityMap[visibility],
+				auth,
+				user.id
+			)
+				.then(async (result: any) => {
+					const Data = await result.json();
+					if (VisibilityMap[visibility] === "PUBLIC") {
+						props.updatePosts(Data);
+					}
+					if (props.setPopupOpen) {
+						props.setPopupOpen(false);
+					}
+					if (contentTypeMinimal === "plain") {
+						setcontent("");
+					} else if (contentTypeMinimal === "markdown") {
+						setMarkdownValue("");
+					} else if (contentTypeMinimal === "picture") {
+						setPFPbackgroundurl("");
+					}
+				})
+				.catch(async (result: any) => {
+					const Data = await result.json();
+					console.log(Data);
+				});
+		}
 	};
 
 	console.log(contentTypeMinimal);
@@ -279,7 +302,7 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 				<div className={style.flexItem2}>
 					<Button
 						onClick={onSubmit}
-						text={props.reply ? "Reply" : "Post"}
+						text={props.postId ? "Reply" : "Post"}
 						type="tertiary"
 						size="small"
 						roundness="very"

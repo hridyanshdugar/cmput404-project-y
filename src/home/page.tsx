@@ -79,7 +79,7 @@ export default function Home() {
 						likes={0}
 						retweets={0}
 						comments={0}
-						postID={item.id}
+						postId={item.id}
 						contentType={item.contentType}
 					/>
 				)) : <Spinner animation="border" role="status">

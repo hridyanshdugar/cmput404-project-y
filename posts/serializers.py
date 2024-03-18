@@ -17,7 +17,6 @@ class PostSerializer(serializers.ModelSerializer):
      type = serializers.SerializerMethodField(read_only=True)
      commentsSrc = serializers.SerializerMethodField()
      comments = serializers.SerializerMethodField()
-     comments = serializers.SerializerMethodField()
      author = serializers.SerializerMethodField()
 
      class Meta:
@@ -34,8 +33,6 @@ class PostSerializer(serializers.ModelSerializer):
     
      def get_author(self, obj):
         return AuthorSerializer(obj.author, context={'exclude_comments': True}).data
-
-     
 
      def get_commentsSrc(self, obj):
         comments = Comment.objects.filter(post=obj)

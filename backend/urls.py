@@ -30,6 +30,8 @@ urlpatterns = [
     path('api/', include([
         path('admin/', admin.site.urls),
         path('schema/', SpectacularAPIView.as_view(), name='schema'),
+        path('authors/<str:author_id>/posts/<uuid:fk>/comments/', include('comments.urls')),
+        path('posts/<uuid:fk>/comments/', include('comments.urls')),
         path('authors/<str:author_id>/posts/', include('posts.urls')),
         path('posts/', include('posts.urls')),
         path('auth/', include('userauth.urls')),

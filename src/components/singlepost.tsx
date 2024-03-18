@@ -12,7 +12,7 @@ import { Card } from "react-bootstrap";
 import Dropdown from "./dropdowns/dropdown";
 import { navigate } from "../utils/utils";
 import MarkdownPreview from "@uiw/react-markdown-preview";
-import { deletePost } from "../utils/utils";
+import { deletePost, deleteComment } from "../utils/utils";
 import Cookies from "universal-cookie";
 import { useContext } from "react";
 import { PostContext } from "../utils/postcontext";
@@ -69,50 +69,66 @@ type Props = {
 	likes: number;
 	retweets: number;
 	comments: number;
-	postID: string;
-	onPostPage?: boolean | undefined;
+	postId: string;
+	onPostPage?: boolean;
 	contentType: string;
+	parentId?: string;
 };
 
 const SinglePost: React.FC<Props> = (props) => {
-    const onClickF = (event: React.MouseEvent<HTMLElement>) => {
-        let id = event.target as any;
-        id = id.id;
-        console.log(id)
-        if (id.includes("profile")) {
-            navigate("/profile/" + props.userId);
-        } else {
-            if (!props.onPostPage) {
-                navigate("/post/" + props.postID);
-            }            
-        }
-    };
-
-
+	const onClickF = (event: React.MouseEvent<HTMLElement>) => {
+		let id = event.target as any;
+		id = id.id;
+		console.log(id);
+		if (id.includes("profile")) {
+			navigate("/profile/" + props.userId);
+		} else {
+			if (!props.onPostPage && typeof props.parentId === "undefined") {
+				navigate("/post/" + props.postId);
+			}
+		}
+	};
 
 	const onPostOptionSelect = (selection: string | null) => {
 		const cookies = new Cookies();
 		const auth = cookies.get("auth")["access"];
 		if (selection === "Delete") {
-			deletePost(auth, props.postID)
-				.then(async (result: any) => {
-					const Data = await result.json();
-					console.log(Data);
+			if (props.parentId) {
+				deleteComment(auth, props.parentId, props.postId)
+					.then(async (result: any) => {
+						const Data = await result.json();
+						console.log(Data);
 
-					if (result.status === 200) {
-						setPosts(posts.filter((post: any) => post.id !== props.postID));
-					}
-				})
-				.catch(async (result: any) => {
-					console.log(result);
-				});
+						if (result.status === 200) {
+							setReplies(
+								replies.filter((post: any) => post.id !== props.postId)
+							);
+						}
+					})
+					.catch(async (result: any) => {
+						console.log(result);
+					});
+			} else {
+				deletePost(auth, props.postId)
+					.then(async (result: any) => {
+						const Data = await result.json();
+						console.log(Data);
+
+						if (result.status === 200) {
+							setPosts(posts.filter((post: any) => post.id !== props.postId));
+						}
+					})
+					.catch(async (result: any) => {
+						console.log(result);
+					});
+			}
 		} else if (selection === "Edit") {
 			console.log("edit");
 		}
 	};
 
 	const date = new Date(0);
-	const [posts, setPosts] = useContext(PostContext);
+	const [posts, setPosts, replies, setReplies] = useContext(PostContext);
 	date.setUTCSeconds(props.date);
 	return (
 		<div
@@ -120,9 +136,9 @@ const SinglePost: React.FC<Props> = (props) => {
 			onClick={onClickF}
 			style={{ cursor: props.onPostPage ? "default" : "pointer" }}
 		>
-            <div className={style.blockImage}>
-                <img
-                     id="profile6"
+			<div className={style.blockImage}>
+				<img
+					id="profile6"
 					className={style.img}
 					src={props.profileImage}
 					alt={""}
@@ -133,11 +149,19 @@ const SinglePost: React.FC<Props> = (props) => {
 			<div className={style.blockContent}>
 				<div className={[style.topText, style.blockFlexContent].join(" ")}>
 					<div className={style.topLeft} id="profile2">
-						<div className={style.inlineBlock}  id="profile3">{props.name}</div>
-						<div  id="profile4" className={[style.topUserText, style.inlineBlock].join(" ")}>
+						<div className={style.inlineBlock} id="profile3">
+							{props.name}
+						</div>
+						<div
+							id="profile4"
+							className={[style.topUserText, style.inlineBlock].join(" ")}
+						>
 							{props.username}
 						</div>
-						<div  id="profile5" className={[style.topUserText, style.inlineBlock].join(" ")}>
+						<div
+							id="profile5"
+							className={[style.topUserText, style.inlineBlock].join(" ")}
+						>
 							{" "}
 							· {TimeConverter(date)}
 						</div>

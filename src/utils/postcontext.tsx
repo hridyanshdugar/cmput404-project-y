@@ -8,9 +8,9 @@ export const PostContextProvider = ({
 	children: React.ReactNode;
 }>) => {
 	const [posts, setPosts] = useState<any | undefined>(undefined);
-
+	const [replies, setReplies] = useState<any | undefined>(undefined);
 	return (
-		<PostContext.Provider value={[posts, setPosts]}>
+		<PostContext.Provider value={[posts, setPosts, replies, setReplies]}>
 			{children}
 		</PostContext.Provider>
 	);

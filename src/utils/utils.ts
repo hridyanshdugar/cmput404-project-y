@@ -104,7 +104,7 @@ export async function getUserLocalInfo(auth: string, id:string) {
   return await fetch(getAPIEndpoint() + `/users/${id}`, options);
 }
 
-export async function createPost(title:string, description:string,contentType:string, content:string, visibility:string , auth: string, id:string) {
+export async function createPost(title:string, description:string, contentType:string, content:string, visibility:string , auth: string, id:string) {
   const options: RequestInit = {
     method: 'POST',
     headers: {
@@ -114,6 +114,18 @@ export async function createPost(title:string, description:string,contentType:st
     body: JSON.stringify({ "title": title, "description": description, "contentType": contentType, "content": content, "author": id, "visibility": visibility })
   };
   return await fetch(getAPIEndpoint() + `/posts/`, options);
+}
+
+export async function createComment(contentType:string, comment:string, auth: string, id:string, postId:string,) {
+  const options: RequestInit = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${auth}`,
+    },
+    body: JSON.stringify({ "comment": comment, "contentType": contentType, "author": id, "post":postId })
+  };
+  return await fetch(getAPIEndpoint() + `/posts/${postId}/comments/`, options);
 }
 
 export async function getHomePosts(host: string, page:number, size: number , auth: string, id:string) {
@@ -127,6 +139,17 @@ export async function getHomePosts(host: string, page:number, size: number , aut
   return await fetch(getAPIEndpoint() + `/posts/?page=${page}&size=${size}&host=${host}&id=${id}`, options);
 }
 
+export async function getPostComments(host: string, page:number, size: number , auth: string, id:string, postId:string) {
+  const options: RequestInit = {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${auth}`,
+    }
+  };
+  return await fetch(getAPIEndpoint() + `/posts/${postId}/comments/?page=${page}&size=${size}&host=${host}&id=${id}`, options);
+}
+
 export async function getPost(auth: string, postId:string) {
   const options: RequestInit = {
     method: 'GET',
@@ -136,6 +159,17 @@ export async function getPost(auth: string, postId:string) {
     }
   };
   return await fetch(getAPIEndpoint() + `/posts/${postId}`, options);
+}
+
+export async function getComment(auth: string, postId:string, commentId:string) {
+  const options: RequestInit = {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${auth}`,
+    }
+  };
+  return await fetch(getAPIEndpoint() + `/posts/${postId}/comments/${commentId}`, options);
 }
 
 export async function imageUploadHandler(image: File, auth: string) {
@@ -162,6 +196,17 @@ export async function deletePost(auth: string, postId:string) {
     },
   };
   return await fetch(getAPIEndpoint() + `/posts/${postId}`, options);
+}
+
+export async function deleteComment(auth: string, postId:string, commentId:string) {
+  const options: RequestInit = {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${auth}`,
+    },
+  };
+  return await fetch(getAPIEndpoint() + `/posts/${postId}/comments/${commentId}`, options);
 }
 
 export async function getNewFollowRequests(email: string){
