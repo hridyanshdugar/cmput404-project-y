@@ -63,4 +63,4 @@ class PostSerializer(serializers.ModelSerializer):
         return "post"
 
      def get_comments(self, obj):
-        return "temporaryplaceholder"
+        return len(Comment.objects.filter(post=obj))
