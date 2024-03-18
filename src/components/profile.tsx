@@ -4,7 +4,7 @@ import styles from "./profile.module.css";
 import Button from 'react-bootstrap/Button';
 import React from 'react'
 import Cookies from 'universal-cookie';
-import {navigate} from "../utils/utils";
+import {navigate, sendFollowRequest, sendUnfollow} from "../utils/utils";
 import { Link } from 'react-router-dom';
 
 type Props = {
@@ -23,6 +23,9 @@ type Props = {
     //posts: Array<SinglePost>;
 }
 
+const cookies = new Cookies();
+const user = cookies.get("user");
+
 export default class Profile extends React.Component<Props> {
     followStatus: string = "Follow";
     constructor(props: Props) {
@@ -40,6 +43,7 @@ export default class Profile extends React.Component<Props> {
         const externalUserId = this.props.userid
         if (request) {
           //API unfollow request !!NEEDED!!
+          sendUnfollow(this.props.username, user['email']);
         }
         this.followStatus = "Follow"
         var div = document.getElementById("profileButton");
@@ -55,6 +59,7 @@ export default class Profile extends React.Component<Props> {
         const externalUserId = this.props.userid
         if (request) {
           //API follow request !!NEEDED!!
+          sendFollowRequest(this.props.username, user['email'], 'https://www.testurl.com');
         }
         this.followStatus = "Following"
         var div = document.getElementById("profileButton");
@@ -68,7 +73,7 @@ export default class Profile extends React.Component<Props> {
       if (this.props.activeUser) {
         navigate('/settings');
       } 
-      else if (this.followStatus == "Follow"){
+      else if (!this.props.followingStatus){
         this.notFollowing(true);
       }
       else {
@@ -89,11 +94,11 @@ export default class Profile extends React.Component<Props> {
                       <div id="profilePicture"><img className={styles.profilePicture} src={this.props.profileImage.split("?")[0]} alt={''} width={400} height={400}/></div>
                       <div id="profileButton" className={this.props.followingStatus? styles.profileButtonFollowed : styles.profileButton}>
                         <Button 
-                        id="profileActionButton" variant="primary" onClick={this.handleButtonClick}>{this.props.activeUser? "Edit Profile" : this.followStatus}</Button>
+                        id="profileActionButton" variant="primary" onClick={this.handleButtonClick}>{this.props.activeUser? "Edit Profile" : this.props.followingStatus? "Following": "Follow"}</Button>
                       </div>
                     </div>
                     <header id="profileName" className={styles.title}>{this.props.name}</header>
-                    <div id="username" className={styles.username}>{this.props.username}</div>
+                    <div id="username" className={styles.username}>{'@'+ this.props.username}</div>
                     <text id="bio" className={styles.bio}>{this.props.bio !== "" ? this.props.bio : "No Bio"}</text>
                     <div className={styles.informationContainer}>
                       <div id="website" className={styles.website}>{this.props.website}</div>

@@ -5,7 +5,7 @@ import SideBar from "../components/sidebar";
 import Rightbar from "../components/rightbar";
 import Cookies from 'universal-cookie';
 import { useState, useEffect } from 'react';
-import { getUserLocalInfo, navigate} from "../utils/utils";
+import { getFollowers, getUserLocalInfo, navigate} from "../utils/utils";
 import { error } from 'console';
 import { userInfo } from 'os';
 import { PostContextProvider } from "../utils/postcontext";
@@ -15,12 +15,12 @@ export default function ProfileLayout() {
 
     const { userId } = useParams();
     let activeUser: boolean = false;
-
+    const [followingStatus, setFollowingStatus] = useState<boolean>(false);
     const cookies = new Cookies()
     const allcookies = cookies.getAll()
+    const userIdCookie = cookies.get("user").id
     if (allcookies.auth && allcookies.user) {
         //!!Change to userName when added!!//
-        const userIdCookie = cookies.get("user").id
         if (userId == userIdCookie) {
             activeUser = true;
         }
@@ -44,7 +44,7 @@ export default function ProfileLayout() {
                 //console.log(data);
             });            
         }
-    }, []);
+    }, [followingStatus]);
 
     if (!userInformation) {
       return (<div  style={{backgroundColor: "#000"}}>
@@ -53,12 +53,24 @@ export default function ProfileLayout() {
         </div>);
     }
 
-    console.log(userInformation);
-
+    // API call to check if the user is already following the other user
+    // Not working as expected for some reason
+    if (!activeUser){
+        getFollowers(userInformation?.email).then((result) => {
+            return result.json();
+        }).catch((error) => {
+            console.log(error);
+        }).then((data) => {
+            for (let followerData of data){
+                if (userIdCookie == followerData.id){
+                    setFollowingStatus(true);
+                }
+            }
+        })
+    }
 
     //Query username
     //If username not in database, return 404 / user not found page
-
     return (
         <PostContextProvider>
             <div  style={{backgroundColor: "#000"}}>
@@ -66,14 +78,14 @@ export default function ProfileLayout() {
                 <Profile 
                 userid={userId!}
                 name={userInformation?.displayName} 
-                username={'@' + userInformation?.email} 
+                username={userInformation?.email} 
                 bio={userInformation?.bio? userInformation?.bio : 'No Bio'}
                 website={userInformation?.github? userInformation?.github : 'No Website'} 
                 dateJoined={''} 
                 followers={0} 
                 following={0} 
                 activeUser={activeUser} 
-                followingStatus={false}
+                followingStatus={followingStatus}
                 profileImage={userInformation?.profileImage || ""} 
                 profileBackround={userInformation?.profileBackgroundImage || ""}/>
                 <Outlet context={{ userId: userId}}/>

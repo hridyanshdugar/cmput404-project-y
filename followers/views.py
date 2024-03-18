@@ -37,19 +37,19 @@ def follow(request):
 
     return HttpResponse()
 
-@api_view(['PUT'])
+@api_view(['POST'])
 @authentication_classes([])
 @permission_classes((AllowAny,))
 def unfollow(request):
     # This is supposed to be a post
-    if request.method != "PUT":
+    if request.method != "POST":
         return HttpResponseBadRequest("Invalid Request: Please send a put request with author 'name' and 'follower' name as headers")
-    
-    # TODO: Add apikey handling
+
+    body = body_to_json(request.body)
 
     # delete from followers table
     try:
-        Follower.objects.filter(Q(follower=request.headers['follower']) & Q(name= request.headers['name'])).delete()
+        Follower.objects.filter(Q(follower=body['friend']) & Q(name= body['name'])).delete()
     except:
         return HttpResponseBadRequest("Invalid Request: Follower not found, are you sending 'name' and 'follower' in the headers")
 
@@ -72,7 +72,11 @@ def getFollowers(request):
     try:
         name = request.GET['name']
         new_follower_list = list(Follower.objects.filter(name=name).values())
-        return JsonResponse(new_follower_list, safe=False)
+        users = []
+        for new_follower in new_follower_list:
+            user = list(User.objects.filter(email=new_follower["follower"]).values())[0]
+            users.append(user)
+        return JsonResponse(users, safe=False)
     except:
         return HttpResponseBadRequest("Something went wrong!")    
 
@@ -80,13 +84,14 @@ def getFollowers(request):
 @authentication_classes([])
 @permission_classes((AllowAny,))
 def acceptFollowRequest(request):
+    body = body_to_json(request.body)
     if request.method != "PUT":
         return HttpResponseBadRequest("Invalid Request: Please send a put request")
     
     try:
-        name = request.headers['name']
-        follower = request.headers['follower']
-        url = request.headers['url']
+        name = body['name']
+        follower = body['follower']
+        url = "testurl"
         # Check if the follow request is not already accepted
         follows = True if list(Follower.objects.filter(Q(name=name) & Q(follower=follower))) else False
         newRequest = True if list(NewFollowRequest.objects.filter(Q(name=name) & Q(follower=follower))) else False
@@ -96,6 +101,7 @@ def acceptFollowRequest(request):
             NewFollowRequest.objects.filter(Q(name=name) & Q(follower=follower)).delete()
             return HttpResponse()
         else:
+            NewFollowRequest.objects.filter(Q(name=name) & Q(follower=follower)).delete()
             return HttpResponseBadRequest("Not able to follow, follows="+ str(follows) + " newRequest=" + str(newRequest)) 
     except:
         return HttpResponseBadRequest("Something went wrong!") 
@@ -104,13 +110,12 @@ def acceptFollowRequest(request):
 @authentication_classes([])
 @permission_classes((AllowAny,))
 def declineFollowRequest(request):
+    body = body_to_json(request.body)
     if request.method != "PUT":
         return HttpResponseBadRequest("Invalid Request: Please send a put request")
-    
     try:
-        name = request.headers['name']
-        follower = request.headers['follower']
-        url = request.headers['url']
+        name = body['name']
+        follower = body['follower']
 
         # Check if the follow request is not already accepted
         follows = True if list(Follower.objects.filter(Q(name=name) & Q(follower=follower))) else False
@@ -120,6 +125,7 @@ def declineFollowRequest(request):
             NewFollowRequest.objects.filter(Q(name=name) & Q(follower=follower)).delete()
             return HttpResponse()
         else:
+            NewFollowRequest.objects.filter(Q(name=name) & Q(follower=follower)).delete()
             return HttpResponseBadRequest("Not able to decline request, follows="+ str(follows) + " newRequest=" + str(newRequest)) 
     except:
         return HttpResponseBadRequest("Something went wrong!") 

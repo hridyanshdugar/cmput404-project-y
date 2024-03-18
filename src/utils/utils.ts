@@ -1,3 +1,4 @@
+import { json } from "stream/consumers";
 import Cookie from "universal-cookie";
 
 export function getFrontend() {
@@ -223,13 +224,59 @@ export async function processFollowRequest(email:any, followerEmail:any, action:
   const options: RequestInit = {
     method: 'PUT',
     headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
       'name': email,
       'follower': followerEmail
-    }
+    })
   };
-  await fetch(getAPIEndpoint() + `/followers/decline/follow/request/`, options).then((res) => {
+  await fetch(getAPIEndpoint() + `/followers/`+ action +`/follow/request/`, options).then((res) => {
     console.log(res);
   }).catch((err) => {
     console.log(err);
   });
+}
+
+export async function sendFollowRequest(email:any, followerEmail:any, url:any) {
+  const options: RequestInit = {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ 
+      name: email,
+      friend: followerEmail,
+      url: url
+    })
+  };
+  await fetch(getAPIEndpoint() + `/followers/follow/`, options).then((res) => {
+    console.log(res);
+  }).catch((err) => {
+    console.log(err);
+  });
+}
+
+export async function sendUnfollow(email:any, followerEmail:any) {
+  const options: RequestInit = {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ 
+      name: email,
+      friend: followerEmail
+    })
+  };
+  await fetch(getAPIEndpoint() + `/followers/unfollow/`, options).then((res) => {
+    console.log(res);
+  }).catch((err) => {
+    console.log(err);
+  });
+}
+
+export async function getFollowers(email:any) {
+  const options: RequestInit = {
+    method: 'GET',
+    headers: {
+        'Content-Type': 'application/json'
+    }
+};
+return await fetch(getAPIEndpoint() + `/followers/get/followers?name=${email}`, options)
 }

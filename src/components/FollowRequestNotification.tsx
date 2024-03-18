@@ -6,7 +6,7 @@ import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import { faArrowUpFromBracket } from "@fortawesome/free-solid-svg-icons";
 import React from "react";
 import Button from "./buttons/button";
-import { processFollowRequest } from "../utils/utils";
+import { getMediaEndpoint, processFollowRequest } from "../utils/utils";
 import Cookies from "universal-cookie";
 import { getAPIEndpoint } from "../utils/utils";
 
@@ -32,7 +32,7 @@ export default class FollowRequestNotification extends React.Component<Props> {
 				<div className={style.blockImage}>
 					<img
 						className={style.img}
-						src={getAPIEndpoint() + "/media/" + this.props.profileImage || ""}
+						src={getMediaEndpoint() + "/media/" + this.props.profileImage || ""}
 						alt={""}
 						width={40}
 						height={40}
@@ -48,8 +48,8 @@ export default class FollowRequestNotification extends React.Component<Props> {
 						</div>
 						<div className={style.separator} />
 						<div className={style.topRight}>
-							<Button text="✓" type="primary" size="verySmall" roundness="very" onClick={() => processFollowRequest(user["email"], this.props.username, "accept")} style={{}}/>
-							<Button text="⨉" type="primary" size="verySmall" roundness="very" onClick={() => processFollowRequest(user["email"], this.props.username, "decline")} style={{marginLeft:"10px"}}/>
+							<Button text="✓" type="primary" size="verySmall" roundness="very" onClick={() => processFollowRequest(user["email"], this.props.username, "accept").then(() => window.location.reload())} style={{}}/>
+							<Button text="⨉" type="primary" size="verySmall" roundness="very" onClick={() => processFollowRequest(user["email"], this.props.username, "decline").then(() => window.location.reload())} style={{marginLeft:"10px"}}/>
 					</div>
 					</div>
 					<div className={[style.topBottom].join(" ")}>
