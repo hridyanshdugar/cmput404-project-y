@@ -14,7 +14,12 @@ import React, {
 	useContext,
 	useEffect,
 } from "react";
-import { getHomePosts, getAPIEndpoint, getFrontend, getMediaEndpoint } from "../utils/utils";
+import {
+	getHomePosts,
+	getAPIEndpoint,
+	getFrontend,
+	getMediaEndpoint,
+} from "../utils/utils";
 import Cookies from "universal-cookie";
 import { PostContext } from "../utils/postcontext";
 
@@ -102,6 +107,7 @@ export default function Home() {
 				)) : <Spinner animation="border" role="status">
                 <span className="visually-hidden">Loading...</span>
               </Spinner>}
+
 			</div>
 		</div>
 	);

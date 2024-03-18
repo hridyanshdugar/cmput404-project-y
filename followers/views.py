@@ -80,6 +80,25 @@ def getFollowers(request):
     except:
         return HttpResponseBadRequest("Something went wrong!")    
 
+def getFriends(request):
+    try:
+        name = request.GET['name']
+        new_friend_list = list(Follower.objects.filter(name=name).values())
+        names = set()
+        for follower in new_friend_list:
+            follower_follow_list = list(Follower.objects.filter(name=follower["follower"]).values())
+            for follower_follower in follower_follow_list:
+                print(follower, follower_follower)
+                if follower_follower["name"] == follower["follower"] and follower_follower["follower"] == follower["name"]:
+                    names.add(follower_follower["name"])
+        users=[]  
+        for name in names:
+            user = list(User.objects.filter(email=name).values())[0]
+            users.append(user)
+        return JsonResponse(users, safe=False)
+    except:
+        return HttpResponseBadRequest("Something went wrong!")  
+
 @api_view(['PUT'])
 @authentication_classes([])
 @permission_classes((AllowAny,))
