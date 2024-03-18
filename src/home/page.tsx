@@ -27,6 +27,8 @@ export default function Home() {
 	const [user, setuser] = useState<any>(null);
 	const [auth, setauth] = useState<any>(null);
 
+	const [selectedSection, setSelectedSection] = useState<string>('forYou');
+
 	useEffect(() => {
 		const cookies = new Cookies();
 		const auth = cookies.get("auth");
@@ -34,7 +36,12 @@ export default function Home() {
 		setuser(user);
 		setauth(auth);
 
-		getHomePosts(user.host, page, size, auth, user.id)
+		fetchContent(user.host, page, size, auth, user.id, selectedSection);
+	}, [selectedSection]);
+
+	const fetchContent = (host: string, page: number, size: number, auth: string, userId: string, selectedSection: string) => {
+		if (selectedSection === 'forYou') {
+		getHomePosts(host, page, size, auth, userId)
 			.then(async (result: any) => {
 				const Data = await result.json();
 				console.log(Data);
@@ -45,17 +52,22 @@ export default function Home() {
 				const Data = await result.json();
 				console.log(Data);
 			});
-	}, []);
+		}
+	};
 
 	const updatePosts = (State: any) => {
 		setPosts((posts: any[]) => [State, ...posts]);
 		console.log(posts);
 	};
 
+	const handleSectionChange = (section: string) => {
+		setSelectedSection(section);
+	};
+
 	return (
 		<div className={"main"}>
 			<div className={styles.mainContentViewSticky}>
-				<HomeSelector />
+				<HomeSelector handleSectionChange={handleSectionChange}/>
 			</div>
 			<div className={styles.mainContentView}>
 				<CreatePost
@@ -66,7 +78,7 @@ export default function Home() {
 						backgroundColor: "black",
 					}}
 				/>
-				{posts ? posts.length === 0 ? <div className={styles.noPosts}>There are no posts available</div>: posts.map((item: any, index: any) => (
+				{selectedSection === "following" ? <div className={styles.noPosts}>Following</div> : posts ? posts.length === 0 ? <div className={styles.noPosts}>There are no posts available</div>: posts.map((item: any, index: any) => (
                     <SinglePost
                         key={index}
                         name={item.author.displayName}
