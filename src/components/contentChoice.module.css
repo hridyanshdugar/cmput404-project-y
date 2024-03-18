@@ -23,12 +23,36 @@
     content: "";
   }
 
+
 .flexItem {
+  color: rgb(113, 118, 123);
     height: 100%;
-    padding-top: 13px;
+    background-color: transparent;
+    border: none;
+    border-radius: 0;
+    cursor: pointer;
+    outline: none;
     text-align: center;
     flex-grow: 1;
   }  
+
+.flexItem:focus {
+  background-color: transparent;
+  color: white;
+  left: 0;
+  bottom: 0;
+}
+
+.flexItem:hover,
+.flexItem:active {
+  background-color: hsl(0, 0%, 13%) !important;
+}
+
+.flexItem:focus span {
+  padding-bottom: calc(1rem - 4px);
+  border-bottom: 4px solid rgb(29, 155, 240);
+
+}
 
 .fullPageContainer {
   width: 100%;
