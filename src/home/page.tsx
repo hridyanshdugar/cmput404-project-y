@@ -14,7 +14,12 @@ import React, {
 	useContext,
 	useEffect,
 } from "react";
-import { getHomePosts, getAPIEndpoint, getFrontend, getMediaEndpoint } from "../utils/utils";
+import {
+	getHomePosts,
+	getAPIEndpoint,
+	getFrontend,
+	getMediaEndpoint,
+} from "../utils/utils";
 import Cookies from "universal-cookie";
 import { PostContext } from "../utils/postcontext";
 
@@ -66,25 +71,35 @@ export default function Home() {
 						backgroundColor: "black",
 					}}
 				/>
-				{posts ? posts.length === 0 ? <div className={styles.noPosts}>There are no posts available</div>: posts.map((item: any, index: any) => (
-                    <SinglePost
-                        key={index}
-                        name={item.author.displayName}
-                        userId={item.author.id}
-						profileImage={getMediaEndpoint() + item.author.profileImage.split("?")[0]}
-						username={item.author.email}
-						text={item.content}
-						postImage={undefined}
-						date={Math.floor(new Date(item.published).getTime() / 1000)}
-						likes={0}
-						retweets={0}
-						comments={0}
-						postId={item.id}
-						contentType={item.contentType}
-					/>
-				)) : <Spinner animation="border" role="status">
-                <span className="visually-hidden">Loading...</span>
-              </Spinner>}
+				{posts ? (
+					posts.length === 0 ? (
+						<div className={styles.noPosts}>There are no posts available</div>
+					) : (
+						posts.map((item: any, index: any) => (
+							<SinglePost
+								key={index}
+								name={item.author.displayName}
+								userId={item.author.id}
+								profileImage={
+									getMediaEndpoint() + item.author.profileImage.split("?")[0]
+								}
+								username={item.author.email}
+								text={item.content}
+								postImage={undefined}
+								date={Math.floor(new Date(item.published).getTime() / 1000)}
+								likes={0}
+								retweets={0}
+								comments={item.count}
+								postId={item.id}
+								contentType={item.contentType}
+							/>
+						))
+					)
+				) : (
+					<Spinner animation="border" role="status">
+						<span className="visually-hidden">Loading...</span>
+					</Spinner>
+				)}
 			</div>
 		</div>
 	);

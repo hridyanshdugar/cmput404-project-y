@@ -19,5 +19,5 @@ class Post(models.Model):
     author = models.ForeignKey('users.User', on_delete=models.CASCADE)
     published = models.DateTimeField(auto_now_add=True)
     visibility = models.CharField(choices=VISIBILITY_CHOICES, max_length=CHOICES_MAX_LENGTH, default="PUBLIC")
-
+    count = models.IntegerField(default=0)
     objects = models.Manager()

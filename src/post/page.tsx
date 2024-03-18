@@ -21,7 +21,6 @@ import { Spinner } from "react-bootstrap";
 export default function Post() {
 	const [page, setPage] = useState<number>(1);
 	const [size, setSize] = useState<number>(100);
-	const [post, setPost] = useState<any>(null);
 	const [posts, setPosts, replies, setReplies] = useContext(PostContext);
 	const [auth, setAuth] = useState<any>(null);
 	const [user, setUser] = useState<any>(null);
@@ -38,7 +37,7 @@ export default function Post() {
 				.then(async (result: any) => {
 					const Data = await result.json();
 					console.log(Data);
-					setPost(Data);
+					setPosts(Data);
 				})
 				.catch(async (result: any) => {
 					// const Data = await result?.json();
@@ -61,7 +60,7 @@ export default function Post() {
 
 	const updateReplies = (State: any) => {
 		setReplies((replies: any[]) => [State, ...replies]);
-		console.log(replies, "reply", State);
+		setPosts({ ...posts, count: posts.count + 1 });
 	};
 
 	return (
@@ -70,22 +69,22 @@ export default function Post() {
 				<BackSelector contentType={"Post"} />
 			</div>
 			<div className={style.mainContentView}>
-				{post && (
+				{posts && (
 					<SinglePost
-						name={post.author.displayName}
-						userId={post.author.id}
+						name={posts.author.displayName}
+						userId={posts.author.id}
 						profileImage={
-							getMediaEndpoint() + post.author.profileImage.split("?")[0]
+							getMediaEndpoint() + posts.author.profileImage.split("?")[0]
 						}
-						username={post.author.email}
-						text={post.content}
+						username={posts.author.email}
+						text={posts.content}
 						postImage={undefined}
-						date={Math.floor(new Date(post.published).getTime() / 1000)}
+						date={Math.floor(new Date(posts.published).getTime() / 1000)}
 						likes={0}
 						retweets={0}
-						comments={0}
-						postId={post.id}
-						contentType={post.contentType}
+						comments={posts.count}
+						postId={posts.id}
+						contentType={posts.contentType}
 					/>
 				)}
 				{auth && (
@@ -99,7 +98,7 @@ export default function Post() {
 						}}
 					/>
 				)}
-				{replies && post ? (
+				{replies && posts ? (
 					replies.length !== 0 &&
 					replies.map((item: any, index: any) => (
 						<SinglePost
@@ -113,10 +112,10 @@ export default function Post() {
 							date={Math.floor(new Date(item.published).getTime() / 1000)}
 							likes={0}
 							retweets={0}
-							comments={0}
+							comments={item.count}
 							postId={item.id}
 							contentType={item.contentType}
-							parentId={post.id}
+							parentId={posts.id}
 						/>
 					))
 				) : (

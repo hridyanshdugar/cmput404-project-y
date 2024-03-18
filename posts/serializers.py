@@ -18,10 +18,11 @@ class PostSerializer(serializers.ModelSerializer):
      commentsSrc = serializers.SerializerMethodField()
      comments = serializers.SerializerMethodField()
      author = serializers.SerializerMethodField()
+     count = serializers.SerializerMethodField()
 
      class Meta:
           model = Post
-          fields = ["id","global_id", "host","url","type","content","contentType","published","comments","commentsSrc","visibility","origin","description", "author"]
+          fields = ["id","global_id", "host","url","type","content","contentType","published","comments","commentsSrc","visibility","origin","description", "author","count"]
 
      def __init__(self, *args, **kwargs):
         exclude_comments = False
@@ -63,4 +64,11 @@ class PostSerializer(serializers.ModelSerializer):
         return "post"
 
      def get_comments(self, obj):
-        return len(Comment.objects.filter(post=obj))
+        request = self.context.get('request')
+        if request is not None:
+            host = request.build_absolute_uri('/') + "posts/" + str(obj.id) + "/comments/"
+            return host
+        return None
+     
+     def get_count(self, obj):
+         return len(Comment.objects.filter(post=obj))

@@ -103,6 +103,7 @@ const SinglePost: React.FC<Props> = (props) => {
 							setReplies(
 								replies.filter((post: any) => post.id !== props.postId)
 							);
+							setPosts({ ...posts, count: posts.count - 1 });
 						}
 					})
 					.catch(async (result: any) => {
