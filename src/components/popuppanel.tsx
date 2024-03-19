@@ -14,10 +14,12 @@ interface PopupPanelProps {
 const PopupPanel: React.FC<PopupPanelProps> = (props) => {
 	const [posts, setPosts] = useContext(PostContext);
 	const onClose = () => {
-		document.body.style.overflow = "auto"; // Bad
+		document.body.style.overflow = "auto";
 		props.setPopupOpen(false);
 	};
 	const updatePosts = (State: any) => {
+		const currentPath = window.location.pathname;
+		if (currentPath.startsWith("/post")) return;
 		setPosts((posts: any[]) => [State, ...posts]);
 		console.log(posts);
 	};
