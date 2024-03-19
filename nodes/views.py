@@ -2,12 +2,14 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.authentication import BasicAuthentication
 from rest_framework.permissions import AllowAny
 from rest_framework import status
 from .models import Node
 from .serializers import NodeSerializer
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
+from base64 import b64decode
 
 @api_view(['GET'])
 @authentication_classes([IsAuthenticated])
@@ -26,3 +28,31 @@ def getAllNodeDetails(request):
     serializer = NodeSerializer(nodes)
     
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+def is_basicAuth(request):
+    auth_header = request.META.get('HTTP_AUTHORIZATION')
+    if not auth_header:
+        return False
+
+    auth_type, _ = auth_header.split(' ', 1)
+    if auth_type.lower() != 'basic':
+        return False
+    else:
+        return True
+
+def basicAuth(request):
+    auth_header = request.META.get('HTTP_AUTHORIZATION')
+    if not auth_header:
+        return False
+
+    auth_type, encoded_credentials = auth_header.split(' ', 1)
+    if auth_type.lower() != 'basic':
+        return False
+
+    decoded_credentials = b64decode(encoded_credentials).decode('utf-8')
+    username, password = decoded_credentials.split(':', 1)
+
+    if (Node.objects.exists(username=username,password=password)):
+        return True
+    else:
+        return False
