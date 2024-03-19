@@ -15,7 +15,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMarkdown } from "@fortawesome/free-brands-svg-icons";
 import { faFileLines } from "@fortawesome/free-regular-svg-icons";
 import {
-    EditPost,
+	EditPost,
 	getMediaEndpoint,
 	getPost,
 	imageUploadHandler,
@@ -25,9 +25,9 @@ import { Card } from "react-bootstrap";
 import MDEditor from "@uiw/react-md-editor";
 
 interface EditPostProps {
-    postId: string;
+	postId: string;
 	style?: React.CSSProperties;
-    setPopupOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+	setPopupOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const EditPostt: React.FC<EditPostProps> = (props) => {
@@ -44,42 +44,44 @@ const EditPostt: React.FC<EditPostProps> = (props) => {
 	const [markdownValue, setMarkdownValue] = useState<string | undefined>("");
 
 	const [PFPbackground, setPFPbackground] = useState<File | null>(null);
-    const [PFPbackgroundurl, setPFPbackgroundurl] = useState<string>("");
-    
-    const [postInformation, setPostInformation] = useState<any>(null);
+	const [PFPbackgroundurl, setPFPbackgroundurl] = useState<string>("");
+
+	const [postInformation, setPostInformation] = useState<any>(null);
 	useEffect(() => {
 		const cookies = new Cookies();
-		const auth = cookies.get("auth");
+		const auth = cookies.get("auth")["access"];
 		const user = cookies.get("user");
 		setuser(user);
-        setauth(auth);
-        getPost(auth, props.postId).then((result) => {
-            if (result.status == 200) {
-                return result.json();
-            }
-            else {
-                //   navigate('/');
-            }
-        }).catch((error) => {
-            console.log(error);
-            //   navigate('/');
-        }).then((data) => {
-            setPostInformation(data);
-            console.log(data);
-            setcontent(data.content)
-            setMarkdownValue(data.content)
-            setPFPbackgroundurl(data.content)
-        });            
+		setauth(auth);
+		getPost(auth, props.postId)
+			.then((result) => {
+				if (result.status == 200) {
+					return result.json();
+				} else {
+					//   navigate('/');
+				}
+			})
+			.catch((error) => {
+				console.log(error);
+				//   navigate('/');
+			})
+			.then((data) => {
+				setPostInformation(data);
+				console.log(data);
+				setcontent(data.content);
+				setMarkdownValue(data.content);
+				setPFPbackgroundurl(data.content);
+			});
 	}, []);
 
-    const handlePFPbackgroundf = (event: ChangeEvent<HTMLInputElement>) => {
-        console.log("1start");
+	const handlePFPbackgroundf = (event: ChangeEvent<HTMLInputElement>) => {
+		console.log("1start");
 		if (event.target.files && event.target.files[0]) {
 			const file = event.target.files[0];
 			setPFPbackground(file);
 
-            const fileReader = new FileReader();
-            console.log("start");
+			const fileReader = new FileReader();
+			console.log("start");
 			fileReader.onload = () => {
 				setPFPbackgroundurl(fileReader.result as string);
 				console.log(fileReader.result);
@@ -134,8 +136,8 @@ const EditPostt: React.FC<EditPostProps> = (props) => {
 			Unlisted: "UNLISTED",
 			Friends: "FRIENDS",
 		};
-        var contentToSend: string = "";
-        var contentTypeF: string = "";
+		var contentToSend: string = "";
+		var contentTypeF: string = "";
 		if (postInformation?.contentType.includes("image")) {
 			contentTypeF =
 				PFPbackgroundurl?.split("base64")[0]?.split("data:")[1] + "base64";
@@ -146,7 +148,13 @@ const EditPostt: React.FC<EditPostProps> = (props) => {
 			contentToSend = content;
 		}
 		EditPost(
-			{ "content": contentToSend, "visibility": VisibilityMap[visibility], "contentType": postInformation?.contentType.includes("image") ? contentTypeF : postInformation?.contentType },
+			{
+				content: contentToSend,
+				visibility: VisibilityMap[visibility],
+				contentType: postInformation?.contentType.includes("image")
+					? contentTypeF
+					: postInformation?.contentType,
+			},
 			auth.access,
 			postInformation?.id
 		)
@@ -223,31 +231,26 @@ const EditPostt: React.FC<EditPostProps> = (props) => {
 				ref={horizontalLineRef}
 				style={{ display: "none" }}
 			></hr>
-            <div className={style.flexContainer}>
-            {postInformation?.contentType.includes("image") ? (
-						<>
-<div className={style.flexItem}>
-					<input
-						onChange={handlePFPbackgroundf}
-						type="file"
-						id="editpostimage"
-						name="PFP"
-						accept="image/*"
-						style={{ display: "none" }}
-					/>
-					<label
-						htmlFor="editpostimage"
-					>
-						<FontAwesomeIcon
-							icon={faImage}
-							fixedWidth
-						/>
-					</label>
-				</div>
-						</>
-					) : (
-						""
-					)}
+			<div className={style.flexContainer}>
+				{postInformation?.contentType.includes("image") ? (
+					<>
+						<div className={style.flexItem}>
+							<input
+								onChange={handlePFPbackgroundf}
+								type="file"
+								id="editpostimage"
+								name="PFP"
+								accept="image/*"
+								style={{ display: "none" }}
+							/>
+							<label htmlFor="editpostimage">
+								<FontAwesomeIcon icon={faImage} fixedWidth />
+							</label>
+						</div>
+					</>
+				) : (
+					""
+				)}
 				<div className={style.flexItem2}>
 					<Button
 						onClick={onSubmit}
