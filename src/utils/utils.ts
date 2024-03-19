@@ -117,6 +117,18 @@ export async function createPost(title:string, description:string, contentType:s
   return await fetch(getAPIEndpoint() + `/posts/`, options);
 }
 
+export async function EditPost(payload: any, auth: string, id:string) {
+  const options: RequestInit = {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${auth}`,
+    },
+    body: JSON.stringify(payload)
+  };
+  return await fetch(getAPIEndpoint() + `/posts/${id}`, options);
+}
+
 export async function createComment(contentType:string, comment:string, auth: string, id:string, postId:string,) {
   const options: RequestInit = {
     method: 'POST',
