@@ -63,7 +63,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     profileBackgroundImage=models.ImageField(null=True,upload_to=profilebackground_upload_path)
     github=models.TextField(blank=True,default='')
     displayName=models.TextField(blank=True,default='')
-    approved=models.BooleanField(default=True)
+    approved=models.BooleanField(default=False)
     creation_date = models.DateTimeField(auto_now_add=True)
 
     USERNAME_FIELD = 'email'

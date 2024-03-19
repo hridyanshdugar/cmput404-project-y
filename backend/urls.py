@@ -34,6 +34,7 @@ urlpatterns = [
         path('posts/<uuid:fk>/comments/', include('comments.urls')),
         path('authors/<str:author_id>/posts/', include('posts.urls')),
         path('posts/', include('posts.urls')),
+        path('nodes/', include('nodes.urls')),
         path('auth/', include('userauth.urls')),
         path('users/', include('users.urls')),
         path('images/', include('image.urls')),

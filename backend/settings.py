@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'comments',
     'storages',
     'image',
+    'nodes',
     'whitenoise.runserver_nostatic',
     'django_extensions',
 ]

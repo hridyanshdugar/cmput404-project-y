@@ -32,14 +32,8 @@ export default function Signup() {
       setWarningData({title: "Password fields Must Match", message: "Please re-enter your password"});
     } else {
       signup(Email,Password).then(async (result:any) => {
-        
-        const cookies = new Cookies();
-        const Data = await result.json();
 
-        cookies.set("auth",Data["auth"],{ path: '/' });
-        cookies.set("user",Data["user"],{ path: '/' });
-
-        navigate('/home')
+        navigate('/')
       }).catch(async (result: any) => {
         const Data = await result.json();
         console.log(Data);

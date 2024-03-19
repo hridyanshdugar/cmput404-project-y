@@ -18,7 +18,7 @@ def login(request):
     print(request.data)
     if 'password' not in request.data or 'email' not in request.data:
         return Response(status=status.HTTP_400_BAD_REQUEST,data={'title': 'Missing Fields','message': 'A password and email is required for logging in'})
-    user = User.objects.filter(email=request.data['email']).first()
+    user = User.objects.filter(email=request.data['email'],approved=True).first()
     if not user:
         return Response(status=status.HTTP_400_BAD_REQUEST,data={'title': 'Non-Existant Account','message': 'No account with this email exists'})
     input_password = request.data['password']
@@ -58,18 +58,9 @@ def signup(request):
     if serializer.is_valid():
         user = serializer.save()
 
-        refresh = RefreshToken.for_user(user)
-        refresh['email'] = user.email
-        access_token = str(refresh.access_token)
-
         serializer = UserSerializer(user)
         result = {
             'user': serializer.data,
-            'auth': {
-                'refresh': str(refresh),
-                'access': access_token,
-                'expires_in': refresh.access_token.lifetime.total_seconds()
-            }
         }
         return Response(result, status=status.HTTP_200_OK)
     else:
