@@ -31,20 +31,34 @@ class CommentsViewPK(APIView):
      '''
      def put(self, request, fk, pk):
         comment = get_object_or_404(Comment, id=pk)
-        if request.data.get(author):
+
+        try:
+            post = Post.objects.get(id=fk)
+        except Post.DoesNotExist:
+            return Response({"title": "Post not found", "message": "No valid post for the comment was provided" })
+        
+        if request.data.get("author"):
             author = None
             try:
                 author = User.objects.get(id=request.data.get(author))
             except User.DoesNotExist:
                 return Response({"title": "Author not found.","message": "No valid author for the comment was provided"}, status=status.HTTP_404_NOT_FOUND)
 
-        request.data["author"] = author
+        request.data["author"] = comment.author
+
+        JWT_authenticator = JWTAuthentication()
+        response = JWT_authenticator.authenticate(request)
         serializer = CommentSerializer(comment, data = request.data, partial=True, context={'request': request})
-        if serializer.is_valid():
-            serializer.save(author=author)
-            return Response(serializer.data, status = status.HTTP_200_OK)
+        realAuthor = serializer.get_author(comment)["id"]
+
+        if response and realAuthor == response[1]["user_id"]:
+            if serializer.is_valid():
+                serializer.save(author=author)
+                return Response(serializer.data, status = status.HTTP_200_OK)
+            else:
+                return Response({"title": "Invalid Fields", "message": serializer.errors}, status = status.HTTP_400_BAD_REQUEST) # Need to change the error message
         else:
-            return Response({"title": "Invalid Fields", "message": serializer.errors}, status = status.HTTP_400_BAD_REQUEST) # Need to change the error message
+            return Response({"title": "Unauthorized", "message": "You are not authorized to update this comment"}, status = status.HTTP_401_UNAUTHORIZED)
      '''
      DELETE /authors/{id}/posts/{id}/comments/{id} and posts/{id}/comments/{id}
      '''
@@ -85,20 +99,28 @@ class CommentsView(APIView):
      '''
      def post(self, request, fk):
         author = None
-        try:
-            author = User.objects.get(id=request.data.get("author"))
-        except User.DoesNotExist:
-            return Response({"title": "Author not found.","message": "No valid author for the comment was provided"}, status=status.HTTP_404_NOT_FOUND)
-        
+
         try:
             post = Post.objects.get(id=fk)
         except Post.DoesNotExist:
             return Response({"title": "Post not found", "message": "No valid post for the comment was provided" })
         
+        try:
+            author = User.objects.get(id=request.data.get("author"))
+        except User.DoesNotExist:
+            return Response({"title": "Author not found.","message": "No valid author for the comment was provided"}, status=status.HTTP_404_NOT_FOUND)
+        
         request.data["author"] = author
+
+        JWT_authenticator = JWTAuthentication()
+        response = JWT_authenticator.authenticate(request)
         serializer = CommentSerializer(data = request.data, context={'request': request})
-        if serializer.is_valid():
-            serializer.save(author=author)
-            return Response(serializer.data, status = status.HTTP_200_OK)
+
+        if response and str(author.id) == response[1]["user_id"]:
+            if serializer.is_valid():
+                serializer.save(author=author)
+                return Response(serializer.data, status = status.HTTP_200_OK)
+            else:
+                return Response({"title": "Invalid Fields", "message": serializer.errors}, status = status.HTTP_400_BAD_REQUEST)
         else:
-            return Response({"title": "Invalid Fields", "message": serializer.errors}, status = status.HTTP_400_BAD_REQUEST)
+            return Response({"title": "Unauthorized", "message": "You are not authorized to create this comment"}, status = status.HTTP_401_UNAUTHORIZED)

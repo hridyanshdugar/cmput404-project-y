@@ -56,7 +56,7 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 
 	useEffect(() => {
 		const cookies = new Cookies();
-		const auth = cookies.get("auth");
+		const auth = cookies.get("auth")["access"];
 		const user = cookies.get("user");
 		setuser(user);
 		setauth(auth);

@@ -32,11 +32,11 @@ export default function Home() {
 	const [user, setuser] = useState<any>(null);
 	const [auth, setauth] = useState<any>(null);
 
-	const [selectedSection, setSelectedSection] = useState<string>('forYou');
+	const [selectedSection, setSelectedSection] = useState<string>("forYou");
 
 	useEffect(() => {
 		const cookies = new Cookies();
-		const auth = cookies.get("auth");
+		const auth = cookies.get("auth")["access"];
 		const user = cookies.get("user");
 		setuser(user);
 		setauth(auth);
@@ -44,21 +44,27 @@ export default function Home() {
 		fetchContent(user.host, page, size, auth, user.id, selectedSection);
 	}, [selectedSection]);
 
-	const fetchContent = (host: string, page: number, size: number, auth: string, userId: string, selectedSection: string) => {
-		if (selectedSection === 'forYou') {
-		getHomePosts(host, page, size, auth, userId)
-			.then(async (result: any) => {
-				const Data = await result.json();
-				console.log(Data);
+	const fetchContent = (
+		host: string,
+		page: number,
+		size: number,
+		auth: string,
+		userId: string,
+		selectedSection: string
+	) => {
+		if (selectedSection === "forYou") {
+			getHomePosts(host, page, size, auth, userId)
+				.then(async (result: any) => {
+					const Data = await result.json();
+					console.log(Data);
 
-				setPosts(Data);
-			})
-			.catch(async (result: any) => {
-				const Data = await result.json();
-				console.log(Data);
-			});
-		}
-		else {
+					setPosts(Data);
+				})
+				.catch(async (result: any) => {
+					const Data = await result.json();
+					console.log(Data);
+				});
+		} else {
 			//get following users
 			//get posts from following users
 			//as well as posts that are friends only
@@ -77,7 +83,7 @@ export default function Home() {
 	return (
 		<div className={"main"}>
 			<div className={styles.mainContentViewSticky}>
-				<HomeSelector handleSectionChange={handleSectionChange}/>
+				<HomeSelector handleSectionChange={handleSectionChange} />
 			</div>
 			<div className={styles.mainContentView}>
 				<CreatePost
@@ -88,26 +94,37 @@ export default function Home() {
 						backgroundColor: "black",
 					}}
 				/>
-				{selectedSection === "following" ? <div className={styles.noPosts}>Following</div> : posts ? posts.length === 0 ? <div className={styles.noPosts}>There are no posts available</div>: posts.map((item: any, index: any) => (
-                    <SinglePost
-                        key={index}
-                        name={item.author.displayName}
-                        userId={item.author.id}
-						profileImage={getMediaEndpoint() + item.author.profileImage.split("?")[0]}
-						username={item.author.email}
-						text={item.content}
-						postImage={undefined}
-						date={Math.floor(new Date(item.published).getTime() / 1000)}
-						likes={0}
-						retweets={0}
-						comments={0}
-						postId={item.id}
-						contentType={item.contentType}
-					/>
-				)) : <Spinner animation="border" role="status">
-                <span className="visually-hidden">Loading...</span>
-              </Spinner>}
-
+				{selectedSection === "following" ? (
+					<div className={styles.noPosts}>Following</div>
+				) : posts ? (
+					posts.length === 0 ? (
+						<div className={styles.noPosts}>There are no posts available</div>
+					) : (
+						posts.map((item: any, index: any) => (
+							<SinglePost
+								key={index}
+								name={item.author.displayName}
+								userId={item.author.id}
+								profileImage={
+									getMediaEndpoint() + item.author.profileImage.split("?")[0]
+								}
+								username={item.author.email}
+								text={item.content}
+								postImage={undefined}
+								date={Math.floor(new Date(item.published).getTime() / 1000)}
+								likes={0}
+								retweets={0}
+								comments={item.count}
+								postId={item.id}
+								contentType={item.contentType}
+							/>
+						))
+					)
+				) : (
+					<Spinner animation="border" role="status">
+						<span className="visually-hidden">Loading...</span>
+					</Spinner>
+				)}
 			</div>
 		</div>
 	);

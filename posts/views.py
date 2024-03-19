@@ -30,20 +30,28 @@ class PostsViewPK(APIView):
      '''
      def put(self, request, pk):
         post = get_object_or_404(Post, id=pk)
-        if request.data.get(author):
+        if request.data.get("author"):
             author = None
             try:
                 author = User.objects.get(id=request.data.get(author))
             except User.DoesNotExist:
                 return Response({"title": "Author not found.","message": "No valid author for the post was provided"}, status=status.HTTP_404_NOT_FOUND)
 
-        request.data["author"] = author
+        request.data["author"] = post.author
+
+        JWT_authenticator = JWTAuthentication()
+        response = JWT_authenticator.authenticate(request)
         serializer = PostSerializer(post, data = request.data, partial=True, context={'request': request})
-        if serializer.is_valid():
-            serializer.save(author=author)
-            return Response(serializer.data, status = status.HTTP_200_OK)
+        realAuthor = serializer.get_author(post)["id"]
+
+        if response and realAuthor == response[1]["user_id"]:
+            if serializer.is_valid():
+                serializer.save(author=author)
+                return Response(serializer.data, status = status.HTTP_200_OK)
+            else:
+                return Response({"title": "Invalid Fields", "message": serializer.errors}, status = status.HTTP_400_BAD_REQUEST) # Need to change the error message
         else:
-            return Response({"title": "Invalid Fields", "message": serializer.errors}, status = status.HTTP_400_BAD_REQUEST) # Need to change the error message
+            return Response({"title": "Unauthorized", "message": "You are not authorized to update this post"}, status = status.HTTP_401_UNAUTHORIZED)
      '''
      DELETE /authors/{id}/posts/{id} and /posts/{id}
      '''
@@ -88,10 +96,15 @@ class PostsView(APIView):
             return Response({"title": "Author not found.","message": "No valid author for the post was provided"}, status=status.HTTP_404_NOT_FOUND)
 
         request.data["author"] = author
+
+        JWT_authenticator = JWTAuthentication()
+        response = JWT_authenticator.authenticate(request)
         serializer = PostSerializer(data = request.data, context={'request': request})
-        
-        if serializer.is_valid():
-            serializer.save(author=author)
-            return Response(serializer.data, status = status.HTTP_200_OK)
+        if response and str(author.id) == response[1]["user_id"]:
+            if serializer.is_valid():
+                serializer.save(author=author)
+                return Response(serializer.data, status = status.HTTP_200_OK)
+            else:
+                return Response({"title": "Invalid Fields", "message": serializer.errors}, status = status.HTTP_400_BAD_REQUEST)
         else:
-            return Response({"title": "Invalid Fields", "message": serializer.errors}, status = status.HTTP_400_BAD_REQUEST)
+            return Response({"title": "Unauthorized", "message": "You are not authorized to create this post"}, status = status.HTTP_401_UNAUTHORIZED)

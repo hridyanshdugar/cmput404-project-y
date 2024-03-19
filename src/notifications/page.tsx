@@ -13,7 +13,7 @@ export default function Notifications() {
 
 	useEffect(() => {
 		const cookies = new Cookies();
-		const auth = cookies.get("auth");
+		const auth = cookies.get("auth")["access"];
 		const user = cookies.get("user");
     getNewFollowRequests(user.email)
       .then((res: any) => {

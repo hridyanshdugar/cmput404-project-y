@@ -103,7 +103,9 @@ const SinglePost: React.FC<Props> = (props) => {
 							setReplies(
 								replies.filter((post: any) => post.id !== props.postId)
 							);
-							setPosts({ ...posts, count: posts.count - 1 });
+							setPosts(
+								posts.map((post: any) => ({ ...post, count: post.count - 1 }))
+							);
 						}
 					})
 					.catch(async (result: any) => {
@@ -116,7 +118,9 @@ const SinglePost: React.FC<Props> = (props) => {
 						console.log(Data);
 
 						if (result.status === 200) {
+							console.log(posts);
 							setPosts(posts.filter((post: any) => post.id !== props.postId));
+							console.log(posts);
 						}
 					})
 					.catch(async (result: any) => {

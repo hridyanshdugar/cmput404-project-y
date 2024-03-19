@@ -29,7 +29,7 @@ export default function Profiles() {
 
 	useEffect(() => {
 		const cookies = new Cookies();
-		const auth = cookies.get("auth");
+		const auth = cookies.get("auth")["access"];
 		const user = cookies.get("user");
 		setUserId(outletObject.userId);
 		setuser(user);
