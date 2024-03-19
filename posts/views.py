@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from .models import Post
 from rest_framework.pagination import PageNumberPagination
-from .serializers import PostSerializer
+from .serializers import PostSerializer, PostEditSerializer
 from django.shortcuts import get_object_or_404
 from users.models import User
 from django.db.models import Q
@@ -65,6 +65,20 @@ class PostsViewPK(APIView):
             post.delete()
             return Response({"title": "Successfully Deleted", "message": "Post was deleted"}, status = status.HTTP_200_OK)
         return Response({"title": "Unauthorized", "message": "You are not authorized to delete this post"}, status = status.HTTP_401_UNAUTHORIZED)
+     
+     '''
+     PATCH /authors/{id}/posts/{id} and /posts/{id}
+     '''
+     def patch(self, request, pk):
+        JWT_authenticator = JWTAuthentication()
+        response = JWT_authenticator.authenticate(request)
+        post = get_object_or_404(Post, id=pk)
+        serializer = PostEditSerializer(post, partial=True)
+        
+        if serializer.is_valid():
+            post.save()
+            return Response({"title": "Successfully Updated", "message": "Post was updated"}, status = status.HTTP_200_OK)
+        return Response({"title": "Bad Request", "message": "Invalid Request Sent"}, status = status.HTTP_400_BAD_REQUEST)
 
 class PostsView(APIView):
      pagination = Pager()

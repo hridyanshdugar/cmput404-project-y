@@ -11,6 +11,11 @@ from comments.models import Comment
 TEXT_MAX_LENGTH = 300
 VISIBILITY_CHOICES = [(1, "PUBLIC"), (2, "FRIENDS"), (3, "UNLISTED")]
 
+class PostEditSerializer(serializers.ModelSerializer):
+     class Meta:
+          model = Post
+          fields = ["content","contentType","visibility","description"]
+
 
 class PostSerializer(serializers.ModelSerializer):
      url = serializers.SerializerMethodField()
