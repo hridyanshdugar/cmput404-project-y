@@ -38,6 +38,7 @@ urlpatterns = [
         path('users/', include('users.urls')),
         path('images/', include('image.urls')),
         path('followers/', include('followers.urls')),
+        path('authors/', include('followers.urls'))
     ])),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

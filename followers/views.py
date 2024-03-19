@@ -9,11 +9,12 @@ from rest_framework.decorators import api_view, authentication_classes, permissi
 from rest_framework.permissions import AllowAny
 from .helper import body_to_json, addToNewFollowRequestTable, addToFollowerTable
 from .models import NewFollowRequest, Follower
+from rest_framework.views import APIView
+from django.db import transaction
+from urllib.parse import unquote
+import requests
 
 val = URLValidator()
-
-def index(request):
-    return HttpResponse("Hello, world. from followers")
 
 @api_view(['POST'])
 @authentication_classes([])
@@ -68,17 +69,30 @@ def getNewFollowRequests(request):
     except:
         return HttpResponseBadRequest("Something went wrong!")
 
-def getFollowers(request):
-    try:
+def getFollowers(request, author_id=None):
+    if author_id:
+        user = list(User.objects.filter(id=author_id).values())[0]
+        name = user["email"]
+    else:
         name = request.GET['name']
+    try:
         new_follower_list = list(Follower.objects.filter(name=name).values())
         users = []
         for new_follower in new_follower_list:
             user = list(User.objects.filter(email=new_follower["follower"]).values())[0]
+            user["type"] = "author"
+            if author_id:
+                user["id"] = user["global_id"]
+            for not_needed in ["last_login", "password", "is_superuser", "is_staff", "profileImage", "profileBackgroundImage", "approved", "creation_date", "global_id"]:
+                user.pop(not_needed)
             users.append(user)
-        return JsonResponse(users, safe=False)
+        data = {
+            "type": "followers",
+            "items": users
+        }
+        return JsonResponse(data) if author_id else JsonResponse(users, safe=False)
     except:
-        return HttpResponseBadRequest("Something went wrong!")    
+        return HttpResponseBadRequest("Something went wrong!") 
 
 def getFriends(request):
     try:
@@ -110,7 +124,9 @@ def acceptFollowRequest(request):
     try:
         name = body['name']
         follower = body['follower']
-        url = "testurl"
+        url = list(NewFollowRequest.objects.filter(Q(name=name) & Q(follower=follower)))[0]
+        url = url.followerUrl
+
         # Check if the follow request is not already accepted
         follows = True if list(Follower.objects.filter(Q(name=name) & Q(follower=follower))) else False
         newRequest = True if list(NewFollowRequest.objects.filter(Q(name=name) & Q(follower=follower))) else False
@@ -149,3 +165,67 @@ def declineFollowRequest(request):
     except:
         return HttpResponseBadRequest("Something went wrong!") 
 
+
+
+
+class FollowerView(APIView):
+
+    def delete(self, request, author_id, follower_id):
+        """
+        remove FOREIGN_AUTHOR_ID as a follower of AUTHOR_ID, basically same functionality as unfollow
+        """
+        user = list(User.objects.filter(id=author_id).values())[0]
+        url = unquote(follower_id).replace("%", "")
+        requrl = url.split("/")
+        requrl = requrl[0] + "//" +requrl[2] + "/api/users/" + requrl[-1]
+        requrl = requrl.replace("3000", "8000")
+        followerUserObject = requests.get(requrl).json()
+        try:
+            with transaction.atomic():
+                Follower.objects.filter(Q(follower=followerUserObject["email"]) & Q(name=user["email"])).delete()
+        except:
+            return HttpResponseBadRequest("Invalid Request: Follower not found, are you sending 'name' and 'follower' in the headers")
+
+        return HttpResponse()
+
+    def get(self, request, author_id, follower_id):
+        """
+        check if FOREIGN_AUTHOR_ID is a follower of AUTHOR_ID
+        """
+        user = list(User.objects.filter(id=author_id).values())[0]
+        url = unquote(follower_id).replace("%", "")
+        requrl = url.split("/")
+        requrl = requrl[0] + "//" +requrl[2] + "/api/users/" + requrl[-1]
+        requrl = requrl.replace("3000", "8000")
+        followerUserObject = requests.get(requrl).json()
+        name = user["email"]
+        follower = followerUserObject["email"]
+        follows = True if list(Follower.objects.filter(Q(name=name) & Q(follower=follower))) else False
+        return HttpResponse(follows)
+
+    def put(self, request, author_id, follower_id):
+        """
+        Add FOREIGN_AUTHOR_ID as a follower of AUTHOR_ID, basically same functionality as accept Follow request
+        """
+        user = list(User.objects.filter(id=author_id).values())[0]
+        url = unquote(follower_id).replace("%", "")
+        requrl = url.split("/")
+        requrl = requrl[0] + "//" +requrl[2] + "/api/users/" + requrl[-1]
+        requrl = requrl.replace("3000", "8000")
+        followerUserObject = requests.get(requrl).json()
+        try:
+            name = user["email"]
+            follower = followerUserObject["email"]
+            # Check if the follow request is not already accepted
+            follows = True if list(Follower.objects.filter(Q(name=name) & Q(follower=follower))) else False
+            newRequest = True if list(NewFollowRequest.objects.filter(Q(name=name) & Q(follower=follower))) else False
+
+            if not follows and newRequest:
+                addToFollowerTable(name=name, follower=follower, url=url)
+                NewFollowRequest.objects.filter(Q(name=name) & Q(follower=follower)).delete()
+                return HttpResponse()
+            else:
+                NewFollowRequest.objects.filter(Q(name=name) & Q(follower=follower)).delete()
+                return HttpResponseBadRequest("Not able to follow, follows="+ str(follows) + " newRequest=" + str(newRequest)) 
+        except:
+            return HttpResponseBadRequest("Something went wrong!")

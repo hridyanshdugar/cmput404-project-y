@@ -20,6 +20,7 @@ type Props = {
     following: number;
     activeUser: boolean;
     followingStatus: boolean;
+    url: string;
     //posts: Array<SinglePost>;
 }
 
@@ -59,7 +60,7 @@ export default class Profile extends React.Component<Props> {
         const externalUserId = this.props.userid
         if (request) {
           //API follow request !!NEEDED!!
-          sendFollowRequest(this.props.username, user['email'], 'https://www.testurl.com');
+          sendFollowRequest(this.props.username, user['email'], this.props.url);
         }
         this.followStatus = "Following"
         var div = document.getElementById("profileButton");

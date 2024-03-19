@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'storages',
     'image',
     'whitenoise.runserver_nostatic',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [

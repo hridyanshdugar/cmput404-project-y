@@ -87,7 +87,8 @@ export default function ProfileLayout() {
                 activeUser={activeUser} 
                 followingStatus={followingStatus}
                 profileImage={userInformation?.profileImage || ""} 
-                profileBackround={userInformation?.profileBackgroundImage || ""}/>
+                profileBackround={userInformation?.profileBackgroundImage || ""}
+                url={userInformation?.url || ""}/>
                 <Outlet context={{ userId: userId}}/>
                 <Rightbar/>
             </div>            
