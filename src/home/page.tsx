@@ -106,7 +106,7 @@ export default function Home() {
 								name={item.author.displayName}
 								userId={item.author.id}
 								profileImage={
-									getMediaEndpoint() + item.author.profileImage.split("?")[0]
+									getMediaEndpoint() + item.author.profileImage?.split("?")[0]
 								}
 								username={item.author.email}
 								text={item.content}

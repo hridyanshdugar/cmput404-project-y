@@ -1,0 +1,108 @@
+.blockImage {
+	width: 4rem;
+	vertical-align: top;
+	padding-top: 0.5rem;
+}
+
+.img {
+	vertical-align: unset !important;
+	border-radius: 50%;
+}
+
+.blockContent {
+	width: 100%;
+	align-items: flex-start;
+}
+
+.createPost {
+	display: flex;
+	background-color: black;
+	padding-right: 2rem;
+	overflow: auto;
+	max-height: 500px;
+}
+
+.textarea {
+	padding-top: 20px;
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-bottom: 10px;
+	font-size: 2vh;
+	color: #fff;
+	background-color: black;
+	border: none;
+	width: 100%;
+	outline: none;
+	resize: none;
+}
+
+.bottomBar {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.iconBar {
+	text-align: left;
+	width: calc(100% + 12px);
+}
+
+.horizontalLine {
+	border: 1px solid gray;
+	width: 100%;
+	margin: 0;
+}
+
+.flexContainer {
+	display: flex;
+	justify-content: space-between;
+	font-size: 16px;
+	color: rgb(113, 118, 123);
+	background-color: black;
+	padding-top: 0.25rem;
+	padding-left: 0.5rem;
+	padding-right: 0.5rem;
+	align-items: center;
+	justify-content: left;
+}
+
+.flexContainer::before {
+	content: "";
+}
+
+.flexContainer::after {
+	content: "";
+}
+
+.flexItem {
+	margin-top: 20px;
+	height: 30px;
+	text-align: center;
+	font-size: 20px;
+	width: 50px;
+	color: rgb(113, 118, 123);
+	cursor: pointer;
+}
+
+.markdownColor > div {
+    background-color: black!important;
+	border-bottom: 1px solid rgb(47, 51, 54);
+	border-top: 1px solid rgb(47, 51, 54);
+}
+
+.flexItem > label {
+	cursor: pointer;
+}
+
+.selectItem {
+	color: rgb(29, 155, 240) !important;
+}
+
+.flexItem2 {
+	height: 30px;
+	text-align: right;
+	width: calc(100% + 12px);
+}
+.separator {
+	flex-grow: 1;
+}

@@ -63,7 +63,7 @@ export default function Profiles() {
 										userId={item.author.id}
 										profileImage={
 											getMediaEndpoint() +
-											item.author.profileImage.split("?")[0]
+											item.author.profileImage?.split("?")[0]
 										}
 										username={item.author.email}
 										text={item.content}

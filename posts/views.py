@@ -30,12 +30,10 @@ class PostsViewPK(APIView):
      '''
      def put(self, request, pk):
         post = get_object_or_404(Post, id=pk)
-        if request.data.get("author"):
-            author = None
-            try:
-                author = User.objects.get(id=request.data.get(author))
-            except User.DoesNotExist:
-                return Response({"title": "Author not found.","message": "No valid author for the post was provided"}, status=status.HTTP_404_NOT_FOUND)
+        try:
+            author = User.objects.get(id=request.data.get("author"))
+        except User.DoesNotExist:
+            return Response({"title": "Author not found.","message": "No valid author for the post was provided"}, status=status.HTTP_404_NOT_FOUND)
 
         request.data["author"] = post.author
 
@@ -73,10 +71,10 @@ class PostsViewPK(APIView):
         JWT_authenticator = JWTAuthentication()
         response = JWT_authenticator.authenticate(request)
         post = get_object_or_404(Post, id=pk)
-        serializer = PostEditSerializer(post, partial=True)
+        serializer = PostEditSerializer(post, partial=True,data = request.data)
         
-        if serializer.is_valid():
-            post.save()
+        if response and serializer.is_valid():
+            serializer.save()
             return Response({"title": "Successfully Updated", "message": "Post was updated"}, status = status.HTTP_200_OK)
         return Response({"title": "Bad Request", "message": "Invalid Request Sent"}, status = status.HTTP_400_BAD_REQUEST)
 

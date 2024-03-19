@@ -126,6 +126,7 @@ export async function EditPost(payload: any, auth: string, id:string) {
     },
     body: JSON.stringify(payload)
   };
+    console.log("hi p: ", payload, auth, id)
   return await fetch(getAPIEndpoint() + `/posts/${id}`, options);
 }
 

@@ -37,7 +37,7 @@ node_modules
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
 *.manifest
 *.spec
-backend/media/*
+media/*
 
 
 # Installer logs
@@ -153,6 +153,8 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+
 
 # pytype static type analyzer
 .pytype/

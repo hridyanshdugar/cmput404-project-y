@@ -81,7 +81,7 @@ export default function Post() {
 								name={item.author.displayName}
 								userId={item.author.id}
 								profileImage={
-									getMediaEndpoint() + item.author.profileImage.split("?")[0]
+									getMediaEndpoint() + item.author.profileImage?.split("?")[0]
 								}
 								username={item.author.email}
 								text={item.content}
@@ -120,7 +120,7 @@ export default function Post() {
 							key={index}
 							name={item.author.displayName}
 							userId={item.author.id}
-							profileImage={item.author.profileImage.split("?")[0]}
+							profileImage={item.author.profileImage?.split("?")[0]}
 							username={item.author.email}
 							text={item.comment}
 							postImage={undefined}

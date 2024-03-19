@@ -7,15 +7,16 @@ import { faArrowUpFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { faRepeat } from "@fortawesome/free-solid-svg-icons";
 import { faComment } from "@fortawesome/free-regular-svg-icons";
 import { faHeart } from "@fortawesome/free-regular-svg-icons";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Card } from "react-bootstrap";
 import Dropdown from "./dropdowns/dropdown";
-import { navigate } from "../utils/utils";
+import { getFrontend, navigate } from "../utils/utils";
 import MarkdownPreview from "@uiw/react-markdown-preview";
 import { deletePost, deleteComment } from "../utils/utils";
 import Cookies from "universal-cookie";
 import { useContext } from "react";
 import { PostContext } from "../utils/postcontext";
+import EditPopupPanel from "./editpopuppanel";
 
 export function TimeConverter(date: Date) {
 	var now = new Date();
@@ -87,8 +88,16 @@ const SinglePost: React.FC<Props> = (props) => {
 				navigate("/post/" + props.postId);
 			}
 		}
-	};
+    };
+    
+	const [user, setuser] = useState<any>(null);
+	useEffect(() => {
+		const cookies = new Cookies();
+		const user = cookies.get("user");
+		setuser(user);
+	}, []);
 
+    const [popupOpen, setPopupOpen] = useState(false);
 	const onPostOptionSelect = (selection: string | null) => {
 		const cookies = new Cookies();
 		const auth = cookies.get("auth")["access"];
@@ -127,21 +136,29 @@ const SinglePost: React.FC<Props> = (props) => {
 						console.log(result);
 					});
 			}
-		} else if (selection === "Edit") {
-			console.log("edit");
+        } else if (selection === "Edit") {
+            console.log("edit");
+            setPopupOpen(true);
+            document.body.style.overflow = "hidden";
+		} else if (selection === "Copy Link") {
+            console.log("copy link");
+            navigator.clipboard.writeText(getFrontend() + "/post/" + props.postId)
 		}
 	};
 
 	const date = new Date(0);
 	const [posts, setPosts, replies, setReplies] = useContext(PostContext);
-	date.setUTCSeconds(props.date);
-	return (
-		<div
+    date.setUTCSeconds(props.date);
+    return (
+        <>
+        {popupOpen && <EditPopupPanel setPopupOpen={setPopupOpen} postId={props.postId} />}
+
+<div
 			className={style.overflow}
 			onClick={onClickF}
 			style={{ cursor: props.onPostPage ? "default" : "pointer" }}
-		>
-			<div className={style.blockImage}>
+            >
+                <div className={style.blockImage}>
 				<img
 					id="profile6"
 					className={style.img}
@@ -175,7 +192,9 @@ const SinglePost: React.FC<Props> = (props) => {
 					<div>
 						<Dropdown
 							icon={faEllipsis}
-							options={["Delete", "Edit"]}
+							options={( props.userId === user?.id ? ["Delete", "Edit"] : []).concat([
+                                "Copy Link",
+                              ])}
 							onChange={onPostOptionSelect}
 						/>
 					</div>
@@ -222,7 +241,9 @@ const SinglePost: React.FC<Props> = (props) => {
 					</div>
 				</div>
 			</div>
-		</div>
+		</div>        
+        </>
+		
 	);
 };
 
