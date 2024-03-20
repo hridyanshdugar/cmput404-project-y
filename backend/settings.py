@@ -90,6 +90,8 @@ TEMPLATES = [
     },
 ]
 
+CORS_ORIGIN_ALLOW_ALL = True
+
 WSGI_APPLICATION = 'backend.wsgi.application'
 
 REST_FRAMEWORK = {
