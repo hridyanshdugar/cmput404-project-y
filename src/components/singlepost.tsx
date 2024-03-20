@@ -10,7 +10,7 @@ import { faHeart } from "@fortawesome/free-regular-svg-icons";
 import React, { useEffect, useState } from "react";
 import { Card } from "react-bootstrap";
 import Dropdown from "./dropdowns/dropdown";
-import { getFrontend, navigate } from "../utils/utils";
+import { getFrontend, navigate, likePost } from "../utils/utils";
 import MarkdownPreview from "@uiw/react-markdown-preview";
 import { deletePost, deleteComment } from "../utils/utils";
 import Cookies from "universal-cookie";
@@ -89,6 +89,14 @@ const SinglePost: React.FC<Props> = (props) => {
 			}
 		}
     };
+
+		const onClickLike = () => {
+			const cookies = new Cookies();
+  		const user = cookies.get("user");
+			const auth = cookies.get("auth");
+			likePost(auth['access'],user['id'],props.postId);
+			
+		};
     
 	const [user, setuser] = useState<any>(null);
 	useEffect(() => {
@@ -234,7 +242,7 @@ const SinglePost: React.FC<Props> = (props) => {
 						<FontAwesomeIcon icon={faRepeat} fixedWidth /> {props.retweets}
 					</div>
 					<div className={style.flexItem}>
-						<FontAwesomeIcon icon={faHeart} fixedWidth /> {props.likes}
+						<FontAwesomeIcon icon={faHeart} fixedWidth onClick={() =>{onClickLike();}}/> {props.likes}
 					</div>
 					<div className={style.flexItem2}>
 						<FontAwesomeIcon icon={faArrowUpFromBracket} fixedWidth />

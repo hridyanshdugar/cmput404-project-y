@@ -6,6 +6,7 @@ from urllib.parse import urlparse
 import uuid
 from comments.serializers import CommentSerializer
 from comments.models import Comment
+from likes.models import PostLike
 
 # Constants
 TEXT_MAX_LENGTH = 300
@@ -29,10 +30,11 @@ class PostSerializer(serializers.ModelSerializer):
      comments = serializers.SerializerMethodField()
      author = serializers.SerializerMethodField()
      count = serializers.SerializerMethodField()
+     likes = serializers.SerializerMethodField()
 
      class Meta:
           model = Post
-          fields = ["id","global_id", "host","url","type","content","contentType","published","comments","commentsSrc","visibility","origin","description", "author","count"]
+          fields = ["id","global_id", "host","url","type","content","contentType","published","comments","commentsSrc","visibility","origin","description", "author","count","likes"]
 
      def __init__(self, *args, **kwargs):
         exclude_comments = False
@@ -82,3 +84,6 @@ class PostSerializer(serializers.ModelSerializer):
      
      def get_count(self, obj):
          return len(Comment.objects.filter(post=obj))
+     
+     def get_likes(self, obj):
+         return len(PostLike.objects.filter(post=obj))

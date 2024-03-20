@@ -119,7 +119,7 @@ export async function createPost(title:string, description:string, contentType:s
 
 export async function getRemoteUsers(auth: string) {
   const options: RequestInit = {
-    method: 'POST',
+    method: 'GET',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${auth}`,
@@ -151,6 +151,17 @@ export async function createComment(contentType:string, comment:string, auth: st
     body: JSON.stringify({ "comment": comment, "contentType": contentType, "author": id, "post":postId })
   };
   return await fetch(getAPIEndpoint() + `/posts/${postId}/comments/`, options);
+}
+
+export async function likePost(auth: string, id:string, postId:string) {
+  const options: RequestInit = {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${auth}`,
+    },
+  };
+  return await fetch(getAPIEndpoint() + `/authors/${id}/posts/${postId}/likes`, options);
 }
 
 export async function getHomePosts(host: string, page:number, size: number , auth: string, id:string) {

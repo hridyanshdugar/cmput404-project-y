@@ -100,8 +100,7 @@ class AllUsersView(APIView):
 
         page = self.pagination.paginate_queryset(node_responses, request, view=self)
         if page is not None:
-            serializer = AuthorSerializer(page, many=True, context={'request': request})
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(page, status=status.HTTP_200_OK)
         else:
             # Adjusted to prevent ReferenceError if `page` is None
             return Response({"error": "Bad request or empty page."}, status=status.HTTP_400_BAD_REQUEST)
