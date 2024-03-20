@@ -155,7 +155,7 @@ const EditPostt: React.FC<EditPostProps> = (props) => {
 					? contentTypeF
 					: postInformation?.contentType,
 			},
-			auth["access"],
+			auth,
 			postInformation?.id
 		)
 			.then(async (result: any) => {
