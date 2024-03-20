@@ -70,7 +70,6 @@ export default function Profiles() {
 										postImage={undefined}
 										date={Math.floor(new Date(item.published).getTime() / 1000)}
 										likes={0}
-										retweets={0}
 										comments={item.count}
 										postId={item.id}
 										contentType={item.contentType}

@@ -93,7 +93,11 @@
 	width: calc(100% + 12px);
 }
 
-.flexItemShare {
+.flexItemShare:hover {
+	color:rgba(0, 186, 124, 0.5) !important;
+}
+
+.flexItemShare:active {
 	color:rgb(0, 186, 124) !important;
 }
 
@@ -121,3 +125,7 @@
 	border-color: rgb(47, 51, 54);
 	border-radius: 0;
 }
+
+.missingEmbed:hover {
+	background-color: hsl(0, 0%, 7%);
+}	

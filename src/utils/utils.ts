@@ -312,6 +312,33 @@ export async function getFollowers(email:any) {
     headers: {
         'Content-Type': 'application/json'
     }
-};
-return await fetch(getAPIEndpoint() + `/followers/get/followers?name=${email}`, options)
+  };
+  return await fetch(getAPIEndpoint() + `/followers/get/followers?name=${email}`, options)
+}
+
+export async function sendPostToInbox(id:any, auth:any, post:any, author:any) {
+  const options: RequestInit = {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${auth}`},
+    body: JSON.stringify({
+      type: "post",
+      id: id,
+      post: post,
+      author: author
+    })
+  };
+  return await fetch(getAPIEndpoint() + `/authors/${id}/inbox/`, options)
+}
+
+export async function getInbox(id:any, auth:any) {
+  const options: RequestInit = {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${auth}`
+    }
+  };
+  return await fetch(getAPIEndpoint() + `/authors/${id}/inbox/`, options)
 }

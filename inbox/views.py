@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from .models import Inbox, Post
 from rest_framework.pagination import PageNumberPagination
-from .serializers import PostSerializer, PostEditSerializer
+from posts.serializers import PostSerializer, PostEditSerializer
 from django.shortcuts import get_object_or_404
 from users.models import User
 from django.db.models import Q
@@ -34,7 +34,7 @@ class InboxView(APIView):
      PUT /authors/{id}/inbox
      '''
      def put(self, request, pk):
-        inbox = Inbox.objects.get(author=pk)
+        inbox = Inbox.objects.get_or_create(author__id=pk)[0]
 
         JWT_authenticator = JWTAuthentication()
         response = JWT_authenticator.authenticate(request)
@@ -61,9 +61,10 @@ class InboxView(APIView):
             
             post_obj = None
             try:
-                post_obj = Post.objects.get(id=request.data["id"])
+                post_obj = Post.objects.get(id=request.data["post"]["id"])
             except:
-                response = requests.get(request.data["global_id"])
+                print("DATA:",request.data["post"])
+                response = requests.get(request.data["post"]["global_id"])
 
                 if response.status_code == 200:
                     try:
@@ -77,11 +78,7 @@ class InboxView(APIView):
                         print(e)
             
             inbox.post.add(post_obj)
-            if serializer.is_valid():
-                serializer.save(author=author)
-                return Response(serializer.data, status = status.HTTP_200_OK)
-            else:
-                return Response({"title": "Invalid Fields", "message": serializer.errors}, status = status.HTTP_400_BAD_REQUEST)
+            return Response({"Title":"Done"}, status = status.HTTP_200_OK)
         if request.data["type"] == "comment":
             pass
         if request.data["type"] == "liked":

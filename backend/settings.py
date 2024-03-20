@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'storages',
     'likes',
     'image',
+    'inbox',
     'nodes',
     'whitenoise.runserver_nostatic',
     'django_extensions',

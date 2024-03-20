@@ -22,6 +22,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 from drf_spectacular.views import SpectacularAPIView
 from likes.views import PostLikesViewPK, PostLikesView, CommentLikesViewPK
+from inbox.views import InboxView
+
 
 heroku_react_django_urls = [
     re_path('.*', TemplateView.as_view(template_name='index.html', content_type='text/html'))
@@ -43,8 +45,8 @@ urlpatterns = [
         path('authors/<str:author_id>/posts/<str:post_id>/likes', PostLikesViewPK.as_view()),
         path('authors/<str:author_id>/comments/<str:post_id>/likes', CommentLikesViewPK.as_view()),
         path('authors/<str:author_id>/liked', PostLikesView.as_view()),
-        path('authors/', include('followers.urls'))
-        # path('authors/<str:author_id>/inbox', include('inbox.urls')),
+        path('authors/', include('followers.urls')),
+        path('authors/<str:pk>/inbox/', InboxView.as_view()),
         # path('authors/<str:author_id>/posts/<uuid:fk>/likes', include('likes.urls')),
         # path('authors/<str:author_id>/posts/<uuid:fk>/comments/<uuid:ck>/likes', include('likes.urls')),
     ])),
