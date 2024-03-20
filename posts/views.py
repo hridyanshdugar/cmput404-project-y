@@ -102,6 +102,7 @@ class PostsView(APIView):
 
         JWT_authenticator = JWTAuthentication()
         response = JWT_authenticator.authenticate(request)
+        print(response)
         author = User.objects.get(id=response[1]["user_id"])
 
         friends = json.loads(getFriends(request, author.id).content)

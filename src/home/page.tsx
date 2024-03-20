@@ -58,13 +58,15 @@ export default function Home() {
 					const Data = await result.json();
 					console.log(Data);
 
-					setPosts(Data);
-				})
-				.catch(async (result: any) => {
-					const Data = await result.json();
-					console.log(Data);
-				});
-		} else {
+				setPosts(Data);
+				console.log(posts);
+			})
+			.catch(async (result: any) => {
+				const Data = await result.json();
+				console.log(Data);
+			});
+		}
+		else {
 			//get following users
 			//get posts from following users
 			//as well as posts that are friends only

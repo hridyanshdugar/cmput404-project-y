@@ -14,12 +14,14 @@ import Profiles from './profile/page';
 import ProfileLayout from './profile/layout';
 import PostsMedia from './profile/media/page';
 import PostsLikes from './profile/likes/page';
+import Explore from './explore/page';
 
 function App() {
     return <Routes>
         <Route path="/" element={<RootPage/>} />
         <Route element={<RootLayout/>}>
             <Route path="/home" element={<Home />} />
+            <Route path="/explore" element={<Explore />} />
             <Route path="/notifications" element={ <Notifications/>} />
             <Route path="/post/:postId" element={ <Post/>} />
             <Route path="/settings" element={ <Settings/>} />            
