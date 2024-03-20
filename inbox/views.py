@@ -8,6 +8,10 @@ from django.shortcuts import get_object_or_404
 from users.models import User
 from django.db.models import Q
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from users.serializers import RemoteUserSerializer
+from posts.serializers import RemotePostSerializer
+import requests
+from requests.exceptions import JSONDecodeError
 
 class Pager(PageNumberPagination):
     page_size = 10
@@ -31,12 +35,6 @@ class InboxView(APIView):
      '''
      def put(self, request, pk):
         inbox = Inbox.objects.get(author=pk)
-        try:
-            author = User.objects.get(id=request.data.get("author"))
-        except User.DoesNotExist:
-            return Response({"title": "Author not found.","message": "No valid author for the post was provided"}, status=status.HTTP_404_NOT_FOUND)
-
-        request.data["author"] = post.author
 
         JWT_authenticator = JWTAuthentication()
         response = JWT_authenticator.authenticate(request)
@@ -44,8 +42,41 @@ class InboxView(APIView):
         if request.data["type"] == "Follow":
             pass
         if request.data["type"] == "post":
-            serializer = PostSerializer(data = request.data, context={'request': request})
-            inbox.objects.add(serializer)
+            author = None
+            try:
+                author = User.objects.get(id=request.data["author"]["id"])
+            except:
+                response = requests.get(request.data["author"]["global_id"])
+
+                if response.status_code == 200:
+                    try:
+                        data = response.json()
+                        serializer = RemoteUserSerializer(data={"id": data["id"], "global_id": data["global_id"], "url": data["url"], "email": data["email"], "profileImage": data["profileImage"], "profileBackgroundImage": data["profileBackgroundImage"], "github": data["github"], "displayName": data["displayName"]})
+                        if serializer.is_valid():
+                            author = serializer.save()
+                        else: 
+                            print(serializer.errors)
+                    except Exception as e:
+                        print(e)
+            
+            post_obj = None
+            try:
+                post_obj = Post.objects.get(id=request.data["id"])
+            except:
+                response = requests.get(request.data["global_id"])
+
+                if response.status_code == 200:
+                    try:
+                        data = response.json()
+                        serializer = RemotePostSerializer(data={"id": data["id"], "global_id": data["global_id"], "url": data["url"], "host": data["host"], "content": data["content"], "contentType": data["contentType"], "published": data["published"], "visibility": data["visibility"], "origin": data["origin"], "description": data["description"], "author": request.data["author"]["id"]})
+                        if serializer.is_valid():
+                            post_obj = serializer.save()
+                        else: 
+                            print(serializer.errors)
+                    except Exception as e:
+                        print(e)
+            
+            inbox.post.add(post_obj)
             if serializer.is_valid():
                 serializer.save(author=author)
                 return Response(serializer.data, status = status.HTTP_200_OK)
