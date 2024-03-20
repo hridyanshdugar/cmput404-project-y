@@ -8,6 +8,7 @@ from .serializers import UserSerializer, AuthorSerializer
 from django.shortcuts import get_object_or_404
 from nodes.models import Node
 import requests
+from requests.exceptions import JSONDecodeError
 
 from rest_framework.pagination import PageNumberPagination
 
@@ -72,29 +73,35 @@ class UsersView(APIView):
             return Response({"title": "Invalid Fields", "message": serializer.errors}, status = status.HTTP_400_BAD_REQUEST)
         
 class AllUsersView(APIView):
-     pagination = Pager()
-     '''
-     GET /users/all
-     '''
-     def get(self, request):
+    pagination = Pager()
+    
+    def get(self, request):
         nodes = Node.objects.all()
         node_responses = []
 
         for node in nodes:
             print(node.url + "api/users/")
-            response = requests.get(node.url + "/api/users/")
-            
-            if response.status_code == 200:
-                print(response.json())
-                node_responses.extend(response.json())
-            else:
-                print(f"Request to {node.url} failed with status code: {response.status_code}")
-        
+            try:
+                response = requests.get(node.url + "api/users/")
+                
+                if response.status_code == 200:
+                    try:
+                        response_data = response.json()
+                        print(response_data)
+                        node_responses.extend(response_data)
+                    except JSONDecodeError:
+                        print(f"Invalid JSON response from {node.url}: {response.text}")
+                else:
+                    print(f"Request to {node.url} failed with status code: {response.status_code}")
+            except requests.exceptions.RequestException as e:
+                print(f"Request to {node.url} failed: {e}")
+
         page_number = request.GET.get('page') or 1
 
         page = self.pagination.paginate_queryset(node_responses, request, view=self)
         if page is not None:
-            serializer = AuthorSerializer(page,many=True,context={'request': request})
-            return Response(serializer.data, status = status.HTTP_200_OK)
+            serializer = AuthorSerializer(page, many=True, context={'request': request})
+            return Response(serializer.data, status=status.HTTP_200_OK)
         else:
-            return Response(serializer.data, status = status.HTTP_400_BAD_REQUEST)
+            # Adjusted to prevent ReferenceError if `page` is None
+            return Response({"error": "Bad request or empty page."}, status=status.HTTP_400_BAD_REQUEST)
