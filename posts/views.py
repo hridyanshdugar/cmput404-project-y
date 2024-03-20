@@ -102,8 +102,10 @@ class PostsView(APIView):
 
         JWT_authenticator = JWTAuthentication()
         response = JWT_authenticator.authenticate(request)
-        print(response)
-        author = User.objects.get(id=response[1]["user_id"])
+        if response:
+            author = User.objects.get(id=response[1]["user_id"])
+        else:
+            return Response({"title": "Unauthorized", "message": "You are not authorized to view this post"}, status = status.HTTP_401_UNAUTHORIZED)
 
         friends = json.loads(getFriends(request, author.id).content)
 
@@ -134,7 +136,7 @@ class PostsView(APIView):
         JWT_authenticator = JWTAuthentication()
         response = JWT_authenticator.authenticate(request)
         serializer = PostSerializer(data = request.data, context={'request': request})
-        
+        print(response)
         if response and str(author.id) == response[1]["user_id"]:
             if serializer.is_valid():
                 serializer.save(author=author)
