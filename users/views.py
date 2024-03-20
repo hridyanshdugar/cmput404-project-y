@@ -6,7 +6,8 @@ from rest_framework.views import APIView
 from .models import User
 from .serializers import UserSerializer, AuthorSerializer
 from django.shortcuts import get_object_or_404
-
+from nodes.models import Node
+import requests
 
 from rest_framework.pagination import PageNumberPagination
 
@@ -69,3 +70,31 @@ class UsersView(APIView):
             return Response(serializer.data, status = status.HTTP_200_OK)
         else:
             return Response({"title": "Invalid Fields", "message": serializer.errors}, status = status.HTTP_400_BAD_REQUEST)
+        
+class AllUsersView(APIView):
+     pagination = Pager()
+     '''
+     GET /users/all
+     '''
+     def get(self, request):
+        nodes = Node.objects.all()
+        node_responses = []
+
+        for node in nodes:
+            print(node.url + "api/users/")
+            response = requests.get(node.url + "/api/users/")
+            
+            if response.status_code == 200:
+                print(response.json())
+                node_responses.extend(response.json())
+            else:
+                print(f"Request to {node.url} failed with status code: {response.status_code}")
+        
+        page_number = request.GET.get('page') or 1
+
+        page = self.pagination.paginate_queryset(node_responses, request, view=self)
+        if page is not None:
+            serializer = AuthorSerializer(page,many=True,context={'request': request})
+            return Response(serializer.data, status = status.HTTP_200_OK)
+        else:
+            return Response(serializer.data, status = status.HTTP_400_BAD_REQUEST)
