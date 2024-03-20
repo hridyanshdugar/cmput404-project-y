@@ -117,6 +117,17 @@ export async function createPost(title:string, description:string, contentType:s
   return await fetch(getAPIEndpoint() + `/posts/`, options);
 }
 
+export async function getRemoteUsers(auth: string) {
+  const options: RequestInit = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${auth}`,
+    },
+  };
+  return await fetch(getAPIEndpoint() + `/users/all`, options);
+}
+
 export async function EditPost(payload: any, auth: string, id:string) {
   const options: RequestInit = {
     method: 'PATCH',
