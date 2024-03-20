@@ -40,7 +40,7 @@ urlpatterns = [
         path('images/', include('image.urls')),
         path('followers/', include('followers.urls')),
         path('authors/', include('followers.urls'))
-        # path('authors/<str:author_id>/inbox/', include('likes.urls')),
+        # path('authors/<str:author_id>/inbox', include('inbox.urls')),
         # path('authors/<str:author_id>/posts/<uuid:fk>/likes', include('likes.urls')),
         # path('authors/<str:author_id>/posts/<uuid:fk>/comments/<uuid:ck>/likes', include('likes.urls')),
     ])),
