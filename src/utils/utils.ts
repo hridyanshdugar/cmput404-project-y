@@ -119,7 +119,7 @@ export async function createPost(title:string, description:string, contentType:s
 
 export async function getRemoteUsers(auth: string) {
   const options: RequestInit = {
-    method: 'POST',
+    method: 'GET',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${auth}`,
