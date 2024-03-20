@@ -26,6 +26,10 @@
 	padding-top: 0.5rem;
 }
 
+.overflow:hover{
+	background-color: hsl(0, 0%, 7%);
+}
+
 .topText {
 	font-size: 15px;
 	color: white;
@@ -81,16 +85,39 @@
 	content: "";
 }
 
-.flexItem {
+.flexItem,
+.flexItemShare {
+	z-index: 1;
 	height: 30px;
 	text-align: left;
 	width: calc(100% + 12px);
 }
+
+.flexItemShare {
+	color:rgb(0, 186, 124) !important;
+}
+
 .flexItem2 {
 	height: 30px;
 	text-align: right;
 	width: calc(100% + 12px);
 }
+
 .separator {
 	flex-grow: 1;
+}
+
+.postEmbed {
+	width: 100%;
+	border-color: rgb(47, 51, 54);
+	border-radius: 0;
+}
+
+.missingEmbed {
+	background-color: black;
+	font-size: large;
+	color: rgb(113, 118, 123);
+	width: 100%;
+	border-color: rgb(47, 51, 54);
+	border-radius: 0;
 }
