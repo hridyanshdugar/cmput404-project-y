@@ -91,6 +91,8 @@ TEMPLATES = [
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
+CSRF_COOKIE_SECURE = False 
+CSRF_COOKIE_HTTPONLY = False
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
