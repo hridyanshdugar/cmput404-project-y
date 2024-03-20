@@ -153,6 +153,17 @@ export async function createComment(contentType:string, comment:string, auth: st
   return await fetch(getAPIEndpoint() + `/posts/${postId}/comments/`, options);
 }
 
+export async function likePost(auth: string, id:string, postId:string) {
+  const options: RequestInit = {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${auth}`,
+    },
+  };
+  return await fetch(getAPIEndpoint() + `/authors/${id}/posts/${postId}/likes`, options);
+}
+
 export async function getHomePosts(host: string, page:number, size: number , auth: string, id:string) {
   const options: RequestInit = {
     method: 'GET',

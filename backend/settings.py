@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'posts',
     'comments',
     'storages',
+    'likes',
     'image',
     'nodes',
     'whitenoise.runserver_nostatic',

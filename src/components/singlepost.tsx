@@ -8,7 +8,7 @@ import { faRepeat } from "@fortawesome/free-solid-svg-icons";
 import { faComment } from "@fortawesome/free-regular-svg-icons";
 import { faHeart } from "@fortawesome/free-regular-svg-icons";
 import React, { useEffect, useState } from "react";
-import { navigate, createPost, getAPIEndpoint, getFrontend, getPost } from "../utils/utils";
+import { navigate, createPost, getAPIEndpoint, getFrontend, getPost, likePost } from "../utils/utils";
 import { Card } from "react-bootstrap";
 import Dropdown from "./dropdowns/dropdown";
 import MarkdownPreview from "@uiw/react-markdown-preview";
@@ -128,6 +128,18 @@ const SinglePost: React.FC<Props> = (props) => {
 				setRetweets(retweets + 1);
 			}
 		}
+    };
+
+		const onClickLike = () => {
+			const cookies = new Cookies();
+  		const user = cookies.get("user");
+			const auth = cookies.get("auth");
+			likePost(auth['access'],user['id'],props.postId);
+			
+		};
+    
+	const [user, setuser] = useState<any>(null);
+	useEffect(() => {
 	};
 
 	const sharePost = () => {
@@ -260,6 +272,19 @@ const SinglePost: React.FC<Props> = (props) => {
 				>
 				  {props.username}
 				</div>
+				<div className={style.flexContainer}>
+					<div className={style.flexItem}>
+						<FontAwesomeIcon icon={faComment} fixedWidth /> {props.comments}
+					</div>
+					<div className={style.flexItem}>
+						<FontAwesomeIcon icon={faRepeat} fixedWidth /> {props.retweets}
+					</div>
+					<div className={style.flexItem}>
+						<FontAwesomeIcon icon={faHeart} fixedWidth onClick={() =>{onClickLike();}}/> {props.likes}
+					</div>
+					<div className={style.flexItem2}>
+						<FontAwesomeIcon icon={faArrowUpFromBracket} fixedWidth />
+					</div>
 				<div
 				  id="profile5"
 				  className={[style.topUserText, style.inlineBlock].join(" ")}
