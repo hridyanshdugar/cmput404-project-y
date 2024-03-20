@@ -301,7 +301,7 @@ const SinglePost: React.FC<Props> = (props) => {
 						<div>
 							<Dropdown
 								icon={faEllipsis}
-								options={["Delete", "Edit"]}
+								options={["Delete", "Edit", "Copy Link"]}
 								onChange={onPostOptionSelect}
 							/>
 						</div>
