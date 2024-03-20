@@ -2,14 +2,17 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 from .models import Inbox, Post
+from comments.models import Comment
 from rest_framework.pagination import PageNumberPagination
-from posts.serializers import PostSerializer, PostEditSerializer
+from posts.serializers import PostSerializer
+from likes.serializers import EditCommentLikeSerializer, EditPostLikeSerializer
 from django.shortcuts import get_object_or_404
 from users.models import User
 from django.db.models import Q
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from users.serializers import RemoteUserSerializer
 from posts.serializers import RemotePostSerializer
+from .serializers import InboxSerializer
 import requests
 from requests.exceptions import JSONDecodeError
 
@@ -26,15 +29,16 @@ class InboxView(APIView):
      '''
      def get(self, request, pk):
         print(pk)
-        post = get_object_or_404(Post, id=pk)
-        serializer = PostSerializer(post, context={'request': request})
+        post = get_object_or_404(Inbox, author__id=pk)
+        print("GOT")
+        serializer = InboxSerializer(post)
         return Response(serializer.data, status = status.HTTP_200_OK)
 
      '''
      PUT /authors/{id}/inbox
      '''
      def put(self, request, pk):
-        inbox = Inbox.objects.get_or_create(author__id=pk)[0]
+        inbox = Inbox.objects.get_or_create(id=pk)[0]
 
         JWT_authenticator = JWTAuthentication()
         response = JWT_authenticator.authenticate(request)
@@ -78,11 +82,49 @@ class InboxView(APIView):
                         print(e)
             
             inbox.post.add(post_obj)
+            inbox.author = author
+            inbox.save()
             return Response({"Title":"Done"}, status = status.HTTP_200_OK)
         if request.data["type"] == "comment":
             pass
         if request.data["type"] == "liked":
-            pass
+            if "comment" in request.data["object"]: 
+                usr = get_object_or_404(User,id=request.data["id"])
+                post = get_object_or_404(Comment,id=request.data["object"].split("/")[-1])
+                print("NO")
+
+                new_data = request.data.copy()
+                new_data['author'] = request.data["id"]
+                new_data['comment'] = request.data["object"].split("/")[-1]
+
+                serializer = EditCommentLikeSerializer(data=new_data)
+                if serializer.is_valid():
+                    Like = serializer.save()
+                    inbox.commentLikes.add(Like)
+                    inbox.author = usr
+                    inbox.save()  
+                    return Response(serializer.data, status = status.HTTP_200_OK)
+                return Response({"Title": "Unsuccessfully Added","Message": "Unsuccessfully Added"}, status = status.HTTP_400_BAD_REQUEST)
+            else:
+                usr = get_object_or_404(User,id=request.data["id"])
+                post = get_object_or_404(Post,id=request.data["object"].split("/")[-1])
+                print("NO")
+
+                new_data = request.data.copy()
+                new_data['author'] = request.data["id"]
+                new_data['post'] = request.data["object"].split("/")[-1]
+
+                serializer = EditPostLikeSerializer(data=new_data)
+
+                if serializer.is_valid():
+                    Like = serializer.save()
+                    inbox.postLikes.add(Like)
+                    inbox.author = usr
+                    inbox.save()                    
+                    return Response({"Title":"Done"}, status = status.HTTP_200_OK)
+                else:
+                    print(serializer.errors)
+                return Response({"Title": "Unsuccessfully Added","Message": "Unsuccessfully Added"}, status = status.HTTP_400_BAD_REQUEST)
         # if response and realAuthor == response[1]["user_id"]:
         #     if serializer.is_valid():
         #         serializer.save(author=author)

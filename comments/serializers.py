@@ -4,15 +4,18 @@ from users.serializers import AuthorSerializer
 from django.contrib.auth.hashers import make_password
 import uuid
 from urllib.parse import urlparse
+from likes.models import PostLike
+from likes.serializers import CommentLike
 
 TEXT_MAX_LENGTH = 300
 class CommentSerializer(serializers.ModelSerializer):
    type = serializers.SerializerMethodField()
    author = AuthorSerializer(read_only=True)
+   likes = serializers.SerializerMethodField()
    
    class Meta:
       model = Comment
-      fields = ["id","global_id","type","post","contentType","comment","author","published"]
+      fields = ["id","global_id","type","post","contentType","comment","author","published","likes"]
 
    def create(self, validated_data):
       request = self.context.get('request')
@@ -27,3 +30,6 @@ class CommentSerializer(serializers.ModelSerializer):
 
    def get_type(self, obj):
       return "comment"
+   
+   def get_likes(self, obj):
+      return len(CommentLike.objects.filter(comment=obj))

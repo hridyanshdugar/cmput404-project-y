@@ -34,6 +34,8 @@ class PostLikesViewPK(APIView):
         if serializer.is_valid():
             Like = serializer.save()
             return Response(serializer.data, status = status.HTTP_200_OK)
+        else:
+            print(serializer.errors)
         return Response({"Title": "Unsuccessfully Added","Message": "Unsuccessfully Added"}, status = status.HTTP_400_BAD_REQUEST)
      
      '''

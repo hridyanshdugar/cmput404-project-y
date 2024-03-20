@@ -19,9 +19,12 @@ import {
 	getAPIEndpoint,
 	getFrontend,
 	getMediaEndpoint,
+	getInbox,
+	getFollowers,
 } from "../utils/utils";
 import Cookies from "universal-cookie";
 import { PostContext } from "../utils/postcontext";
+import { error } from "console";
 
 export default function Home() {
 	const [page, setPage] = useState<number>(1);
@@ -55,18 +58,48 @@ export default function Home() {
 		if (selectedSection === "forYou") {
 			getHomePosts(host, page, size, auth, userId)
 				.then(async (result: any) => {
-					const Data = await result.json();
-					console.log(Data);
-
-				setPosts(Data);
-				console.log(posts);
+					if (result.status === 200) {
+						const Data = await result.json();
+						console.log(Data);
+						setPosts(Data);
+					} else {
+						throw new Error("Error fetching posts");
+					}
 			})
-			.catch(async (result: any) => {
-				const Data = await result.json();
-				console.log(Data);
+			.catch(error => {
+				console.log(error);
 			});
 		}
 		else {
+			/*
+			getFollowers(user.email)
+			.then(async (result: any) => {
+				if (result.status === 200) {
+					const Data = await result.json();
+					console.log(Data);
+					for (var i = 0; i < Data.length; i++) {
+						
+					}
+				} else {
+					throw new Error("Error fetching followers");
+				}
+			}).catch(error => {
+				console.log(error);
+			});
+			*/
+			getInbox(user.id, auth)
+			.then(async (result: any) => {
+				if (result.status === 200) {
+					const Data = await result.json();
+					console.log("Inbox");
+					console.log(Data);
+					setPosts(Data.posts);
+				} else {
+					throw new Error("Error fetching inbox");
+				}
+			}).catch(error => {
+				console.log(error);
+			});
 			//get following users
 			//get posts from following users
 			//as well as posts that are friends only
@@ -97,7 +130,26 @@ export default function Home() {
 					}}
 				/>
 				{selectedSection === "following" ? (
-					<div className={styles.noPosts}>Following</div>
+					(
+						posts.map((item: any, index: any) => (
+							<SinglePost
+								key={index}
+								name={item.author.displayName}
+								userId={item.author.id}
+								profileImage={
+									getMediaEndpoint() + item.author.profileImage?.split("?")[0]
+								}
+								username={item.author.email}
+								text={item.content}
+								postImage={undefined}
+								date={Math.floor(new Date(item.published).getTime() / 1000)}
+								likes={item.likes}
+								comments={item.count}
+								postId={item.id}
+								contentType={item.contentType}
+							/>
+						))
+					)
 				) : posts ? (
 					posts.length === 0 ? (
 						<div className={styles.noPosts}>There are no posts available</div>
@@ -114,7 +166,7 @@ export default function Home() {
 								text={item.content}
 								postImage={undefined}
 								date={Math.floor(new Date(item.published).getTime() / 1000)}
-								likes={0}
+								likes={item.likes}
 								comments={item.count}
 								postId={item.id}
 								contentType={item.contentType}

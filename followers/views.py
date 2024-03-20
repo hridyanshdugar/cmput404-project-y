@@ -109,10 +109,10 @@ def getFriends(request, author_id=None):
             for follower_follower in follower_follow_list:
                 print(follower, follower_follower)
                 if follower_follower.name == follower.follower and follower_follower.follower == follower.name:
-                    names.add(follower_follower.name)
+                    names.add(follower_follower.followerUrl)
         users=[]  
         for friendName in names:
-            user = User.objects.get(email=friendName)
+            user = requests.request(friendName).json()
             users.append(str(user.id))
         return JsonResponse(users, safe=False)
     except:

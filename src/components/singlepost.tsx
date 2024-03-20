@@ -15,7 +15,8 @@ import {
 	getFrontend,
 	getPost,
 	likePost,
-	sendPostToInbox
+	sendPostToInbox,
+	sendLikeToInbox,
 } from "../utils/utils";
 import { Card } from "react-bootstrap";
 import Dropdown from "./dropdowns/dropdown";
@@ -119,10 +120,15 @@ const SinglePost: React.FC<Props> = (props) => {
 	};
 
 	const onClickLike = (event:any) => {
+		console.log("CLICKED");
 		const cookies = new Cookies();
 		const user = cookies.get("user");
 		const auth = cookies.get("auth");
-		likePost(auth["access"], user["id"], props.postId);
+		if (props.parentId) { 
+			sendLikeToInbox(user["id"], auth["access"], getAPIEndpoint() + "/post/" + props.parentId + "/comments/" + props.postId);
+		} else {
+			sendLikeToInbox(user["id"], auth["access"], getAPIEndpoint() + "/post/" + props.postId);
+		}
 		event.stopPropagation();
 	};
 
@@ -130,8 +136,34 @@ const SinglePost: React.FC<Props> = (props) => {
 	useEffect(() => {
 		const cookies = new Cookies();
 		const user = cookies.get("user");
+		const auth = cookies.get("auth");
 		setuser(user);
-	}, []);
+		getPost(auth["access"], props.postId)
+			.then(async (result: any) => {
+				if (result.status === 200) {
+					const Data = await result.json();
+					setPost(Data);
+					setVisibility(Data.visibility);
+				} else {
+					throw new Error("Error getting post");
+				}})
+				.catch(error => {
+					console.log(error);
+				});
+		if (props.contentType === "text/post") {
+			console.log("shared post1");
+			var originalPostId = props.text;
+			getPost(auth.access, originalPostId)
+				.then(async (result: any) => {
+					const Data = await result.json();
+					setSharedPost(Data);
+				})
+				.catch(async (result: any) => {
+					const Data = await result.json();
+					console.log("shared post error");
+				});
+		}
+	}, [props.postId, props.contentType, props.text]);
 
 	const sharePost = () => {
 		const cookies = new Cookies();
@@ -172,6 +204,7 @@ const SinglePost: React.FC<Props> = (props) => {
 					.then(async (result: any) => {
 						if (result.status === 200) {
 							const Data = await result.json();
+							console.log("POST");
 							console.log(Data);
 						} else {
 							throw new Error("Error sending post to inbox");
@@ -189,38 +222,7 @@ const SinglePost: React.FC<Props> = (props) => {
 
 	const [sharedPost, setSharedPost] = useState<any>({});
 
-	useEffect(() => {
-		const cookies = new Cookies();
-		const auth = cookies.get("auth");
-		getPost(auth["access"], props.postId)
-			.then(async (result: any) => {
-				if (result.status === 200) {
-					const Data = await result.json();
-					setPost(Data);
-					setVisibility(Data.visibility);
-					console.log("POST");
-					console.log(Data);
-				} else {
-					throw new Error("Error getting post");
-				}})
-				.catch(async (result: any) => {
-					const Data = await result.json();
-					console.log(Data);
-				});
-		if (props.contentType === "text/post") {
-			console.log("shared post1");
-			var originalPostId = props.text;
-			getPost(auth.access, originalPostId)
-				.then(async (result: any) => {
-					const Data = await result.json();
-					setSharedPost(Data);
-				})
-				.catch(async (result: any) => {
-					const Data = await result.json();
-					console.log("shared post error");
-				});
-		}
-	}, [props.postId, props.contentType, props.text]);
+
 
 	const onPostOptionSelect = (selection: string | null) => {
 		const cookies = new Cookies();
@@ -370,7 +372,7 @@ const SinglePost: React.FC<Props> = (props) => {
 									date={Math.floor(
 										new Date(sharedPost.published).getTime() / 1000
 									)}
-									likes={0}
+									likes={sharedPost.likes}
 									comments={sharedPost.count}
 									postId={sharedPost.id}
 									contentType={sharedPost.contentType}
@@ -388,6 +390,8 @@ const SinglePost: React.FC<Props> = (props) => {
 						)}
 					</div>
 					<div className={style.flexContainer}>
+						{props.parentId ? <></> : <>
+						
 						<div className={style.flexItem}>
 							<FontAwesomeIcon icon={faComment} fixedWidth /> {props.comments}
 						</div>
@@ -401,7 +405,13 @@ const SinglePost: React.FC<Props> = (props) => {
 							>
 								<FontAwesomeIcon icon={faRepeat} fixedWidth id="sharePost2" />{" "}
 							</div>
-						)}
+						)}						
+						
+						</>
+						
+						
+						}
+
 
 						<div className={style.flexItem}>
 							<FontAwesomeIcon icon={faHeart} fixedWidth onClick={onClickLike} /> {props.likes}

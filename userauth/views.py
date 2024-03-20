@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from users.models import User
 from users.serializers import UserSerializer
+from inbox.models import Inbox
 from rest_framework_simplejwt.serializers import TokenRefreshSerializer
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.permissions import AllowAny
@@ -19,6 +20,9 @@ def login(request):
     if 'password' not in request.data or 'email' not in request.data:
         return Response(status=status.HTTP_400_BAD_REQUEST,data={'title': 'Missing Fields','message': 'A password and email is required for logging in'})
     user = User.objects.filter(email=request.data['email'],approved=True).first()
+    inbox = Inbox.objects.get_or_create(id=user.id)[0]
+    inbox.author = user
+    inbox.save()
     if not user:
         return Response(status=status.HTTP_400_BAD_REQUEST,data={'title': 'Non-Existant Account','message': 'No account with this email exists'})
     input_password = request.data['password']
@@ -54,7 +58,6 @@ def signup(request):
         return Response(status=status.HTTP_400_BAD_REQUEST,data={'title': 'Email Unavailable','message': 'This email is already in use'})
     print(request.data)
     serializer = UserSerializer(data=request.data, context={'request': request})
-
     if serializer.is_valid():
         user = serializer.save()
 

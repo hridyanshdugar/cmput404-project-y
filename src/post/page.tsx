@@ -36,11 +36,15 @@ export default function Post() {
 		if (postId) {
 			getPost(auth, postId)
 				.then(async (result: any) => {
-					const Data = await result.json();
-					const postsArray = [];
-					postsArray.push(Data);
-					setPosts(postsArray);
-					console.log(Data, posts, "posts");
+					if (result.status === 200) {
+						const Data = await result.json();
+						const postsArray = [];
+						postsArray.push(Data);
+						setPosts(postsArray);
+						console.log(Data, posts, "posts");
+					} else {
+						navigate("/home");
+					}
 				})
 				.catch(async (result: any) => {
 					navigate("/home");
@@ -87,7 +91,7 @@ export default function Post() {
 								text={item.content}
 								postImage={undefined}
 								date={Math.floor(new Date(item.published).getTime() / 1000)}
-								likes={0}
+								likes={item.likes}
 								comments={item.count}
 								postId={item.id}
 								contentType={item.contentType}
@@ -124,7 +128,7 @@ export default function Post() {
 							text={item.comment}
 							postImage={undefined}
 							date={Math.floor(new Date(item.published).getTime() / 1000)}
-							likes={0}
+							likes={item.likes}
 							comments={item.count}
 							postId={item.id}
 							contentType={item.contentType}

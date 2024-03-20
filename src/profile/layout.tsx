@@ -5,7 +5,7 @@ import SideBar from "../components/sidebar";
 import Rightbar from "../components/rightbar";
 import Cookies from "universal-cookie";
 import { useState, useEffect } from "react";
-import { getFollowers, getUserLocalInfo, navigate } from "../utils/utils";
+import { getFollowers, getHomePosts, getUserLocalInfo, navigate } from "../utils/utils";
 import { error } from "console";
 import { userInfo } from "os";
 import { PostContextProvider } from "../utils/postcontext";
@@ -26,6 +26,8 @@ export default function ProfileLayout() {
 	}
 
 	const [userInformation, setUserInformation] = useState<any>(null);
+	const [postCount, setPostCount] = useState<number>(0);
+	const [following, setFollowing] = useState<any>(null);
 	useEffect(() => {
 		if (userId) {
 			getUserLocalInfo(allcookies.auth.access, userId!)
@@ -44,6 +46,40 @@ export default function ProfileLayout() {
 					setUserInformation(data);
 					//console.log(data);
 				});
+
+			getFollowers(cookies.get("user").email)
+				.then(async (result) => {
+					if (result.status === 200) {
+						const Data = await result.json();
+						setFollowing(Data.length);
+					} else {
+						throw new Error("Error fetching posts");
+					}
+				})
+				.catch((error) => {
+					console.log(error);
+				});
+
+			/*
+			getHomePosts(cookies.get("user").host, 1, 100, cookies.get("auth").access, userId)
+				.then(async (result: any) => {
+					if (result.status === 200) {
+						const Data = await result.json();
+						console.log(Data);
+						let temp_count = 0;
+						for (var i = 0; i < Data.length; i++) {
+							if (Data[i].userId == userId) {
+								temp_count++;
+							}
+						}
+						setPostCount(temp_count);
+					} else {
+						throw new Error("Error fetching posts");
+					}
+				})
+				.catch((error) => {
+					console.log(error);
+				});*/
 		}
 	}, [followingStatus]);
 
@@ -91,12 +127,13 @@ export default function ProfileLayout() {
 					}
 					dateJoined={""}
 					followers={0}
-					following={0}
+					following={following}
 					activeUser={activeUser}
 					followingStatus={followingStatus}
 					profileImage={userInformation?.profileImage || ""}
 					profileBackround={userInformation?.profileBackgroundImage || ""}
 					url={userInformation?.url || ""}
+					postCount={postCount}
 				/>
 				<Outlet context={{ userId: userId }} />
 				<Rightbar />

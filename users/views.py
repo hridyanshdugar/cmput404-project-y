@@ -22,7 +22,21 @@ class UsersViewPK(APIView):
      GET /users
      '''
      def get(self, request,pk):
-        user = get_object_or_404(User,id=pk)
+        user = None
+        try:
+            user = User.objects.get(id=pk)
+        except:
+            for node in Node.objects.all():
+                response = request(node.url + "/authors/" +pk+"/")
+                if response.status_code == 200:
+                    try:
+                        response_data = response.json()
+                        print(response_data)
+                    except Exception as e:
+                        print(e)
+                    
+        if user is None:
+            return Response({"title": "Invalid Fields", "message": serializer.errors}, status = status.HTTP_400_BAD_REQUEST)
         serializer = AuthorSerializer(user,context={'request': request})
         return Response(serializer.data, status = status.HTTP_200_OK)
 

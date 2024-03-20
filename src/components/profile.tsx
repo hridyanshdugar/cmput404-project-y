@@ -21,7 +21,7 @@ type Props = {
     activeUser: boolean;
     followingStatus: boolean;
     url: string;
-    //posts: Array<SinglePost>;
+    postCount: number;
 }
 
 const cookies = new Cookies();
@@ -43,7 +43,6 @@ export default class Profile extends React.Component<Props> {
         const activeUserId = cookies.get("user").id
         const externalUserId = this.props.userid
         if (request) {
-          //API unfollow request !!NEEDED!!
           sendUnfollow(this.props.username, user['email']);
         }
         this.followStatus = "Follow"
@@ -60,7 +59,7 @@ export default class Profile extends React.Component<Props> {
         const externalUserId = this.props.userid
         if (request) {
           //API follow request !!NEEDED!!
-          sendFollowRequest(this.props.username, user['email'], this.props.url);
+          sendFollowRequest(this.props.userid, user['id'], this.props.url);
         }
         this.followStatus = "Following"
         var div = document.getElementById("profileButton");
@@ -88,7 +87,7 @@ export default class Profile extends React.Component<Props> {
                   <div className={styles.container}>
                     <div className={styles.titleContainer}>
                       <h1 id="profileName" className={styles.title}>{this.props.name}</h1>
-                      <div className={styles.postCount}>0 posts</div>
+                      <div className={styles.postCount}>{this.props.postCount} posts</div>
                     </div>
                     <div id="profileBackround"><img className={styles.profileBackround} src={this.props.profileBackround?.split("?")[0]} alt={''} width={500} height={500}/></div>
                     <div className={styles.pictureButtonContainer}>
