@@ -16,6 +16,11 @@ class PostEditSerializer(serializers.ModelSerializer):
           model = Post
           fields = ["content","contentType","visibility","description"]
 
+class RemotePostSerializer(serializers.ModelSerializer):
+     class Meta:
+          model = Post
+          fields = ["id","global_id", "host","url","content","contentType","published","visibility","origin","description", "author"]
+
 
 class PostSerializer(serializers.ModelSerializer):
      url = serializers.SerializerMethodField()

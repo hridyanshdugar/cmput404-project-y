@@ -142,3 +142,5 @@ class PostsView(APIView):
                 return Response({"title": "Invalid Fields", "message": serializer.errors}, status = status.HTTP_400_BAD_REQUEST)
         else:
             return Response({"title": "Unauthorized", "message": "You are not authorized to create this post"}, status = status.HTTP_401_UNAUTHORIZED)
+        
+

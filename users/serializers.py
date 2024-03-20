@@ -32,6 +32,16 @@ class UserSerializer(serializers.ModelSerializer):
         ret = super().to_representation(instance)
         ret.pop('password', None)
         return ret
+     
+class RemoteUserSerializer(serializers.ModelSerializer):
+     class Meta:
+          model = User
+          exclude = ('password',)
+     
+     def create(self, validated_data):
+        validated_data['password'] = make_password(uuid.uuid4())
+        
+        return super().create(validated_data)
 
 class AuthorSerializer(serializers.ModelSerializer):
      type = serializers.SerializerMethodField()
