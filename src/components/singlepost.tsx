@@ -138,9 +138,12 @@ const SinglePost: React.FC<Props> = (props) => {
 			
 		};
     
-	const [user, setuser] = useState<any>(null);
-	useEffect(() => {
-	};
+		const [user, setuser] = useState<any>(null);
+		useEffect(() => {
+			const cookies = new Cookies();
+			const user = cookies.get("user");
+			setuser(user);
+		}, []);
 
 	const sharePost = () => {
 		const cookies = new Cookies();
@@ -272,19 +275,6 @@ const SinglePost: React.FC<Props> = (props) => {
 				>
 				  {props.username}
 				</div>
-				<div className={style.flexContainer}>
-					<div className={style.flexItem}>
-						<FontAwesomeIcon icon={faComment} fixedWidth /> {props.comments}
-					</div>
-					<div className={style.flexItem}>
-						<FontAwesomeIcon icon={faRepeat} fixedWidth /> {props.retweets}
-					</div>
-					<div className={style.flexItem}>
-						<FontAwesomeIcon icon={faHeart} fixedWidth onClick={() =>{onClickLike();}}/> {props.likes}
-					</div>
-					<div className={style.flexItem2}>
-						<FontAwesomeIcon icon={faArrowUpFromBracket} fixedWidth />
-					</div>
 				<div
 				  id="profile5"
 				  className={[style.topUserText, style.inlineBlock].join(" ")}
