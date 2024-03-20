@@ -301,7 +301,10 @@ const SinglePost: React.FC<Props> = (props) => {
 						<div>
 							<Dropdown
 								icon={faEllipsis}
-								options={["Delete", "Edit", "Copy Link"]}
+								options={(props.userId === user?.id
+									? ["Delete", "Edit"]
+									: []
+								).concat(["Copy Link"])}
 								onChange={onPostOptionSelect}
 							/>
 						</div>
