@@ -2,7 +2,7 @@
 import React, { useState, useEffect, ChangeEvent } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./page.module.css";
-import Button from "react-bootstrap/Button";
+import Button from "../components/buttons/button";
 import Card from "react-bootstrap/Card";
 import { Col, Row } from "react-bootstrap";
 import {
@@ -11,6 +11,7 @@ import {
 	navigate,
 	updateCookies,
 	getAPIEndpoint,
+	createPost,
 } from "../utils/utils";
 import Cookies from "universal-cookie";
 
@@ -110,12 +111,50 @@ export default function Settings() {
 			});
 	};
 
+	const githubActivityPost = () => {
+		const auth = cookies.get("auth")["access"];
+		const id = cookies.get("user")["id"];
+		getUserLocalInfo(auth, id)
+			.then(async (result: any) => {
+				const Data = await result.json();
+				try {
+					const githubUsername = Data?.github;
+					const githubActivity = await fetch(
+						`https://api.github.com/users/${githubUsername}/events`
+					);
+					if (githubActivity.status === 200) {
+						const githubActivityData = await githubActivity.json();
+						githubActivityData.forEach((event: any) => {
+							console.log(event);
+							createPost(
+								"",
+								"",
+								"text/plain",
+								`${event.type} by ${event.actor.display_login} on ${event.repo.name} at ${event.created_at}`,
+								"PUBLIC",
+								auth,
+								id
+							);
+						});
+					}
+				} catch {}
+			})
+			.catch(async (result: any) => {
+				const Data = await result?.json();
+				console.log(Data);
+			});
+	};
 	return (
 		<>
 			<div className={"main"}>
 				<div className={styles.mainContentView}>
 					<div className={styles.container}>
 						<h1 className={styles.title}>Settings</h1>
+						<Button
+							onClick={githubActivityPost}
+							text="Post Recent Github Activity"
+							type="tertiary"
+						/>
 						<header className={styles.header}>Edit Account Details:</header>
 						<form>
 							<label className={styles.form}>
