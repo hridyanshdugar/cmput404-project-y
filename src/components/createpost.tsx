@@ -165,9 +165,7 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 			)
 				.then(async (result: any) => {
 					const Data = await result.json();
-					if (VisibilityMap[visibility] === "PUBLIC") {
-						props.updatePosts(Data);
-					}
+					props.updatePosts(Data);
 					if (props.setPopupOpen) {
 						props.setPopupOpen(false);
 					}

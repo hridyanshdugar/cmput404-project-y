@@ -13,6 +13,7 @@ from rest_framework.views import APIView
 from django.db import transaction
 from urllib.parse import unquote
 import requests
+from django.forms.models import model_to_dict
 
 val = URLValidator()
 
@@ -94,21 +95,25 @@ def getFollowers(request, author_id=None):
     except:
         return HttpResponseBadRequest("Something went wrong!") 
 
-def getFriends(request):
-    try:
+def getFriends(request, author_id=None):
+    if author_id:
+        user = User.objects.get(id=author_id)
+        name = user.email
+    else:
         name = request.GET['name']
-        new_friend_list = list(Follower.objects.filter(name=name).values())
+    try:
+        new_friend_list = Follower.objects.filter(name=name)
         names = set()
         for follower in new_friend_list:
-            follower_follow_list = list(Follower.objects.filter(name=follower["follower"]).values())
+            follower_follow_list = Follower.objects.filter(name=follower.follower)
             for follower_follower in follower_follow_list:
                 print(follower, follower_follower)
-                if follower_follower["name"] == follower["follower"] and follower_follower["follower"] == follower["name"]:
-                    names.add(follower_follower["name"])
+                if follower_follower.name == follower.follower and follower_follower.follower == follower.name:
+                    names.add(follower_follower.name)
         users=[]  
-        for name in names:
-            user = list(User.objects.filter(email=name).values())[0]
-            users.append(user)
+        for friendName in names:
+            user = User.objects.get(email=friendName)
+            users.append(str(user.id))
         return JsonResponse(users, safe=False)
     except:
         return HttpResponseBadRequest("Something went wrong!")  

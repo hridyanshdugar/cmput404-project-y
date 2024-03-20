@@ -8,7 +8,8 @@ from django.shortcuts import get_object_or_404
 from users.models import User
 from django.db.models import Q
 from rest_framework_simplejwt.authentication import JWTAuthentication
-
+from followers.views import getFriends
+import json
 
 class Pager(PageNumberPagination):
     page_size = 10
@@ -21,9 +22,22 @@ class PostsViewPK(APIView):
      '''
      def get(self, request, pk):
         print(pk)
+
         post = get_object_or_404(Post, id=pk)
-        serializer = PostSerializer(post, context={'request': request})
-        return Response(serializer.data, status = status.HTTP_200_OK)
+        JWT_authenticator = JWTAuthentication()
+        response = JWT_authenticator.authenticate(request)
+        requestAuthor = User.objects.get(id=response[1]["user_id"])
+
+        if post.visibility == "FRIENDS" and str(requestAuthor.id) != str(post.author.id):
+            friends = json.loads(getFriends(request, str(post.author.id)).content)
+            for friend in friends:
+                if str(friend) == str(requestAuthor.id):
+                    serializer = PostSerializer(post, context={'request': request})
+                    return Response(serializer.data, status = status.HTTP_200_OK)
+            return Response({"title": "Unauthorized", "message": "You are not authorized to view this post"}, status = status.HTTP_401_UNAUTHORIZED)
+        else:
+            serializer = PostSerializer(post, context={'request': request})
+            return Response(serializer.data, status = status.HTTP_200_OK)
 
      '''
      PUT /authors/{id}/posts/{id} and /posts/{id}
@@ -85,10 +99,17 @@ class PostsView(APIView):
      '''
      def get(self, request):
         posts=None
+
+        JWT_authenticator = JWTAuthentication()
+        response = JWT_authenticator.authenticate(request)
+        author = User.objects.get(id=response[1]["user_id"])
+
+        friends = json.loads(getFriends(request, author.id).content)
+
         if request.GET.get('local',False):
             posts = Post.objects.filter(Q(visibility="PUBLIC", host=request.GET.get('host')) | Q(visibility="FRIENDS")) # FINISH UP
         else:
-            posts = Post.objects.filter(visibility="PUBLIC").order_by('-published') # No private and unlisted
+            posts = Post.objects.filter(Q(visibility="PUBLIC") | Q(author=author) | Q(visibility="FRIENDS", author__id__in=friends)).order_by('-published') 
         page_number = request.GET.get('page') or 1
         page = self.pagination.paginate_queryset(posts, request, view=self)
         if page is not None:
@@ -112,6 +133,7 @@ class PostsView(APIView):
         JWT_authenticator = JWTAuthentication()
         response = JWT_authenticator.authenticate(request)
         serializer = PostSerializer(data = request.data, context={'request': request})
+        
         if response and str(author.id) == response[1]["user_id"]:
             if serializer.is_valid():
                 serializer.save(author=author)
