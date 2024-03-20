@@ -29,7 +29,7 @@ export default function ProfileLayout() {
     const [userInformation, setUserInformation] = useState<any>(null);
     useEffect(() => {
         if (userId) {
-            getUserLocalInfo(allcookies.auth, userId!).then((result) => {
+            getUserLocalInfo(allcookies.auth.access, userId!).then((result) => {
                 if (result.status == 200) {
                     return result.json();
                 }

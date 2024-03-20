@@ -20,7 +20,6 @@ class UsersViewPK(APIView):
      GET /users
      '''
      def get(self, request,pk):
-        print(pk)
         user = get_object_or_404(User,id=pk)
         serializer = AuthorSerializer(user,context={'request': request})
         return Response(serializer.data, status = status.HTTP_200_OK)

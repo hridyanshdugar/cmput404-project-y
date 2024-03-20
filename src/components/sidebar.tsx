@@ -109,7 +109,7 @@ export default function SideBar() {
                             userData ? <>
                             
                                 <img
-                                    src={getMediaEndpoint() + userData?.profileImage?.split("?")[0] || ""}
+                                    src={getMediaEndpoint() + userData.profileImage?.split("?")[0] || ""}
                                     className={style.avatarImage}
                                     style={{ verticalAlign: "-10%" }}
                                 ></img>

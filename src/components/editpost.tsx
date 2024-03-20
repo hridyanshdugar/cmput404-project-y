@@ -155,16 +155,15 @@ const EditPostt: React.FC<EditPostProps> = (props) => {
 					? contentTypeF
 					: postInformation?.contentType,
 			},
-			auth.access,
+			auth,
 			postInformation?.id
 		)
 			.then(async (result: any) => {
-				const Data = await result.json();
+                const Data = await result.json();
 				window.location.reload();
 			})
 			.catch(async (result: any) => {
-				const Data = await result?.json();
-				console.log(Data);
+				console.error(result);
 			});
 	};
 	return (
