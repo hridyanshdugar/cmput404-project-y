@@ -43,7 +43,7 @@ export default class Profile extends React.Component<Props> {
         const activeUserId = cookies.get("user").id
         const externalUserId = this.props.userid
         if (request) {
-          sendUnfollow(this.props.username, user['email']);
+          sendUnfollow(this.props.userid, user['id']);
         }
         this.followStatus = "Follow"
         var div = document.getElementById("profileButton");
@@ -59,7 +59,7 @@ export default class Profile extends React.Component<Props> {
         const externalUserId = this.props.userid
         if (request) {
           //API follow request !!NEEDED!!
-          sendFollowRequest(this.props.userid, user['id'], this.props.url);
+          sendFollowRequest(this.props.userid, user['id'], user["url"]);
         }
         this.followStatus = "Following"
         var div = document.getElementById("profileButton");

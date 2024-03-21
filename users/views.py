@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 from .models import User
-from .serializers import UserSerializer, AuthorSerializer
+from .serializers import UserSerializer, AuthorSerializer, RemoteUserSerializer
 from django.shortcuts import get_object_or_404
 from nodes.models import Node
 import requests
@@ -27,16 +27,23 @@ class UsersViewPK(APIView):
             user = User.objects.get(id=pk)
         except:
             for node in Node.objects.all():
-                response = request(node.url + "/authors/" +pk+"/")
+                url = node.url + "api/authors/" +str(pk)+"/"
+                response = requests.get(url)
+                print("bob", url)
+                # print("bob", response.text)
                 if response.status_code == 200:
                     try:
                         response_data = response.json()
-                        print(response_data)
+                        for i in response_data:
+                            serializer = RemoteUserSerializer(data=i)
+                            if serializer.is_valid():
+                                serializer.save()
                     except Exception as e:
-                        print(e)
+                        # print(e)
+                        pass
                     
         if user is None:
-            return Response({"title": "Invalid Fields", "message": serializer.errors}, status = status.HTTP_400_BAD_REQUEST)
+            return Response({"title": "User doesn't exist", "message": serializer.errors}, status = status.HTTP_400_BAD_REQUEST)
         serializer = AuthorSerializer(user,context={'request': request})
         return Response(serializer.data, status = status.HTTP_200_OK)
 

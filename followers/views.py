@@ -64,7 +64,10 @@ def getNewFollowRequests(request):
         new_follower_list = list(NewFollowRequest.objects.filter(name=name).values())
         users = []
         for new_follower in new_follower_list:
-            user = list(User.objects.filter(email=new_follower["follower"]).values())[0]
+            requrl = str(new_follower["followerUrl"])
+            requrl = requrl.replace("authors", "api/users")
+            requrl = requrl.replace("3000", "8000")
+            user = requests.get(requrl).json()
             users.append(user)
         return JsonResponse(users, safe=False)
     except:
@@ -109,10 +112,10 @@ def getFriends(request, author_id=None):
             for follower_follower in follower_follow_list:
                 print(follower, follower_follower)
                 if follower_follower.name == follower.follower and follower_follower.follower == follower.name:
-                    names.add(follower_follower.followerUrl)
+                    names.add(follower_follower.name)
         users=[]  
         for friendName in names:
-            user = requests.request(friendName).json()
+            user = User.objects.get(email=friendName)
             users.append(str(user.id))
         return JsonResponse(users, safe=False)
     except:
@@ -130,7 +133,7 @@ def acceptFollowRequest(request):
         name = body['name']
         follower = body['follower']
         url = list(NewFollowRequest.objects.filter(Q(name=name) & Q(follower=follower)))[0]
-        url = url.followerUrl
+        url = url["followerUrl"]
 
         # Check if the follow request is not already accepted
         follows = True if list(Follower.objects.filter(Q(name=name) & Q(follower=follower))) else False

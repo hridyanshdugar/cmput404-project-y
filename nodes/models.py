@@ -1,6 +1,6 @@
 from django.db import models
 
-NODE_MAX_LENGTH = 50
+NODE_MAX_LENGTH = 200
 class Node(models.Model):
     url = models.CharField(max_length=NODE_MAX_LENGTH,unique=True)
     username = models.CharField(max_length=NODE_MAX_LENGTH)

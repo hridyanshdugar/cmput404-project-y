@@ -14,6 +14,7 @@ type Props = {
 	name: string;
 	profileImage: string;
 	username: string;
+	userid: string;
 };
 
 const cookies = new Cookies();
@@ -48,8 +49,8 @@ export default class FollowRequestNotification extends React.Component<Props> {
 						</div>
 						<div className={style.separator} />
 						<div className={style.topRight}>
-							<Button text="✓" type="primary" size="verySmall" roundness="very" onClick={() => processFollowRequest(user["email"], this.props.username, "accept").then(() => window.location.reload())} style={{}}/>
-							<Button text="⨉" type="primary" size="verySmall" roundness="very" onClick={() => processFollowRequest(user["email"], this.props.username, "decline").then(() => window.location.reload())} style={{marginLeft:"10px"}}/>
+							<Button text="✓" type="primary" size="verySmall" roundness="very" onClick={() => processFollowRequest(user["id"], this.props.userid, "accept").then(() => window.location.reload())} style={{}}/>
+							<Button text="⨉" type="primary" size="verySmall" roundness="very" onClick={() => processFollowRequest(user["id"], this.props.userid, "decline").then(() => window.location.reload())} style={{marginLeft:"10px"}}/>
 					</div>
 					</div>
 					<div className={[style.topBottom].join(" ")}>

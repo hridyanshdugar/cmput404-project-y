@@ -15,7 +15,7 @@ export default function Notifications() {
 		const cookies = new Cookies();
 		const auth = cookies.get("auth")["access"];
 		const user = cookies.get("user");
-    getNewFollowRequests(user.email)
+    getNewFollowRequests(user.id)
       .then((res: any) => {
         return res.json();
       }).then((data)=>{
@@ -43,7 +43,8 @@ export default function Notifications() {
                                 key={index}
                           name={request["displayName"]} 
                           profileImage={request["profileImage"]} 
-                          username={request["email"]} />
+                          username={request["email"]} 
+                          userid={request["id"]}/>
                         ))
                       )
                     )
