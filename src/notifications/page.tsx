@@ -19,6 +19,7 @@ export default function Notifications() {
       .then((res: any) => {
         return res.json();
       }).then((data)=>{
+        console.log(data);
         setRequests(data);
         setIsLoading(false);
       })

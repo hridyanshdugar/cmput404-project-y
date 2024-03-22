@@ -108,7 +108,6 @@ class PostsView(APIView):
             return Response({"title": "Unauthorized", "message": "You are not authorized to view this post"}, status = status.HTTP_401_UNAUTHORIZED)
 
         friends = json.loads(getFriends(request, author.id).content)
-
         if request.GET.get('local',False):
             posts = Post.objects.filter(Q(visibility="PUBLIC", host=request.GET.get('host')) | Q(visibility="FRIENDS")) # FINISH UP
         else:

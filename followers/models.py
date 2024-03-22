@@ -5,12 +5,29 @@ USERNAME_MAX_LENGTH = 100
 URL_MAX_LENGTH = 300
 
 # Create your models here.
+class Friends(models.Model):
+    userId = models.TextField(editable=False, unique=False, default='')
+    friendId = models.TextField(editable=False, unique=False, default='')
+    host=models.TextField(blank=True, default='')
+    displayName=models.TextField(blank=True, default='')
+    url = models.TextField(blank=True, default='')
+    github=models.TextField(blank=True, default='')
+    profileImage=models.TextField(blank=True, default='')
+
 class Follower(models.Model):
-    name = models.CharField(max_length=USERNAME_MAX_LENGTH)  # Need to set max user length
-    follower = models.CharField(max_length=USERNAME_MAX_LENGTH)
-    followerUrl = models.CharField(max_length=URL_MAX_LENGTH)
+    userId = models.TextField(editable=False, unique=False, default='')
+    followerId = models.TextField(editable=False, unique=False, default='')
+    host=models.TextField(blank=True, default='')
+    displayName=models.TextField(blank=True, default='')
+    url = models.TextField(blank=True, default='')
+    github=models.TextField(blank=True, default='')
+    profileImage=models.TextField(blank=True, default='')
 
 class NewFollowRequest(models.Model):
-    name = models.CharField(max_length=USERNAME_MAX_LENGTH)  # Need to set max user length
-    follower = models.CharField(max_length=USERNAME_MAX_LENGTH)
-    followerUrl = models.CharField(max_length=URL_MAX_LENGTH)
+    userId = models.TextField(editable=False, unique=False, default='')
+    followerId = models.TextField(editable=False, unique=False, default='')
+    host=models.TextField(blank=True, default='')
+    displayName=models.TextField(blank=True, default='')
+    url = models.TextField(blank=True, default='')
+    github=models.TextField(blank=True, default='')
+    profileImage=models.TextField(blank=True, default='')

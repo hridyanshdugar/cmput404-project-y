@@ -5,11 +5,8 @@ app_name = 'followers'
 urlpatterns = [
     re_path(r'^(?P<author_id>.+)/followers/(?P<follower_id>.+)/$', FollowerView.as_view(), name= "/authors/{AUTHOR_ID}/followers/{FOREIGN_AUTHOR_ID}"),
     path("<str:author_id>/followers/", views.getFollowers, name= "/authors/\{AUTHOR_ID\}/followers"),
-    path("follow/", views.follow, name="follow"),
-    path("get/new/follow/requests", views.getNewFollowRequests, name="getNewFollowRequests"),
-    path("get/followers", views.getFollowers, name= "getFollowers"),
-    path("get/friends", views.getFriends, name= "getFriends"), # /followers/get/friends?name=[email here]
-    path("accept/follow/request/", views.acceptFollowRequest, name= "acceptFollowRequest"),
-    path("decline/follow/request/", views.declineFollowRequest, name= "declineFollowRequest"),
-    path("unfollow/", views.unfollow, name="unfollow")
+    path("<str:author_id>/requests/", views.getNewFollowRequests, name="getNewFollowRequests"),
+    path("get/friends", views.getFriends, name= "getFriends"), 
+    path("<str:author_id>/decline/<str:follower_id>/", views.declineFollowRequest, name= "declineFollowRequest"),
+    path("<str:author_id>/unfollow/<str:follower_id>/", views.unfollow, name="unfollow")
 ]

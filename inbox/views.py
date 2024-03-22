@@ -2,6 +2,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 from .models import Inbox, Post
+from followers.models import NewFollowRequest
 from comments.models import Comment
 from rest_framework.pagination import PageNumberPagination
 from posts.serializers import PostSerializer
@@ -44,7 +45,37 @@ class InboxView(APIView):
         response = JWT_authenticator.authenticate(request)
 
         if request.data["type"] == "Follow":
-            pass
+            author = None
+            try:
+                author = User.objects.get(id=request.data["actor"]["id"])
+            except:
+                response = requests.get(request.data["actor"]["url"])
+
+                if response.status_code == 200:
+                    try:
+                        data = response.json()
+                        serializer = RemoteUserSerializer(data={"id": data["id"], "global_id": data["global_id"], "url": data["url"], "email": data["email"], "profileImage": data["profileImage"], "profileBackgroundImage": data["profileBackgroundImage"], "github": data["github"], "displayName": data["displayName"]})
+                        if serializer.is_valid():
+                            author = serializer.save()
+                        else: 
+                            print(serializer.errors)
+                    except Exception as e:
+                        print(e)
+            
+            follower_obj = request.data["object"]   # I see we are objectifying people now 
+            follower_obj = NewFollowRequest.objects.create(userId=follower_obj["id"], 
+                                                           followerId = author.id,
+                                                           host=author.host, 
+                                                           displayName=author.displayName, 
+                                                           url=author.url,
+                                                           github=author.github,
+                                                           profileImage=author.profileImage)
+            
+            # Dont really need to save in inbox (Design choice, not using inbox to retrieve the data)
+            # inbox.author = author
+            # inbox.followRequest.add(follower_obj)
+            # inbox.save()
+            return Response({"Title":"Done"}, status = status.HTTP_200_OK)
         if request.data["type"] == "post":
             author = None
             try:

@@ -5,7 +5,7 @@ import SideBar from "../components/sidebar";
 import Rightbar from "../components/rightbar";
 import Cookies from "universal-cookie";
 import { useState, useEffect } from "react";
-import { getFollowers, getHomePosts, getUserLocalInfo, navigate } from "../utils/utils";
+import { getFollowers, getHomePosts, getUserLocalInfo, checkFollowingStatus } from "../utils/utils";
 import { error } from "console";
 import { userInfo } from "os";
 import { PostContextProvider } from "../utils/postcontext";
@@ -27,7 +27,8 @@ export default function ProfileLayout() {
 
 	const [userInformation, setUserInformation] = useState<any>(null);
 	const [postCount, setPostCount] = useState<number>(0);
-	const [following, setFollowing] = useState<any>(null);
+	const [followingNumber, setFollowingNumber] = useState<number>(0);
+	const [followersNumber, setFollowersNumber] = useState<number>(0);
 	useEffect(() => {
 		if (userId) {
 			getUserLocalInfo(allcookies.auth.access, userId!)
@@ -47,11 +48,12 @@ export default function ProfileLayout() {
 					//console.log(data);
 				});
 
-			getFollowers(cookies.get("user").email)
+			getFollowers(userId)
 				.then(async (result) => {
 					if (result.status === 200) {
-						const Data = await result.json();
-						setFollowing(Data.length);
+						const data = await result.json();
+						setFollowingNumber(data.following.length);
+						setFollowersNumber(data.followers.length);
 					} else {
 						throw new Error("Error fetching posts");
 					}
@@ -96,19 +98,17 @@ export default function ProfileLayout() {
 	// API call to check if the user is already following the other user
 	// Not working as expected for some reason
 	if (!activeUser) {
-		getFollowers(userInformation?.email)
+		checkFollowingStatus(userId, userIdCookie)
 			.then((result) => {
+				console.log(result);
 				return result.json();
 			})
 			.catch((error) => {
 				console.log(error);
 			})
-			.then((data) => {
-				for (let followerData of data) {
-					if (userIdCookie == followerData.id) {
-						setFollowingStatus(true);
-					}
-				}
+			.then((data)=>{
+				console.log(data)
+				setFollowingStatus(data?.follows);
 			});
 	}
 
@@ -127,14 +127,16 @@ export default function ProfileLayout() {
 						userInformation?.github ? userInformation?.github : "No Website"
 					}
 					dateJoined={""}
-					followers={0}
-					following={following}
+					followers={followersNumber}
+					following={followingNumber}
 					activeUser={activeUser}
 					followingStatus={followingStatus}
 					profileImage={userInformation?.profileImage || ""}
 					profileBackround={userInformation?.profileBackgroundImage || ""}
 					url={userInformation?.url || ""}
 					postCount={postCount}
+					host={userInformation?.host || ""}
+					github={userInformation?.github || ""}
 				/>
 				<Outlet context={{ userId: userId }} />
 				<Rightbar />

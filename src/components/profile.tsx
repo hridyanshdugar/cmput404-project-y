@@ -22,10 +22,13 @@ type Props = {
     followingStatus: boolean;
     url: string;
     postCount: number;
+    host:string;
+    github: string;
 }
 
 const cookies = new Cookies();
 const user = cookies.get("user");
+const auth = cookies.get("auth");
 
 export default class Profile extends React.Component<Props> {
     followStatus: string = "Follow";
@@ -59,7 +62,26 @@ export default class Profile extends React.Component<Props> {
         const externalUserId = this.props.userid
         if (request) {
           //API follow request !!NEEDED!!
-          sendFollowRequest(this.props.userid, user['id'], user["url"]);
+          // sendPostToInbox(follower.id, auth.access, post, follower)
+          let actor = {
+            type: "author",
+            id: user["id"],
+            url: user["url"],
+            host: user["host"],
+            displayName: user["displayName"],
+            github: user["github"],
+            profileImage: user["profileImage"]
+          };
+          let object = {
+            type: "author",
+            id: this.props.userid,
+            host: this.props.host,
+            displayName: this.props.name,
+            url: this.props.url,
+            github: this.props.github,
+            profileImage: this.props.profileImage
+          };
+          sendFollowRequest(this.props.userid, auth.access, actor, object);
         }
         this.followStatus = "Following"
         var div = document.getElementById("profileButton");

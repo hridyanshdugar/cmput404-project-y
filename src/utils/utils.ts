@@ -245,75 +245,85 @@ export async function deleteComment(auth: string, postId:string, commentId:strin
   return await fetch(getAPIEndpoint() + `/posts/${postId}/comments/${commentId}`, options);
 }
 
-export async function getNewFollowRequests(email: string){
+export async function getNewFollowRequests(id: string){
     const options: RequestInit = {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
         }
     };
-  return await fetch(getAPIEndpoint() + `/followers/get/new/follow/requests?name=${email}`, options)
+  return await fetch(getAPIEndpoint() + `/followers/${id}/requests/`, options)
 }
 
-export async function processFollowRequest(email:any, followerEmail:any, action:any) {
+export async function processFollowRequest(id:any, followerId:any, action:any) {
   const options: RequestInit = {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json'
-    },
+    }
+  };
+  if (action === "accept"){
+    await fetch(getAPIEndpoint() + `/authors/${id}/followers/${followerId}/`, options).then((res) => {
+      console.log(res);
+    }).catch((err) => {
+      console.log(err);
+    });
+  }
+  else{
+    await fetch(getAPIEndpoint() + `/followers/${id}/decline/${followerId}/`, options).then((res) => {
+      console.log(res);
+    }).catch((err) => {
+      console.log(err);
+    });
+  }
+}
+
+
+
+export async function sendFollowRequest(id:any, auth:any, actor:any, object:any) {
+  const options: RequestInit = {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${auth}`},
     body: JSON.stringify({
-      'name': email,
-      'follower': followerEmail
+      type: "Follow",
+      summary: "Follow request",
+      actor: actor,
+      object : object
     })
   };
-  await fetch(getAPIEndpoint() + `/followers/`+ action +`/follow/request/`, options).then((res) => {
-    console.log(res);
-  }).catch((err) => {
-    console.log(err);
-  });
+  return await fetch(getAPIEndpoint() + `/authors/${id}/inbox/`, options)
 }
 
-export async function sendFollowRequest(email:any, followerEmail:any, url:any) {
+export async function sendUnfollow(id:any, followerId:any) {
   const options: RequestInit = {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ 
-      name: email,
-      friend: followerEmail,
-      url: url
-    })
+    method: 'DELETE',
+    headers: {
+        'Content-Type': 'application/json'
+    }
   };
-  await fetch(getAPIEndpoint() + `/followers/follow/`, options).then((res) => {
-    console.log(res);
-  }).catch((err) => {
-    console.log(err);
-  });
+  return await fetch(getAPIEndpoint() + `/authors/${id}/followers/${followerId}/`, options);
 }
 
-export async function sendUnfollow(email:any, followerEmail:any) {
-  const options: RequestInit = {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ 
-      name: email,
-      friend: followerEmail
-    })
-  };
-  await fetch(getAPIEndpoint() + `/followers/unfollow/`, options).then((res) => {
-    console.log(res);
-  }).catch((err) => {
-    console.log(err);
-  });
-}
-
-export async function getFollowers(email:any) {
+export async function getFollowers(id:any) {
   const options: RequestInit = {
     method: 'GET',
     headers: {
         'Content-Type': 'application/json'
     }
   };
-  return await fetch(getAPIEndpoint() + `/followers/get/followers?name=${email}`, options)
+  return await fetch(getAPIEndpoint() + `/authors/${id}/followers/`, options)
+}
+
+export async function checkFollowingStatus(id:any, followerId:any){
+  const options: RequestInit = {
+    method: 'GET',
+    headers: {
+        'Content-Type': 'application/json'
+    }
+  };
+  return await fetch(getAPIEndpoint() + `/authors/${id}/followers/${followerId}/`, options);
 }
 
 export async function sendPostToInbox(id:any, auth:any, post:any, author:any) {
