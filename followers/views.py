@@ -159,7 +159,8 @@ class FollowerView(APIView):
         """
         follows = True if list(Follower.objects.filter(Q(userId=author_id) & Q(followerId=follower_id)).values()) else False
         if follows:
-            Friends.objects.filter(userId=author_id, friendId=follower_id).delete()
+            Friends.objects.filter(Q(userId=author_id) & Q(friendId=follower_id)).delete()
+            Friends.objects.filter(Q(userId=follower_id) & Q(friendId=author_id)).delete()
             Follower.objects.filter(Q(userId=author_id) & Q(followerId=follower_id)).delete()
         return HttpResponse("Deleted/Unfollowed")
 
