@@ -99,6 +99,7 @@ class PostsView(APIView):
      '''
      def get(self, request):
         posts=None
+        author=None
 
         JWT_authenticator = JWTAuthentication()
         response = JWT_authenticator.authenticate(request)
