@@ -69,7 +69,7 @@ export default function Profiles() {
 										text={item.content}
 										postImage={undefined}
 										date={Math.floor(new Date(item.published).getTime() / 1000)}
-										likes={0}
+										likes={item.likes}
 										comments={item.count}
 										postId={item.id}
 										contentType={item.contentType}
