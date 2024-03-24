@@ -5,7 +5,12 @@ import SideBar from "../components/sidebar";
 import Rightbar from "../components/rightbar";
 import Cookies from "universal-cookie";
 import { useState, useEffect } from "react";
-import { getFollowers, getHomePosts, getUserLocalInfo, checkFollowingStatus } from "../utils/utils";
+import {
+	getFollowers,
+	getHomePosts,
+	getUserLocalInfo,
+	checkFollowingStatus,
+} from "../utils/utils";
 import { error } from "console";
 import { userInfo } from "os";
 import { PostContextProvider } from "../utils/postcontext";
@@ -29,6 +34,7 @@ export default function ProfileLayout() {
 	const [postCount, setPostCount] = useState<number>(0);
 	const [followingNumber, setFollowingNumber] = useState<number>(0);
 	const [followersNumber, setFollowersNumber] = useState<number>(0);
+	const [friendsNumber, setFriendsNumber] = useState<number>(0);
 	useEffect(() => {
 		if (userId) {
 			getUserLocalInfo(allcookies.auth.access, userId!)
@@ -54,6 +60,7 @@ export default function ProfileLayout() {
 						const data = await result.json();
 						setFollowingNumber(data.following.length);
 						setFollowersNumber(data.followers.length);
+						setFriendsNumber(data.friends.length);
 					} else {
 						throw new Error("Error fetching posts");
 					}
@@ -62,8 +69,13 @@ export default function ProfileLayout() {
 					console.log(error);
 				});
 
-			
-			getHomePosts(cookies.get("user").host, 1, 100, cookies.get("auth").access, userId)
+			getHomePosts(
+				cookies.get("user").host,
+				1,
+				100,
+				cookies.get("auth").access,
+				userId
+			)
 				.then(async (result: any) => {
 					if (result.status === 200) {
 						const Data = await result.json();
@@ -106,8 +118,8 @@ export default function ProfileLayout() {
 			.catch((error) => {
 				console.log(error);
 			})
-			.then((data)=>{
-				console.log(data)
+			.then((data) => {
+				console.log(data);
 				setFollowingStatus(data?.follows);
 			});
 	}
@@ -129,6 +141,7 @@ export default function ProfileLayout() {
 					dateJoined={""}
 					followers={followersNumber}
 					following={followingNumber}
+					friends={friendsNumber}
 					activeUser={activeUser}
 					followingStatus={followingStatus}
 					profileImage={userInformation?.profileImage || ""}
