@@ -3,7 +3,7 @@ info:
   title: ''
   version: 0.0.0
 paths:
-  /auth/login:
+  /api/auth/login:
     post:
       operationId: auth_login_create
       tags:
@@ -13,7 +13,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /auth/signup:
+  /api/auth/signup:
     post:
       operationId: auth_signup_create
       tags:
@@ -23,7 +23,170 @@ paths:
       responses:
         '200':
           description: No response body
-  /authors/{author_id}/posts/:
+  /api/authors/{author_id}/comments/{post_id}/likes:
+    get:
+      operationId: authors_comments_likes_retrieve
+      parameters:
+      - in: path
+        name: author_id
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: post_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - authors
+      security:
+      - basicAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    put:
+      operationId: authors_comments_likes_update
+      parameters:
+      - in: path
+        name: author_id
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: post_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - authors
+      security:
+      - basicAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    delete:
+      operationId: authors_comments_likes_destroy
+      parameters:
+      - in: path
+        name: author_id
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: post_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - authors
+      security:
+      - basicAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/authors/{author_id}/followers/{follower_id}/:
+    get:
+      operationId: authors_followers_retrieve
+      description: check if FOREIGN_AUTHOR_ID is a follower of AUTHOR_ID
+      parameters:
+      - in: path
+        name: author_id
+        schema:
+          type: string
+          pattern: ^.+$
+        required: true
+      - in: path
+        name: follower_id
+        schema:
+          type: string
+          pattern: ^.+$
+        required: true
+      tags:
+      - authors
+      security:
+      - basicAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    put:
+      operationId: authors_followers_update
+      description: Add FOREIGN_AUTHOR_ID as a follower of AUTHOR_ID, basically same
+        functionality as accept Follow request
+      parameters:
+      - in: path
+        name: author_id
+        schema:
+          type: string
+          pattern: ^.+$
+        required: true
+      - in: path
+        name: follower_id
+        schema:
+          type: string
+          pattern: ^.+$
+        required: true
+      tags:
+      - authors
+      security:
+      - basicAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    delete:
+      operationId: authors_followers_destroy
+      description: remove FOREIGN_AUTHOR_ID as a follower of AUTHOR_ID, basically
+        same functionality as unfollow
+      parameters:
+      - in: path
+        name: author_id
+        schema:
+          type: string
+          pattern: ^.+$
+        required: true
+      - in: path
+        name: follower_id
+        schema:
+          type: string
+          pattern: ^.+$
+        required: true
+      tags:
+      - authors
+      security:
+      - basicAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/authors/{author_id}/liked:
+    get:
+      operationId: authors_liked_retrieve
+      parameters:
+      - in: path
+        name: author_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - authors
+      security:
+      - basicAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/authors/{author_id}/posts/:
     get:
       operationId: authors_posts_retrieve
       parameters:
@@ -35,8 +198,8 @@ paths:
       tags:
       - authors
       security:
-      - cookieAuth: []
       - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
@@ -52,13 +215,151 @@ paths:
       tags:
       - authors
       security:
-      - cookieAuth: []
       - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
           description: No response body
-  /authors/{author_id}/posts/{id}:
+  /api/authors/{author_id}/posts/{fk}/comments/:
+    get:
+      operationId: authors_posts_comments_retrieve
+      parameters:
+      - in: path
+        name: author_id
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: fk
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - authors
+      security:
+      - basicAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: authors_posts_comments_create
+      parameters:
+      - in: path
+        name: author_id
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: fk
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - authors
+      security:
+      - basicAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/authors/{author_id}/posts/{fk}/comments/{id}:
+    get:
+      operationId: authors_posts_comments_retrieve_2
+      description: GET /authors/{id}/posts/{id}/comments/{id} and posts/{id}/comments/{id}
+      parameters:
+      - in: path
+        name: author_id
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: fk
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - authors
+      security:
+      - basicAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    put:
+      operationId: authors_posts_comments_update
+      description: GET /authors/{id}/posts/{id}/comments/{id} and posts/{id}/comments/{id}
+      parameters:
+      - in: path
+        name: author_id
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: fk
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - authors
+      security:
+      - basicAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    delete:
+      operationId: authors_posts_comments_destroy
+      description: GET /authors/{id}/posts/{id}/comments/{id} and posts/{id}/comments/{id}
+      parameters:
+      - in: path
+        name: author_id
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: fk
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - authors
+      security:
+      - basicAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/authors/{author_id}/posts/{id}:
     get:
       operationId: authors_posts_retrieve_2
       description: GET /authors/{id}/posts/{id} and /posts/{id}
@@ -77,8 +378,8 @@ paths:
       tags:
       - authors
       security:
-      - cookieAuth: []
       - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
@@ -101,8 +402,32 @@ paths:
       tags:
       - authors
       security:
-      - cookieAuth: []
       - basicAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    patch:
+      operationId: authors_posts_partial_update
+      description: GET /authors/{id}/posts/{id} and /posts/{id}
+      parameters:
+      - in: path
+        name: author_id
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - authors
+      security:
+      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
@@ -125,26 +450,303 @@ paths:
       tags:
       - authors
       security:
-      - cookieAuth: []
       - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '204':
           description: No response body
-  /images/:
+  /api/authors/{author_id}/posts/{post_id}/likes:
+    get:
+      operationId: authors_posts_likes_retrieve
+      parameters:
+      - in: path
+        name: author_id
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: post_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - authors
+      security:
+      - basicAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    put:
+      operationId: authors_posts_likes_update
+      parameters:
+      - in: path
+        name: author_id
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: post_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - authors
+      security:
+      - basicAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    delete:
+      operationId: authors_posts_likes_destroy
+      parameters:
+      - in: path
+        name: author_id
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: post_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - authors
+      security:
+      - basicAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/authors/{id}/inbox/:
+    get:
+      operationId: authors_inbox_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - authors
+      security:
+      - basicAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    put:
+      operationId: authors_inbox_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - authors
+      security:
+      - basicAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    delete:
+      operationId: authors_inbox_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - authors
+      security:
+      - basicAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/authors/accept/follow/request/:
+    put:
+      operationId: authors_accept_follow_request_update
+      tags:
+      - authors
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/authors/decline/follow/request/:
+    put:
+      operationId: authors_decline_follow_request_update
+      tags:
+      - authors
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/authors/follow/:
+    post:
+      operationId: authors_follow_create
+      tags:
+      - authors
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/authors/unfollow/:
+    post:
+      operationId: authors_unfollow_create
+      tags:
+      - authors
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/followers/{author_id}/followers/{follower_id}/:
+    get:
+      operationId: followers_followers_retrieve
+      description: check if FOREIGN_AUTHOR_ID is a follower of AUTHOR_ID
+      parameters:
+      - in: path
+        name: author_id
+        schema:
+          type: string
+          pattern: ^.+$
+        required: true
+      - in: path
+        name: follower_id
+        schema:
+          type: string
+          pattern: ^.+$
+        required: true
+      tags:
+      - followers
+      security:
+      - basicAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    put:
+      operationId: followers_followers_update
+      description: Add FOREIGN_AUTHOR_ID as a follower of AUTHOR_ID, basically same
+        functionality as accept Follow request
+      parameters:
+      - in: path
+        name: author_id
+        schema:
+          type: string
+          pattern: ^.+$
+        required: true
+      - in: path
+        name: follower_id
+        schema:
+          type: string
+          pattern: ^.+$
+        required: true
+      tags:
+      - followers
+      security:
+      - basicAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    delete:
+      operationId: followers_followers_destroy
+      description: remove FOREIGN_AUTHOR_ID as a follower of AUTHOR_ID, basically
+        same functionality as unfollow
+      parameters:
+      - in: path
+        name: author_id
+        schema:
+          type: string
+          pattern: ^.+$
+        required: true
+      - in: path
+        name: follower_id
+        schema:
+          type: string
+          pattern: ^.+$
+        required: true
+      tags:
+      - followers
+      security:
+      - basicAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/followers/accept/follow/request/:
+    put:
+      operationId: followers_accept_follow_request_update
+      tags:
+      - followers
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/followers/decline/follow/request/:
+    put:
+      operationId: followers_decline_follow_request_update
+      tags:
+      - followers
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/followers/follow/:
+    post:
+      operationId: followers_follow_create
+      tags:
+      - followers
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/followers/unfollow/:
+    post:
+      operationId: followers_unfollow_create
+      tags:
+      - followers
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/images/:
     post:
       operationId: images_create
       description: POST /images
       tags:
       - images
       security:
-      - cookieAuth: []
       - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
           description: No response body
-  /images/{id}:
+  /api/images/{id}:
     get:
       operationId: images_retrieve
       description: GET /images
@@ -158,8 +760,8 @@ paths:
       tags:
       - images
       security:
-      - cookieAuth: []
       - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
@@ -177,8 +779,8 @@ paths:
       tags:
       - images
       security:
-      - cookieAuth: []
       - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
@@ -196,20 +798,40 @@ paths:
       tags:
       - images
       security:
-      - cookieAuth: []
       - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '204':
           description: No response body
-  /posts/:
+  /api/nodes/:
+    get:
+      operationId: nodes_retrieve
+      tags:
+      - nodes
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/nodes/all:
+    get:
+      operationId: nodes_all_retrieve
+      tags:
+      - nodes
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/posts/:
     get:
       operationId: posts_retrieve
       tags:
       - posts
       security:
-      - cookieAuth: []
       - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
@@ -219,13 +841,126 @@ paths:
       tags:
       - posts
       security:
-      - cookieAuth: []
       - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
           description: No response body
-  /posts/{id}:
+  /api/posts/{fk}/comments/:
+    get:
+      operationId: posts_comments_retrieve
+      parameters:
+      - in: path
+        name: fk
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - posts
+      security:
+      - basicAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: posts_comments_create
+      parameters:
+      - in: path
+        name: fk
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - posts
+      security:
+      - basicAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/posts/{fk}/comments/{id}:
+    get:
+      operationId: posts_comments_retrieve_2
+      description: GET /authors/{id}/posts/{id}/comments/{id} and posts/{id}/comments/{id}
+      parameters:
+      - in: path
+        name: fk
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - posts
+      security:
+      - basicAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    put:
+      operationId: posts_comments_update
+      description: GET /authors/{id}/posts/{id}/comments/{id} and posts/{id}/comments/{id}
+      parameters:
+      - in: path
+        name: fk
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - posts
+      security:
+      - basicAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    delete:
+      operationId: posts_comments_destroy
+      description: GET /authors/{id}/posts/{id}/comments/{id} and posts/{id}/comments/{id}
+      parameters:
+      - in: path
+        name: fk
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - posts
+      security:
+      - basicAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/posts/{id}:
     get:
       operationId: posts_retrieve_2
       description: GET /authors/{id}/posts/{id} and /posts/{id}
@@ -239,8 +974,8 @@ paths:
       tags:
       - posts
       security:
-      - cookieAuth: []
       - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
@@ -258,8 +993,27 @@ paths:
       tags:
       - posts
       security:
-      - cookieAuth: []
       - basicAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    patch:
+      operationId: posts_partial_update
+      description: GET /authors/{id}/posts/{id} and /posts/{id}
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - posts
+      security:
+      - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
@@ -277,13 +1031,13 @@ paths:
       tags:
       - posts
       security:
-      - cookieAuth: []
       - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '204':
           description: No response body
-  /schema/:
+  /api/schema/:
     get:
       operationId: schema_retrieve
       description: |-
@@ -406,8 +1160,8 @@ paths:
       tags:
       - schema
       security:
-      - cookieAuth: []
       - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
@@ -429,14 +1183,14 @@ paths:
                 type: object
                 additionalProperties: {}
           description: ''
-  /users/:
+  /api/users/:
     get:
       operationId: users_retrieve
       tags:
       - users
       security:
-      - cookieAuth: []
       - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
@@ -446,13 +1200,13 @@ paths:
       tags:
       - users
       security:
-      - cookieAuth: []
       - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
           description: No response body
-  /users/{id}:
+  /api/users/{id}:
     get:
       operationId: users_retrieve_2
       description: GET /users
@@ -466,8 +1220,8 @@ paths:
       tags:
       - users
       security:
-      - cookieAuth: []
       - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
@@ -485,8 +1239,8 @@ paths:
       tags:
       - users
       security:
-      - cookieAuth: []
       - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '200':
@@ -504,18 +1258,30 @@ paths:
       tags:
       - users
       security:
-      - cookieAuth: []
       - basicAuth: []
+      - jwtAuth: []
       - {}
       responses:
         '204':
+          description: No response body
+  /api/users/all:
+    get:
+      operationId: users_all_retrieve
+      tags:
+      - users
+      security:
+      - basicAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
           description: No response body
 components:
   securitySchemes:
     basicAuth:
       type: http
       scheme: basic
-    cookieAuth:
-      type: apiKey
-      in: cookie
-      name: sessionid
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

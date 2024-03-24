@@ -108,18 +108,22 @@ class PostsView(APIView):
         else:
             return Response({"title": "Unauthorized", "message": "You are not authorized to view this post"}, status = status.HTTP_401_UNAUTHORIZED)
 
-        friends = json.loads(getFriends(request, author.id).content)
+        friends = getFriends(request, author.id).content
+        print("bob", friends)
+        friends = json.loads(friends)
         if request.GET.get('local',False):
-            posts = Post.objects.filter(Q(visibility="PUBLIC", host=request.GET.get('host')) | Q(visibility="FRIENDS")) # FINISH UP
+            posts = Post.objects.filter(Q(visibility="PUBLIC", host=request.GET.get('host')) | Q(visibility="FRIENDS")).order_by('-published')  # FINISH UP
         else:
             posts = Post.objects.filter(Q(visibility="PUBLIC") | Q(author=author) | Q(visibility="FRIENDS", author__id__in=friends)).order_by('-published') 
         page_number = request.GET.get('page') or 1
-        page = self.pagination.paginate_queryset(posts, request, view=self)
-        if page is not None:
-            serializer = PostSerializer(page, many=True, context={'request': request})
-            return Response(serializer.data, status = status.HTTP_200_OK)
+        posts = self.pagination.paginate_queryset(posts, request, view=self)
+        if posts is not None:
+            serializer = PostSerializer(posts, many=True, context={'request': request})
+            data = serializer.data
+            return Response(data, status = status.HTTP_200_OK)
+            return Response("sad", status = status.HTTP_404_NOT_FOUND)
         else:
-            return Response(serializer.data, status = status.HTTP_400_BAD_REQUEST)
+            return Response("hi", status = status.HTTP_400_BAD_REQUEST)
 
      '''
      POST /authors/{id}/posts/ and /posts/

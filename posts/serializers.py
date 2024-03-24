@@ -34,7 +34,7 @@ class PostSerializer(serializers.ModelSerializer):
 
      class Meta:
           model = Post
-          fields = ["id","global_id", "host","url","type","content","contentType","published","comments","commentsSrc","visibility","origin","description", "author","count","likes"]
+          fields = ["id", "title","global_id", "host","url","type","content","contentType","published","comments","commentsSrc","visibility","origin","description", "author","count","likes"]
 
      def __init__(self, *args, **kwargs):
         exclude_comments = False
