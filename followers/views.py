@@ -107,7 +107,7 @@ def getFollowers(request, author_id=None):
                 response = requests.get(user.host + "api/authors/" + author_id + "/followers/",timeout=3, auth=HTTPBasicAuth(user_auth, pass_auth))
             except Exception as e:
                 print(e)
-            if response.status_code == 200:
+            if response and response.status_code == 200:
                 try:
                     followers = response.json()
                     print(followers)
