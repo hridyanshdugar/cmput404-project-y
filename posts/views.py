@@ -198,7 +198,7 @@ class AllPostsView(APIView):
                         print(f"Request to {node.url} failed with status code: {response.status_code}")
                 except requests.exceptions.RequestException as e:
                     print(f"Request to {node.url} failed: {e}")
-            return Response({}, status = status.HTTP_200_OK)
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
 class PostsView(APIView):
      def perform_authentication(self, request):
