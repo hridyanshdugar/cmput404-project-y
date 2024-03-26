@@ -56,7 +56,7 @@ export default function Profiles() {
 							<>There are no posts available</>
 						) : (
 							posts.map((item: any, index: any) =>
-								item.author.id === userId ? (
+								true ? (
 									<SinglePost
 										key={index}
 										name={item.author.displayName}

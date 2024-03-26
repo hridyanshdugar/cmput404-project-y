@@ -111,9 +111,6 @@ export default class Profile extends React.Component<Props> {
 							<h1 id="profileName" className={styles.title}>
 								{this.props.name}
 							</h1>
-							<div className={styles.postCount}>
-								{this.props.postCount} posts
-							</div>
 						</div>
 						<div id="profileBackround">
 							<img
