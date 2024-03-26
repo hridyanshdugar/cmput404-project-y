@@ -152,7 +152,7 @@ class AllPostsView(APIView):
                 return Response(status=status.HTTP_401_UNAUTHORIZED)
         if 'HTTP_AUTHORIZATION' in request.META:
             request.META.pop('HTTP_AUTHORIZATION')
-            
+
      pagination = Pager()
      '''
      GET /authors/{id}/posts/ and /posts/
@@ -182,7 +182,6 @@ class AllPostsView(APIView):
             user_auth = get_object_or_404(Node,is_self=True).username
             pass_auth = get_object_or_404(Node,is_self=True).password
             nodes = Node.objects.filter(is_self=False)
-            node_responses = []
 
             for node in nodes:
                 print(node.url + "api/authors/" + str(author_id) + "/posts/")
@@ -199,7 +198,7 @@ class AllPostsView(APIView):
                         print(f"Request to {node.url} failed with status code: {response.status_code}")
                 except requests.exceptions.RequestException as e:
                     print(f"Request to {node.url} failed: {e}")
-            return Response([], status = status.HTTP_200_OK)
+            return Response({}, status = status.HTTP_200_OK)
 
 class PostsView(APIView):
      def perform_authentication(self, request):
