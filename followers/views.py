@@ -122,6 +122,7 @@ def getFollowers(request, author_id=None):
             })
     else:
         return Http404()
+        
 
 def getFriends(request, author_id=None):
     user = list(User.objects.filter(id=author_id).values())[0]
