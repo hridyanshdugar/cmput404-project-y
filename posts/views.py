@@ -191,7 +191,7 @@ class AllPostsView(APIView):
                     if response.status_code == 200:
                         try:
                             response_data = response.json()
-                            return JsonResponse(response_data)
+                            return Response(response_data, status = status.HTTP_200_OK)
                         except JSONDecodeError:
                             print(f"Invalid JSON response from {node.url}: {response.text}")
                     else:
