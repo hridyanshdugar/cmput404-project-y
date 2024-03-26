@@ -263,8 +263,8 @@ class AllFollowerView(APIView):
             else:
                 NewFollowRequest.objects.filter(Q(userId=author_id) & Q(followerId=follower_id)).delete()
                 return HttpResponseBadRequest("Not able to follow, follows="+ str(follows) + " newRequest=" + str(newRequest)) 
-        except:
-            return HttpResponseBadRequest("Something went wrong!")
+        except Exception as e:
+            return HttpResponseBadRequest(str(e))
         
 
 
