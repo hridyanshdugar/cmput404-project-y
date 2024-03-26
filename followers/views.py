@@ -219,7 +219,7 @@ class AllFollowerView(APIView):
                         print(f"Request to {node.url} failed with status code: {response.status_code}")
                 except requests.exceptions.RequestException as e:
                     print(f"Request to {node.url} failed: {e}")
-            return HttpResponse(status=404)
+            return JsonResponse({"follows": False})
     
     def put(self, request, author_id, follower_id):
         """
