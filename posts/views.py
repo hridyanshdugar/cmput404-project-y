@@ -146,6 +146,13 @@ class PostsViewPK(APIView):
         return Response({"title": "Bad Request", "message": "Invalid Request Sent"}, status = status.HTTP_400_BAD_REQUEST)
 
 class AllPostsView(APIView):
+     def perform_authentication(self, request):
+        if is_basicAuth(request):
+            if not basicAuth(request):
+                return Response(status=status.HTTP_401_UNAUTHORIZED)
+        if 'HTTP_AUTHORIZATION' in request.META:
+            request.META.pop('HTTP_AUTHORIZATION')
+            
      pagination = Pager()
      '''
      GET /authors/{id}/posts/ and /posts/
@@ -159,7 +166,7 @@ class AllPostsView(APIView):
             friends = getFriends(request, author.id).content
             print("bob", friends)
             friends = json.loads(friends)
-            if response and request.GET.get('local',False):
+            if request.GET.get('local',False):
                 posts = Post.objects.filter(Q(visibility="PUBLIC", host=request.GET.get('host')) | Q(visibility="FRIENDS")).order_by('-published')
             else:
                 posts = Post.objects.filter(Q(visibility="PUBLIC") | Q(author=author) | Q(visibility="FRIENDS", author__id__in=friends)).order_by('-published') 
