@@ -53,7 +53,7 @@ const EditPostt: React.FC<EditPostProps> = (props) => {
 		const user = cookies.get("user");
 		setuser(user);
 		setauth(auth);
-		getPost(auth, props.postId)
+		getPost(auth, props.postId,user.id)
 			.then((result) => {
 				if (result.status == 200) {
 					return result.json();

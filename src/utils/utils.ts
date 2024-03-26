@@ -186,7 +186,7 @@ export async function getPostComments(host: string, page:number, size: number , 
   return await fetch(getAPIEndpoint() + `/posts/${postId}/comments/?page=${page}&size=${size}&host=${host}&id=${id}`, options);
 }
 
-export async function getPost(auth: string, postId:string) {
+export async function getPost(auth: string, postId:string, user_id:string) {
   const options: RequestInit = {
     method: 'GET',
     headers: {
@@ -194,7 +194,7 @@ export async function getPost(auth: string, postId:string) {
       'Authorization': `Bearer ${auth}`,
     }
   };
-  return await fetch(getAPIEndpoint() + `/posts/${postId}`, options);
+  return await fetch(getAPIEndpoint() + `/authors/${user_id}/posts/${postId}/`, options);
 }
 
 export async function getComment(auth: string, postId:string, commentId:string) {

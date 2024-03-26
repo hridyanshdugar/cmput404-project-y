@@ -156,7 +156,7 @@ const SinglePost: React.FC<Props> = (props) => {
 		const user = cookies.get("user");
 		const auth = cookies.get("auth");
 		setuser(user);
-		getPost(auth["access"], props.postId)
+		getPost(auth["access"], props.postId,user.id)
 			.then(async (result: any) => {
 				if (result.status === 200) {
 					const Data = await result.json();
@@ -172,7 +172,7 @@ const SinglePost: React.FC<Props> = (props) => {
 		if (props.contentType === "text/post") {
 			console.log("shared post1");
 			var originalPostId = props.text;
-			getPost(auth.access, originalPostId)
+			getPost(auth.access, originalPostId, user.id)
 				.then(async (result: any) => {
 					const Data = await result.json();
 					setSharedPost(Data);

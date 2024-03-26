@@ -34,7 +34,7 @@ export default function Post() {
 		setAuth(auth);
 		setUser(user);
 		if (postId) {
-			getPost(auth, postId)
+			getPost(auth, postId,user.id)
 				.then(async (result: any) => {
 					if (result.status === 200) {
 						const Data = await result.json();

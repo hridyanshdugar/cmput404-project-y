@@ -36,7 +36,7 @@ class PostsViewPK(APIView):
      def get(self, request,author_id, post_id):
         user_auth = get_object_or_404(Node,is_self=True).username
         pass_auth = get_object_or_404(Node,is_self=True).password
-        print(pk)
+        print(post_id)
         # requestuserAuthor = User.objects.get(id=pk)
         # if Node.objects.get(is_self=True).url == requestuserAuthor.host:
         #     post = get_object_or_404(Post, id=pk)
