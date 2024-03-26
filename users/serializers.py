@@ -1,18 +1,33 @@
+import requests
 from rest_framework import serializers
 from .models import User
 from django.contrib.auth.hashers import make_password
 import uuid
 from urllib.parse import urlparse
+from django.core.files.base import ContentFile
+from nodes.models import Node
+from nodes.views import is_basicAuth, basicAuth
+from requests.auth import HTTPBasicAuth
 
+def download_image(url):
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        return ContentFile(response.content)
+    except requests.HTTPError as e:
+        raise serializers.ValidationError(f"Error downloading image: {e}")
 
 class UserSerializer(serializers.ModelSerializer):
-     class Meta:
-          model = User
-          fields = '__all__'
+    class Meta:
+        model = User
+        fields = '__all__'
 
-     def create(self, validated_data):
+    def create(self, validated_data):
         request = self.context.get('request')
-        validated_data["id"] = uuid.uuid4()
+        if "id" not in validated_data:
+            validated_data["id"] = uuid.uuid4()
+        else:
+            validated_data["id"] = validated_data.get('id')
         validated_data['password'] = make_password(validated_data.get('password'))
         if request is not None: 
             host = request.build_absolute_uri('/') + "posts/" + str(validated_data["id"])
@@ -25,30 +40,35 @@ class UserSerializer(serializers.ModelSerializer):
                 host_url = request.build_absolute_uri('/')
                 validated_data["host"] = host_url
                 
-            validated_data["global_id"] = host
         return super().create(validated_data)
 
-     def to_representation(self, instance):
+    def to_representation(self, instance):
         ret = super().to_representation(instance)
         ret.pop('password', None)
         return ret
      
 class RemoteUserSerializer(serializers.ModelSerializer):
-     class Meta:
-          model = User
-          exclude = ('password',)
+    id = serializers.UUIDField(format='hex_verbose', required=False, allow_null=True)
+    class Meta:
+        model = User
+        exclude = ('password',)
      
-     def create(self, validated_data):
-        validated_data['password'] = make_password(uuid.uuid4())
+    def create(self, validated_data):
+        validated_data['password'] = make_password(str(uuid.uuid4()))
+        user_id = validated_data.get('id', None)
+        if user_id:
+            if User.objects.filter(id=user_id).exists():
+                raise serializers.ValidationError('A user with this ID already exists.')
         
         return super().create(validated_data)
 
 class AuthorSerializer(serializers.ModelSerializer):
-     type = serializers.SerializerMethodField()
+    type = serializers.SerializerMethodField()
 
-     class Meta:
-          model = User
-          fields = ["id","global_id", "host","url","type","displayName","email","profileImage","github","profileBackgroundImage"]
-     
-     def get_type(self, obj):
+
+    class Meta:
+        model = User
+        fields = ["id", "host","url","type","displayName","email","profileImage","github","profileBackgroundImage"]
+    
+    def get_type(self, obj):
         return "author"

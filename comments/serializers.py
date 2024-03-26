@@ -15,14 +15,11 @@ class CommentSerializer(serializers.ModelSerializer):
    
    class Meta:
       model = Comment
-      fields = ["id","global_id","type","post","contentType","comment","author","published","likes"]
+      fields = ["id","type","post","contentType","comment","author","published","likes"]
 
    def create(self, validated_data):
       request = self.context.get('request')
       validated_data["id"] = uuid.uuid4()
-      if request is not None: 
-         host = request.build_absolute_uri('/') + "comments/" + str(validated_data["id"])
-         validated_data["global_id"] = host
       return super().create(validated_data)
      
    def get_author(self, obj):

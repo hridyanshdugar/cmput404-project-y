@@ -18,7 +18,7 @@ import {
 	sendPostToInbox,
 	sendLikeToInbox,
 } from "../utils/utils";
-import { Card } from "react-bootstrap";
+import { Badge, Card } from "react-bootstrap";
 import Dropdown from "./dropdowns/dropdown";
 import MarkdownPreview from "@uiw/react-markdown-preview";
 import {
@@ -83,6 +83,7 @@ type Props = {
 	text: string;
 	postImage: string | undefined;
 	date: number;
+	host: string;
 	likes: number;
 	comments: number;
 	postId: string;
@@ -336,7 +337,10 @@ const SinglePost: React.FC<Props> = (props) => {
 							>
 								{" "}
 								· {formattedDate}
-							</div>
+                            </div>
+                            <div id="profile99" className={[style.topUserText, style.inlineBlock].join(" ")}>
+                                <Badge bg="primary">{props.host.split(".")[0].split("/").slice(-1)}</Badge>
+                            </div>
 						</div>
 						<div className={style.separator} />
 						<div>
@@ -391,6 +395,7 @@ const SinglePost: React.FC<Props> = (props) => {
 									likes={sharedPost.likes}
 									comments={sharedPost.count}
 									postId={sharedPost.id}
+									host={sharedPost.author.host}
 									contentType={sharedPost.contentType}
 								/>
 							)}

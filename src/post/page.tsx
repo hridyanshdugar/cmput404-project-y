@@ -94,7 +94,8 @@ export default function Post() {
 								likes={item.likes}
 								comments={item.count}
 								postId={item.id}
-								contentType={item.contentType}
+                                contentType={item.contentType}
+                                host={item.author.host}
 							/>
 						))
 					) : (
@@ -129,7 +130,8 @@ export default function Post() {
 							postImage={undefined}
 							date={Math.floor(new Date(item.published).getTime() / 1000)}
 							likes={item.likes}
-							comments={item.count}
+                            comments={item.count}
+                            host={item.author.host}
 							postId={item.id}
 							contentType={item.contentType}
 							parentId={posts[0].id}

@@ -5,7 +5,6 @@ import uuid
 TEXT_MAX_LENGTH = 300
 class Comment(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
-    global_id = models.CharField(null=True, max_length=TEXT_MAX_LENGTH,unique=True)
     
     post = models.ForeignKey('posts.Post', on_delete=models.CASCADE)
 

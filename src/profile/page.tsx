@@ -71,7 +71,8 @@ export default function Profiles() {
 										date={Math.floor(new Date(item.published).getTime() / 1000)}
 										likes={item.likes}
 										comments={item.count}
-										postId={item.id}
+                                        postId={item.id}
+                                        host={item.author.host}
 										contentType={item.contentType}
 									/>
 								) : (

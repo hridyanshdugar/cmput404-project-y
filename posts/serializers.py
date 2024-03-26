@@ -20,7 +20,7 @@ class PostEditSerializer(serializers.ModelSerializer):
 class RemotePostSerializer(serializers.ModelSerializer):
      class Meta:
           model = Post
-          fields = ["id","global_id", "host","url","content","contentType","published","visibility","origin","description", "author"]
+          fields = ["id", "host","url","content","contentType","published","visibility","origin","description", "author"]
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -34,7 +34,7 @@ class PostSerializer(serializers.ModelSerializer):
 
      class Meta:
           model = Post
-          fields = ["id", "title","global_id", "host","url","type","content","contentType","published","comments","commentsSrc","visibility","origin","description", "author","count","likes"]
+          fields = ["id", "title", "host","url","type","content","contentType","published","comments","commentsSrc","visibility","origin","description", "author","count","likes"]
 
      def __init__(self, *args, **kwargs):
         exclude_comments = False
@@ -68,7 +68,6 @@ class PostSerializer(serializers.ModelSerializer):
                 parsed_url = urlparse(referrer)
                 base_url = f'{parsed_url.scheme}://{parsed_url.netloc}'
                 validated_data["origin"] = f'{base_url}/posts/{validated_data["id"]}'
-            validated_data["global_id"] = host
             validated_data["host"] = request.build_absolute_uri('/')
         return super().create(validated_data)
      

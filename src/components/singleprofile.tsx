@@ -8,7 +8,7 @@ import { faRepeat } from "@fortawesome/free-solid-svg-icons";
 import { faComment } from "@fortawesome/free-regular-svg-icons";
 import { faHeart } from "@fortawesome/free-regular-svg-icons";
 import React, { useEffect, useState } from "react";
-import { Card } from "react-bootstrap";
+import { Badge, Card } from "react-bootstrap";
 import Dropdown from "./dropdowns/dropdown";
 import { getFrontend, navigate } from "../utils/utils";
 import MarkdownPreview from "@uiw/react-markdown-preview";
@@ -23,6 +23,7 @@ type Props = {
 	name: string;
 	profileImage: string;
 	username: string;
+	host: string;
 	userId: string;
 };
 
@@ -67,7 +68,10 @@ const SingleProfile: React.FC<Props> = (props) => {
 							className={[style.topUserText, style.inlineBlock].join(" ")}
 						>
 							{props.username}
-						</div>
+                            </div>
+                            <div id="profile99" className={[style.topUserText, style.inlineBlock].join(" ")}>
+                                <Badge bg="primary">{props.host.split(".")[0].split("/").slice(-1)}</Badge>
+                            </div>                            
 					</div>
 				</div>
 			</div>

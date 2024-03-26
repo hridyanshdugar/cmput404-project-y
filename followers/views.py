@@ -1,3 +1,4 @@
+from json import JSONDecodeError
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse, Http404
 from django.views.decorators.csrf import csrf_exempt
@@ -13,7 +14,11 @@ from rest_framework.views import APIView
 from django.db import transaction
 from urllib.parse import unquote
 import requests
+from django.shortcuts import get_object_or_404
 from django.forms.models import model_to_dict
+from nodes.models import Node
+from nodes.views import is_basicAuth, basicAuth
+from requests.auth import HTTPBasicAuth
 
 val = URLValidator()
 
@@ -70,26 +75,50 @@ def getNewFollowRequests(request, author_id):
         return HttpResponseBadRequest("Something went wrong!")
 
 def getFollowers(request, author_id=None):
-    user = list(User.objects.filter(id=author_id).values())[0]
+    # user = list(User.objects.filter(id=author_id).values())[0]
+    user = User.objects.get(id=author_id)
     if user:
-        try:
-            print("here")
-            followers = [follower["followerId"] for follower in Follower.objects.filter(userId=author_id).values()] 
-        except:
-            followers = []
-        try:
-            friends = [friend["friendId"] for friend in Friends.objects.filter(userId=author_id).values()]
-        except: 
-            friends = []
-        try:
-            following = [follower["userId"] for follower in Follower.objects.filter(followerId=author_id).values()]
-        except:
-            following = []
-        return JsonResponse({
-            "followers": followers,
-            "following": following,
-            "friends": friends
-        })
+        if user.host != Node.objects.get(is_self=True).url:
+            try:
+                print("here")
+                followers = [follower["followerId"] for follower in Follower.objects.filter(userId=author_id).values()] 
+            except:
+                followers = []
+            try:
+                friends = [friend["friendId"] for friend in Friends.objects.filter(userId=author_id).values()]
+            except: 
+                friends = []
+            try:
+                following = [follower["userId"] for follower in Follower.objects.filter(followerId=author_id).values()]
+            except:
+                following = []
+            return JsonResponse({
+                "type": "followers",
+                "items": followers,
+                "following": following,
+                "friends": friends
+            })
+        else:
+            user_auth = get_object_or_404(Node,is_self=True).username
+            pass_auth = get_object_or_404(Node,is_self=True).password
+            followers = None
+            response = requests.request(user.host + "api/authors/" + author_id + "/followers/",timeout=3, auth=HTTPBasicAuth(user_auth, pass_auth))
+            if response.status_code == 200:
+                try:
+                    followers = response.json()
+                    print(followers)
+                except JSONDecodeError:
+                    print(f"Invalid JSON response from {user.host}: {response.text}")
+            else:
+                print(f"Request to {user.host} failed with status code: {response.status_code}")
+            # following = requests.request(user.host + "/authors/" + author_id + "/following/")
+            # friends = requests.request(user.host + "/authors/" + author_id + "/friends/")
+            return JsonResponse({
+                "type": "followers",
+                "items": followers and followers["items"] or [],
+                "following": [],
+                "friends": []
+            })
     else:
         return Http404()
 
@@ -152,6 +181,12 @@ def declineFollowRequest(request, author_id, follower_id):
 
 
 class FollowerView(APIView):
+    def perform_authentication(self, request):
+        if is_basicAuth(request):
+            if not basicAuth(request):
+                return Response(status=status.HTTP_401_UNAUTHORIZED)
+        if 'HTTP_AUTHORIZATION' in request.META:
+            request.META.pop('HTTP_AUTHORIZATION')
 
     def delete(self, request, author_id, follower_id):
         """

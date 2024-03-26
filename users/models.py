@@ -49,7 +49,6 @@ def profilebackground_upload_path(instance, filename):
 
 class User(AbstractBaseUser, PermissionsMixin):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
-    global_id = models.CharField(max_length=300,unique=True,default=uuid.uuid4)
     url=models.TextField(blank=True,default='')
     host=models.TextField(blank=True,default='')
 

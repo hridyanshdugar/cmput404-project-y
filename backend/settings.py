@@ -64,10 +64,11 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',    
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    "django.contrib.auth.middleware.RemoteUserMiddleware",
+    'django.middleware.security.SecurityMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
@@ -106,11 +107,8 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.MultiPartRenderer',
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.TemplateHTMLRenderer'
-    ],
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.BasicAuthentication',
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),
+    ], 
+    'DEFAULT_PERMISSION_CLASSES': [],
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema'
 }
 
@@ -175,6 +173,9 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
 
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.RemoteUserBackend",
+]
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/

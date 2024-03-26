@@ -16,6 +16,10 @@ from posts.serializers import RemotePostSerializer
 from .serializers import InboxSerializer
 import requests
 from requests.exceptions import JSONDecodeError
+from followers.models import Follower
+from nodes.models import Node
+from nodes.views import is_basicAuth, basicAuth
+from requests.auth import HTTPBasicAuth
 
 class Pager(PageNumberPagination):
     page_size = 10
@@ -23,6 +27,13 @@ class Pager(PageNumberPagination):
 
 # Create your views here.
 class InboxView(APIView):
+     def perform_authentication(self, request):
+        if is_basicAuth(request):
+            if not basicAuth(request):
+                return Response(status=status.HTTP_401_UNAUTHORIZED)
+        if 'HTTP_AUTHORIZATION' in request.META:
+            request.META.pop('HTTP_AUTHORIZATION')
+
      pagination = Pager()
 
      '''
@@ -54,7 +65,7 @@ class InboxView(APIView):
                 if response.status_code == 200:
                     try:
                         data = response.json()
-                        serializer = RemoteUserSerializer(data={"id": data["id"], "global_id": data["global_id"], "url": data["url"], "email": data["email"], "profileImage": data["profileImage"], "profileBackgroundImage": data["profileBackgroundImage"], "github": data["github"], "displayName": data["displayName"]})
+                        serializer = RemoteUserSerializer(data={"id": data["id"], "url": data["url"], "email": data["email"], "profileImage": data["profileImage"], "profileBackgroundImage": data["profileBackgroundImage"], "github": data["github"], "displayName": data["displayName"]})
                         if serializer.is_valid():
                             author = serializer.save()
                         else: 
@@ -76,17 +87,46 @@ class InboxView(APIView):
             # inbox.followRequest.add(follower_obj)
             # inbox.save()
             return Response({"Title":"Done"}, status = status.HTTP_200_OK)
-        if request.data["type"] == "post":
+        if request.data["type"] == "unfollow":
             author = None
             try:
-                author = User.objects.get(id=request.data["author"]["id"])
+                author = User.objects.get(id=request.data["actor"]["id"])
             except:
-                response = requests.get(request.data["author"]["global_id"])
+                user_auth = get_object_or_404(Node,is_self=True).username
+                pass_auth = get_object_or_404(Node,is_self=True).password
+                response = requests.get(request.data["actor"]["url"], auth=HTTPBasicAuth(user_auth, pass_auth))
 
                 if response.status_code == 200:
                     try:
                         data = response.json()
                         serializer = RemoteUserSerializer(data={"id": data["id"], "global_id": data["global_id"], "url": data["url"], "email": data["email"], "profileImage": data["profileImage"], "profileBackgroundImage": data["profileBackgroundImage"], "github": data["github"], "displayName": data["displayName"]})
+                        if serializer.is_valid():
+                            author = serializer.save()
+                        else: 
+                            print(serializer.errors)
+                    except Exception as e:
+                        print(e)
+            follower_obj = request.data["object"] 
+            Follower.objects.delete(Q(userId=follower_obj["id"]) & Q(followerId=author.id))
+            
+            # Dont really need to save in inbox (Design choice, not using inbox to retrieve the data)
+            # inbox.author = author
+            # inbox.followRequest.add(follower_obj)
+            # inbox.save()
+            return Response({"Title":"Deleted follower"}, status = status.HTTP_200_OK)
+        if request.data["type"] == "post":
+            author = None
+            try:
+                author = User.objects.get(id=request.data["author"]["id"])
+            except:
+                user_auth = get_object_or_404(Node,is_self=True).username
+                pass_auth = get_object_or_404(Node,is_self=True).password
+                response = requests.get(request.data["author"]["id"], auth=HTTPBasicAuth(user_auth, pass_auth))
+
+                if response.status_code == 200:
+                    try:
+                        data = response.json()
+                        serializer = RemoteUserSerializer(data={"id": data["id"], "url": data["url"], "email": data["email"], "profileImage": data["profileImage"], "profileBackgroundImage": data["profileBackgroundImage"], "github": data["github"], "displayName": data["displayName"]})
                         if serializer.is_valid():
                             author = serializer.save()
                         else: 
@@ -99,12 +139,14 @@ class InboxView(APIView):
                 post_obj = Post.objects.get(id=request.data["post"]["id"])
             except:
                 print("DATA:",request.data["post"])
-                response = requests.get(request.data["post"]["global_id"])
+                user_auth = get_object_or_404(Node,is_self=True).username
+                pass_auth = get_object_or_404(Node,is_self=True).password
+                response = requests.get(request.data["post"]["id"], auth=HTTPBasicAuth(user_auth, pass_auth))
 
                 if response.status_code == 200:
                     try:
                         data = response.json()
-                        serializer = RemotePostSerializer(data={"id": data["id"], "global_id": data["global_id"], "url": data["url"], "host": data["host"], "content": data["content"], "contentType": data["contentType"], "published": data["published"], "visibility": data["visibility"], "origin": data["origin"], "description": data["description"], "author": request.data["author"]["id"]})
+                        serializer = RemotePostSerializer(data={"id": data["id"], "url": data["url"], "host": data["host"], "content": data["content"], "contentType": data["contentType"], "published": data["published"], "visibility": data["visibility"], "origin": data["origin"], "description": data["description"], "author": request.data["author"]["id"]})
                         if serializer.is_valid():
                             post_obj = serializer.save()
                         else: 

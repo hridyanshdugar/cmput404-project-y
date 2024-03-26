@@ -42,17 +42,19 @@ def is_basicAuth(request):
 
 def basicAuth(request):
     auth_header = request.META.get('HTTP_AUTHORIZATION')
+    print(auth_header)
     if not auth_header:
         return False
-
+    
+    # request_url = request.META.get('HTTP_HOST')
     auth_type, encoded_credentials = auth_header.split(' ', 1)
     if auth_type.lower() != 'basic':
         return False
 
     decoded_credentials = b64decode(encoded_credentials).decode('utf-8')
     username, password = decoded_credentials.split(':', 1)
-
-    if (Node.objects.exists(username=username,password=password)):
+    # print("SENT BY: ",request_url)
+    if Node.objects.filter(username=username,password=password).exists():
         return True
     else:
         return False

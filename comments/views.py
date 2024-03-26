@@ -17,6 +17,12 @@ class Pager(PageNumberPagination):
     page_size_query_param = 'size'
 
 class CommentsViewPK(APIView):
+     def perform_authentication(self, request):
+        if is_basicAuth(request):
+            if not basicAuth(request):
+                return Response(status=status.HTTP_401_UNAUTHORIZED)
+        if 'HTTP_AUTHORIZATION' in request.META:
+            request.META.pop('HTTP_AUTHORIZATION')
 
      '''
      GET /authors/{id}/posts/{id}/comments/{id} and posts/{id}/comments/{id}
@@ -88,6 +94,13 @@ class CommentsViewPK(APIView):
         return Response({"title": "Unauthorized", "message": "You are not authorized to delete this comment"}, status = status.HTTP_401_UNAUTHORIZED)
 
 class CommentsView(APIView):
+     def perform_authentication(self, request):
+        if is_basicAuth(request):
+            if not basicAuth(request):
+                return Response(status=status.HTTP_401_UNAUTHORIZED)
+        if 'HTTP_AUTHORIZATION' in request.META:
+            request.META.pop('HTTP_AUTHORIZATION')
+    
      pagination = Pager()
      '''
      GET /authors/{id}/posts/{id}/comments/ and posts/{id}/comments/

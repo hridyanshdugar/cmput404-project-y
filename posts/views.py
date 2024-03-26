@@ -1,7 +1,10 @@
+from django.http import JsonResponse
+import requests
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 from .models import Post
+from nodes.models import Node
 from rest_framework.pagination import PageNumberPagination
 from .serializers import PostSerializer, PostEditSerializer
 from django.shortcuts import get_object_or_404
@@ -10,34 +13,81 @@ from django.db.models import Q
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from followers.views import getFriends
 import json
+from nodes.views import is_basicAuth, basicAuth
 
 class Pager(PageNumberPagination):
     page_size = 10
     page_size_query_param = 'size'
 
 class PostsViewPK(APIView):
+     def perform_authentication(self, request):
+        if is_basicAuth(request):
+            if not basicAuth(request):
+                return Response(status=status.HTTP_401_UNAUTHORIZED)
+        if 'HTTP_AUTHORIZATION' in request.META:
+            request.META.pop('HTTP_AUTHORIZATION')
 
      '''
      GET /authors/{id}/posts/{id} and /posts/{id}
      '''
      def get(self, request, pk):
+        user_auth = get_object_or_404(Node,is_self=True).username
+        pass_auth = get_object_or_404(Node,is_self=True).password
         print(pk)
+        # requestuserAuthor = User.objects.get(id=pk)
+        # if Node.objects.get(is_self=True).url == requestuserAuthor.host:
+        #     post = get_object_or_404(Post, id=pk)
+        #     serializer = PostSerializer(post, context={'request': request})
+        #     return Response(serializer.data, status = status.HTTP_200_OK)
+        # else:
+        #     try:
+        #         response = requests.get(requestuserAuthor.host + "api/users/" + str(pk), timeout=3, auth=HTTPBasicAuth(user_auth, pass_auth))
+                
+        #         if response.status_code == 200:
+        #             try:
+        #                 response_data = response.json()
+        #                 print(response_data, requestuserAuthor.host)
+                        
+        #                 if requestuserAuthor.host == response_data["host"]:
+        #                     hasPfp = False
+        #                     hasPfpBack = False
+        #                     if "profileImage" in response_data:
+        #                         hasPfp = response_data.pop("profileImage")
+        #                     if "profileBackgroundImage" in response_data:
+        #                         hasPfpBack = response_data.pop("profileBackgroundImage")
+        #                     print(response_data)
+        #                     user = None
+        #                     serializer = None
+        #                     try:
+        #                         user = User.objects.get(id=pk)
+        #                         serializer = RemoteUserSerializer(user,data=response_data,partial=True)
+        #                     except Exception as e:
+        #                         print(e)                              
+        #                         serializer = RemoteUserSerializer(data=response_data)
+        #                     if serializer.is_valid():
+        #                         user = serializer.save()
+        #                         if hasPfp:
+        #                             download_profile(user, hasPfp)
+        #                             response_data['profileImage'] = hasPfp
+        #                         if hasPfpBack:
+        #                             download_profileBack(user, hasPfpBack)
+        #                             response_data['profileBackgroundImage'] = hasPfpBack
+        #                         user = User.objects.get(id=pk)
+        #                         serializer = AuthorSerializer(user)
+        #                         return Response(serializer.data, status = status.HTTP_200_OK)
+        #                     else:
+        #                         print(f"Invalid data from {node.url}: {serializer.errors}")
+        #                     return JsonResponse(response_data)
+        #             except json.JSONDecodeError:
+        #                 print(f"Invalid JSON response from {node.url}: {response.text}")
+        #         else:
+        #             print(f"Request to {node.url} failed with status code: {response.status_code}")
+        #     except requests.exceptions.RequestException as e:
+        #         print(f"Request to {node.url} failed: {e}")
 
         post = get_object_or_404(Post, id=pk)
-        JWT_authenticator = JWTAuthentication()
-        response = JWT_authenticator.authenticate(request)
-        requestAuthor = User.objects.get(id=response[1]["user_id"])
-
-        if post.visibility == "FRIENDS" and str(requestAuthor.id) != str(post.author.id):
-            friends = json.loads(getFriends(request, str(post.author.id)).content)
-            for friend in friends:
-                if str(friend) == str(requestAuthor.id):
-                    serializer = PostSerializer(post, context={'request': request})
-                    return Response(serializer.data, status = status.HTTP_200_OK)
-            return Response({"title": "Unauthorized", "message": "You are not authorized to view this post"}, status = status.HTTP_401_UNAUTHORIZED)
-        else:
-            serializer = PostSerializer(post, context={'request': request})
-            return Response(serializer.data, status = status.HTTP_200_OK)
+        serializer = PostSerializer(post, context={'request': request})
+        return Response(serializer.data, status = status.HTTP_200_OK)
 
      '''
      PUT /authors/{id}/posts/{id} and /posts/{id}

@@ -11,6 +11,12 @@ from django.shortcuts import get_object_or_404
 
 
 class PostLikesViewPK(APIView):
+     def perform_authentication(self, request):
+        if is_basicAuth(request):
+            if not basicAuth(request):
+                return Response(status=status.HTTP_401_UNAUTHORIZED)
+        if 'HTTP_AUTHORIZATION' in request.META:
+            request.META.pop('HTTP_AUTHORIZATION')
      
      def get(self, request, author_id, post_id):
         Like = get_object_or_404(PostLike,author__id=author_id,post__id=post_id)
@@ -47,6 +53,12 @@ class PostLikesViewPK(APIView):
         return Response({"Title": "Successfully Deleted","Message": "Successfully Deleted"}, status = status.HTTP_200_OK)
 
 class PostLikesView(APIView):
+     def perform_authentication(self, request):
+        if is_basicAuth(request):
+            if not basicAuth(request):
+                return Response(status=status.HTTP_401_UNAUTHORIZED)
+        if 'HTTP_AUTHORIZATION' in request.META:
+            request.META.pop('HTTP_AUTHORIZATION')
      
      def get(self, request, author_id):
         Likes = PostLike.objects.filter(author__id=author_id)
@@ -57,6 +69,12 @@ class PostLikesView(APIView):
 
 
 class CommentLikesViewPK(APIView):
+     def perform_authentication(self, request):
+        if is_basicAuth(request):
+            if not basicAuth(request):
+                return Response(status=status.HTTP_401_UNAUTHORIZED)
+        if 'HTTP_AUTHORIZATION' in request.META:
+            request.META.pop('HTTP_AUTHORIZATION')
      
      def get(self, request, author_id, comment_id):
         Like = get_object_or_404(CommentLike,author__id=author_id,comment__id=comment_id)
@@ -91,6 +109,12 @@ class CommentLikesViewPK(APIView):
         return Response({"Title": "Successfully Deleted","Message": "Successfully Deleted"}, status = status.HTTP_200_OK)
 
 class CommentLikesView(APIView):
+     def perform_authentication(self, request):
+        if is_basicAuth(request):
+            if not basicAuth(request):
+                return Response(status=status.HTTP_401_UNAUTHORIZED)
+        if 'HTTP_AUTHORIZATION' in request.META:
+            request.META.pop('HTTP_AUTHORIZATION')
      
      def get(self, request, author_id):
         Likes = CommentLike.objects.filter(author__id=author_id)

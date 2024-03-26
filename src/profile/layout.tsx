@@ -58,7 +58,7 @@ export default function ProfileLayout() {
 				.then(async (result) => {
 					if (result.status === 200) {
 						const data = await result.json();
-						setFollowingNumber(data.following.length);
+						setFollowingNumber(data.items.length);
 						setFollowersNumber(data.followers.length);
 						setFriendsNumber(data.friends.length);
 					} else {

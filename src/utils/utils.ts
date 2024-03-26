@@ -102,7 +102,7 @@ export async function getUserLocalInfo(auth: string, id:string) {
       'Authorization': `Bearer ${auth}`,
     }
   };
-  return await fetch(getAPIEndpoint() + `/users/${id}`, options);
+  return await fetch(getAPIEndpoint() + `/users/all/${id}`, options);
 }
 
 export async function createPost(title:string, description:string, contentType:string, content:string, visibility:string , auth: string, id:string) {
