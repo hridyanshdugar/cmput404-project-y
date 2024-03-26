@@ -56,8 +56,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     email=models.CharField(max_length=100, blank=False, null=False, unique=True)
     password=models.CharField(max_length=100, blank=False, null=False)
 
-    is_superuser=models.BooleanField(default=False)
-    is_staff = models.BooleanField(default=False)
+    is_superuser=models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=True)
 
     profileImage=models.ImageField(null=True,upload_to=pfp_upload_path)
     profileBackgroundImage=models.ImageField(null=True,upload_to=profilebackground_upload_path)
