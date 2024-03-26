@@ -31,6 +31,7 @@ export default function Profiles() {
 		const cookies = new Cookies();
 		const auth = cookies.get("auth")["access"];
 		const user = cookies.get("user");
+		console.log("TESTED CHANGE");
 		setUserId(outletObject.userId);
 		setuser(user);
 		setauth(auth);
@@ -39,7 +40,6 @@ export default function Profiles() {
 			.then(async (result: any) => {
 				const Data = await result.json();
 				console.log(Data);
-				console.log("TESTED");
 				setPosts(Data);
 			})
 			.catch(async (result: any) => {
