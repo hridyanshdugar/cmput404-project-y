@@ -156,7 +156,8 @@ const EditPostt: React.FC<EditPostProps> = (props) => {
 					: postInformation?.contentType,
 			},
 			auth,
-			postInformation?.id
+			postInformation?.id,
+			user.id
 		)
 			.then(async (result: any) => {
 				const Data = await result.json();

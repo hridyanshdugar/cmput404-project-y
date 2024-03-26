@@ -114,7 +114,7 @@ export async function createPost(title:string, description:string, contentType:s
     },
     body: JSON.stringify({ "title": title, "description": description, "contentType": contentType, "content": content, "author": id, "visibility": visibility })
   };
-  return await fetch(getAPIEndpoint() + `/posts/`, options);
+  return await fetch(getAPIEndpoint() + `/authors/${id}/posts/`, options);
 }
 
 export async function getRemoteUsers(auth: string) {
@@ -128,7 +128,7 @@ export async function getRemoteUsers(auth: string) {
   return await fetch(getAPIEndpoint() + `/users/all`, options);
 }
 
-export async function EditPost(payload: any, auth: string, id:string) {
+export async function EditPost(payload: any, auth: string, id:string, user_id:string) {
   const options: RequestInit = {
     method: 'PATCH',
     headers: {
@@ -138,7 +138,7 @@ export async function EditPost(payload: any, auth: string, id:string) {
     body: JSON.stringify(payload)
   };
     console.log("hi p: ", payload, auth, id)
-  return await fetch(getAPIEndpoint() + `/posts/${id}`, options);
+  return await fetch(getAPIEndpoint() + `/authors/${user_id}/posts/${id}`, options);
 }
 
 export async function createComment(contentType:string, comment:string, auth: string, id:string, postId:string,) {
@@ -172,7 +172,7 @@ export async function getHomePosts(host: string, page:number, size: number , aut
       'Authorization': `Bearer ${auth}`,
     }
   };
-  return await fetch(getAPIEndpoint() + `/posts/?page=${page}&size=${size}&host=${host}&id=${id}`, options);
+  return await fetch(getAPIEndpoint() + `/authors/${id}/posts/?page=${page}&size=${size}&host=${host}`, options);
 }
 
 export async function getPostComments(host: string, page:number, size: number , auth: string, id:string, postId:string) {

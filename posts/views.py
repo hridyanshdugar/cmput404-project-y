@@ -33,7 +33,7 @@ class PostsViewPK(APIView):
      '''
      GET /authors/{id}/posts/{id} and /posts/{id}
      '''
-     def get(self, request, pk):
+     def get(self, request,author_id, post_id):
         user_auth = get_object_or_404(Node,is_self=True).username
         pass_auth = get_object_or_404(Node,is_self=True).password
         print(pk)
@@ -88,15 +88,15 @@ class PostsViewPK(APIView):
         #     except requests.exceptions.RequestException as e:
         #         print(f"Request to {node.url} failed: {e}")
 
-        post = get_object_or_404(Post, id=pk)
+        post = get_object_or_404(Post, id=post_id)
         serializer = PostSerializer(post, context={'request': request})
         return Response(serializer.data, status = status.HTTP_200_OK)
 
      '''
      PUT /authors/{id}/posts/{id} and /posts/{id}
      '''
-     def put(self, request, pk):
-        post = get_object_or_404(Post, id=pk)
+     def put(self, request,author_id, post_id):
+        post = get_object_or_404(Post, id=post_id)
         try:
             author = User.objects.get(id=request.data.get("author"))
         except User.DoesNotExist:
@@ -109,7 +109,7 @@ class PostsViewPK(APIView):
         serializer = PostSerializer(post, data = request.data, partial=True, context={'request': request})
         realAuthor = serializer.get_author(post)["id"]
 
-        if response and realAuthor == response[1]["user_id"]:
+        if response and (realAuthor == response[1]["user_id"] or author_id == realAuthor):
             if serializer.is_valid():
                 serializer.save(author=author)
                 return Response(serializer.data, status = status.HTTP_200_OK)
@@ -150,16 +150,16 @@ class AllPostsView(APIView):
      '''
      GET /authors/{id}/posts/ and /posts/
      '''
-     def get(self, request, pk):
+     def get(self, request, author_id):
         user_auth = get_object_or_404(Node,is_self=True).username
         pass_auth = get_object_or_404(Node,is_self=True).password
         nodes = Node.objects.all()
         node_responses = []
 
         for node in nodes:
-            print(node.url + "api/users/")
+            print(node.url + "api/authors/" + str(author_id) + "/posts/")
             try:
-                response = requests.get(node.url + "api/posts/" + str(pk), timeout=3,auth=HTTPBasicAuth(user_auth, pass_auth))
+                response = requests.get(node.url + "api/authors/" + str(author_id) + "/posts/", timeout=3,auth=HTTPBasicAuth(user_auth, pass_auth))
                 
                 if response.status_code == 200:
                     try:
@@ -187,22 +187,22 @@ class PostsView(APIView):
      '''
      GET /authors/{id}/posts/ and /posts/
      '''
-     def get(self, request):
+     def get(self, request, author_id):
         posts=None
         author=None
 
         JWT_authenticator = JWTAuthentication()
         response = JWT_authenticator.authenticate(request)
         if response:
-            author = User.objects.get(id=response[1]["user_id"])
-        else:
-            return Response({"title": "Unauthorized", "message": "You are not authorized to view this post"}, status = status.HTTP_401_UNAUTHORIZED)
+            author = User.objects.get(id=author_id)
 
         friends = getFriends(request, author.id).content
         print("bob", friends)
         friends = json.loads(friends)
-        if request.GET.get('local',False):
+        if response and request.GET.get('local',False):
             posts = Post.objects.filter(Q(visibility="PUBLIC", host=request.GET.get('host')) | Q(visibility="FRIENDS")).order_by('-published')  # FINISH UP
+        elif not response:
+            posts = Post.objects.filter(visibility="PUBLIC", author__id=author_id)
         else:
             posts = Post.objects.filter(Q(visibility="PUBLIC") | Q(author=author) | Q(visibility="FRIENDS", author__id__in=friends)).order_by('-published') 
         page_number = request.GET.get('page') or 1
@@ -211,17 +211,16 @@ class PostsView(APIView):
             serializer = PostSerializer(posts, many=True, context={'request': request})
             data = serializer.data
             return Response(data, status = status.HTTP_200_OK)
-            return Response("sad", status = status.HTTP_404_NOT_FOUND)
         else:
             return Response("hi", status = status.HTTP_400_BAD_REQUEST)
 
      '''
      POST /authors/{id}/posts/ and /posts/
      '''
-     def post(self, request):
+     def post(self, request, author_id):
         author = None
         try:
-            author = User.objects.get(id=request.data.get("author"))
+            author = User.objects.get(id=author_id)
         except User.DoesNotExist:
             return Response({"title": "Author not found.","message": "No valid author for the post was provided"}, status=status.HTTP_404_NOT_FOUND)
 
