@@ -205,7 +205,7 @@ class AllFollowerView(APIView):
             nodes = Node.objects.filter(is_self=False)
 
             for node in nodes:
-                print(node.url + "api/" + str(author_id) + "/followers/" + str(follower_id) + "/")
+                print(node.url + "api/authors/" + str(author_id) + "/followers/" + str(follower_id) + "/")
                 try:
                     response = requests.get(node.url + "api/authors/" + str(author_id) + "/followers/" + str(follower_id) + "/", timeout=3,auth=HTTPBasicAuth(user_auth, pass_auth))
                     
