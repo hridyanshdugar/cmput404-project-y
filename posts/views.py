@@ -192,6 +192,7 @@ class AllPostsView(APIView):
                         print(f"Request to {node.url} failed with status code: {response.status_code}")
                 except requests.exceptions.RequestException as e:
                     print(f"Request to {node.url} failed: {e}")
+            return JsonResponse([])
 
 class PostsView(APIView):
      pagination = Pager()
