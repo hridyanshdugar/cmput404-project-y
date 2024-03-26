@@ -238,7 +238,7 @@ class PostsView(APIView):
         response = JWT_authenticator.authenticate(request)
         serializer = PostSerializer(data = request.data, context={'request': request})
         print(response)
-        if response and str(author.id) == response[1]["user_id"]:
+        if response and str(author_id) == response[1]["user_id"]:
             if serializer.is_valid():
                 serializer.save(author=author)
                 return Response(serializer.data, status = status.HTTP_200_OK)
