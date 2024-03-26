@@ -77,8 +77,8 @@ def getNewFollowRequests(request, author_id):
 
 def getFollowers(request, author_id=None):
     # user = list(User.objects.filter(id=author_id).values())[0]
-    user = User.objects.get(id=author_id)
-    if user:
+    if User.objects.filter(id=author_id).exists():
+        user = User.objects.get(id=author_id)
         if user.host != Node.objects.get(is_self=True).url:
             try:
                 print("here")
