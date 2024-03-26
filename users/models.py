@@ -8,6 +8,7 @@ import os
 from django.contrib.auth.hashers import make_password
 
 
+
 class UserManager(BaseUserManager):
     use_in_migration = True
     def create_user(self, email, password, **extra_fields):
