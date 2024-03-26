@@ -115,7 +115,7 @@ def getFollowers(request, author_id=None):
                 except JSONDecodeError:
                     print(f"Invalid JSON response from {user.host}: {response.text}")
             else:
-                print(f"Request to {user.host} failed with status code: {response.status_code}")
+                print(f"Request to {user.host} failed")
             # following = requests.request(user.host + "/authors/" + author_id + "/following/")
             # friends = requests.request(user.host + "/authors/" + author_id + "/friends/")
             return JsonResponse({
