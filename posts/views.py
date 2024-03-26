@@ -186,7 +186,7 @@ class AllPostsView(APIView):
             for node in nodes:
                 print(node.url + "api/authors/" + str(author_id) + "/posts/")
                 try:
-                    response = requests.get(node.url + "api/authors/" + str(author_id) + "/posts/", timeout=3,auth=HTTPBasicAuth(user_auth, pass_auth))
+                    response = requests.get(node.url + "api/authors/" + str(author_id) + "/posts/", timeout=20,auth=HTTPBasicAuth(user_auth, pass_auth))
                     
                     if response.status_code == 200:
                         try:
