@@ -13,7 +13,10 @@ from django.db.models import Q
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from followers.views import getFriends
 import json
+from requests.exceptions import JSONDecodeError
 from nodes.views import is_basicAuth, basicAuth
+from requests.auth import HTTPBasicAuth
+from rest_framework.response import Response
 
 class Pager(PageNumberPagination):
     page_size = 10
@@ -141,6 +144,43 @@ class PostsViewPK(APIView):
             serializer.save()
             return Response({"title": "Successfully Updated", "message": "Post was updated"}, status = status.HTTP_200_OK)
         return Response({"title": "Bad Request", "message": "Invalid Request Sent"}, status = status.HTTP_400_BAD_REQUEST)
+
+class AllPostsView(APIView):
+     pagination = Pager()
+     '''
+     GET /authors/{id}/posts/ and /posts/
+     '''
+     def get(self, request, pk):
+        user_auth = get_object_or_404(Node,is_self=True).username
+        pass_auth = get_object_or_404(Node,is_self=True).password
+        nodes = Node.objects.all()
+        node_responses = []
+
+        for node in nodes:
+            print(node.url + "api/users/")
+            try:
+                response = requests.get(node.url + "api/posts/" + str(pk), timeout=3,auth=HTTPBasicAuth(user_auth, pass_auth))
+                
+                if response.status_code == 200:
+                    try:
+                        response_data = response.json()
+                        print(response_data)
+                        node_responses.extend(response_data)
+                    except JSONDecodeError:
+                        print(f"Invalid JSON response from {node.url}: {response.text}")
+                else:
+                    print(f"Request to {node.url} failed with status code: {response.status_code}")
+            except requests.exceptions.RequestException as e:
+                print(f"Request to {node.url} failed: {e}")
+
+        page_number = request.GET.get('page') or 1
+
+        page = self.pagination.paginate_queryset(node_responses, request, view=self)
+        if page is not None:
+            return Response(page, status=status.HTTP_200_OK)
+        else:
+            # Adjusted to prevent ReferenceError if `page` is None
+            return Response({"error": "Bad request or empty page."}, status=status.HTTP_400_BAD_REQUEST)
 
 class PostsView(APIView):
      pagination = Pager()
