@@ -19,6 +19,7 @@ from django.forms.models import model_to_dict
 from nodes.models import Node
 from nodes.views import is_basicAuth, basicAuth
 from requests.auth import HTTPBasicAuth
+from rest_framework.response import Response
 
 val = URLValidator()
 
@@ -121,6 +122,7 @@ def getFollowers(request, author_id=None):
             })
     else:
         return Http404()
+        
 
 def getFriends(request, author_id=None):
     user = list(User.objects.filter(id=author_id).values())[0]
@@ -177,6 +179,74 @@ def declineFollowRequest(request, author_id, follower_id):
     except:
         return HttpResponseBadRequest("Something went wrong!") 
 
+
+class AllFollowerView(APIView):
+    def perform_authentication(self, request):
+        if is_basicAuth(request):
+            if not basicAuth(request):
+                return Response(status=status.HTTP_401_UNAUTHORIZED)
+        if 'HTTP_AUTHORIZATION' in request.META:
+            request.META.pop('HTTP_AUTHORIZATION')
+    
+    def get(self, request, author_id, follower_id):
+        """
+        check if FOREIGN_AUTHOR_ID is a follower of AUTHOR_ID
+        """
+        if Follower.objects.filter(userId=author_id).exists():
+            follows = True if list(Follower.objects.filter(Q(userId=author_id) & Q(followerId=follower_id))) else False
+            if follows:
+                return JsonResponse({"follows": follows})
+            else:
+                return HttpResponse(status=404)
+        else:
+            user_auth = get_object_or_404(Node,is_self=True).username
+            pass_auth = get_object_or_404(Node,is_self=True).password
+
+            nodes = Node.objects.filter(is_self=False)
+
+            for node in nodes:
+                print(node.url + "api/" + str(author_id) + "/followers/" + str(follower_id) + "/")
+                try:
+                    response = requests.get(node.url + "api/" + str(author_id) + "/followers/" + str(follower_id) + "/", timeout=3,auth=HTTPBasicAuth(user_auth, pass_auth))
+                    
+                    if response.status_code == 200:
+                        try:
+                            response_data = response.json()
+                            return JsonResponse(response_data)
+                        except JSONDecodeError:
+                            print(f"Invalid JSON response from {node.url}: {response.text}")
+                    else:
+                        print(f"Request to {node.url} failed with status code: {response.status_code}")
+                except requests.exceptions.RequestException as e:
+                    print(f"Request to {node.url} failed: {e}")
+            return HttpResponse(status=404)
+    
+    def put(self, request, author_id, follower_id):
+        """
+        Add FOREIGN_AUTHOR_ID as a follower of AUTHOR_ID, basically same functionality as accept Follow request
+        """
+        user_auth = get_object_or_404(Node,is_self=True).username
+        pass_auth = get_object_or_404(Node,is_self=True).password
+
+        nodes = Node.objects.all()
+
+        for node in nodes:
+            print(node.url + "api/" + str(author_id) + "/followers/" + str(follower_id) + "/")
+            try:
+                response = requests.put(node.url + "api/" + str(author_id) + "/followers/" + str(follower_id) + "/", timeout=3,auth=HTTPBasicAuth(user_auth, pass_auth))
+                
+                if response.status_code == 200:
+                    try:
+                        response_data = response.json()
+                        return JsonResponse(response_data)
+                    except JSONDecodeError:
+                        print(f"Invalid JSON response from {node.url}: {response.text}")
+                else:
+                    print(f"Request to {node.url} failed with status code: {response.status_code}")
+            except requests.exceptions.RequestException as e:
+                print(f"Request to {node.url} failed: {e}")
+        return HttpResponse(status=404)
+        
 
 
 
