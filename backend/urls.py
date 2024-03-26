@@ -24,7 +24,7 @@ from drf_spectacular.views import SpectacularAPIView
 from likes.views import PostLikesViewPK, PostLikesView, CommentLikesViewPK
 from inbox.views import InboxView
 from users.views import UsersViewPK
-from followers.views import FollowerView, getFollowers
+from followers.views import FollowerView, getFollowers, AllFollowerView
 
 heroku_react_django_urls = [
     re_path('.*', TemplateView.as_view(template_name='index.html', content_type='text/html'))
@@ -48,6 +48,7 @@ urlpatterns = [
         path('authors/<str:author_id>/liked', PostLikesView.as_view()),
         path('authors/<str:pk>/', UsersViewPK.as_view()),
         path('authors/<str:author_id>/followers/<str:follower_id>/', FollowerView.as_view()),
+        path('authors/all/<str:author_id>/followers/<str:follower_id>/', FollowerView.as_view()),
         path("authors/<str:author_id>/followers/", getFollowers),
         # path('authors/', include('followers.urls')),
         path('authors/<str:pk>/inbox/', InboxView.as_view()),
