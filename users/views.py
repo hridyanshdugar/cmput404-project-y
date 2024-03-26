@@ -185,8 +185,11 @@ class AllUsersView(APIView):
     def get(self, request):
         user_auth = get_object_or_404(Node,is_self=True).username
         pass_auth = get_object_or_404(Node,is_self=True).password
-        nodes = Node.objects.all()
-        node_responses = []
+        nodes = Node.objects.filter(is_self=False)
+
+        users = User.objects.filter(approved=True)
+        serializer = AuthorSerializer(users,many=True,context={'request': request})
+        node_responses = serializer.data
 
         for node in nodes:
             print(node.url + "api/users/")
