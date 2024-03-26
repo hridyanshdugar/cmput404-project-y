@@ -172,7 +172,7 @@ export async function getHomePosts(host: string, page:number, size: number , aut
       'Authorization': `Bearer ${auth}`,
     }
   };
-  return await fetch(getAPIEndpoint() + `/authors/${id}/posts/?page=${page}&size=${size}&host=${host}`, options);
+  return await fetch(getAPIEndpoint() + `/authors/all/${id}/posts/?page=${page}&size=${size}&host=${host}`, options);
 }
 
 export async function getPostComments(host: string, page:number, size: number , auth: string, id:string, postId:string) {
