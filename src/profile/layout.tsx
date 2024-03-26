@@ -68,33 +68,6 @@ export default function ProfileLayout() {
 				.catch((error) => {
 					console.log(error);
 				});
-
-			getHomePosts(
-				cookies.get("user").host,
-				1,
-				100,
-				cookies.get("auth").access,
-				userId
-			)
-				.then(async (result: any) => {
-					if (result.status === 200) {
-						const Data = await result.json();
-						console.log("GET HOME POSTS");
-						console.log(Data);
-						let temp_count = 0;
-						for (var i = 0; i < Data.length; i++) {
-							if (Data[i].author.id == userId) {
-								temp_count++;
-							}
-						}
-						setPostCount(temp_count);
-					} else {
-						throw new Error("Error fetching posts");
-					}
-				})
-				.catch((error) => {
-					console.log(error);
-				});
 		}
 	}, [followingStatus]);
 
