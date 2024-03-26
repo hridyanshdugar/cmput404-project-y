@@ -238,13 +238,10 @@ class PostsView(APIView):
         response = JWT_authenticator.authenticate(request)
         serializer = PostSerializer(data = request.data, context={'request': request})
         print(response)
-        if response and str(author_id) == response[1]["user_id"]:
-            if serializer.is_valid():
-                serializer.save(author=author)
-                return Response(serializer.data, status = status.HTTP_200_OK)
-            else:
-                return Response({"title": "Invalid Fields", "message": serializer.errors}, status = status.HTTP_400_BAD_REQUEST)
+        if serializer.is_valid():
+            serializer.save(author=author)
+            return Response(serializer.data, status = status.HTTP_200_OK)
         else:
-            return Response({"title": "Unauthorized", "message": "You are not authorized to create this post"}, status = status.HTTP_401_UNAUTHORIZED)
+            return Response({"title": "Invalid Fields", "message": serializer.errors}, status = status.HTTP_400_BAD_REQUEST)
         
 
