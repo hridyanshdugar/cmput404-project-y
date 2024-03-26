@@ -274,10 +274,7 @@ class FollowerView(APIView):
         check if FOREIGN_AUTHOR_ID is a follower of AUTHOR_ID
         """
         follows = True if list(Follower.objects.filter(Q(userId=author_id) & Q(followerId=follower_id))) else False
-        if follows:
-            return JsonResponse({"follows": follows})
-        else:
-            return HttpResponse(status=404)
+        return JsonResponse({"follows": follows})
 
     def put(self, request, author_id, follower_id):
         """
