@@ -197,7 +197,7 @@ class AllFollowerView(APIView):
             if follows:
                 return JsonResponse({"follows": follows})
             else:
-                return HttpResponse(status=404)
+                return JsonResponse({"follows": False})
         else:
             user_auth = get_object_or_404(Node,is_self=True).username
             pass_auth = get_object_or_404(Node,is_self=True).password
