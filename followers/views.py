@@ -207,7 +207,7 @@ class AllFollowerView(APIView):
             for node in nodes:
                 print(node.url + "api/" + str(author_id) + "/followers/" + str(follower_id) + "/")
                 try:
-                    response = requests.get(node.url + "api/" + str(author_id) + "/followers/" + str(follower_id) + "/", timeout=3,auth=HTTPBasicAuth(user_auth, pass_auth))
+                    response = requests.get(node.url + "api/authors/" + str(author_id) + "/followers/" + str(follower_id) + "/", timeout=3,auth=HTTPBasicAuth(user_auth, pass_auth))
                     
                     if response.status_code == 200:
                         try:
@@ -233,7 +233,7 @@ class AllFollowerView(APIView):
         for node in nodes:
             print(node.url + "api/" + str(author_id) + "/followers/" + str(follower_id) + "/")
             try:
-                response = requests.put(node.url + "api/" + str(author_id) + "/followers/" + str(follower_id) + "/", timeout=3,auth=HTTPBasicAuth(user_auth, pass_auth))
+                response = requests.put(node.url + "api/authors/" + str(author_id) + "/followers/" + str(follower_id) + "/", timeout=3,auth=HTTPBasicAuth(user_auth, pass_auth))
                 
                 if response.status_code == 200:
                     try:
