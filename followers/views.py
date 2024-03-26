@@ -121,7 +121,7 @@ def getFollowers(request, author_id=None):
                 "friends": []
             })
     else:
-        return Http404()
+        return HttpResponseBadRequest("Something went wrong!") 
         
 
 def getFriends(request, author_id=None):
