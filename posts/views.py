@@ -151,36 +151,47 @@ class AllPostsView(APIView):
      GET /authors/{id}/posts/ and /posts/
      '''
      def get(self, request, author_id):
-        user_auth = get_object_or_404(Node,is_self=True).username
-        pass_auth = get_object_or_404(Node,is_self=True).password
-        nodes = Node.objects.all()
-        node_responses = []
+        if User.objects.filter(id=author_id,host=Node.objects.get(is_self=True).url).exists():
+            JWT_authenticator = JWTAuthentication()
+            response = JWT_authenticator.authenticate(request)
+            author = User.objects.get(id=author_id)
 
-        for node in nodes:
-            print(node.url + "api/authors/" + str(author_id) + "/posts/")
-            try:
-                response = requests.get(node.url + "api/authors/" + str(author_id) + "/posts/", timeout=3,auth=HTTPBasicAuth(user_auth, pass_auth))
-                
-                if response.status_code == 200:
-                    try:
-                        response_data = response.json()
-                        print(response_data)
-                        node_responses.extend(response_data)
-                    except JSONDecodeError:
-                        print(f"Invalid JSON response from {node.url}: {response.text}")
-                else:
-                    print(f"Request to {node.url} failed with status code: {response.status_code}")
-            except requests.exceptions.RequestException as e:
-                print(f"Request to {node.url} failed: {e}")
-
-        page_number = request.GET.get('page') or 1
-
-        page = self.pagination.paginate_queryset(node_responses, request, view=self)
-        if page is not None:
-            return Response(page, status=status.HTTP_200_OK)
+            friends = getFriends(request, author.id).content
+            print("bob", friends)
+            friends = json.loads(friends)
+            if response and request.GET.get('local',False):
+                posts = Post.objects.filter(Q(visibility="PUBLIC", host=request.GET.get('host')) | Q(visibility="FRIENDS")).order_by('-published')
+            else:
+                posts = Post.objects.filter(Q(visibility="PUBLIC") | Q(author=author) | Q(visibility="FRIENDS", author__id__in=friends)).order_by('-published') 
+            page_number = request.GET.get('page') or 1
+            posts = self.pagination.paginate_queryset(posts, request, view=self)
+            if posts is not None:
+                serializer = PostSerializer(posts, many=True, context={'request': request})
+                data = serializer.data
+                return Response(data, status = status.HTTP_200_OK)
+            else:
+                return Response("hi", status = status.HTTP_400_BAD_REQUEST)
         else:
-            # Adjusted to prevent ReferenceError if `page` is None
-            return Response({"error": "Bad request or empty page."}, status=status.HTTP_400_BAD_REQUEST)
+            user_auth = get_object_or_404(Node,is_self=True).username
+            pass_auth = get_object_or_404(Node,is_self=True).password
+            nodes = Node.objects.filter(is_self=False)
+            node_responses = []
+
+            for node in nodes:
+                print(node.url + "api/authors/" + str(author_id) + "/posts/")
+                try:
+                    response = requests.get(node.url + "api/authors/" + str(author_id) + "/posts/", timeout=3,auth=HTTPBasicAuth(user_auth, pass_auth))
+                    
+                    if response.status_code == 200:
+                        try:
+                            response_data = response.json()
+                            return JsonResponse(response_data)
+                        except JSONDecodeError:
+                            print(f"Invalid JSON response from {node.url}: {response.text}")
+                    else:
+                        print(f"Request to {node.url} failed with status code: {response.status_code}")
+                except requests.exceptions.RequestException as e:
+                    print(f"Request to {node.url} failed: {e}")
 
 class PostsView(APIView):
      pagination = Pager()
@@ -188,31 +199,13 @@ class PostsView(APIView):
      GET /authors/{id}/posts/ and /posts/
      '''
      def get(self, request, author_id):
-        posts=None
-        author=None
-
-        JWT_authenticator = JWTAuthentication()
-        response = JWT_authenticator.authenticate(request)
-        if response:
-            author = User.objects.get(id=author_id)
-
-        friends = getFriends(request, author.id).content
-        print("bob", friends)
-        friends = json.loads(friends)
-        if response and request.GET.get('local',False):
-            posts = Post.objects.filter(Q(visibility="PUBLIC", host=request.GET.get('host')) | Q(visibility="FRIENDS")).order_by('-published')  # FINISH UP
-        elif not response:
-            posts = Post.objects.filter(visibility="PUBLIC", author__id=author_id)
-        else:
-            posts = Post.objects.filter(Q(visibility="PUBLIC") | Q(author=author) | Q(visibility="FRIENDS", author__id__in=friends)).order_by('-published') 
-        page_number = request.GET.get('page') or 1
-        posts = self.pagination.paginate_queryset(posts, request, view=self)
-        if posts is not None:
+        posts = Post.objects.filter(visibility="PUBLIC", author__id=author_id)
+        if User.objects.filter(id=author_id).exists():
             serializer = PostSerializer(posts, many=True, context={'request': request})
             data = serializer.data
             return Response(data, status = status.HTTP_200_OK)
         else:
-            return Response("hi", status = status.HTTP_400_BAD_REQUEST)
+            return Response("BAD", status = status.HTTP_400_BAD_REQUEST)
 
      '''
      POST /authors/{id}/posts/ and /posts/
