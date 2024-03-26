@@ -192,9 +192,16 @@ class AllPostsView(APIView):
                         print(f"Request to {node.url} failed with status code: {response.status_code}")
                 except requests.exceptions.RequestException as e:
                     print(f"Request to {node.url} failed: {e}")
-            return JsonResponse([])
+            return Response([], status = status.HTTP_200_OK)
 
 class PostsView(APIView):
+     def perform_authentication(self, request):
+        if is_basicAuth(request):
+            if not basicAuth(request):
+                return Response(status=status.HTTP_401_UNAUTHORIZED)
+        if 'HTTP_AUTHORIZATION' in request.META:
+            request.META.pop('HTTP_AUTHORIZATION')
+    
      pagination = Pager()
      '''
      GET /authors/{id}/posts/ and /posts/
