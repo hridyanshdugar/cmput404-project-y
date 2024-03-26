@@ -103,7 +103,7 @@ def getFollowers(request, author_id=None):
             user_auth = get_object_or_404(Node,is_self=True).username
             pass_auth = get_object_or_404(Node,is_self=True).password
             followers = None
-            response = requests.request(user.host + "api/authors/" + author_id + "/followers/",timeout=3, auth=HTTPBasicAuth(user_auth, pass_auth))
+            response = requests.get(user.host + "api/authors/" + author_id + "/followers/",timeout=3, auth=HTTPBasicAuth(user_auth, pass_auth))
             if response.status_code == 200:
                 try:
                     followers = response.json()
