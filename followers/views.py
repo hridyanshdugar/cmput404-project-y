@@ -171,8 +171,8 @@ def getFriends(request, author_id=None):
 def declineFollowRequest(request, author_id, follower_id):
     try:
         # Check if the follow request is not already accepted
-        follows = True if list(Follower.objects.filter(Q(userId=author_id) & Q(followerId=follower_id))) else False
-        newRequest = True if list(NewFollowRequest.objects.filter(Q(userId=author_id) & Q(followerId=follower_id))) else False
+        follows = True if Follower.objects.filter(Q(userId=author_id) & Q(followerId=follower_id)).exists() else False
+        newRequest = True if NewFollowRequest.objects.filter(Q(userId=author_id) & Q(followerId=follower_id)).exists() else False
 
         if not follows and newRequest:
             NewFollowRequest.objects.filter(Q(userId=author_id) & Q(followerId=follower_id)).delete()
@@ -197,7 +197,7 @@ class AllFollowerView(APIView):
         check if FOREIGN_AUTHOR_ID is a follower of AUTHOR_ID
         """
         if Follower.objects.filter(userId=author_id).exists():
-            follows = True if list(Follower.objects.filter(Q(userId=author_id) & Q(followerId=follower_id))) else False
+            follows = True if Follower.objects.filter(Q(userId=author_id) & Q(followerId=follower_id)).exists() else False
             if follows:
                 return JsonResponse({"follows": follows})
             else:
@@ -237,7 +237,7 @@ class AllFollowerView(APIView):
         for node in nodes:
             print(node.url + "api/" + str(author_id) + "/followers/" + str(follower_id) + "/")
             try:
-                response = requests.put(node.url + "api/authors/" + str(author_id) + "/followers/" + str(follower_id) + "/", timeout=3,auth=HTTPBasicAuth(user_auth, pass_auth),data=request.data)
+                response = requests.put(node.url + "api/authors/" + str(author_id) + "/followers/" + str(follower_id) + "/", timeout=6,auth=HTTPBasicAuth(user_auth, pass_auth),data=request.data)
                 
                 if response.status_code == 200:
                     try:
@@ -266,7 +266,7 @@ class FollowerView(APIView):
         """
         remove FOREIGN_AUTHOR_ID as a follower of AUTHOR_ID, basically same functionality as unfollow
         """
-        follows = True if list(Follower.objects.filter(Q(userId=author_id) & Q(followerId=follower_id)).values()) else False
+        follows = True if Follower.objects.filter(Q(userId=author_id) & Q(followerId=follower_id)).exists() else False
         if follows:
             Friends.objects.filter(Q(userId=author_id) & Q(friendId=follower_id)).delete()
             Friends.objects.filter(Q(userId=follower_id) & Q(friendId=author_id)).delete()
@@ -277,7 +277,7 @@ class FollowerView(APIView):
         """
         check if FOREIGN_AUTHOR_ID is a follower of AUTHOR_ID
         """
-        follows = True if list(Follower.objects.filter(Q(userId=author_id) & Q(followerId=follower_id))) else False
+        follows = True if Follower.objects.filter(Q(userId=author_id) & Q(followerId=follower_id)).exists() else False
         return JsonResponse({"follows": follows})
 
     def put(self, request, author_id, follower_id):
@@ -286,11 +286,11 @@ class FollowerView(APIView):
         """
         try:
             # Check if the follow request is not already accepted
-            follows = True if list(Follower.objects.filter(Q(userId=author_id) & Q(followerId=follower_id))) else False
-            newRequest = True if list(NewFollowRequest.objects.filter(Q(userId=author_id) & Q(followerId=follower_id))) else False
+            follows = True if Follower.objects.filter(userId=author_id,followerId=follower_id).exists() else False
+            newRequest = True if NewFollowRequest.objects.filter(userId=author_id,followerId=follower_id).exists() else False
 
             if not follows and newRequest:
-                req = list(NewFollowRequest.objects.filter(Q(userId=author_id) & Q(followerId=follower_id)).values())[0]
+                req = NewFollowRequest.objects.get(userId=author_id, followerId=follower_id)
                 Follower.objects.create(userId=req["userId"], 
                                         followerId=req["followerId"], 
                                         host=req["host"],
@@ -298,9 +298,9 @@ class FollowerView(APIView):
                                         url=req["url"],
                                         github=req["github"],
                                         profileImage=req["profileImage"])
-                NewFollowRequest.objects.filter(Q(userId=author_id) & Q(followerId=follower_id)).delete()
+                NewFollowRequest.objects.filter(userId=author_id, followerId=follower_id).delete()
                 # Check if friend, if yes then add to table
-                friend = True if len(list(Follower.objects.filter((Q(userId=follower_id) & Q(followerId=author_id))))) == 1 else False
+                friend = True if Follower.objects.filter(userId=follower_id, followerId=author_id).exists() else False
                 if friend:
                     Friends.objects.create(userId=req["userId"],
                                            friendId=req["followerId"],

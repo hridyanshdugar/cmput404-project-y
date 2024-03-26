@@ -58,8 +58,8 @@ export default function ProfileLayout() {
 				.then(async (result) => {
 					if (result.status === 200) {
 						const data = await result.json();
-						setFollowingNumber(data.items.length);
-						setFollowersNumber(data.followers.length);
+						setFollowersNumber(data.items.length);
+						setFollowingNumber(data.following.length);
 						setFriendsNumber(data.friends.length);
 					} else {
 						throw new Error("Error fetching posts");
