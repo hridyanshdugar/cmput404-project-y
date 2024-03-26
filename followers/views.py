@@ -20,6 +20,7 @@ from nodes.models import Node
 from nodes.views import is_basicAuth, basicAuth
 from requests.auth import HTTPBasicAuth
 from rest_framework.response import Response
+from rest_framework import status
 
 val = URLValidator()
 
@@ -188,7 +189,7 @@ class AllFollowerView(APIView):
     def perform_authentication(self, request):
         if is_basicAuth(request):
             if not basicAuth(request):
-                return Response(status=status.HTTP_401_UNAUTHORIZED)
+                return Response(status= status.HTTP_401_UNAUTHORIZED)
         if 'HTTP_AUTHORIZATION' in request.META:
             request.META.pop('HTTP_AUTHORIZATION')
     
@@ -226,30 +227,44 @@ class AllFollowerView(APIView):
             return JsonResponse({"follows": False})
     
     def put(self, request, author_id, follower_id):
-        """
-        Add FOREIGN_AUTHOR_ID as a follower of AUTHOR_ID, basically same functionality as accept Follow request
-        """
-        user_auth = get_object_or_404(Node,is_self=True).username
-        pass_auth = get_object_or_404(Node,is_self=True).password
+        try:
+            # Check if the follow request is not already accepted
+            follows = True if Follower.objects.filter(userId=author_id,followerId=follower_id).exists() else False
+            newRequest = True if NewFollowRequest.objects.filter(userId=author_id,followerId=follower_id).exists() else False
 
-        nodes = Node.objects.all()
-
-        for node in nodes:
-            print(node.url + "api/" + str(author_id) + "/followers/" + str(follower_id) + "/")
-            try:
-                response = requests.put(node.url + "api/authors/" + str(author_id) + "/followers/" + str(follower_id) + "/", timeout=6,auth=HTTPBasicAuth(user_auth, pass_auth),data=request.data)
-                
-                if response.status_code == 200:
-                    try:
-                        response_data = response.json()
-                        return JsonResponse(response_data)
-                    except JSONDecodeError:
-                        print(f"Invalid JSON response from {node.url}: {response.text}")
-                else:
-                    print(f"Request to {node.url} failed with status code: {response.status_code}")
-            except requests.exceptions.RequestException as e:
-                print(f"Request to {node.url} failed: {e}")
-        return HttpResponse(status=404)
+            if not follows and newRequest:
+                req = NewFollowRequest.objects.get(userId=author_id, followerId=follower_id)
+                Follower.objects.create(userId=req["userId"], 
+                                        followerId=req["followerId"], 
+                                        host=req["host"],
+                                        displayName=req["displayName"],
+                                        url=req["url"],
+                                        github=req["github"],
+                                        profileImage=req["profileImage"])
+                NewFollowRequest.objects.filter(userId=author_id, followerId=follower_id).delete()
+                # Check if friend, if yes then add to table
+                friend = True if Follower.objects.filter(userId=follower_id, followerId=author_id).exists() else False
+                if friend:
+                    Friends.objects.create(userId=req["userId"],
+                                           friendId=req["followerId"],
+                                           host=req["host"],
+                                           displayName=req["displayName"],
+                                           url=req["url"],
+                                           github=req["github"],
+                                           profileImage=req["profileImage"])
+                    Friends.objects.create(userId=req["followerId"],
+                                           friendId=req["userId"],
+                                           host=req["host"],
+                                           displayName=req["displayName"],
+                                           url=req["url"],
+                                           github=req["github"],
+                                           profileImage=req["profileImage"])
+                return HttpResponse()
+            else:
+                NewFollowRequest.objects.filter(Q(userId=author_id) & Q(followerId=follower_id)).delete()
+                return HttpResponseBadRequest("Not able to follow, follows="+ str(follows) + " newRequest=" + str(newRequest)) 
+        except:
+            return HttpResponseBadRequest("Something went wrong!")
         
 
 
