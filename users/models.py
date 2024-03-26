@@ -15,7 +15,7 @@ class UserManager(BaseUserManager):
             raise ValueError('Email and password is Required')
         
         user = User(email=self.normalize_email(email), password=make_password(password), **extra_fields)
-        
+        user.set_password(password)
         user.save(using=self._db)
 
         return user
@@ -31,7 +31,7 @@ class UserManager(BaseUserManager):
 
 
         user = self.create_user(email, password, **extra_fields)
-
+        user.set_password(password)
         user.save(using=self._db)
 
         return user
