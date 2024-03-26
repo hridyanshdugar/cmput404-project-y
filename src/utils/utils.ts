@@ -323,7 +323,7 @@ export async function checkFollowingStatus(id:any, followerId:any){
         'Content-Type': 'application/json'
     }
   };
-  return await fetch(getAPIEndpoint() + `/authors/${id}/followers/${followerId}/`, options);
+  return await fetch(getAPIEndpoint() + `/authors/all/${id}/followers/${followerId}/`, options);
 }
 
 export async function sendPostToInbox(id:any, auth:any, post:any, author:any) {
