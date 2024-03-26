@@ -263,14 +263,14 @@ export async function processFollowRequest(id:any, followerId:any, action:any) {
     }
   };
   if (action === "accept"){
-    await fetch(getAPIEndpoint() + `/authors/${id}/followers/${followerId}/`, options).then((res) => {
+    await fetch(getAPIEndpoint() + `/authors/all/${id}/followers/${followerId}/`, options).then((res) => {
       console.log(res);
     }).catch((err) => {
       console.log(err);
     });
   }
   else{
-    await fetch(getAPIEndpoint() + `/followers/${id}/decline/${followerId}/`, options).then((res) => {
+    await fetch(getAPIEndpoint() + `/followers/all/${id}/decline/${followerId}/`, options).then((res) => {
       console.log(res);
     }).catch((err) => {
       console.log(err);
