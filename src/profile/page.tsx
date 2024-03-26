@@ -27,6 +27,10 @@ export default function Profiles() {
 	const [user, setuser] = useState<any>(null);
 	const [auth, setauth] = useState<any>(null);
 
+	const currentUrl = window.location.href;
+
+	const id = currentUrl.split("/").pop() || '';
+
 	useEffect(() => {
 		const cookies = new Cookies();
 		const auth = cookies.get("auth")["access"];
@@ -36,7 +40,7 @@ export default function Profiles() {
 		setuser(user);
 		setauth(auth);
 
-		getHomePosts(user.host, page, size, auth, user.id)
+		getHomePosts(user.host, page, size, auth, id)
 			.then(async (result: any) => {
 				const Data = await result.json();
 				console.log(Data);
