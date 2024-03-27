@@ -102,15 +102,17 @@ class FollowerView(APIView):
         return Response({"follows": True},status=status.HTTP_200_OK)
 
     def post(self, request, author_id, follower_id):
-        res = requests.request(method="POST", url=request.data["object"]["host"] + "api/authors/" + str(follower_id) + "/inbox/",data=request.data)
+        data = request.data.json()
+        print("cac", data)
+        res = requests.request(method="POST", url=data["object"]["host"] + "api/authors/" + str(follower_id) + "/inbox/",data=data)
         if res.status_code == 200:
-            if request.data["type"] == "Follow":
+            if data["type"] == "Follow":
                 serializer = FollowSerializer(data={"actor":author_id,"obj":follower_id})
                 if serializer.is_valid():
                     serializer.save()
                     return Response(status=status.HTTP_200_OK)
                 return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
-            elif request.data["type"] == "Unfollow":
+            elif data["type"] == "Unfollow":
                 item =  get_object_or_404(FollowStatus,actor=author_id,obj=follower_id)
                 item.delete()
                 return Response(status=status.HTTP_200_OK)
