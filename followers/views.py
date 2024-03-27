@@ -36,7 +36,7 @@ def getFollowers(request, author_id=None):
                 following = FollowStatus.objects.filter(actor__id=author_id, complete=True).values()
             except:
                 following = []
-            print(followers, friends, "AAd")
+            print(followers, following, "AAd")
             friends = []
             for follower in followers:
                 for follow in following:
