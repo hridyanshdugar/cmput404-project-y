@@ -4,7 +4,7 @@ import styles from "./profile.module.css";
 import Button from "react-bootstrap/Button";
 import React from "react";
 import Cookies from "universal-cookie";
-import { navigate, sendFollow, sendUnfollow } from "../utils/utils";
+import { getFrontend, navigate, sendFollow, sendUnfollow } from "../utils/utils";
 import { Link } from "react-router-dom";
 
 type Props = {
@@ -191,14 +191,19 @@ export default class Profile extends React.Component<Props> {
 								{this.props.followers}
 								<span style={{ color: "grey" }}> Followers</span>
 							</div>
-							<div id="following" className={styles.followCount}>
-								{this.props.following}
-								<span style={{ color: "grey" }}> Following</span>
-							</div>
-							<div id="friends" className={styles.followCount}>
-								{this.props.friends}
-								<span style={{ color: "grey" }}> Friends</span>
-							</div>
+							{this.props.host === getFrontend() ? <>
+								<div id="following" className={styles.followCount}>
+									{this.props.following}
+									<span style={{ color: "grey" }}> Following</span>
+								</div>
+								<div id="friends" className={styles.followCount}>
+									{this.props.friends}
+									<span style={{ color: "grey" }}> Friends</span>
+								</div>								
+							</> : <></>
+
+							}
+
 						</div>
 					</div>
 					<div className={styles.container}>
