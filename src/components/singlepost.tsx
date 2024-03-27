@@ -166,12 +166,12 @@ const SinglePost: React.FC<Props> = (props) => {
 					setPost(Data);
 					setVisibility(Data.visibility);
 				} else {
+					console.log("Error getting post")
 					throw new Error("Error getting post");
 				}
 			})
 			.catch((error) => {
 				console.log("failed getting post")
-				console.log(error);
 			});
 		if (props.contentType === "text/post") {
 			console.log("shared post1");
