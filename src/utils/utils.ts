@@ -136,7 +136,7 @@ export async function acceptFollowRequest(user:any, to_follow:any, auth: string)
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${auth}`,
       },
-      body: JSON.stringify({"type": "Agree", "actor": user, "object": to_follow})
+      body: JSON.stringify({"type": "FollowResponse", "accepted": true, "actor": user, "object": to_follow})
   };
   return await fetch(getAPIEndpoint() + `/authors/all/${user.id}/following/${to_follow.id}/`, options);
 }
@@ -148,7 +148,7 @@ export async function denyFollowRequest(user:any, to_follow:any, auth: string) {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${auth}`,
       },
-      body: JSON.stringify({"type": "Disagree", "actor": user, "object": to_follow})
+      body: JSON.stringify({"type": "FollowResponse", "accepted": false, "actor": user, "object": to_follow})
   };
   return await fetch(getAPIEndpoint() + `/authors/all/${user.id}/following/${to_follow.id}/`, options);
 }

@@ -266,7 +266,7 @@ class FollowerView(APIView):
         res = requests.request(method="POST", url=request.data["object"]["host"] + "api/authors/" + str(follower_id) + "/inbox/",data=request.data)
         if res.status_code == 200:
             req = get_object_or_404(FollowStatus,actor=author_id,obj=follower_id)
-            if request.data["type"] == "Agree":
+            if request.data["accepted"]:
                 serializer = FollowSerializer(req,data={"complete":True},partial=True)
                 if serializer.is_valid():
                     serializer.save()
