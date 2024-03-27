@@ -229,6 +229,9 @@ const SinglePost: React.FC<Props> = (props) => {
 			.catch(async (result: any) => {
 				const Data = await result.json();
 			});
+			console.log("Post");
+			console.log(post);
+			console.log(post.author);
 		createPost(
 			"Share",
 			post.description,

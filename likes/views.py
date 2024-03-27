@@ -29,11 +29,17 @@ class PostLikesViewPK(APIView):
      PUT /authors/{id}/posts/ and /posts/
      '''
      def put(self, request, author_id, post_id):
+        print("hihihi 1")
         user = get_object_or_404(User,id=author_id)
+        print("hihihi 2")
         post = get_object_or_404(Post,id=post_id)
+        print("hihihi 3")
+
         body = copy.deepcopy(request.body)
+        print("hihihi 4",str(request.data["author"]["host"]) + "api/authors/" + str(request.data["author"]["id"]) + "/inbox/" , body)
 
         res = requests.post(str(request.data["author"]["host"]) + "api/authors/" + str(request.data["author"]["id"]) + "/inbox/", data = body)
+        print("hihihi 5")
         return Response (res.json(), status = status.HTTP_200_OK)
 
      
