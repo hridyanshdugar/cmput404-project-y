@@ -17,14 +17,14 @@ from django.contrib.auth.hashers import check_password
 @permission_classes((AllowAny,))
 def login(request):
     print(request.data)
-    if 'password' not in request.data or 'email' not in request.data:
-        return Response(status=status.HTTP_400_BAD_REQUEST,data={'title': 'Missing Fields','message': 'A password and email is required for logging in'})
-    user = User.objects.filter(email=request.data['email'],approved=True).first()
+    if 'password' not in request.data or 'displayName' not in request.data:
+        return Response(status=status.HTTP_400_BAD_REQUEST,data={'title': 'Missing Fields','message': 'A password and displayName is required for logging in'})
+    user = User.objects.filter(displayName=request.data['displayName'],approved=True).first()
     inbox = Inbox.objects.get_or_create(id=user.id)[0]
     inbox.author = user
     inbox.save()
     if not user:
-        return Response(status=status.HTTP_400_BAD_REQUEST,data={'title': 'Non-Existant Account','message': 'No account with this email exists'})
+        return Response(status=status.HTTP_400_BAD_REQUEST,data={'title': 'Non-Existant Account','message': 'No account with this displayName exists'})
     input_password = request.data['password']
     stored_password_hash = user.password
 
@@ -52,10 +52,10 @@ def login(request):
 @authentication_classes([])
 @permission_classes((AllowAny,))
 def signup(request):
-    if 'password' not in request.data or 'email' not in request.data:
+    if 'password' not in request.data or 'displayName' not in request.data:
         return Response(status=status.HTTP_400_BAD_REQUEST,data={'title': 'No Password','message': 'A password is required for signing up'})
-    if User.objects.filter(email=request.data['email']).first():
-        return Response(status=status.HTTP_400_BAD_REQUEST,data={'title': 'Email Unavailable','message': 'This email is already in use'})
+    if User.objects.filter(displayName=request.data['displayName']).first():
+        return Response(status=status.HTTP_400_BAD_REQUEST,data={'title': 'displayName Unavailable','message': 'This displayName is already in use'})
     print(request.data)
     serializer = UserSerializer(data=request.data, context={'request': request})
     if serializer.is_valid():

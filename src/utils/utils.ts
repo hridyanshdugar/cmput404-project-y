@@ -25,13 +25,13 @@ export function getAPIEndpoint() {
     }
 }
 
-export async function login(email: string, password: string) {
+export async function login(displayName: string, password: string) {
   const options: RequestInit = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ "email": email, "password": password })
+    body: JSON.stringify({ "displayName": displayName, "password": password })
   };
   return await fetch(getAPIEndpoint() + `/auth/login`, options);
 }
@@ -60,13 +60,13 @@ export async function navigate(suffix:string) {
   window.location.href = `${getFrontend()}${suffix}`
 }
 
-export async function signup(email: string, password: string) {
+export async function signup(displayName: string, password: string) {
   const options: RequestInit = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ "email": email, "password": password })
+    body: JSON.stringify({ "displayName": displayName, "password": password })
   };
   return await fetch(getAPIEndpoint() + `/auth/signup`, options);
 }

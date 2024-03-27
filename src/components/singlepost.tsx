@@ -358,7 +358,7 @@ const SinglePost: React.FC<Props> = (props) => {
 										getMediaEndpoint() +
 										sharedPost.author.profileImage.split("?")[0]
 									}
-									username={sharedPost.author.email}
+									username={sharedPost.author.displayName}
 									text={sharedPost.content}
 									postImage={undefined}
 									date={Math.floor(
