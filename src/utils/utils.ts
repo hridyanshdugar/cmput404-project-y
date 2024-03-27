@@ -124,9 +124,9 @@ export async function sendFollow(user:any, to_follow:any, auth: string) {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${auth}`,
       },
-      body: JSON.stringify({"type": "Follow", "actor": JSON.stringify(user), "object": JSON.stringify(to_follow)})
+      body: JSON.stringify({"type": "Follow", "actor": user, "object": to_follow})
   };
-  console.log("big boss: ", JSON.stringify({"type": "Follow", "actor": JSON.stringify(user), "object": JSON.stringify(to_follow)}))
+  console.log("big boss: ", JSON.stringify({"type": "Follow", "actor": user, "object": to_follow}))
   return await fetch(getAPIEndpoint() + `/authors/${user.id}/followers/${to_follow.id}/`, options);
 }
 
@@ -137,7 +137,7 @@ export async function acceptFollowRequest(user:any, to_follow:any, auth: string)
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${auth}`,
       },
-      body: JSON.stringify({"type": "FollowResponse", "accepted": true, "actor": JSON.stringify(user), "object": JSON.stringify(to_follow)})
+      body: JSON.stringify({"type": "FollowResponse", "accepted": true, "actor": user, "object": to_follow})
   };
   return await fetch(getAPIEndpoint() + `/authors/${user.id}/followers/${to_follow.id}/`, options);
 }
@@ -149,7 +149,7 @@ export async function denyFollowRequest(user:any, to_follow:any, auth: string) {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${auth}`,
       },
-      body: JSON.stringify({"type": "FollowResponse", "accepted": false, "actor": JSON.stringify(user), "object": JSON.stringify(to_follow)})
+      body: JSON.stringify({"type": "FollowResponse", "accepted": false, "actor": user, "object": to_follow})
   };
   return await fetch(getAPIEndpoint() + `/authors/${user.id}/followers/${to_follow.id}/`, options);
 }
@@ -162,7 +162,7 @@ export async function sendUnfollow(user:any, to_follow:any, auth: string) {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${auth}`,
       },
-      body: JSON.stringify({"type": "Unfollow", "actor": JSON.stringify(user), "object": JSON.stringify(to_follow)})
+      body: JSON.stringify({"type": "Unfollow", "actor": user, "object": to_follow})
   };
   return await fetch(getAPIEndpoint() + `/authors/${user.id}/followers/${to_follow.id}/`, options);
 }
@@ -174,7 +174,7 @@ export async function checkFollowingStatus(user:any, to_follow:any, auth: string
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${auth}`,
       },
-      body: JSON.stringify({"actor": JSON.stringify(user), "object": JSON.stringify(to_follow)})
+      body: JSON.stringify({"actor": user, "object": to_follow})
   };
   return await fetch(getAPIEndpoint() + `/authors/${user.id}/followers/${to_follow.id}/`, options);
 }
