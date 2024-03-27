@@ -142,6 +142,34 @@ class PostsViewPK(APIView):
             return Response({"title": "Successfully Updated", "message": "Post was updated"}, status = status.HTTP_200_OK)
         return Response({"title": "Bad Request", "message": "Invalid Request Sent"}, status = status.HTTP_400_BAD_REQUEST)
 
+class AllPostsView2(APIView):
+     def perform_authentication(self, request):
+        if is_basicAuth(request):
+            if not basicAuth(request):
+                return Response(status=status.HTTP_401_UNAUTHORIZED)
+        if 'HTTP_AUTHORIZATION' in request.META:
+            request.META.pop('HTTP_AUTHORIZATION')
+
+     pagination = Pager()
+     '''
+     GET /authors/{id}/posts2/
+     '''
+     def get(self, request, author_id):
+        if User.objects.filter(id=author_id,host=Node.objects.get(is_self=True).url).exists():
+            JWT_authenticator = JWTAuthentication()
+            response = JWT_authenticator.authenticate(request)
+            author = User.objects.get(id=author_id)
+            posts = Post.objects.filter(Q(visibility="PUBLIC", author=author_id)).order_by('-published') 
+            page_number = request.GET.get('page') or 1
+            posts = self.pagination.paginate_queryset(posts, request, view=self)
+            if posts is not None:
+                serializer = PostSerializer(posts, many=True, context={'request': request})
+                data = serializer.data
+                return Response(data, status = status.HTTP_200_OK)
+            else:
+                return Response("hi", status = status.HTTP_400_BAD_REQUEST)
+
+
 class AllPostsView(APIView):
      def perform_authentication(self, request):
         if is_basicAuth(request):
