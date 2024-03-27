@@ -70,7 +70,8 @@ class InboxView(APIView):
                     user = User.objects.get(id=pk)
                     serializer = RemoteUserSerializer(user,data=response_data,partial=True)
                 except Exception as e:
-                    print(e)                              
+                    print(e)  
+
                     serializer = RemoteUserSerializer(data=response_data)
                 if serializer.is_valid():
                     user = serializer.save()
@@ -83,7 +84,7 @@ class InboxView(APIView):
                 else:
                     print(f"Invalid data from : {serializer.errors}")
 
-        inbox = Inbox.objects.get_or_create(id=pk)[0]
+        inbox = Inbox.objects.get_or_create(id=pk,host=Node.objects.find(is_self=True).url)[0]
 
         JWT_authenticator = JWTAuthentication()
         response = JWT_authenticator.authenticate(request)

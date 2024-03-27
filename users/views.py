@@ -156,7 +156,7 @@ class UsersView(APIView):
      GET /users
      '''
      def get(self, request):
-        users = User.objects.filter(approved=True)
+        users = User.objects.filter(approved=True, host=Node.objects.get(is_self=True).url)
         page_number = request.GET.get('page') or 1
 
         page = self.pagination.paginate_queryset(users, request, view=self)
