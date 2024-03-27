@@ -36,8 +36,10 @@ class PostLikesViewPK(APIView):
 
         post = get_object_or_404(Post,id=post_id)
         print("dobgg 3")
+        body = copy.deepcopy(request.body)
+        print("dobgg 3")
 
-        requests.post(str(request.data["author"]["host"]) + "api/authors/" + str(request.data["author"]["id"]) + "/inbox/", data = request.body)
+        requests.post(str(request.data["author"]["host"]) + "api/authors/" + str(request.data["author"]["id"]) + "/inbox/", data = body)
         print("dobgg 4")
 
         request.data['post'] = post_id
