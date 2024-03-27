@@ -105,14 +105,14 @@ export async function getUserLocalInfo(auth: string, id:string) {
   return await fetch(getAPIEndpoint() + `/users/all/${id}`, options);
 }
 
-export async function createPost(title:string, description:string, contentType:string, content:string, auth: string, id:string) {
+export async function createPost(title:string, description:string, contentType:string, content:string, visibility: string, auth: string, id:string) {
   const options: RequestInit = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${auth}`,
     },
-    body: JSON.stringify({ "title": title, "description": description, "contentType": contentType, "content": content, "author": id})
+    body: JSON.stringify({ "title": title, "description": description, "contentType": contentType, "content": content, "author": id, "visibility": visibility})
   };
   return await fetch(getAPIEndpoint() + `/authors/${id}/posts/`, options);
 }
