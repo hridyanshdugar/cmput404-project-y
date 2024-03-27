@@ -116,6 +116,7 @@ class AllPostsView2(APIView):
      GET /authors/{id}/posts2/
      '''
      def get(self, request, author_id):
+        return Response("", status = status.HTTP_200_OK)
         author = User.objects.get(id=author_id)
         friends = json.loads(getFriends(author_id))
         posts = Post.objects.filter(Q(author=author) | Q(visibility="FRIENDS", author__id__in=friends) | Q(visibility="PUBLIC")).order_by('-published') 
