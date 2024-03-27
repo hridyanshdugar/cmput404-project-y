@@ -21,19 +21,22 @@ from .models import FollowStatus
 from inbox.models import Inbox
 import json
 val = URLValidator()
+from users.serializers import AuthorSerializer
+from users.models import User
 
 def getFollowers(request, author_id=None):
     # user = list(User.objects.filter(id=author_id).values())[0]
     if User.objects.filter(id=author_id).exists():
         user = User.objects.get(id=author_id)
         if user.host == Node.objects.get(is_self=True).url:
+
             try:
                 print("here")
-                followers = list(FollowStatus.objects.filter(obj__id=author_id, complete=True).values())
+                followers = FollowSerializer(FollowStatus.objects.filter(obj__id=author_id, complete=True),many=True).data
             except:
                 followers = []
             try:
-                following = list(FollowStatus.objects.filter(actor__id=author_id, complete=True).values())
+                following = FollowSerializer(FollowStatus.objects.filter(actor__id=author_id, complete=True),many=True).data
             except:
                 following = []
             print(followers, following, "AAd")
@@ -88,8 +91,8 @@ def getFollowers(request, author_id=None):
 def getFriends(request, author_id=None):
     user = get_object_or_404(User,id=author_id)
     friends = []
-    for follower in list(FollowStatus.objects.filter(obj__id=author_id, complete=True).values()):
-        for follow in list(FollowStatus.objects.filter(actor__id=author_id, complete=True).values()):
+    for follower in FollowSerializer(FollowStatus.objects.filter(obj__id=author_id, complete=True),many=True).data:
+        for follow in FollowSerializer(FollowStatus.objects.filter(actor__id=author_id, complete=True),many=True).data:
             if follower["actor"]["id"] == follow["obj"]["id"]:
                 friends.append(follower)
     friends = [friend["actor"]["id"] for friend in friends]

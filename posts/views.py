@@ -17,6 +17,7 @@ from requests.exceptions import JSONDecodeError
 from nodes.views import is_basicAuth, basicAuth
 from requests.auth import HTTPBasicAuth
 from rest_framework.response import Response
+from followers.serializers import FollowSerializer
 
 
 class Pager(PageNumberPagination):
@@ -264,8 +265,8 @@ class PostsView(APIView):
 
                 if request.data.get("visibility") == "FRIENDS":
                     friends = []
-                    for follower in list(FollowStatus.objects.filter(obj__id=author_id, complete=True).values()):
-                        for follow in list(FollowStatus.objects.filter(actor__id=author_id, complete=True).values()):
+                    for follower in FollowSerializer(FollowStatus.objects.filter(obj__id=author_id, complete=True).values()).data:
+                        for follow in FollowSerializer(FollowStatus.objects.filter(actor__id=author_id, complete=True).values()).data:
                             if follower["actor"]["id"] == follow["obj"]["id"]:
                                 friends.append(follower)
                     for i in friends:
