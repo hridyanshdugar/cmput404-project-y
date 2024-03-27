@@ -261,7 +261,7 @@ class PostsView(APIView):
                 # loops through followers and sends the post to them
                 if request.data.get("visibility") == "PUBLIC":
                     for i in FollowStatus.objects.filter(actor=author, complete=True):
-                        requests.post(i.follower.host + "api/author/" + str(i.obj.id) + "/inbox/", data = serializer.data)
+                        requests.post(i.obj.host + "api/author/" + str(i.obj.id) + "/inbox/", data = serializer.data)
 
                 if request.data.get("visibility") == "FRIENDS":
                     for follower in FollowSerializer(FollowStatus.objects.filter(obj__id=author_id, complete=True)).data:

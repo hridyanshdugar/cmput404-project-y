@@ -198,6 +198,7 @@ const SinglePost: React.FC<Props> = (props) => {
 			"",
 			contentTypeF,
 			contentToSend,
+			VisibilityMap["Everyone"],
 			auth.access,
 			user.id
 		)
