@@ -167,24 +167,25 @@ class InboxView(APIView):
                         print("abc : 8")
                         if serializer.is_valid():
                             print("abc : 9")
-                            post_obj = serializer.save()
-                            print("abc : 10")
+                            if not Post.objects.filter(post__id=bob["id"]).exists():
+                                post_obj = serializer.save()
+                                print("abc : 12")
+                                inbox.author = author
+                                print("abc : 13")
+                                inbox.post.add(post_obj)
+                                print("abc : 14")
+                                inbox.save()
+                                print("abc : 15")
+                                print("abc : 10")
                         else: 
                             print("abc : 11")
                             print(serializer.errors)
                     except Exception as e:
                         print("dfsjafiusdarf78", e)
-            print("abc : 12")
-            inbox.author = author
-            print("abc : 13")
-            inbox.post.add(post_obj)
-            print("abc : 14")
-            inbox.save()
-            print("abc : 15")
             return Response({"Title":"Done"}, status = status.HTTP_200_OK)
         if data["type"] == "comment":
             pass
-        if data["type"] == "liked":
+        if data["type"] == "Like":
             if "comment" in data["object"]: 
                 user = get_object_or_404(User,id=data["id"])
                 post = get_object_or_404(Comment,id=data["object"].split("/")[-1])
@@ -216,7 +217,7 @@ class InboxView(APIView):
                 if serializer.is_valid():
                     Like = serializer.save()
                     inbox.postLikes.add(Like)
-                    inbox.author = usr
+                    inbox.author = user
                     inbox.save()                    
                     return Response({"Title":"Done"}, status = status.HTTP_200_OK)
                 else:

@@ -223,7 +223,7 @@ class PostsView(APIView):
 
         serializer = PostSerializer(data = bob, context={'request': request})
         if serializer.is_valid():
-            serializer.save(author=author)
+            pppobje = serializer.save(author=author)
             valid_post = True
             
             if request.data.get("contentType") == "text/post": #this means the request is a shared post (share button was clicked)

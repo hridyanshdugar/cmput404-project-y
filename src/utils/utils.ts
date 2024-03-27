@@ -216,16 +216,16 @@ export async function createComment(contentType:string, comment:string, auth: st
   return await fetch(getAPIEndpoint() + `/posts/${postId}/comments/`, options);
 }
 
-export async function likePost(actor: any, object: string, auth:string) {
+export async function likePost(author: any, object: string, auth:string) {
   const options: RequestInit = {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${auth}`,
     },
-    body: JSON.stringify({"type": "Like", "author": actor, "object": object})
+    body: JSON.stringify({"type": "Like", "author": author, "object": object})
   };
-  return await fetch(getAPIEndpoint() + `/authors/${actor.id}/posts/${object.split("/").at(-1)}/likes`, options);
+  return await fetch(getAPIEndpoint() + `/authors/${author.id}/posts/${object.split("/").at(-1)}/likes`, options);
 }
 
 export async function getHomePosts(host: string, page:number, size: number , auth: string, id:string) {

@@ -35,7 +35,7 @@ class PostLikesViewPK(APIView):
         print("NO")
 
         new_data = request.data.copy()
-        new_data['author'] = author_id
+        # new_data['author'] = author_id
         new_data['post'] = post_id
 
         serializer = EditPostLikeSerializer(data=new_data)
