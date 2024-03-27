@@ -55,6 +55,7 @@ class InboxView(APIView):
 
         JWT_authenticator = JWTAuthentication()
         response = JWT_authenticator.authenticate(request)
+        print("RESPONSEfdsfdsfsd", request.body)
         data = json.loads(request.body)
         print("big bug", data)
         if data["type"] == "Follow":
@@ -74,7 +75,7 @@ class InboxView(APIView):
                         print(e)
         
             
-            serializer = FollowSerializer(data={"actor": data["author"]["id"],"obj":data["object"]["id"]})
+            serializer = FollowSerializer(data={"actor": data["actor"]["id"],"obj":data["object"]["id"]})
             if serializer.is_valid():
                 follow_obj = serializer.save()
                 inbox.author = User.objects.get(id=data["actor"]["id"])
