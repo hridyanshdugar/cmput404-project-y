@@ -244,9 +244,12 @@ class PostsView(APIView):
             serializer.save(author=author)
             
             if request.data.get("contentType") == "text/post": #this means the request is a shared post (share button was clicked)
-               #get the id of the actual shared post contained in original_post_id = request.data.get("content")
+                original_post_id = request.data.get("content")
                #replace request.data with content of the actual post
-                post = requests.get(i.follower.host + "api/posts/" + )
+                post_response = requests.get(i.follower.host + "api/posts/" + original_post_id)
+                if post_response.status_code == 200:
+                    original_post_data = post_response.json()
+                    
                 pass
             
             # loops through followers and sends the post to them
