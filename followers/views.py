@@ -131,7 +131,8 @@ class FollowerView(APIView):
     # this put is for the notifications page for when you click accept it should go here
     def put(self, request, author_id, follower_id):
         data = json.loads(request.body)
-        res = requests.request(method="POST", url=request.data["object"]["host"] + "api/authors/" + str(follower_id) + "/inbox/",data=request.body)
+        print("boblb", data)
+        res = requests.request(method="POST", url=request.data["actor"]["host"] + "api/authors/" + str(author_id) + "/inbox/",data=request.body)
         if res.status_code == 200:
             req = get_object_or_404(FollowStatus,actor=author_id,obj=follower_id)
             hi_user = User.objects.get(id=follower_id)
