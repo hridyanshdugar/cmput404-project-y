@@ -14,16 +14,19 @@ TEXT_MAX_LENGTH = 300
 class PostLikeSerializer(serializers.ModelSerializer):
       type = serializers.SerializerMethodField(read_only=True)
       author = serializers.SerializerMethodField
-
+      object = serializers.SerializerMethodField
       class Meta:
          model = PostLike
-         fields = ["summary","type", "author"]
+         fields = ["summary","type", "author", "object"]
       
       def get_author(self, obj):
          return AuthorSerializer(obj.author, context={'exclude_comments': True}).data
       
       def get_type(self, obj):
         return "Like"
+      
+      def get_object(self, obj):
+         return obj.post
 
 class EditPostLikeSerializer(serializers.ModelSerializer):
       object = serializers.SerializerMethodField

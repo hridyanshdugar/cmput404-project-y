@@ -30,11 +30,18 @@ class PostLikesViewPK(APIView):
      '''
      def put(self, request, author_id, post_id):
         print(author_id)
+        print("dobgg 1")
         user = get_object_or_404(User,id=author_id)
+        print("dobgg2")
+
         post = get_object_or_404(Post,id=post_id)
+        print("dobgg 3")
+
         requests.post(str(request.data["author"]["host"]) + "api/authors/" + str(request.data["author"]["id"]) + "/inbox/", data = request.body)
+        print("dobgg 4")
 
         request.data['post'] = post_id
+        print("dobgg 5")
 
         serializer = EditPostLikeSerializer(data=request)
         if serializer.is_valid():
