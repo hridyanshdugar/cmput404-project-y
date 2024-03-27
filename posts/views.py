@@ -17,7 +17,7 @@ from requests.exceptions import JSONDecodeError
 from nodes.views import is_basicAuth, basicAuth
 from requests.auth import HTTPBasicAuth
 from rest_framework.response import Response
-from followes.models import FollowStatus
+from follows.models import FollowStatus
 class Pager(PageNumberPagination):
     page_size = 10
     page_size_query_param = 'size'
