@@ -19,6 +19,7 @@ type Props = {
 export default class FollowRequestNotification extends React.Component<Props> {
 	constructor(props: Props) {
 		super(props);
+		console.log("cock", props)
 	}
 
 	render() {
@@ -40,7 +41,7 @@ export default class FollowRequestNotification extends React.Component<Props> {
 						<div className={style.topLeft}>
 							<div className={style.inlineBlock}>{this.props.actor.name}</div>
 							<div className={[style.topUserText, style.inlineBlock].join(" ")}>
-								{this.props.actor.username}
+								{this.props.actor.displayName}
 							</div>
 						</div>
 						<div className={style.separator} />

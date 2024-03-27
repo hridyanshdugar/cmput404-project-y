@@ -33,7 +33,6 @@ export default function Notifications() {
     });    
 	}, []);
 
-
     return (
             <div className={"main"}>   
               <div className={styles.mainContentViewSticky}>
