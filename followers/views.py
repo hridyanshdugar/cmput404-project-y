@@ -36,11 +36,20 @@ def getFollowers(request, author_id=None):
                 following = FollowStatus.objects.filter(actor__id=author_id, complete=True).values()
             except:
                 following = []
+            print(followers, friends, "AAd")
             friends = []
             for follower in followers:
                 for follow in following:
-                    if follower["actor"] == follow["obj"]:
+                    if follower["actor"]["id"] == follow["obj"]["id"]:
                         friends.append(follower)
+            
+            
+            print("massive", {
+                "type": "followers",
+                "items": followers,
+                "following": following,
+                "friends": friends
+            })
             
             return JsonResponse({
                 "type": "followers",
