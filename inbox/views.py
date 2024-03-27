@@ -91,7 +91,7 @@ class InboxView(APIView):
         JWT_authenticator = JWTAuthentication()
         response = JWT_authenticator.authenticate(request)
         print("RESPONSEfdsfdsfsd", request.data)
-        data = request.data
+        data = json.dumps(request.data)
         print("big bug", data)
         if data["type"] == "Follow":
             get_foreign_user(data)
