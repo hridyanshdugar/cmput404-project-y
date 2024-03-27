@@ -10,7 +10,7 @@ from users.models import User
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 from nodes.views import is_basicAuth, basicAuth
-
+import copy
 
 class PostLikesViewPK(APIView):
      def perform_authentication(self, request):
@@ -33,13 +33,13 @@ class PostLikesViewPK(APIView):
         user = get_object_or_404(User,id=author_id)
         post = get_object_or_404(Post,id=post_id)
         print("NO")
-
+        bobb = copy.deepcopy(request)
         new_data = request.data.copy()
         # new_data['author'] = author_id
         new_data['post'] = post_id
 
         serializer = EditPostLikeSerializer(data=new_data)
-        requests.post(str(new_data["author"]["host"]) + "api/authors/" + str(new_data["author"]["id"]) + "/inbox/", data = request.body)
+        requests.post(str(new_data["author"]["host"]) + "api/authors/" + str(new_data["author"]["id"]) + "/inbox/", data = bobb.body)
         if serializer.is_valid():
             Like = serializer.save()
             return Response(serializer.data, status = status.HTTP_200_OK)
