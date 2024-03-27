@@ -43,22 +43,24 @@ def getFollowers(request, author_id=None):
             friends = []
             for follower in followers:
                 for follow in following:
-                    if follower["actor"]["id"] == follow["obj"]["id"]:
-                        friends.append(follower)
-            
+                    if follower["actor"]["id"] == follow["object"]["id"]:
+                        friends.append(follower["object"])
+
+            followers = [follower["actor"] for follower in followers]
+            following = [following["object"] for following in following]
             
             print("massive", {
                 "type": "followers",
-                "items": list(following),
-                "following": list(following),
-                "friends": list(following)
+                "items": followers,
+                "following": following,
+                "friends": friends
             })
             
             return JsonResponse({
                 "type": "followers",
-                "items": list(following),
-                "following": list(following),
-                "friends": list(following)
+                "items": followers,
+                "following": following,
+                "friends": friends
             })
         else:
             user_auth = get_object_or_404(Node,is_self=True).username

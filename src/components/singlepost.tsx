@@ -114,8 +114,9 @@ const SinglePost: React.FC<Props> = (props) => {
 	const [visibility, setVisibility] = useState<string>("");
 	const [likes, setLikes] = useState<number>(props.likes);
 	const share = () => {
-		console.log("type")
-		console.log(post)
+		console.log("type");
+		console.log(post);
+		console.log(visibility);
 		if (!(props.contentType === "text/post")) {
 			if (visibility === "PUBLIC") {
 				sharePost();
@@ -169,6 +170,7 @@ const SinglePost: React.FC<Props> = (props) => {
 				}
 			})
 			.catch((error) => {
+				console.log("failed getting post")
 				console.log(error);
 			});
 		if (props.contentType === "text/post") {
