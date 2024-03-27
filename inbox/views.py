@@ -206,6 +206,7 @@ class InboxView(APIView):
             else:
                 # add print statements with incremental numbers for debbuing
                 print("dfaiadsfudasod :  1")
+                print("bisfdagihjshjbi", data)
                 user = get_object_or_404(User,id=data["author"]["id"])
                 print("dfaiadsfudasod :  2")
                 post = get_object_or_404(Post,id=data["object"].split("/")[-1])
