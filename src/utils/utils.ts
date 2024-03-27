@@ -306,16 +306,6 @@ export async function deleteComment(auth: string, postId:string, commentId:strin
   return await fetch(getAPIEndpoint() + `/posts/${postId}/comments/${commentId}`, options);
 }
 
-export async function getNewFollowRequests(id: string){
-    const options: RequestInit = {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    };
-  return await fetch(getAPIEndpoint() + `/followers/${id}/requests/`, options)
-}
-
 export async function processFollowRequest(id:any, followerId:any, action:any) {
   const options: RequestInit = {
     method: 'PUT',

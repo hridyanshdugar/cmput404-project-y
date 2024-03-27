@@ -21,18 +21,6 @@ from .models import FollowStatus
 
 val = URLValidator()
 
-def getNewFollowRequests(request, author_id):
-    # Get the name
-    try:
-        new_follower_list = list(NewFollowRequest.objects.filter(userId=author_id).values())
-        users = []
-        for new_follower in new_follower_list:
-            user = list(User.objects.filter(id=new_follower["followerId"]).values())[0]
-            users.append(user)
-        return JsonResponse(users, safe=False)
-    except:
-        return HttpResponseBadRequest("Something went wrong!")
-
 def getFollowers(request, author_id=None):
     # user = list(User.objects.filter(id=author_id).values())[0]
     if User.objects.filter(id=author_id).exists():
@@ -40,17 +28,20 @@ def getFollowers(request, author_id=None):
         if user.host != Node.objects.get(is_self=True).url:
             try:
                 print("here")
-                followers = [follower["followerId"] for follower in Follower.objects.filter(userId=author_id).values()] 
+                followers = [follower for follower in FollowStatus.objects.filter(obj__id=author_id, complete=True).values()] 
             except:
                 followers = []
             try:
-                friends = [friend["friendId"] for friend in Friends.objects.filter(userId=author_id).values()]
-            except: 
-                friends = []
-            try:
-                following = [follower["userId"] for follower in Follower.objects.filter(followerId=author_id).values()]
+                following = [follower for follower in FollowStatus.objects.filter(actor__id=author_id, complete=True).values()]
             except:
                 following = []
+            friends = []
+            for follower in followers:
+                for follow in following:
+                    if follower["actor"] == follow["obj"]:
+                        friends.append(follower)
+            
+
             return JsonResponse({
                 "type": "followers",
                 "items": followers,
@@ -83,60 +74,17 @@ def getFollowers(request, author_id=None):
                 "friends": []
             })
     else:
-        return HttpResponseBadRequest("Something went wrong!") 
-        
+        return HttpResponseBadRequest("Something went wrong!")        
 
 def getFriends(request, author_id=None):
-    user = list(User.objects.filter(id=author_id).values())[0]
-    if user:
-        friends = [friend.friendId for friend in Friends.objects.filter(userId=author_id)]
-        return JsonResponse(friends, safe=False)
-    else:
-        return JsonResponse()
-
-class AllFollowerView(APIView):
-    def perform_authentication(self, request):
-        if is_basicAuth(request):
-            if not basicAuth(request):
-                return Response(status= status.HTTP_401_UNAUTHORIZED)
-        if 'HTTP_AUTHORIZATION' in request.META:
-            request.META.pop('HTTP_AUTHORIZATION')
-    
-    def get(self, request, author_id, follower_id):
-        """
-        check if FOREIGN_AUTHOR_ID is a follower of AUTHOR_ID
-        """
-        if Follower.objects.filter(userId=author_id).exists():
-            follows = True if Follower.objects.filter(Q(userId=author_id) & Q(followerId=follower_id)).exists() else False
-            if follows:
-                return JsonResponse({"follows": follows})
-            else:
-                return JsonResponse({"follows": False})
-        else:
-            user_auth = get_object_or_404(Node,is_self=True).username
-            pass_auth = get_object_or_404(Node,is_self=True).password
-
-            nodes = Node.objects.filter(is_self=False)
-
-            for node in nodes:
-                print(node.url + "api/authors/" + str(author_id) + "/followers/" + str(follower_id) + "/")
-                try:
-                    response = requests.get(node.url + "api/authors/" + str(author_id) + "/followers/" + str(follower_id) + "/", timeout=20,auth=HTTPBasicAuth(user_auth, pass_auth))
-                    
-                    if response.status_code == 200:
-                        try:
-                            response_data = response.json()
-                            return JsonResponse(response_data)
-                        except JSONDecodeError:
-                            print(f"Invalid JSON response from {node.url}: {response.text}")
-                    else:
-                        print(f"Request to {node.url} failed with status code: {response.status_code}")
-                except requests.exceptions.RequestException as e:
-                    print(f"Request to {node.url} failed: {e}")
-            return JsonResponse({"follows": False})
-
-
-
+    user = User.objects.get_object_or_404(id=author_id)
+    friends = []
+    for follower in FollowStatus.objects.filter(obj__id=author_id, complete=True).values():
+        for follow in FollowStatus.objects.filter(actor__id=author_id, complete=True).values():
+            if follower["actor"] == follow["obj"]:
+                friends.append(follower)
+    friends = [friend["actor"]["id"] for friend in friends]
+    return JsonResponse(friends, safe=False)
 
 class FollowerView(APIView):
     def perform_authentication(self, request):

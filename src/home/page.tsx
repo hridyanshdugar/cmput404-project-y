@@ -71,22 +71,6 @@ export default function Home() {
 			});
 		}
 		else {
-			/*
-			getFollowers(user.email)
-			.then(async (result: any) => {
-				if (result.status === 200) {
-					const Data = await result.json();
-					console.log(Data);
-					for (var i = 0; i < Data.length; i++) {
-						
-					}
-				} else {
-					throw new Error("Error fetching followers");
-				}
-			}).catch(error => {
-				console.log(error);
-			});
-			*/
 			getInbox(user.id, auth)
 			.then(async (result: any) => {
 				if (result.status === 200) {

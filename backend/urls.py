@@ -24,7 +24,7 @@ from drf_spectacular.views import SpectacularAPIView
 from likes.views import PostLikesViewPK, PostLikesView, CommentLikesViewPK
 from inbox.views import InboxView
 from users.views import UsersViewPK
-from followers.views import FollowerView, getFollowers, AllFollowerView
+from followers.views import FollowerView, getFollowers
 from posts.views import AllPostsView, PostsView, PostsViewPK
 
 heroku_react_django_urls = [

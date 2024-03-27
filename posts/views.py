@@ -17,7 +17,7 @@ from requests.exceptions import JSONDecodeError
 from nodes.views import is_basicAuth, basicAuth
 from requests.auth import HTTPBasicAuth
 from rest_framework.response import Response
-
+from followes.models import FollowStatus
 class Pager(PageNumberPagination):
     page_size = 10
     page_size_query_param = 'size'
@@ -239,7 +239,10 @@ class PostsView(APIView):
         serializer = PostSerializer(data = request.data, context={'request': request})
         print(response)
         if serializer.is_valid():
-            post_bject = serializer.save(author=author)
+            post_object = serializer.save(author=author)
+            # loops through followers and sends the post to them
+            for i in FollowStatus.objects.filter(author=author, complete=True):
+                requests.post(i.follower.host + "api/author/" + str(i.obj.id) + "/inbox/", data = serializer.data)
             return Response(serializer.data, status = status.HTTP_200_OK)
         else:
             return Response({"title": "Invalid Fields", "message": serializer.errors}, status = status.HTTP_400_BAD_REQUEST)

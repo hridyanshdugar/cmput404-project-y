@@ -3,7 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./page.module.css";
 import { NewNotifications, NoNewNotifications } from "../components/newNotifications";
 import FollowRequestNotification from "../components/FollowRequestNotification";
-import { getInbox, getNewFollowRequests } from "../utils/utils";
+import { getInbox } from "../utils/utils";
 import Cookies from "universal-cookie";
 import { useEffect, useState } from "react";
 
