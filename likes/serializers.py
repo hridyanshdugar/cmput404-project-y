@@ -24,9 +24,11 @@ class PostLikeSerializer(serializers.ModelSerializer):
 
 class EditPostLikeSerializer(serializers.ModelSerializer):
       object = serializers.SerializerMethodField
+      author = serializers.SerializerMethodField
       class Meta:
          model = PostLike
          fields = '__all__'
+
       def get_object(self, obj):
          return obj.post
 
