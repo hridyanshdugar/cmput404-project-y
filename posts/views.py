@@ -229,7 +229,6 @@ class PostsView(APIView):
                 print("yes2")
                 original_post_id = request.data.get("content")
                 print("yes3", original_post_id)
-                
                 #replace request.data with content of the actual post but maintain source of shared post
                 post_response = requests.get(str(Node.objects.get(is_self=True).url) + "api/posts/" + original_post_id, headers={'Content-Type': 'application/json'})
                 print("yes4")
