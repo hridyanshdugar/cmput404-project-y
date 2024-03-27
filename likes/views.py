@@ -45,7 +45,7 @@ class PostLikesViewPK(APIView):
         request.data['post'] = post_id
         print("dobgg 5")
 
-        serializer = EditPostLikeSerializer(data=request)
+        serializer = EditPostLikeSerializer(data=request.data)
         if serializer.is_valid():
             Like = serializer.save()
             return Response(serializer.data, status = status.HTTP_200_OK)
