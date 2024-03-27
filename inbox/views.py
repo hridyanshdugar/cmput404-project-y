@@ -187,7 +187,7 @@ class InboxView(APIView):
             pass
         if data["type"] == "Like":
             if "comment" in data["object"]: 
-                user = get_object_or_404(User,id=data["id"])
+                user = get_object_or_404(User,id=data["author"]["id"])
                 post = get_object_or_404(Comment,id=data["object"].split("/")[-1])
                 print("NO")
 
@@ -204,7 +204,7 @@ class InboxView(APIView):
                     return Response(serializer.data, status = status.HTTP_200_OK)
                 return Response({"Title": "Unsuccessfully Added","Message": "Unsuccessfully Added"}, status = status.HTTP_400_BAD_REQUEST)
             else:
-                user = get_object_or_404(User,id=data["id"])
+                user = get_object_or_404(User,id=data["author"]["id"])
                 post = get_object_or_404(Post,id=data["object"].split("/")[-1])
                 print("NO")
 
