@@ -235,9 +235,9 @@ class PostsView(APIView):
                 if post_response.status_code == 200:
                     original_post_data = post_response.json()
                     print("Original Post Data: ", original_post_data)
-                    shared_post_source = request.data.get("url")
-                    request.data = original_post_data
-                    request.data["url"] = shared_post_source
+                    bob = copy.deepcopy(original_post_data)
+                    serializer = PostSerializer(data = bob, context={'request': post_response})
+                    
                 else:
                     valid_post = False
             print("Valid Post: ", valid_post, "Request Data: ", request.data)

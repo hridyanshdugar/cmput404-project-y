@@ -149,7 +149,7 @@ const SinglePost: React.FC<Props> = (props) => {
 		// 	);
 		// }
 		
-		let actor = {
+		let author = {
 			type: "author",
 			id: user["id"],
 			url: user["url"],
@@ -160,7 +160,7 @@ const SinglePost: React.FC<Props> = (props) => {
 		};
 
 		likePost(
-			actor,
+			author,
 			getAPIEndpoint() + "/post/" + props.parentId + "/comments/" + props.postId,
 			auth["access"]
 		);
