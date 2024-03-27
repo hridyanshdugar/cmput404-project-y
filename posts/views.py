@@ -120,7 +120,12 @@ class AllPostsView2(APIView):
         author = User.objects.get(id=author_id)
         print("GETTING ALL POSTS 2")
 
-        friends = json.loads(getFriends(request, author_id))
+        friends = []
+        for follower in FollowSerializer(FollowStatus.objects.filter(obj__id=author_id, complete=True),many=True).data:
+            for follow in FollowSerializer(FollowStatus.objects.filter(actor__id=author_id, complete=True),many=True).data:
+                if follower["actor"]["id"] == follow["object"]["id"]:
+                    friends.append(follower)
+        friends = [friend["actor"]["id"] for friend in friends]        
         print("GETTING ALL POSTS 3")
 
         posts = Post.objects.filter(Q(author=author) | Q(visibility="FRIENDS", author__id__in=friends) | Q(visibility="PUBLIC")).order_by('-published') 
