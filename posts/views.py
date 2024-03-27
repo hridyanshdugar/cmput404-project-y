@@ -238,11 +238,12 @@ class PostsView(APIView):
                     request.data["url"] = shared_post_source
                 else:
                     valid_post = False
-            
+            print("Valid Post: ", valid_post)
             if valid_post:
                 # loops through followers and sends the post to them
+                print("Visibility: ", request.data.get("visibility"))
                 if request.data.get("visibility") == "PUBLIC":
-                    for i in FollowStatus.objects.filter(obj=author, complete=True):
+                    for i in FollowStatus.objects.filter(obj__id=author_id, complete=True):
                         print("Sending to: ", str(i.actor.host) + "api/author/" + str(i.actor.id) + "/inbox/")
                         requests.post(str(i.actor.host) + "api/author/" + str(i.actor.id) + "/inbox/", data = serializer.data)
 
