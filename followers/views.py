@@ -90,7 +90,7 @@ def getFollowers(request, author_id=None):
     else:
         return HttpResponseBadRequest("Something went wrong!")        
 
-def getFriends(request, author_id=None):
+def getFriends(request, author_id):
     user = get_object_or_404(User,id=author_id)
     friends = []
     for follower in FollowSerializer(FollowStatus.objects.filter(obj__id=author_id, complete=True),many=True).data:

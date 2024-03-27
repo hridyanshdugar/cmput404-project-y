@@ -120,7 +120,7 @@ class AllPostsView2(APIView):
         author = User.objects.get(id=author_id)
         print("GETTING ALL POSTS 2")
 
-        friends = json.loads(getFriends(author_id))
+        friends = json.loads(getFriends(author_id=author_id))
         print("GETTING ALL POSTS 3")
 
         posts = Post.objects.filter(Q(author=author) | Q(visibility="FRIENDS", author__id__in=friends) | Q(visibility="PUBLIC")).order_by('-published') 
