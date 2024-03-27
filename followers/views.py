@@ -77,7 +77,7 @@ def getFollowers(request, author_id=None):
         return HttpResponseBadRequest("Something went wrong!")        
 
 def getFriends(request, author_id=None):
-    user = User.objects.get_object_or_404(id=author_id)
+    user = get_object_or_404(User,id=author_id)
     friends = []
     for follower in FollowStatus.objects.filter(obj__id=author_id, complete=True).values():
         for follow in FollowStatus.objects.filter(actor__id=author_id, complete=True).values():
