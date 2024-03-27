@@ -98,6 +98,7 @@ const SinglePost: React.FC<Props> = (props) => {
 		event.stopPropagation();
 	};
 	const onClickShare = (event: any) => {
+		console.log("Share Clicked");
 		share();
 		event.stopPropagation();
 	};
@@ -113,8 +114,9 @@ const SinglePost: React.FC<Props> = (props) => {
 	const [visibility, setVisibility] = useState<string>("");
 	const [likes, setLikes] = useState<number>(props.likes);
 	const share = () => {
+		console.log("type")
+		console.log(post)
 		if (!(props.contentType === "text/post")) {
-			console.log(visibility)
 			if (visibility === "PUBLIC") {
 				sharePost();
 				console.log("shared post");

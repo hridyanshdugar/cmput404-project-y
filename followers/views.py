@@ -49,16 +49,16 @@ def getFollowers(request, author_id=None):
             
             print("massive", {
                 "type": "followers",
-                "items": followers,
-                "following": following,
-                "friends": friends
+                "items": list(following),
+                "following": list(following),
+                "friends": list(following)
             })
             
             return JsonResponse({
                 "type": "followers",
-                "items": followers,
-                "following": following,
-                "friends": friends
+                "items": list(following),
+                "following": list(following),
+                "friends": list(following)
             })
         else:
             user_auth = get_object_or_404(Node,is_self=True).username
