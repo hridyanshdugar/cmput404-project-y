@@ -12,7 +12,8 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from followers.views import getFriends
 import json
 from nodes.views import is_basicAuth, basicAuth
-
+from followers.serializers import FollowSerializer
+from followers.models import FollowStatus
 class Pager(PageNumberPagination):
     page_size = 10
     page_size_query_param = 'size'
@@ -26,15 +27,12 @@ class CommentsViewPK(APIView):
             request.META.pop('HTTP_AUTHORIZATION')
 
      '''
-     GET /authors/{id}/posts/{id}/comments/{id} and posts/{id}/comments/{id}
+     GET /authors/{id}/posts/{id}/comments/{id}
      '''
-     def get(self, request, fk, pk):
-        # print(pk)
+     def get(self, request, author_id, fk, pk):
         
         comment = get_object_or_404(Comment, id=pk)
-        JWT_authenticator = JWTAuthentication()
-        response = JWT_authenticator.authenticate(request)
-        requestAuthor = User.objects.get(id=response[1]["user_id"])
+        requestAuthor = User.objects.get(id=author_id)
 
         if comment.post.visibility == "FRIENDS" and str(requestAuthor.id) != str(comment.post.author.id):
             friends = json.loads(getFriends(request, str(comment.post.author.id)).content) # request is useless
@@ -48,11 +46,11 @@ class CommentsViewPK(APIView):
             return Response(serializer.data, status = status.HTTP_200_OK)
 
      '''
-     PUT /authors/{id}/posts/{id}/comments/{id} and posts/{id}/comments/{id}
+     PUT /authors/{id}/posts/{id}/comments/{id}
      '''
-     def put(self, request, fk, pk):
+     def put(self, request, author_id, fk, pk):
         comment = get_object_or_404(Comment, id=pk)
-
+        requestAuthor = User.objects.get(id=author_id)
         try:
             post = Post.objects.get(id=fk)
         except Post.DoesNotExist:
@@ -81,9 +79,9 @@ class CommentsViewPK(APIView):
         else:
             return Response({"title": "Unauthorized", "message": "You are not authorized to update this comment"}, status = status.HTTP_401_UNAUTHORIZED)
      '''
-     DELETE /authors/{id}/posts/{id}/comments/{id} and posts/{id}/comments/{id}
+     DELETE /authors/{id}/posts/{id}/comments/{id}
      '''
-     def delete(self, request, fk, pk):
+     def delete(self, request, author_id, fk, pk):
         JWT_authenticator = JWTAuthentication()
         response = JWT_authenticator.authenticate(request)
         comment = get_object_or_404(Comment, id=pk)
@@ -104,22 +102,23 @@ class CommentsView(APIView):
     
      pagination = Pager()
      '''
-     GET /authors/{id}/posts/{id}/comments/ and posts/{id}/comments/
+     GET /authors/{id}/posts/{id}/comments/ 
      '''
-     def get(self, request, fk):
+     def get(self, request, author_id, fk):
         comments=None
 
-        JWT_authenticator = JWTAuthentication()
-        response = JWT_authenticator.authenticate(request)
-        author = User.objects.get(id=response[1]["user_id"])
-
-        friends = json.loads(getFriends(request, author.id).content)
+        friends = []
+        for follower in FollowSerializer(FollowStatus.objects.filter(obj__id=author_id, complete=True),many=True).data:
+            for follow in FollowSerializer(FollowStatus.objects.filter(actor__id=author_id, complete=True),many=True).data:
+                if follower["actor"]["id"] == follow["object"]["id"]:
+                    friends.append(follower)
+        friends = [friend["actor"]["id"] for friend in friends]
 
         if request.GET.get('local',False):
             comments = Comment.objects.filter(Q(host=request.GET.get('host'), post=fk))
             # comments = Comment.objects.filter(Q(visibility="PUBLIC", host=request.GET.get('host')) | Q(visibility="FRIENDS")) # FINISH UP
         else:
-            comments = Comment.objects.filter(Q(post=fk, post__visibility__in=["PUBLIC", "UNLISTED"]) | Q(post=fk, post__visibility="FRIENDS", author__id__in=friends) | Q(post=fk, post__author=author.id)).order_by('-published')
+            comments = Comment.objects.filter(Q(post=fk, post__visibility__in=["PUBLIC", "UNLISTED"]) | Q(post=fk, post__visibility="FRIENDS", author__id__in=friends) | Q(post=fk, post__author=author_id)).order_by('-published')
         page_number = request.GET.get('page') or 1
         page = self.pagination.paginate_queryset(comments, request, view=self)
         if page is not None:
@@ -129,9 +128,9 @@ class CommentsView(APIView):
             return Response(serializer.data, status = status.HTTP_400_BAD_REQUEST)
 
      '''
-     POST /authors/{id}/posts/{id}/comments/ and posts/{id}/comments/
+     POST /authors/{id}/posts/{id}/comments/
      '''
-     def post(self, request, fk):
+     def post(self, request, author_id, fk):
         author = None
 
         try:

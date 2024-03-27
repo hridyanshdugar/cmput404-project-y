@@ -229,6 +229,22 @@ const SinglePost: React.FC<Props> = (props) => {
 			.catch(async (result: any) => {
 				const Data = await result.json();
 			});
+		createPost(
+			"Share",
+			post.description,
+			post.contentType,
+			post.content,
+			post.visibility,
+			auth.access,
+			post.author.id
+		)
+			.then(async (result: any) => {
+				const Data = await result.json();
+				console.log(Data);
+			})
+			.catch(async (result: any) => {
+				const Data = await result.json();
+			});
 	};
 
 	const [sharedPost, setSharedPost] = useState<any>({});
@@ -238,7 +254,7 @@ const SinglePost: React.FC<Props> = (props) => {
 		const auth = cookies.get("auth")["access"];
 		if (selection === "Delete") {
 			if (props.parentId) {
-				deleteComment(auth, props.parentId, props.postId)
+				deleteComment(auth, props.parentId, props.postId, props.userId)
 					.then(async (result: any) => {
 						const Data = await result.json();
 						console.log(Data);

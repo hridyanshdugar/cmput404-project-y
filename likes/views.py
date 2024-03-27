@@ -29,30 +29,13 @@ class PostLikesViewPK(APIView):
      PUT /authors/{id}/posts/ and /posts/
      '''
      def put(self, request, author_id, post_id):
-        print(author_id)
-        print("dobgg 1")
         user = get_object_or_404(User,id=author_id)
-        print("dobgg2")
-
         post = get_object_or_404(Post,id=post_id)
-        print("dobgg 3")
         body = copy.deepcopy(request.body)
-        print("dobgg 3", str(request.data["author"]["host"]) + "api/authors/" + str(request.data["author"]["id"]) + "/inbox/", body)
 
-        requests.post(str(request.data["author"]["host"]) + "api/authors/" + str(request.data["author"]["id"]) + "/inbox/", data = body)
-        print("dobgg 4")
+        res = requests.post(str(request.data["author"]["host"]) + "api/authors/" + str(request.data["author"]["id"]) + "/inbox/", data = body)
+        return Response (res.json(), status = status.HTTP_200_OK)
 
-        request.data['author'] = request.data["author"]["id"]
-        request.data['post'] = post_id
-        print("dobgg 5")
-
-        serializer = EditPostLikeSerializer(data=request.data)
-        if serializer.is_valid():
-            Like = serializer.save()
-            return Response(serializer.data, status = status.HTTP_200_OK)
-        else:
-            print(serializer.errors)
-        return Response({"Title": "Unsuccessfully Added","Message": "Unsuccessfully Added"}, status = status.HTTP_400_BAD_REQUEST)
      
      '''
      DELETE /authors/{id}/posts/ and /posts/
