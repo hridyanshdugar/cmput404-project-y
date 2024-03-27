@@ -109,12 +109,12 @@ class FollowerView(APIView):
                 if serializer.is_valid():
                     serializer.save()
                     return Response(status=status.HTTP_200_OK)
-                return Response(status=status.HTTP_400_BAD_REQUEST)
+                return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
             elif request.data["type"] == "Unfollow":
                 item =  get_object_or_404(FollowStatus,actor=author_id,obj=follower_id)
                 item.delete()
                 return Response(status=status.HTTP_200_OK)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response("NOPE",status=status.HTTP_400_BAD_REQUEST)
     
     # this put is for the notifications page for when you click accept it should go here
     def put(self, request, author_id, follower_id):
