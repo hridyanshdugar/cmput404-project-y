@@ -6,10 +6,10 @@ import FollowRequestNotification from "../components/FollowRequestNotification";
 import { getInbox } from "../utils/utils";
 import Cookies from "universal-cookie";
 import { useEffect, useState } from "react";
+import { Spinner } from "react-bootstrap";
 
 export default function Notifications() {
-  const [requests, setRequests] = useState<any>([]); 
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [requests, setRequests] = useState<any>(null); 
   const [auth, setAuth] = useState<string>("");
 
 	useEffect(() => {
@@ -25,6 +25,7 @@ export default function Notifications() {
         console.log("Inbox");
         console.log(Data);
         setRequests(Data["followRequest"]);
+        console.log("big cock", requests)
       } else {
         throw new Error("Error fetching inbox");
       }
@@ -39,7 +40,7 @@ export default function Notifications() {
                   <NewNotifications />
               </div>
               <div className={styles.mainContentView}>
-                {! isLoading ? 
+                { requests ? 
                     ( requests.length == 0 ? 
                       (<NoNewNotifications />) : 
                       (
@@ -53,7 +54,9 @@ export default function Notifications() {
                       )
                     )
                 :
-                (<></>)
+                (					<Spinner animation="border" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </Spinner>)
                 }
                 {/* <FollowRequestNotification name={'Kolby'} profileImage={'https://image.spreadshirtmedia.com/image-server/v1/products/T1459A839PA3861PT28D1031336018W5625H10000/views/1,width=550,height=550,appearanceId=839,backgroundColor=F2F2F2/gamer-sticker.jpg'} username={'@kolbyml'} /> */}
               </div>
