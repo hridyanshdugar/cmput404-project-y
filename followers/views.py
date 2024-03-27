@@ -43,7 +43,7 @@ def getFollowers(request, author_id=None):
             friends = []
             for follower in followers:
                 for follow in following:
-                    if follower["object"]["id"] == follow["actor"]["id"]:
+                    if follower["actor"]["id"] == follow["object"]["id"]:
                         friends.append(follower["actor"])
 
             followers = [follower["actor"] for follower in followers]
@@ -95,7 +95,7 @@ def getFriends(request, author_id=None):
     friends = []
     for follower in FollowSerializer(FollowStatus.objects.filter(obj__id=author_id, complete=True),many=True).data:
         for follow in FollowSerializer(FollowStatus.objects.filter(actor__id=author_id, complete=True),many=True).data:
-            if follower["object"]["id"] == follow["actor"]["id"]:
+            if follower["actor"]["id"] == follow["object"]["id"]:
                 friends.append(follower)
     friends = [friend["actor"]["id"] for friend in friends]
     return JsonResponse(friends, safe=False)
