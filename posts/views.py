@@ -243,7 +243,7 @@ class PostsView(APIView):
         if serializer.is_valid():
             post_object = serializer.save(author=author)
             # loops through followers and sends the post to them
-            for i in FollowStatus.objects.filter(author=author, complete=True):
+            for i in FollowStatus.objects.filter(actor=author, complete=True):
                 requests.post(i.follower.host + "api/author/" + str(i.obj.id) + "/inbox/", data = serializer.data)
             return Response(serializer.data, status = status.HTTP_200_OK)
         else:
