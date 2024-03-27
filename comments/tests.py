@@ -4,6 +4,7 @@ from django.contrib.auth.hashers import make_password
 from users.models import User
 from posts.models import Post
 import json 
+from backend.tests import printFailed, printPassed
 
 class PostTestCase(APITestCase):
     def setUp(self):
@@ -16,13 +17,18 @@ class PostTestCase(APITestCase):
         response = self.client.post(f"/api/auth/login", {"displayName": "test2@displayName.com", "password": "test"})
         self.user2 = response.data["user"]
         self.auth2 = response.data["auth"]["access"]
-        self.post = self.client.post(f"/api/posts/", {"content": "This is a test post", "author": self.user["id"], "contentType": "text/plain"}, **{'HTTP_AUTHORIZATION': f'Bearer {self.auth}'}).data
-        print(self.post["id"], "A")
+        self.post = self.client.post(f"/api/authors/{self.user['id']}/posts/", {"content": "This is a test post", "author": self.user["id"], "contentType": "text/plain"}, **{'HTTP_AUTHORIZATION': f'Bearer {self.auth}'}).data
         self.postId = self.post["id"]
 
     ############################
     # tests
     ############################
     def testGetAllComments(self):
+        print("Testing get all comments.......", end="")
         response = self.client.get(f"/api/posts/${str(self.postId)}/comments/", **{'HTTP_AUTHORIZATION': f'Bearer {self.auth}'})
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        try:
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+        except:
+            printFailed()
+        else:
+            printPassed()

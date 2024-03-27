@@ -31,7 +31,6 @@ def getFollowers(request, author_id=None):
         if user.host == Node.objects.get(is_self=True).url:
 
             try:
-                print("here")
                 followers = FollowSerializer(FollowStatus.objects.filter(obj__id=author_id, complete=True),many=True).data
             except:
                 followers = []

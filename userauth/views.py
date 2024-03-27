@@ -16,7 +16,7 @@ from django.contrib.auth.hashers import check_password
 @authentication_classes([])
 @permission_classes((AllowAny,))
 def login(request):
-    print(request.data)
+    # print(request.data)
     if 'password' not in request.data or 'displayName' not in request.data:
         return Response(status=status.HTTP_400_BAD_REQUEST,data={'title': 'Missing Fields','message': 'A password and displayName is required for logging in'})
     user = User.objects.filter(displayName=request.data['displayName'],approved=True).first()
@@ -56,7 +56,7 @@ def signup(request):
         return Response(status=status.HTTP_400_BAD_REQUEST,data={'title': 'No Password','message': 'A password is required for signing up'})
     if User.objects.filter(displayName=request.data['displayName']).first():
         return Response(status=status.HTTP_400_BAD_REQUEST,data={'title': 'displayName Unavailable','message': 'This displayName is already in use'})
-    print(request.data)
+    # print(request.data)
     serializer = UserSerializer(data=request.data, context={'request': request})
     if serializer.is_valid():
         user = serializer.save()

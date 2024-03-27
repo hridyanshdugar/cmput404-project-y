@@ -210,8 +210,7 @@ class PostsView(APIView):
      '''
      POST /authors/{id}/posts/
      '''
-     def post(self, request, author_id):
-        print("Request Datafdsrfdsfsdf: ", request.data)
+     def post(self, request, author_id=None):
         author = None
         try:
             author = User.objects.get(id=author_id)

@@ -42,7 +42,7 @@ class InboxView(APIView):
      GET /authors/{id}/inbox
      '''
      def get(self, request, pk):
-        print(pk)
+        # print(pk)
         hi_user = User.objects.get(id=pk)
         post = Inbox.objects.get_or_create(author=hi_user)[0]
         print("GOT")
@@ -90,9 +90,9 @@ class InboxView(APIView):
 
         JWT_authenticator = JWTAuthentication()
         response = JWT_authenticator.authenticate(request)
-        print("RESPONSEfdsfdsfsd", request.body)
+        # print("RESPONSEfdsfdsfsd", request.body)
         data = json.loads(request.body)
-        print("big bug", data)
+        # print("big bug", data)
         if data["type"] == "Follow":
             get_foreign_user(data)
         

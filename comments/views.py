@@ -29,7 +29,7 @@ class CommentsViewPK(APIView):
      GET /authors/{id}/posts/{id}/comments/{id} and posts/{id}/comments/{id}
      '''
      def get(self, request, fk, pk):
-        print(pk)
+        # print(pk)
         
         comment = get_object_or_404(Comment, id=pk)
         JWT_authenticator = JWTAuthentication()

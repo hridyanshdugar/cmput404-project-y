@@ -156,12 +156,17 @@ class UsersView(APIView):
      GET /users
      '''
      def get(self, request):
-        users = User.objects.filter(approved=True, host=Node.objects.get(is_self=True).url)
+        try:
+            users = User.objects.filter(approved=True, host=Node.objects.get(is_self=True).url)
+        except:
+            pass
         page_number = request.GET.get('page') or 1
-
-        page = self.pagination.paginate_queryset(users, request, view=self)
+        try:
+            page = self.pagination.paginate_queryset(users, request, view=self)
+        except:
+            page = None
+        serializer = AuthorSerializer(page,many=True,context={'request': request})
         if page is not None:
-            serializer = AuthorSerializer(page,many=True,context={'request': request})
             return Response(serializer.data, status = status.HTTP_200_OK)
         else:
             return Response(serializer.data, status = status.HTTP_400_BAD_REQUEST)
