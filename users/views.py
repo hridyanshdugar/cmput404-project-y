@@ -16,7 +16,6 @@ from rest_framework.pagination import PageNumberPagination
 from nodes.models import Node
 from nodes.views import is_basicAuth, basicAuth
 from requests.auth import HTTPBasicAuth
-from followers.models import FollowStatus
 
 class Pager(PageNumberPagination):
     page_size = 10
