@@ -20,6 +20,7 @@ from nodes.views import is_basicAuth, basicAuth
 from requests.auth import HTTPBasicAuth
 from followers.serializers import FollowSerializer
 from followers.models import FollowStatus
+import json
 
 class Pager(PageNumberPagination):
     page_size = 10
@@ -54,12 +55,13 @@ class InboxView(APIView):
 
         JWT_authenticator = JWTAuthentication()
         response = JWT_authenticator.authenticate(request)
-        print("big bug", request.data)
-        if request.data["type"] == "Follow":
+        data = json.loads(request.body)
+        print("big bug", data)
+        if data["type"] == "Follow":
             try:
-                obj_user = User.objects.get(id=request.data["object"]["id"])
+                obj_user = User.objects.get(id=data["object"]["id"])
             except:
-                response = requests.get(request.data["object"]["host"] + "api/authors/" + request.data["object"]["id"] + "/",  auth=HTTPBasicAuth(user_auth, pass_auth))
+                response = requests.get(data["object"]["host"] + "api/authors/" + data["object"]["id"] + "/",  auth=HTTPBasicAuth(user_auth, pass_auth))
                 if response.status_code == 200:
                     try:
                         data = response.json()
@@ -72,19 +74,19 @@ class InboxView(APIView):
                         print(e)
         
             
-            serializer = FollowSerializer(data={"actor": request.data["author"]["id"],"obj":request.data["object"]["id"]})
+            serializer = FollowSerializer(data={"actor": data["author"]["id"],"obj":data["object"]["id"]})
             if serializer.is_valid():
                 follow_obj = serializer.save()
-                inbox.author = User.objects.get(id=request.data["actor"]["id"])
+                inbox.author = User.objects.get(id=data["actor"]["id"])
                 inbox.followRequest.add(follow_obj)
                 inbox.save()
 
             return Response({"Title":"Done"}, status = status.HTTP_200_OK)
-        if request.data["type"] == "Unfollow":
+        if data["type"] == "Unfollow":
             try:
-                obj_user = User.objects.get(id=request.data["object"]["id"])
+                obj_user = User.objects.get(id=data["object"]["id"])
             except:
-                response = requests.get(request.data["object"]["host"] + "api/authors/" + request.data["object"]["id"] + "/",  auth=HTTPBasicAuth(user_auth, pass_auth))
+                response = requests.get(data["object"]["host"] + "api/authors/" + data["object"]["id"] + "/",  auth=HTTPBasicAuth(user_auth, pass_auth))
                 if response.status_code == 200:
                     try:
                         data = response.json()
@@ -96,15 +98,15 @@ class InboxView(APIView):
                     except Exception as e:
                         print(e)
             
-            req = get_object_or_404(FollowStatus,actor=request.data["actor"]["id"],obj=request.data["object"]["id"])
+            req = get_object_or_404(FollowStatus,actor=data["actor"]["id"],obj=data["object"]["id"])
             req.delete()
 
             return Response({"Title":"Done"}, status = status.HTTP_200_OK)
-        if request.data["type"] == "FollowResponse":
+        if data["type"] == "FollowResponse":
             try:
-                obj_user = User.objects.get(id=request.data["object"]["id"])
+                obj_user = User.objects.get(id=data["object"]["id"])
             except:
-                response = requests.get(request.data["object"]["host"] + "api/authors/" + request.data["object"]["id"] + "/",  auth=HTTPBasicAuth(user_auth, pass_auth))
+                response = requests.get(data["object"]["host"] + "api/authors/" + data["object"]["id"] + "/",  auth=HTTPBasicAuth(user_auth, pass_auth))
                 if response.status_code == 200:
                     try:
                         data = response.json()
@@ -115,24 +117,24 @@ class InboxView(APIView):
                             print(serializer.errors)
                     except Exception as e:
                         print(e)
-            if request.data["accepted"]:
-                req = get_object_or_404(FollowStatus,actor=request.data["actor"]["id"],obj=request.data["object"]["id"])
+            if data["accepted"]:
+                req = get_object_or_404(FollowStatus,actor=data["actor"]["id"],obj=data["object"]["id"])
                 req.complete = True
                 req.save()
             else:
-                req = get_object_or_404(FollowStatus,actor=request.data["actor"]["id"],obj=request.data["object"]["id"])
+                req = get_object_or_404(FollowStatus,actor=data["actor"]["id"],obj=data["object"]["id"])
                 req.delete()
 
 
             return Response({"Title":"Done"}, status = status.HTTP_200_OK)        
-        if request.data["type"] == "post":
+        if data["type"] == "post":
             author = None
             try:
-                author = User.objects.get(id=request.data["author"]["id"])
+                author = User.objects.get(id=data["author"]["id"])
             except:
                 user_auth = get_object_or_404(Node,is_self=True).username
                 pass_auth = get_object_or_404(Node,is_self=True).password
-                response = requests.get(request.data["author"]["id"], auth=HTTPBasicAuth(user_auth, pass_auth))
+                response = requests.get(data["author"]["id"], auth=HTTPBasicAuth(user_auth, pass_auth))
 
                 if response.status_code == 200:
                     try:
@@ -147,17 +149,17 @@ class InboxView(APIView):
             
             post_obj = None
             try:
-                post_obj = Post.objects.get(id=request.data["post"]["id"])
+                post_obj = Post.objects.get(id=data["post"]["id"])
             except:
-                print("DATA:",request.data["post"])
+                print("DATA:",data["post"])
                 user_auth = get_object_or_404(Node,is_self=True).username
                 pass_auth = get_object_or_404(Node,is_self=True).password
-                response = requests.get(request.data["post"]["id"], auth=HTTPBasicAuth(user_auth, pass_auth))
+                response = requests.get(data["post"]["id"], auth=HTTPBasicAuth(user_auth, pass_auth))
 
                 if response.status_code == 200:
                     try:
                         data = response.json()
-                        serializer = RemotePostSerializer(data={"id": data["id"], "url": data["url"], "host": data["host"], "content": data["content"], "contentType": data["contentType"], "published": data["published"], "visibility": data["visibility"], "origin": data["origin"], "description": data["description"], "author": request.data["author"]["id"]})
+                        serializer = RemotePostSerializer(data={"id": data["id"], "url": data["url"], "host": data["host"], "content": data["content"], "contentType": data["contentType"], "published": data["published"], "visibility": data["visibility"], "origin": data["origin"], "description": data["description"], "author": data["author"]["id"]})
                         if serializer.is_valid():
                             post_obj = serializer.save()
                         else: 
@@ -169,17 +171,17 @@ class InboxView(APIView):
             inbox.author = author
             inbox.save()
             return Response({"Title":"Done"}, status = status.HTTP_200_OK)
-        if request.data["type"] == "comment":
+        if data["type"] == "comment":
             pass
-        if request.data["type"] == "liked":
-            if "comment" in request.data["object"]: 
-                usr = get_object_or_404(User,id=request.data["id"])
-                post = get_object_or_404(Comment,id=request.data["object"].split("/")[-1])
+        if data["type"] == "liked":
+            if "comment" in data["object"]: 
+                usr = get_object_or_404(User,id=data["id"])
+                post = get_object_or_404(Comment,id=data["object"].split("/")[-1])
                 print("NO")
 
-                new_data = request.data.copy()
-                new_data['author'] = request.data["id"]
-                new_data['comment'] = request.data["object"].split("/")[-1]
+                new_data = data.copy()
+                new_data['author'] = data["id"]
+                new_data['comment'] = data["object"].split("/")[-1]
 
                 serializer = EditCommentLikeSerializer(data=new_data)
                 if serializer.is_valid():
@@ -190,13 +192,13 @@ class InboxView(APIView):
                     return Response(serializer.data, status = status.HTTP_200_OK)
                 return Response({"Title": "Unsuccessfully Added","Message": "Unsuccessfully Added"}, status = status.HTTP_400_BAD_REQUEST)
             else:
-                usr = get_object_or_404(User,id=request.data["id"])
-                post = get_object_or_404(Post,id=request.data["object"].split("/")[-1])
+                usr = get_object_or_404(User,id=data["id"])
+                post = get_object_or_404(Post,id=data["object"].split("/")[-1])
                 print("NO")
 
-                new_data = request.data.copy()
-                new_data['author'] = request.data["id"]
-                new_data['post'] = request.data["object"].split("/")[-1]
+                new_data = data.copy()
+                new_data['author'] = data["id"]
+                new_data['post'] = data["object"].split("/")[-1]
 
                 serializer = EditPostLikeSerializer(data=new_data)
 
