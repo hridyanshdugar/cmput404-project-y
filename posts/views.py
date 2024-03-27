@@ -152,7 +152,7 @@ class AllPostsView(APIView):
 
      pagination = Pager()
      '''
-     GET /authors/{id}/posts/ and /posts/
+     GET /authors/{id}/posts/
      '''
      def get(self, request, author_id):
         if User.objects.filter(id=author_id,host=Node.objects.get(is_self=True).url).exists():
@@ -163,10 +163,7 @@ class AllPostsView(APIView):
             friends = getFriends(request, author.id).content
             print("bob", friends)
             friends = json.loads(friends)
-            if request.GET.get('local',False):
-                posts = Post.objects.filter(Q(visibility="PUBLIC", host=request.GET.get('host')) | Q(visibility="FRIENDS")).order_by('-published')
-            else:
-                posts = Post.objects.filter(Q(visibility="PUBLIC") | Q(author=author) | Q(visibility="FRIENDS", author__id__in=friends)).order_by('-published') 
+            posts = Post.objects.filter(Q(visibility="PUBLIC") | Q(author=author) | Q(visibility="FRIENDS", author__id__in=friends)).order_by('-published') 
             page_number = request.GET.get('page') or 1
             posts = self.pagination.paginate_queryset(posts, request, view=self)
             if posts is not None:
