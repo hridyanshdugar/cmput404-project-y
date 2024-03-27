@@ -163,7 +163,7 @@ class AllPostsView(APIView):
             friends = getFriends(request, author.id).content
             print("bob", friends)
             friends = json.loads(friends)
-            posts = Post.objects.filter(Q(visibility="PUBLIC") | Q(author=author) | Q(visibility="FRIENDS", author__id__in=friends)).order_by('-published') 
+            posts = Post.objects.filter(Q(visibility="PUBLIC", author=author_id)).order_by('-published') 
             page_number = request.GET.get('page') or 1
             posts = self.pagination.paginate_queryset(posts, request, view=self)
             if posts is not None:

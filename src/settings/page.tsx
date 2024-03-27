@@ -128,7 +128,6 @@ export default function Settings() {
 							console.log(event);
 							createPost(
 								"",
-								"",
 								"text/plain",
 								`${event.type} by ${event.actor.display_login} on ${event.repo.name} at ${event.created_at}`,
 								"PUBLIC",

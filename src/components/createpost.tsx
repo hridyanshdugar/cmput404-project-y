@@ -159,7 +159,6 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 				description,
 				contentTypeF,
 				contentToSend,
-				VisibilityMap[visibility],
 				auth,
 				user.id
 			)
