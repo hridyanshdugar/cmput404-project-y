@@ -90,8 +90,8 @@ class InboxView(APIView):
 
         JWT_authenticator = JWTAuthentication()
         response = JWT_authenticator.authenticate(request)
-        print("RESPONSEfdsfdsfsd", request.data)
-        data = json.dumps(request.data)
+        print("RESPONSEfdsfdsfsd", request.body)
+        data = json.loads(request.body)
         print("big bug", data)
         if data["type"] == "Follow":
             get_foreign_user(data)
@@ -216,7 +216,7 @@ class InboxView(APIView):
                 if serializer.is_valid():
                     Like = serializer.save()
                     inbox.postLikes.add(Like)
-                    inbox.author = user
+                    inbox.author = usr
                     inbox.save()                    
                     return Response({"Title":"Done"}, status = status.HTTP_200_OK)
                 else:

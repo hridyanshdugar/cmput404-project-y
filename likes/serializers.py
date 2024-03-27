@@ -23,9 +23,12 @@ class PostLikeSerializer(serializers.ModelSerializer):
         return "Like"
 
 class EditPostLikeSerializer(serializers.ModelSerializer):
+      object = serializers.SerializerMethodField
       class Meta:
          model = PostLike
          fields = '__all__'
+      def get_object(self, obj):
+         return obj.post
 
 class CommentLikeSerializer(serializers.ModelSerializer):
       type = serializers.SerializerMethodField(read_only=True)
