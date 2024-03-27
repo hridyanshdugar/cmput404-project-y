@@ -6,7 +6,7 @@ import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import { faArrowUpFromBracket } from "@fortawesome/free-solid-svg-icons";
 import React from "react";
 import Button from "./buttons/button";
-import { acceptFollowRequest, denyFollowRequest, getMediaEndpoint, processFollowRequest } from "../utils/utils";
+import { acceptFollowRequest, denyFollowRequest, getMediaEndpoint } from "../utils/utils";
 import Cookies from "universal-cookie";
 import { getAPIEndpoint } from "../utils/utils";
 
