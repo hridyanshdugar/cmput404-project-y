@@ -15,7 +15,6 @@ import React, {
 	useEffect,
 } from "react";
 import {
-	getHomePosts,
 	getAPIEndpoint,
 	getFrontend,
 	getMediaEndpoint,

@@ -9,7 +9,7 @@ import { PostContext } from "../utils/postcontext";
 import {
 	getAPIEndpoint,
 	getFrontend,
-	getHomePosts,
+	getAuthorPosts,
 	getMediaEndpoint,
 } from "../utils/utils";
 import Cookies from "universal-cookie";
@@ -40,7 +40,7 @@ export default function Profiles() {
 		setuser(user);
 		setauth(auth);
 
-		getHomePosts(user.host, page, size, auth, id)
+		getAuthorPosts(user.host, page, size, auth, id)
 			.then(async (result: any) => {
 				const Data = await result.json();
 				console.log(Data);

@@ -49,11 +49,7 @@ class PostsViewPK(APIView):
             try:
                 response = requests.get(user.host + "api/authors/" + str(author_id) + "/posts/" + str(post_id) + "/", timeout=20,auth=HTTPBasicAuth(user_auth, pass_auth))
                 if response.status_code == 200:
-                    try:
-                        response_data = response.json()
-                        return Response(response_data, status = status.HTTP_200_OK)
-                    except JSONDecodeError:
-                        print(f"Invalid JSON response from {user.host}: {response.text}")
+                    return Response(response.body, status = status.HTTP_200_OK)
                 else:
                     print(f"Request to {user.host} failed with status code: {response.status_code}")
             except requests.exceptions.RequestException as e:
