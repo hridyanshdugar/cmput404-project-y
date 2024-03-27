@@ -84,7 +84,7 @@ class InboxView(APIView):
                 else:
                     print(f"Invalid data from : {serializer.errors}")
 
-        inbox = Inbox.objects.get_or_create(id=pk,host=Node.objects.find(is_self=True).url)[0]
+        inbox = Inbox.objects.get_or_create(author__id=pk, author__host=Node.objects.get(is_self=True).url)[0]
 
         JWT_authenticator = JWTAuthentication()
         response = JWT_authenticator.authenticate(request)
