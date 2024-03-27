@@ -192,6 +192,7 @@ class InboxView(APIView):
                 print("NO")
 
                 new_data = data.copy()
+                new_data["author"] = data["author"]["id"]
                 new_data['comment'] = data["object"].split("/")[-1]
 
                 serializer = EditCommentLikeSerializer(data=new_data)
@@ -213,6 +214,7 @@ class InboxView(APIView):
                 print("NO")
 
                 new_data = data.copy()
+                new_data["author"] = data["author"]["id"]
                 new_data['post'] = data["object"].split("/")[-1]
 
                 print("dfaiadsfudasod :  4")
