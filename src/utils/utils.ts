@@ -267,7 +267,7 @@ export async function getPost(auth: string, postId:string, user_id:string) {
       'Authorization': `Bearer ${auth}`,
     }
   };
-  return await fetch(getAPIEndpoint() + `/authors/${user_id}/posts/${postId}/`, options);
+  return await fetch(getAPIEndpoint() + `/authors/${user_id}/posts/${postId}`, options);
 }
 
 export async function getComment(auth: string, postId:string, commentId:string) {

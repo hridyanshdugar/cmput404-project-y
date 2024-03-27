@@ -116,17 +116,29 @@ class AllPostsView2(APIView):
      GET /authors/{id}/posts2/
      '''
      def get(self, request, author_id):
-        return Response("", status = status.HTTP_200_OK)
+        print("GETTING ALL POSTS 1")
         author = User.objects.get(id=author_id)
+        print("GETTING ALL POSTS 2")
+
         friends = json.loads(getFriends(author_id))
+        print("GETTING ALL POSTS 3")
+
         posts = Post.objects.filter(Q(author=author) | Q(visibility="FRIENDS", author__id__in=friends) | Q(visibility="PUBLIC")).order_by('-published') 
         page_number = request.GET.get('page') or 1
+        print("GETTING ALL POSTS 4")
         posts = self.pagination.paginate_queryset(posts, request, view=self)
         if posts is not None:
+            print("GETTING ALL POSTS 5")
+
             serializer = PostSerializer(posts, many=True, context={'request': request})
+            print("GETTING ALL POSTS 6")
+
             data = serializer.data
+            print("GETTING ALL POSTS 7")
+
             return Response(data, status = status.HTTP_200_OK)
         else:
+            print("GETTING ALL POSTS 8")
             return Response("hi", status = status.HTTP_400_BAD_REQUEST)
 
 
