@@ -159,10 +159,6 @@ class AllPostsView(APIView):
             JWT_authenticator = JWTAuthentication()
             response = JWT_authenticator.authenticate(request)
             author = User.objects.get(id=author_id)
-
-            friends = getFriends(request, author.id).content
-            print("bob", friends)
-            friends = json.loads(friends)
             posts = Post.objects.filter(Q(visibility="PUBLIC", author=author_id)).order_by('-published') 
             page_number = request.GET.get('page') or 1
             posts = self.pagination.paginate_queryset(posts, request, view=self)
