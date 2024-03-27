@@ -1,4 +1,5 @@
 from django.shortcuts import render
+import requests
 from .serializers import PostLikeSerializer, EditPostLikeSerializer, CommentLikeSerializer, EditCommentLikeSerializer
 from rest_framework.response import Response
 from rest_framework import status
@@ -28,7 +29,7 @@ class PostLikesViewPK(APIView):
      '''
      def put(self, request, author_id, post_id):
         print(author_id)
-        usr = get_object_or_404(User,id=author_id)
+        user = get_object_or_404(User,id=author_id)
         post = get_object_or_404(Post,id=post_id)
         print("NO")
 
@@ -37,6 +38,7 @@ class PostLikesViewPK(APIView):
         new_data['post'] = post_id
 
         serializer = EditPostLikeSerializer(data=new_data)
+        requests.post(str(user.actor.host) + "api/authors/" + str(user.actor.id) + "/inbox/", data = serializer.data)
         if serializer.is_valid():
             Like = serializer.save()
             return Response(serializer.data, status = status.HTTP_200_OK)
