@@ -18,7 +18,7 @@ from requests.exceptions import JSONDecodeError
 from nodes.models import Node
 from nodes.views import is_basicAuth, basicAuth
 from requests.auth import HTTPBasicAuth
-from followers.serializers import FollowSerializer
+from followers.serializers import FollowSerializer, SaveFollowSerializer
 from followers.models import FollowStatus
 import json
 
@@ -75,7 +75,7 @@ class InboxView(APIView):
                         print(e)
         
             
-            serializer = FollowSerializer(data={"actor": data["actor"]["id"],"obj":data["object"]["id"]})
+            serializer = SaveFollowSerializer(data={"actor": data["actor"]["id"],"obj":data["object"]["id"]})
             if serializer.is_valid():
                 follow_obj = serializer.save()
                 inbox.author = User.objects.get(id=data["actor"]["id"])

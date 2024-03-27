@@ -16,7 +16,7 @@ from nodes.views import is_basicAuth, basicAuth
 from requests.auth import HTTPBasicAuth
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import FollowSerializer
+from .serializers import FollowSerializer, SaveFollowSerializer
 from .models import FollowStatus
 import json
 val = URLValidator()

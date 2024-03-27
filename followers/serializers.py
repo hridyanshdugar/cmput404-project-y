@@ -18,3 +18,8 @@ class FollowSerializer(serializers.ModelSerializer):
    def get_obj(self, obj):
         return AuthorSerializer(obj.obj, context={'exclude_comments': True}).data
 
+
+class SaveFollowSerializer(serializers.ModelSerializer):
+   class Meta:
+         model = FollowStatus
+         fields = '__all__'

@@ -191,7 +191,6 @@ const SinglePost: React.FC<Props> = (props) => {
 		const VisibilityMap: { [key: string]: string } = {
 			Everyone: "PUBLIC",
 		};
-		var source = getAPIEndpoint() 
 		var contentToSend: string = props.postId;
 		var contentTypeF = "text/post";
 		createPost(
