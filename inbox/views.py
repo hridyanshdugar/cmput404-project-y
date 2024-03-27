@@ -97,10 +97,11 @@ class InboxView(APIView):
             
             serializer = SaveFollowSerializer(data={"actor": data["actor"]["id"],"obj":data["object"]["id"], "complete": False})
             if serializer.is_valid():
-                follow_obj = serializer.save()
-                inbox.author = User.objects.get(id=data["actor"]["id"])
-                inbox.followRequest.add(follow_obj)
-                inbox.save()
+                if FollowStatus.objects.filter(actor=data["actor"]["id"],obj=data["object"]["id"]).exists():
+                    follow_obj = serializer.save()
+                    inbox.author = User.objects.get(id=data["actor"]["id"])
+                    inbox.followRequest.add(follow_obj)
+                    inbox.save()
 
             return Response({"Title":"Done"}, status = status.HTTP_200_OK)
         if data["type"] == "Unfollow":
