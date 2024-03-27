@@ -127,6 +127,7 @@ class InboxView(APIView):
             return Response({"Title":"Done"}, status = status.HTTP_200_OK)        
         if data["type"] == "post":
             author = None
+            print("abc : 1")
             try:
                 author = User.objects.get(id=data["author"]["id"])
             except:
@@ -144,30 +145,42 @@ class InboxView(APIView):
                             print(serializer.errors)
                     except Exception as e:
                         print(e)
-            
+            print("abc : 2")
             post_obj = None
+            print("abc : 3")
             try:
+                print("abc : 4")
                 post_obj = Post.objects.get(id=data["post"]["id"])
             except:
                 print("DATA:",data["post"])
+                print("abc : 4")
                 user_auth = get_object_or_404(Node,is_self=True).username
                 pass_auth = get_object_or_404(Node,is_self=True).password
                 response = requests.get(data["post"]["id"], auth=HTTPBasicAuth(user_auth, pass_auth))
-
+                print("abc : 5")
                 if response.status_code == 200:
+                    print("abc : 6")
                     try:
                         bob = response.json()
+                        print("abc : 7")
                         serializer = RemotePostSerializer(data={"id": bob["id"], "url": bob["url"], "host": bob["host"], "content": bob["content"], "contentType": bob["contentType"], "published": data["published"], "visibility": data["visibility"], "origin": data["origin"], "description": bob["description"], "author": bob["author"]["id"]})
+                        print("abc : 8")
                         if serializer.is_valid():
+                            print("abc : 9")
                             post_obj = serializer.save()
+                            print("abc : 10")
                         else: 
+                            print("abc : 11")
                             print(serializer.errors)
                     except Exception as e:
-                        print(e)
-            
+                        print("dfsjafiusdarf78", e)
+            print("abc : 12")
             inbox.post.add(post_obj)
+            print("abc : 13")
             inbox.author = author
+            print("abc : 14")
             inbox.save()
+            print("abc : 15")
             return Response({"Title":"Done"}, status = status.HTTP_200_OK)
         if data["type"] == "comment":
             pass
