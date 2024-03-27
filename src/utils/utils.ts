@@ -234,6 +234,17 @@ export async function getHomePosts(host: string, page:number, size: number , aut
       'Authorization': `Bearer ${auth}`,
     }
   };
+  return await fetch(getAPIEndpoint() + `/authors/all/${id}/posts2/?page=${page}&size=${size}&host=${host}`, options);
+}
+
+export async function getAuthorPosts(host: string, page:number, size: number , auth: string, id:string) {
+  const options: RequestInit = {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${auth}`,
+    }
+  };
   return await fetch(getAPIEndpoint() + `/authors/all/${id}/posts/?page=${page}&size=${size}&host=${host}`, options);
 }
 
