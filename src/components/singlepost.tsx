@@ -114,7 +114,7 @@ const SinglePost: React.FC<Props> = (props) => {
 	const [likes, setLikes] = useState<number>(props.likes);
 	const share = () => {
 		if (!(props.contentType === "text/post")) {
-			/* */
+			console.log(visibility)
 			if (visibility === "PUBLIC") {
 				sharePost();
 				console.log("shared post");

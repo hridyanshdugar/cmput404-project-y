@@ -267,7 +267,7 @@ class PostsView(APIView):
                     friends = []
                     for follower in FollowSerializer(FollowStatus.objects.filter(obj__id=author_id, complete=True).values()).data:
                         for follow in FollowSerializer(FollowStatus.objects.filter(actor__id=author_id, complete=True).values()).data:
-                            if follower["actor"]["id"] == follow["obj"]["id"]:
+                            if follower["actor"]["id"] == follow["object"]["id"]:
                                 friends.append(follower)
                     for i in friends:
                         requests.post(i.follower.host + "api/author/" + str(i.obj.id) + "/inbox/", data = serializer.data)                    
