@@ -204,14 +204,19 @@ class InboxView(APIView):
                     return Response(serializer.data, status = status.HTTP_200_OK)
                 return Response({"Title": "Unsuccessfully Added","Message": "Unsuccessfully Added"}, status = status.HTTP_400_BAD_REQUEST)
             else:
+                # add print statements with incremental numbers for debbuing
+                print("dfaiadsfudasod :  1")
                 user = get_object_or_404(User,id=data["author"]["id"])
+                print("dfaiadsfudasod :  2")
                 post = get_object_or_404(Post,id=data["object"].split("/")[-1])
+                print("dfaiadsfudasod :  3")
                 print("NO")
 
                 new_data = data.copy()
                 new_data['author'] = data["id"]
                 new_data['post'] = data["object"].split("/")[-1]
 
+                print("dfaiadsfudasod :  4")
                 serializer = EditPostLikeSerializer(data=new_data)
 
                 if serializer.is_valid():
