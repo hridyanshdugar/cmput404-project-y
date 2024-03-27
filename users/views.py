@@ -16,6 +16,7 @@ from rest_framework.pagination import PageNumberPagination
 from nodes.models import Node
 from nodes.views import is_basicAuth, basicAuth
 from requests.auth import HTTPBasicAuth
+from followers.models import FollowStatus
 
 class Pager(PageNumberPagination):
     page_size = 10
@@ -121,8 +122,6 @@ class UsersViewPK(APIView):
         user = get_object_or_404(User,id=pk)
         serializer = AuthorSerializer(user,context={'request': request})
         return Response(serializer.data, status = status.HTTP_200_OK)
-
-            
 
     '''
     POST /users

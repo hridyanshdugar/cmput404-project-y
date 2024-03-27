@@ -15,8 +15,8 @@ import {
 	getFrontend,
 	getPost,
 	likePost,
-	sendPostToInbox,
-	sendLikeToInbox,
+	// sendPostToInbox,
+	// sendLikeToInbox,
 } from "../utils/utils";
 import { Badge, Card } from "react-bootstrap";
 import Dropdown from "./dropdowns/dropdown";
@@ -129,23 +129,23 @@ const SinglePost: React.FC<Props> = (props) => {
 		const cookies = new Cookies();
 		const user = cookies.get("user");
 		const auth = cookies.get("auth");
-		if (props.parentId) {
-			sendLikeToInbox(
-				user["id"],
-				auth["access"],
-				getAPIEndpoint() +
-					"/post/" +
-					props.parentId +
-					"/comments/" +
-					props.postId
-			);
-		} else {
-			sendLikeToInbox(
-				user["id"],
-				auth["access"],
-				getAPIEndpoint() + "/post/" + props.postId
-			);
-		}
+		// if (props.parentId) {
+		// 	sendLikeToInbox(
+		// 		user["id"],
+		// 		auth["access"],
+		// 		getAPIEndpoint() +
+		// 			"/post/" +
+		// 			props.parentId +
+		// 			"/comments/" +
+		// 			props.postId
+		// 	);
+		// } else {
+		// 	sendLikeToInbox(
+		// 		user["id"],
+		// 		auth["access"],
+		// 		getAPIEndpoint() + "/post/" + props.postId
+		// 	);
+		// }
 		setLikes(likes + 1);
 		event.stopPropagation();
 	};
@@ -219,19 +219,19 @@ const SinglePost: React.FC<Props> = (props) => {
 					var follower = Data[i];
 					console.log("follower");
 					console.log(follower);
-					sendPostToInbox(follower.id, auth.access, post, follower)
-						.then(async (result: any) => {
-							if (result.status === 200) {
-								const Data = await result.json();
-								console.log("POST");
-								console.log(Data);
-							} else {
-								throw new Error("Error sending post to inbox");
-							}
-						})
-						.catch((error) => {
-							console.log(error);
-						});
+					// sendPostToInbox(follower.id, auth.access, post, follower)
+					// 	.then(async (result: any) => {
+					// 		if (result.status === 200) {
+					// 			const Data = await result.json();
+					// 			console.log("POST");
+					// 			console.log(Data);
+					// 		} else {
+					// 			throw new Error("Error sending post to inbox");
+					// 		}
+					// 	})
+					// 	.catch((error) => {
+					// 		console.log(error);
+					// 	});
 				}
 			})
 			.catch(async (result: any) => {

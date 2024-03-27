@@ -6,18 +6,18 @@ import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import { faArrowUpFromBracket } from "@fortawesome/free-solid-svg-icons";
 import React from "react";
 import Button from "./buttons/button";
-import { getMediaEndpoint, processFollowRequest } from "../utils/utils";
+import { acceptFollowRequest, denyFollowRequest, getMediaEndpoint, processFollowRequest } from "../utils/utils";
 import Cookies from "universal-cookie";
 import { getAPIEndpoint } from "../utils/utils";
 
 type Props = {
-	name: string;
-	profileImage: string;
-	username: string;
-	userid: string;
+	actor: any;
+	object: any;
 };
 
 const cookies = new Cookies();
+
+const auth = cookies.get("auth")["access"];
 const user = cookies.get("user");
 
 export default class FollowRequestNotification extends React.Component<Props> {
@@ -33,7 +33,7 @@ export default class FollowRequestNotification extends React.Component<Props> {
 				<div className={style.blockImage}>
 					<img
 						className={style.img}
-						src={getMediaEndpoint() + "/media/" + this.props.profileImage || ""}
+						src={getMediaEndpoint() + "/media/" + this.props.actor.profileImage || ""}
 						alt={""}
 						width={40}
 						height={40}
@@ -42,15 +42,15 @@ export default class FollowRequestNotification extends React.Component<Props> {
 				<div className={style.blockContent}>
 					<div className={[style.topText, style.blockFlexContent].join(" ")}>
 						<div className={style.topLeft}>
-							<div className={style.inlineBlock}>{this.props.name}</div>
+							<div className={style.inlineBlock}>{this.props.actor.name}</div>
 							<div className={[style.topUserText, style.inlineBlock].join(" ")}>
-								{this.props.username}
+								{this.props.actor.username}
 							</div>
 						</div>
 						<div className={style.separator} />
 						<div className={style.topRight}>
-							<Button text="✓" type="primary" size="verySmall" roundness="very" onClick={() => processFollowRequest(user["id"], this.props.userid, "accept").then(() => window.location.reload())} style={{}}/>
-							<Button text="⨉" type="primary" size="verySmall" roundness="very" onClick={() => processFollowRequest(user["id"], this.props.userid, "decline").then(() => window.location.reload())} style={{marginLeft:"10px"}}/>
+							<Button text="✓" type="primary" size="verySmall" roundness="very" onClick={() => acceptFollowRequest(this.props.actor, this.props.object, auth).then(() => window.location.reload())} style={{}}/>
+							<Button text="⨉" type="primary" size="verySmall" roundness="very" onClick={() => denyFollowRequest(this.props.actor, this.props.object, auth).then(() => window.location.reload())} style={{marginLeft:"10px"}}/>
 					</div>
 					</div>
 					<div className={[style.topBottom].join(" ")}>

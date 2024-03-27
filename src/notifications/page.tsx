@@ -3,7 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./page.module.css";
 import { NewNotifications, NoNewNotifications } from "../components/newNotifications";
 import FollowRequestNotification from "../components/FollowRequestNotification";
-import { getNewFollowRequests } from "../utils/utils";
+import { getInbox, getNewFollowRequests } from "../utils/utils";
 import Cookies from "universal-cookie";
 import { useEffect, useState } from "react";
 
@@ -11,21 +11,25 @@ export default function Notifications() {
   const [requests, setRequests] = useState<any>([]); 
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
+
 	useEffect(() => {
 		const cookies = new Cookies();
 		const auth = cookies.get("auth")["access"];
-		const user = cookies.get("user");
-    getNewFollowRequests(user.id)
-      .then((res: any) => {
-        return res.json();
-      }).then((data)=>{
-        console.log(data);
-        setRequests(data);
-        setIsLoading(false);
-      })
-      .catch((err)=> {
-        console.log(err);
-      })
+    const user = cookies.get("user");
+    
+    getInbox(user.id, auth)
+    .then(async (result: any) => {
+      if (result.status === 200) {
+        const Data = await result.json();
+        console.log("Inbox");
+        console.log(Data);
+        setRequests(Data["requests"]);
+      } else {
+        throw new Error("Error fetching inbox");
+      }
+    }).catch(error => {
+      console.log(error);
+    });    
 	}, []);
 
 
@@ -42,10 +46,8 @@ export default function Notifications() {
                         requests.map((request: any, index: any) => (
                             <FollowRequestNotification 
                                 key={index}
-                          name={request["displayName"]} 
-                          profileImage={request["profileImage"]} 
-                          username={request["email"]} 
-                          userid={request["id"]}/>
+                          actor={request["actor"]} 
+                          object={request["object"]} />
                         ))
                       )
                     )

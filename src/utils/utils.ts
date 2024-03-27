@@ -117,6 +117,67 @@ export async function createPost(title:string, description:string, contentType:s
   return await fetch(getAPIEndpoint() + `/authors/${id}/posts/`, options);
 }
 
+export async function sendFollow(user:any, to_follow:any, auth: string) {
+  const options: RequestInit = {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${auth}`,
+      },
+      body: JSON.stringify({"type": "Follow", "actor": user, "object": to_follow})
+  };
+  return await fetch(getAPIEndpoint() + `/authors/all/${user.id}/following/${to_follow.id}/`, options);
+}
+
+export async function acceptFollowRequest(user:any, to_follow:any, auth: string) {
+  const options: RequestInit = {
+      method: 'PUT',
+      headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${auth}`,
+      },
+      body: JSON.stringify({"type": "Agree", "actor": user, "object": to_follow})
+  };
+  return await fetch(getAPIEndpoint() + `/authors/all/${user.id}/following/${to_follow.id}/`, options);
+}
+
+export async function denyFollowRequest(user:any, to_follow:any, auth: string) {
+  const options: RequestInit = {
+      method: 'PUT',
+      headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${auth}`,
+      },
+      body: JSON.stringify({"type": "Disagree", "actor": user, "object": to_follow})
+  };
+  return await fetch(getAPIEndpoint() + `/authors/all/${user.id}/following/${to_follow.id}/`, options);
+}
+
+
+export async function sendUnfollow(user:any, to_follow:any, auth: string) {
+  const options: RequestInit = {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${auth}`,
+      },
+      body: JSON.stringify({"type": "Unfollow", "actor": user, "object": to_follow})
+  };
+  return await fetch(getAPIEndpoint() + `/authors/all/${user.id}/following/${to_follow.id}/`, options);
+}
+
+export async function checkFollowingStatus(user:any, to_follow:any, auth: string) {
+  const options: RequestInit = {
+      method: 'GET',
+      headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${auth}`,
+      },
+      body: JSON.stringify({"actor": user, "object": to_follow})
+  };
+  return await fetch(getAPIEndpoint() + `/authors/all/${user.id}/following/${to_follow.id}/`, options);
+}
+
 export async function getRemoteUsers(auth: string) {
   const options: RequestInit = {
     method: 'GET',
@@ -279,33 +340,6 @@ export async function processFollowRequest(id:any, followerId:any, action:any) {
 }
 
 
-
-export async function sendFollowRequest(id:any, auth:any, actor:any, object:any) {
-  const options: RequestInit = {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${auth}`},
-    body: JSON.stringify({
-      type: "Follow",
-      summary: "Follow request",
-      actor: actor,
-      object : object
-    })
-  };
-  return await fetch(getAPIEndpoint() + `/authors/${id}/inbox/`, options)
-}
-
-export async function sendUnfollow(id:any, followerId:any) {
-  const options: RequestInit = {
-    method: 'DELETE',
-    headers: {
-        'Content-Type': 'application/json'
-    }
-  };
-  return await fetch(getAPIEndpoint() + `/authors/${id}/followers/${followerId}/`, options);
-}
-
 export async function getFollowers(id:any) {
   const options: RequestInit = {
     method: 'GET',
@@ -314,47 +348,6 @@ export async function getFollowers(id:any) {
     }
   };
   return await fetch(getAPIEndpoint() + `/authors/${id}/followers/`, options)
-}
-
-export async function checkFollowingStatus(id:any, followerId:any){
-  const options: RequestInit = {
-    method: 'GET',
-    headers: {
-        'Content-Type': 'application/json'
-    }
-  };
-  return await fetch(getAPIEndpoint() + `/authors/all/${id}/followers/${followerId}/`, options);
-}
-
-export async function sendPostToInbox(id:any, auth:any, post:any, author:any) {
-  const options: RequestInit = {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${auth}`},
-    body: JSON.stringify({
-      type: "post",
-      id: id,
-      post: post,
-      author: author
-    })
-  };
-  return await fetch(getAPIEndpoint() + `/authors/${id}/inbox/`, options)
-}
-
-export async function sendLikeToInbox(id:any, auth:any, post:any) {
-  const options: RequestInit = {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${auth}`},
-    body: JSON.stringify({
-      type: "liked",
-      id: id,
-      object: post,
-    })
-  };
-  return await fetch(getAPIEndpoint() + `/authors/${id}/inbox/`, options)
 }
 
 export async function getInbox(id:any, auth:any) {

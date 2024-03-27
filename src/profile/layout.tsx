@@ -83,7 +83,7 @@ export default function ProfileLayout() {
 	// API call to check if the user is already following the other user
 	// Not working as expected for some reason
 	if (!activeUser) {
-		checkFollowingStatus(userId, userIdCookie)
+		checkFollowingStatus(userId, userIdCookie, allcookies.auth.access)
 			.then((result) => {
 				console.log(result);
 				return result.json();

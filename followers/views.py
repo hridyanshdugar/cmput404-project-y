@@ -21,6 +21,8 @@ from nodes.views import is_basicAuth, basicAuth
 from requests.auth import HTTPBasicAuth
 from rest_framework.response import Response
 from rest_framework import status
+from .serializers import FollowSerializer
+from .models import FollowStatus
 
 val = URLValidator()
 
@@ -225,48 +227,7 @@ class AllFollowerView(APIView):
                 except requests.exceptions.RequestException as e:
                     print(f"Request to {node.url} failed: {e}")
             return JsonResponse({"follows": False})
-    
-    def put(self, request, author_id, follower_id):
-        try:
-            # Check if the follow request is not already accepted
-            follows = True if Follower.objects.filter(userId=author_id,followerId=follower_id).exists() else False
-            newRequest = True if NewFollowRequest.objects.filter(userId=author_id,followerId=follower_id).exists() else False
 
-            if not follows and newRequest:
-                req = NewFollowRequest.objects.get(userId=author_id, followerId=follower_id)
-                Follower.objects.create(userId=req["userId"], 
-                                        followerId=req["followerId"], 
-                                        host=req["host"],
-                                        displayName=req["displayName"],
-                                        url=req["url"],
-                                        github=req["github"],
-                                        profileImage=req["profileImage"])
-                NewFollowRequest.objects.filter(userId=author_id, followerId=follower_id).delete()
-                # Check if friend, if yes then add to table
-                friend = True if Follower.objects.filter(userId=follower_id, followerId=author_id).exists() else False
-                if friend:
-                    Friends.objects.create(userId=req["userId"],
-                                           friendId=req["followerId"],
-                                           host=req["host"],
-                                           displayName=req["displayName"],
-                                           url=req["url"],
-                                           github=req["github"],
-                                           profileImage=req["profileImage"])
-                    Friends.objects.create(userId=req["followerId"],
-                                           friendId=req["userId"],
-                                           host=req["host"],
-                                           displayName=req["displayName"],
-                                           url=req["url"],
-                                           github=req["github"],
-                                           profileImage=req["profileImage"])
-                return Response(status = status.HTTP_200_OK)
-            else:
-                NewFollowRequest.objects.filter(Q(userId=author_id) & Q(followerId=follower_id)).delete()
-                return HttpResponseBadRequest("Not able to follow, follows="+ str(follows) + " newRequest=" + str(newRequest)) 
-        except Exception as e:
-            print("xxxxxd", e)
-            return HttpResponseBadRequest(str(e))
-        
 
 
 
@@ -278,63 +239,40 @@ class FollowerView(APIView):
         if 'HTTP_AUTHORIZATION' in request.META:
             request.META.pop('HTTP_AUTHORIZATION')
 
-    def delete(self, request, author_id, follower_id):
-        """
-        remove FOREIGN_AUTHOR_ID as a follower of AUTHOR_ID, basically same functionality as unfollow
-        """
-        follows = True if Follower.objects.filter(Q(userId=author_id) & Q(followerId=follower_id)).exists() else False
-        if follows:
-            Friends.objects.filter(Q(userId=author_id) & Q(friendId=follower_id)).delete()
-            Friends.objects.filter(Q(userId=follower_id) & Q(friendId=author_id)).delete()
-            Follower.objects.filter(Q(userId=author_id) & Q(followerId=follower_id)).delete()
-        return HttpResponse("Deleted/Unfollowed")
-
     def get(self, request, author_id, follower_id):
         """
         check if FOREIGN_AUTHOR_ID is a follower of AUTHOR_ID
         """
-        follows = True if Follower.objects.filter(Q(userId=author_id) & Q(followerId=follower_id)).exists() else False
-        return JsonResponse({"follows": follows})
+        ff = get_object_or_404(FollowStatus,actor=author_id,obj=follower_id,complete=True)
+        return Response({"follows": True},status=status.HTTP_200_OK)
 
+    def post(self, request, author_id, follower_id):
+        res = requests.request(method="POST", url=request.data["object"]["host"] + "api/authors/" + str(follower_id) + "/inbox/",data=request.data)
+        if res.status_code == 200:
+            if request.data["type"] == "Follow":
+                serializer = FollowSerializer(data={"actor":author_id,"obj":follower_id})
+                if serializer.is_valid():
+                    serializer.save()
+                    return Response(status=status.HTTP_200_OK)
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+            elif request.data["type"] == "Unfollow":
+                item =  get_object_or_404(FollowStatus,actor=author_id,obj=follower_id)
+                item.delete()
+                return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+    
+    # this put is for the notifications page for when you click accept it should go here
     def put(self, request, author_id, follower_id):
-        """
-        Add FOREIGN_AUTHOR_ID as a follower of AUTHOR_ID, basically same functionality as accept Follow request
-        """
-        try:
-            # Check if the follow request is not already accepted
-            follows = True if Follower.objects.filter(userId=author_id,followerId=follower_id).exists() else False
-            newRequest = True if NewFollowRequest.objects.filter(userId=author_id,followerId=follower_id).exists() else False
-
-            if not follows and newRequest:
-                req = NewFollowRequest.objects.get(userId=author_id, followerId=follower_id)
-                Follower.objects.create(userId=req["userId"], 
-                                        followerId=req["followerId"], 
-                                        host=req["host"],
-                                        displayName=req["displayName"],
-                                        url=req["url"],
-                                        github=req["github"],
-                                        profileImage=req["profileImage"])
-                NewFollowRequest.objects.filter(userId=author_id, followerId=follower_id).delete()
-                # Check if friend, if yes then add to table
-                friend = True if Follower.objects.filter(userId=follower_id, followerId=author_id).exists() else False
-                if friend:
-                    Friends.objects.create(userId=req["userId"],
-                                           friendId=req["followerId"],
-                                           host=req["host"],
-                                           displayName=req["displayName"],
-                                           url=req["url"],
-                                           github=req["github"],
-                                           profileImage=req["profileImage"])
-                    Friends.objects.create(userId=req["followerId"],
-                                           friendId=req["userId"],
-                                           host=req["host"],
-                                           displayName=req["displayName"],
-                                           url=req["url"],
-                                           github=req["github"],
-                                           profileImage=req["profileImage"])
-                return HttpResponse()
+        res = requests.request(method="POST", url=request.data["object"]["host"] + "api/authors/" + str(follower_id) + "/inbox/",data=request.data)
+        if res.status_code == 200:
+            req = get_object_or_404(FollowStatus,actor=author_id,obj=follower_id)
+            if request.data["type"] == "Agree":
+                serializer = FollowSerializer(req,data={"complete":True},partial=True)
+                if serializer.is_valid():
+                    serializer.save()
+                    return Response(status=status.HTTP_200_OK)
+                return Response(status=status.HTTP_400_BAD_REQUEST)
             else:
-                NewFollowRequest.objects.filter(Q(userId=author_id) & Q(followerId=follower_id)).delete()
-                return HttpResponseBadRequest("Not able to follow, follows="+ str(follows) + " newRequest=" + str(newRequest)) 
-        except:
-            return HttpResponseBadRequest("Something went wrong!")
+                req.delete()
+                return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_400_BAD_REQUEST)

@@ -20,6 +20,8 @@ from followers.models import Follower
 from nodes.models import Node
 from nodes.views import is_basicAuth, basicAuth
 from requests.auth import HTTPBasicAuth
+from followers.serializers import FollowSerializer
+from followers.models import FollowStatus
 
 class Pager(PageNumberPagination):
     page_size = 10
@@ -47,21 +49,44 @@ class InboxView(APIView):
         return Response(serializer.data, status = status.HTTP_200_OK)
 
      '''
-     PUT /authors/{id}/inbox
+     POST /authors/{id}/inbox
      '''
-     def put(self, request, pk):
+     def post(self, request, pk):
         inbox = Inbox.objects.get_or_create(id=pk)[0]
 
         JWT_authenticator = JWTAuthentication()
         response = JWT_authenticator.authenticate(request)
 
         if request.data["type"] == "Follow":
-            author = None
             try:
-                author = User.objects.get(id=request.data["actor"]["id"])
+                obj_user = User.objects.get(id=request.data["object"]["id"])
             except:
-                response = requests.get(request.data["actor"]["url"])
+                response = requests.get(request.data["object"]["host"] + "api/authors/" + request.data["object"]["id"] + "/",  auth=HTTPBasicAuth(user_auth, pass_auth))
+                if response.status_code == 200:
+                    try:
+                        data = response.json()
+                        serializer = RemoteUserSerializer(data={"id": data["id"], "url": data["url"], "email": data["email"], "profileImage": data["profileImage"], "profileBackgroundImage": data["profileBackgroundImage"], "github": data["github"], "displayName": data["displayName"]})
+                        if serializer.is_valid():
+                            author = serializer.save()
+                        else: 
+                            print(serializer.errors)
+                    except Exception as e:
+                        print(e)
+        
+            
+            serializer = FollowSerializer(data={"actor": request.data["author"]["id"],"obj":request.data["object"]["id"]})
+            if serializer.is_valid():
+                follow_obj = serializer.save()
+                inbox.author = User.objects.get(id=request.data["actor"]["id"])
+                inbox.followRequest.add(follow_obj)
+                inbox.save()
 
+            return Response({"Title":"Done"}, status = status.HTTP_200_OK)
+        if request.data["type"] == "Unfollow":
+            try:
+                obj_user = User.objects.get(id=request.data["object"]["id"])
+            except:
+                response = requests.get(request.data["object"]["host"] + "api/authors/" + request.data["object"]["id"] + "/",  auth=HTTPBasicAuth(user_auth, pass_auth))
                 if response.status_code == 200:
                     try:
                         data = response.json()
@@ -73,47 +98,35 @@ class InboxView(APIView):
                     except Exception as e:
                         print(e)
             
-            follower_obj = request.data["object"]   # I see we are objectifying people now 
-            follower_obj = NewFollowRequest.objects.create(userId=follower_obj["id"], 
-                                                           followerId = author.id,
-                                                           host=author.host, 
-                                                           displayName=author.displayName, 
-                                                           url=author.url,
-                                                           github=author.github,
-                                                           profileImage=author.profileImage)
-            
-            # Dont really need to save in inbox (Design choice, not using inbox to retrieve the data)
-            # inbox.author = author
-            # inbox.followRequest.add(follower_obj)
-            # inbox.save()
-            return Response({"Title":"Done"}, status = status.HTTP_200_OK)
-        if request.data["type"] == "unfollow":
-            author = None
-            try:
-                author = User.objects.get(id=request.data["actor"]["id"])
-            except:
-                user_auth = get_object_or_404(Node,is_self=True).username
-                pass_auth = get_object_or_404(Node,is_self=True).password
-                response = requests.get(request.data["actor"]["url"], auth=HTTPBasicAuth(user_auth, pass_auth))
+            req = get_object_or_404(FollowStatus,actor=request.data["actor"]["id"],obj=request.data["object"]["id"])
+            req.delete()
 
+            return Response({"Title":"Done"}, status = status.HTTP_200_OK)
+        if request.data["type"] == "FollowResponse":
+            try:
+                obj_user = User.objects.get(id=request.data["object"]["id"])
+            except:
+                response = requests.get(request.data["object"]["host"] + "api/authors/" + request.data["object"]["id"] + "/",  auth=HTTPBasicAuth(user_auth, pass_auth))
                 if response.status_code == 200:
                     try:
                         data = response.json()
-                        serializer = RemoteUserSerializer(data={"id": data["id"], "global_id": data["global_id"], "url": data["url"], "email": data["email"], "profileImage": data["profileImage"], "profileBackgroundImage": data["profileBackgroundImage"], "github": data["github"], "displayName": data["displayName"]})
+                        serializer = RemoteUserSerializer(data={"id": data["id"], "url": data["url"], "email": data["email"], "profileImage": data["profileImage"], "profileBackgroundImage": data["profileBackgroundImage"], "github": data["github"], "displayName": data["displayName"]})
                         if serializer.is_valid():
                             author = serializer.save()
                         else: 
                             print(serializer.errors)
                     except Exception as e:
                         print(e)
-            follower_obj = request.data["object"] 
-            Follower.objects.delete(Q(userId=follower_obj["id"]) & Q(followerId=author.id))
-            
-            # Dont really need to save in inbox (Design choice, not using inbox to retrieve the data)
-            # inbox.author = author
-            # inbox.followRequest.add(follower_obj)
-            # inbox.save()
-            return Response({"Title":"Deleted follower"}, status = status.HTTP_200_OK)
+            if request.data["accepted"]:
+                req = get_object_or_404(FollowStatus,actor=request.data["actor"]["id"],obj=request.data["object"]["id"])
+                req.complete = True
+                req.save()
+            else:
+                req = get_object_or_404(FollowStatus,actor=request.data["actor"]["id"],obj=request.data["object"]["id"])
+                req.delete()
+
+
+            return Response({"Title":"Done"}, status = status.HTTP_200_OK)        
         if request.data["type"] == "post":
             author = None
             try:
