@@ -26,14 +26,14 @@ def getFollowers(request, author_id=None):
     # user = list(User.objects.filter(id=author_id).values())[0]
     if User.objects.filter(id=author_id).exists():
         user = User.objects.get(id=author_id)
-        if user.host != Node.objects.get(is_self=True).url:
+        if user.host == Node.objects.get(is_self=True).url:
             try:
                 print("here")
-                followers = [follower for follower in FollowStatus.objects.filter(obj__id=author_id, complete=True).values()] 
+                followers = FollowStatus.objects.filter(obj__id=author_id, complete=True).values()
             except:
                 followers = []
             try:
-                following = [follower for follower in FollowStatus.objects.filter(actor__id=author_id, complete=True).values()]
+                following = FollowStatus.objects.filter(actor__id=author_id, complete=True).values()
             except:
                 following = []
             friends = []
@@ -42,7 +42,6 @@ def getFollowers(request, author_id=None):
                     if follower["actor"] == follow["obj"]:
                         friends.append(follower)
             
-
             return JsonResponse({
                 "type": "followers",
                 "items": followers,
@@ -99,7 +98,7 @@ class FollowerView(APIView):
         """
         check if FOREIGN_AUTHOR_ID is a follower of AUTHOR_ID
         """
-        ff = get_object_or_404(FollowStatus,actor=author_id,obj=follower_id,complete=True)
+        ff = get_object_or_404(FollowStatus,actor__id=author_id,obj__id=follower_id,complete=True)
         return Response({"follows": True},status=status.HTTP_200_OK)
 
     def post(self, request, author_id, follower_id):
