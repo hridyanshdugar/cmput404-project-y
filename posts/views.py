@@ -225,20 +225,26 @@ class PostsView(APIView):
         if serializer.is_valid():
             pppobje = serializer.save(author=author)
             valid_post = True
-            
+            print("yes1")
             if request.data.get("contentType") == "text/post": #this means the request is a shared post (share button was clicked)
+                print("yes2")
                 original_post_id = request.data.get("content")
+                print("yes3", original_post_id)
                 #replace request.data with content of the actual post but maintain source of shared post
                 post_response = requests.get(str(Node.objects.get(is_self=True).url) + "api/posts/" + original_post_id)
+                print("yes4")
                 print("Post Response: ", post_response.status_code)
 
                 if post_response.status_code == 200:
+                    print("yes5")
                     original_post_data = post_response.json()
                     print("Original Post Data: ", original_post_data)
                     bob = copy.deepcopy(original_post_data)
+                    print("yes6")
                     serializer = PostSerializer(data = bob, context={'request': post_response})
-                    
+                    print("yes7")
                 else:
+                    print("failed")
                     valid_post = False
             print("Valid Post: ", valid_post, "Request Data: ", request.data)
             if valid_post:
