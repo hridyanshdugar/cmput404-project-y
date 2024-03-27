@@ -116,20 +116,17 @@ class AllPostsView2(APIView):
      GET /authors/{id}/posts2/
      '''
      def get(self, request, author_id):
-        if User.objects.filter(id=author_id,host=Node.objects.get(is_self=True).url).exists():
-            JWT_authenticator = JWTAuthentication()
-            response = JWT_authenticator.authenticate(request)
-            author = User.objects.get(id=author_id)
-            friends = json.loads(getFriends(author_id))
-            posts = Post.objects.filter(Q(author=author_id) | Q(visibility="FRIENDS", author__id__in=friends) | Q(visibility="PUBLIC")).order_by('-published') 
-            page_number = request.GET.get('page') or 1
-            posts = self.pagination.paginate_queryset(posts, request, view=self)
-            if posts is not None:
-                serializer = PostSerializer(posts, many=True, context={'request': request})
-                data = serializer.data
-                return Response(data, status = status.HTTP_200_OK)
-            else:
-                return Response("hi", status = status.HTTP_400_BAD_REQUEST)
+        author = User.objects.get(id=author_id)
+        friends = json.loads(getFriends(author_id))
+        posts = Post.objects.filter(Q(author=author) | Q(visibility="FRIENDS", author__id__in=friends) | Q(visibility="PUBLIC")).order_by('-published') 
+        page_number = request.GET.get('page') or 1
+        posts = self.pagination.paginate_queryset(posts, request, view=self)
+        if posts is not None:
+            serializer = PostSerializer(posts, many=True, context={'request': request})
+            data = serializer.data
+            return Response(data, status = status.HTTP_200_OK)
+        else:
+            return Response("hi", status = status.HTTP_400_BAD_REQUEST)
 
 
 class AllPostsView(APIView):
