@@ -75,7 +75,7 @@ export default function Home() {
 								profileImage={
 									item.profileImage?.split("?")[0]
 								}
-								username={item.email}
+								username={item.displayName}
 								host={item.host}
 							/>
 						))

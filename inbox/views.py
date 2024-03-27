@@ -63,7 +63,7 @@ class InboxView(APIView):
                 obj_user = User.objects.get(id=data["actor"]["id"])
             except:
                 try:
-                    serializer = RemoteUserSerializer(data={"id": data["actor"]["id"], "url": data["actor"]["url"], "email": data["actor"]["email"], "profileImage": data["actor"]["profileImage"], "profileBackgroundImage": data["actor"]["profileBackgroundImage"], "github": data["actor"]["github"], "displayName": data["actor"]["displayName"]})
+                    serializer = RemoteUserSerializer(data={"id": data["actor"]["id"], "url": data["actor"]["url"], "displayName": data["actor"]["displayName"], "profileImage": data["actor"]["profileImage"], "profileBackgroundImage": data["actor"]["profileBackgroundImage"], "github": data["actor"]["github"], "displayName": data["actor"]["displayName"]})
                     if serializer.is_valid():
                         author = serializer.save()
                     else: 
@@ -85,7 +85,7 @@ class InboxView(APIView):
                 obj_user = User.objects.get(id=data["actor"]["id"])
             except:
                 try:
-                    serializer = RemoteUserSerializer(data={"id": data["actor"]["id"], "url": data["actor"]["url"], "email": data["actor"]["email"], "profileImage": data["actor"]["profileImage"], "profileBackgroundImage": data["actor"]["profileBackgroundImage"], "github": data["actor"]["github"], "displayName": data["actor"]["displayName"]})
+                    serializer = RemoteUserSerializer(data={"id": data["actor"]["id"], "url": data["actor"]["url"], "displayName": data["actor"]["displayName"], "profileImage": data["actor"]["profileImage"], "profileBackgroundImage": data["actor"]["profileBackgroundImage"], "github": data["actor"]["github"], "displayName": data["actor"]["displayName"]})
                     if serializer.is_valid():
                         author = serializer.save()
                     else: 
@@ -102,7 +102,7 @@ class InboxView(APIView):
                 obj_user = User.objects.get(id=data["actor"]["id"])
             except:
                 try:
-                    serializer = RemoteUserSerializer(data={"id": data["actor"]["id"], "url": data["actor"]["url"], "email": data["actor"]["email"], "profileImage": data["actor"]["profileImage"], "profileBackgroundImage": data["actor"]["profileBackgroundImage"], "github": data["actor"]["github"], "displayName": data["actor"]["displayName"]})
+                    serializer = RemoteUserSerializer(data={"id": data["actor"]["id"], "url": data["actor"]["url"], "displayName": data["actor"]["displayName"], "profileImage": data["actor"]["profileImage"], "profileBackgroundImage": data["actor"]["profileBackgroundImage"], "github": data["actor"]["github"], "displayName": data["actor"]["displayName"]})
                     if serializer.is_valid():
                         author = serializer.save()
                     else: 
@@ -131,7 +131,7 @@ class InboxView(APIView):
                 if response.status_code == 200:
                     try:
                         bob = response.json()
-                        serializer = RemoteUserSerializer(data={"id": bob["id"], "url": bob["url"], "email": bob["email"], "profileImage": bob["profileImage"], "profileBackgroundImage": bob["profileBackgroundImage"], "github": bob["github"], "displayName": bob["displayName"]})
+                        serializer = RemoteUserSerializer(data={"id": bob["id"], "url": bob["url"], "displayName": bob["displayName"], "profileImage": bob["profileImage"], "profileBackgroundImage": bob["profileBackgroundImage"], "github": bob["github"], "displayName": bob["displayName"]})
                         if serializer.is_valid():
                             author = serializer.save()
                         else: 

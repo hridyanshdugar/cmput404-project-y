@@ -11,15 +11,15 @@ from django.contrib.auth.hashers import make_password
 
 class UserManager(BaseUserManager):
     use_in_migration = True
-    def create_user(self, email, password, **extra_fields):
-        if not email:
-              raise ValueError('Email is Required')
-        user = User(email=self.normalize_email(email),password=password, **extra_fields)
+    def create_user(self, displayName, password, **extra_fields):
+        if not displayName:
+              raise ValueError('displayName is Required')
+        user = User(displayName=self.normalize_displayName(displayName),password=password, **extra_fields)
 
         user.save(using=self._db)
         return user
 
-    def create_adminuser(self, email, password, **extra_fields):
+    def create_adminuser(self, displayName, password, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_admin', True)
         extra_fields.setdefault('is_active', True)
@@ -29,12 +29,12 @@ class UserManager(BaseUserManager):
         if extra_fields.get('is_admin') is not True:
               raise ValueError('Admin must have is_superuser = True')
 
-        user = self.create_user(email, password, **extra_fields)
+        user = self.create_user(displayName, password, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, password=None, **extra_fields):
+    def create_superuser(self, displayName, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('is_admin', True)
@@ -47,14 +47,14 @@ class UserManager(BaseUserManager):
         if extra_fields.get('is_superuser') is not True:
               raise ValueError('Superuser must have is_superuser = True')
 
-        user = self.create_user(email, password, **extra_fields)
+        user = self.create_user(displayName, password, **extra_fields)
         user.set_password(password)
         
         user.save(using=self._db)
         return user
 
-    def get_by_natural_key(self, email):
-        return self.get(email=email)
+    def get_by_natural_key(self, displayName):
+        return self.get(displayName=displayName)
 
 def pfp_upload_path(instance, filename):
     file_extension = os.path.splitext(filename)
@@ -69,7 +69,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     url=models.TextField(blank=True,default='')
     host=models.TextField(blank=True,default='')
 
-    email=models.CharField(max_length=100, blank=False, null=False, unique=True)
+    displayName=models.CharField(max_length=100, blank=False, null=False, unique=True)
     password=models.CharField(max_length=100, blank=False, null=False)
 
     is_superuser=models.BooleanField(default=True)
@@ -80,18 +80,17 @@ class User(AbstractBaseUser, PermissionsMixin):
     profileImage=models.ImageField(null=True,upload_to=pfp_upload_path)
     profileBackgroundImage=models.ImageField(null=True,upload_to=profilebackground_upload_path)
     github=models.TextField(blank=True,default='')
-    displayName=models.TextField(blank=True,default='')
     approved=models.BooleanField(default=False)
     creation_date = models.DateTimeField(auto_now_add=True)
 
-    USERNAME_FIELD = 'email'
+    USERNAME_FIELD = 'displayName'
     REQUIRED_FIELDS = []
 
 
     objects = UserManager()
 
     def __str__(self):
-        return self.email
+        return self.displayName
 
 @receiver(post_delete, sender=User)
 def delete_media_on_user_delete(sender, instance, **kwargs):

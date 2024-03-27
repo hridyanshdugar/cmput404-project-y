@@ -31,7 +31,7 @@ def login(request):
     if check_password(input_password,stored_password_hash):
 
         refresh = RefreshToken.for_user(user)
-        refresh['email'] = user.email
+        refresh['displayName'] = user.displayName
         access_token = str(refresh.access_token)
 
         serializer = UserSerializer(user)

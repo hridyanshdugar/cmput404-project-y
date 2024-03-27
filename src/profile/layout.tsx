@@ -106,7 +106,7 @@ export default function ProfileLayout() {
 				<Profile
 					userid={userId!}
 					name={userInformation?.displayName}
-					username={userInformation?.email}
+					username={userInformation?.displayName}
 					bio={userInformation?.bio ? userInformation?.bio : "No Bio"}
 					website={
 						userInformation?.github ? userInformation?.github : "No Website"

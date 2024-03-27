@@ -69,7 +69,7 @@ export default function Profiles() {
 											getMediaEndpoint() +
 											item.author.profileImage?.split("?")[0]
 										}
-										username={item.author.email}
+										username={item.author.displayName}
 										text={item.content}
 										postImage={undefined}
 										date={Math.floor(new Date(item.published).getTime() / 1000)}

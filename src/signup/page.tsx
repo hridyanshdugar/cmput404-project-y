@@ -11,12 +11,12 @@ import Cookies from 'universal-cookie';
 export default function Signup() {
   const [WarningData, setWarningData] = useState<any>(null);
 
-  const [Email, setEmail] = useState<string>('');
+  const [displayName, setdisplayName] = useState<string>('');
   const [Password, setPassword] = useState<string>('');
   const [PasswordVerify, setPasswordVerify] = useState<string>('');
 
-  const handleEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(event.target.value);
+  const handledisplayName = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setdisplayName(event.target.value);
   };
 
   const handlePassword = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -31,7 +31,7 @@ export default function Signup() {
     if (Password != PasswordVerify) {
       setWarningData({title: "Password fields Must Match", message: "Please re-enter your password"});
     } else {
-      signup(Email,Password).then(async (result:any) => {
+      signup(displayName,Password).then(async (result:any) => {
 
         navigate('/')
       }).catch(async (result: any) => {
@@ -60,7 +60,7 @@ export default function Signup() {
             </div>
             <div style={{color: "#FFF", height: "5vh", fontSize: "4.5vh", display: "flex"}}>Create your account</div>
             <div style={{flexDirection:"column",display:"flex", width: "60%"}}>
-              <Input placeholder="Email" inputtype="email" onChange={handleEmail} />
+              <Input placeholder="displayName" inputtype="displayName" onChange={handledisplayName} />
               <Input placeholder="Password" inputtype="password" onChange={handlePassword} />
               <Input placeholder="Verify Password" inputtype="password" onChange={handlePasswordVerify} />
             </div>

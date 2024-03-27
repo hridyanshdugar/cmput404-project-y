@@ -259,4 +259,3 @@ class PostsView(APIView):
         else:
             return Response({"title": "Invalid Fields", "message": serializer.errors}, status = status.HTTP_400_BAD_REQUEST)
         
-

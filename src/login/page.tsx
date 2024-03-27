@@ -10,11 +10,11 @@ import Cookies from "universal-cookie";
 export default function Login() {
 	const [WarningData, setWarningData] = useState<any>(null);
 
-	const [Email, setEmail] = useState<string>("");
+	const [displayName, setdisplayName] = useState<string>("");
 	const [Password, setPassword] = useState<string>("");
 
-	const handleEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setEmail(event.target.value);
+	const handledisplayName = (event: React.ChangeEvent<HTMLInputElement>) => {
+		setdisplayName(event.target.value);
 	};
 
 	const handlePassword = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,7 +26,7 @@ export default function Login() {
 	};
 
 	const handleLogin = async () => {
-		login(Email, Password)
+		login(displayName, Password)
 			.then(async (result: any) => {
 				const cookies = new Cookies();
 				const Data = await result.json();
@@ -124,9 +124,9 @@ export default function Login() {
 						</div>
 						<div style={{ flexDirection: "column", display: "flex" }}>
 							<Input
-								placeholder="Email"
-								inputtype="email"
-								onChange={handleEmail}
+								placeholder="displayName"
+								inputtype="displayName"
+								onChange={handledisplayName}
 							/>
 							<Input
 								placeholder="Password"

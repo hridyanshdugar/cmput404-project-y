@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
                 ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False, unique=True)),
                 ('url', models.TextField(blank=True, default='')),
                 ('host', models.TextField(blank=True, default='')),
-                ('email', models.CharField(max_length=100, unique=True)),
+                ('displayName', models.CharField(max_length=100, unique=True)),
                 ('password', models.CharField(max_length=100)),
                 ('is_superuser', models.BooleanField(default=True)),
                 ('is_staff', models.BooleanField(default=True)),
