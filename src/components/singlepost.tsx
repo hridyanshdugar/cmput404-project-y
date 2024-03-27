@@ -161,7 +161,7 @@ const SinglePost: React.FC<Props> = (props) => {
 
 		likePost(
 			author,
-			getAPIEndpoint() + "/post/" + props.parentId + "/comments/" + props.postId,
+			getAPIEndpoint() + "authors/"+author.id+"/posts/" + props.postId,
 			auth["access"]
 		);
 		setLikes(likes + 1);
