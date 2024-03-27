@@ -264,13 +264,10 @@ class PostsView(APIView):
                         requests.post(i.follower.host + "api/author/" + str(i.obj.id) + "/inbox/", data = serializer.data)
 
                 if request.data.get("visibility") == "FRIENDS":
-                    friends = []
-                    for follower in FollowSerializer(FollowStatus.objects.filter(obj__id=author_id, complete=True).values()).data:
-                        for follow in FollowSerializer(FollowStatus.objects.filter(actor__id=author_id, complete=True).values()).data:
+                    for follower in FollowSerializer(FollowStatus.objects.filter(obj__id=author_id, complete=True)).data:
+                        for follow in FollowSerializer(FollowStatus.objects.filter(actor__id=author_id, complete=True)).data:
                             if follower["actor"]["id"] == follow["object"]["id"]:
-                                friends.append(follower)
-                    for i in friends:
-                        requests.post(i.follower.host + "api/author/" + str(i.obj.id) + "/inbox/", data = serializer.data)                    
+                                requests.post(follow["object"]["host"] + "api/author/" + str(follow["object"]["id"]) + "/inbox/", data = serializer.data)    
                 return Response(serializer.data, status = status.HTTP_200_OK)
         else:
             return Response({"title": "Invalid Fields", "message": serializer.errors}, status = status.HTTP_400_BAD_REQUEST)
