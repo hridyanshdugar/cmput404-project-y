@@ -114,6 +114,7 @@ export async function createPost(title:string, description:string, contentType:s
     },
     body: JSON.stringify({ "title": title, "description": description, "contentType": contentType, "content": content, "author": id, "visibility": visibility})
   };
+  console.log("bibidfgsfrgj", JSON.stringify({ "title": title, "description": description, "contentType": contentType, "content": content, "author": id, "visibility": visibility}))
   return await fetch(getAPIEndpoint() + `/authors/${id}/posts/`, options);
 }
 

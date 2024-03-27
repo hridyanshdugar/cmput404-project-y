@@ -208,7 +208,7 @@ class PostsView(APIView):
             return Response("BAD", status = status.HTTP_400_BAD_REQUEST)
 
      '''
-     POST /authors/{id}/posts/ and /posts/
+     POST /authors/{id}/posts/
      '''
      def post(self, request, author_id):
         print("Request Datafdsrfdsfsdf: ", request.data)
