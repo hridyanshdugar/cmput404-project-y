@@ -60,19 +60,17 @@ class InboxView(APIView):
         print("big bug", data)
         if data["type"] == "Follow":
             try:
-                obj_user = User.objects.get(id=data["object"]["id"])
+                obj_user = User.objects.get(id=data["actor"]["id"])
             except:
-                response = requests.get(data["object"]["host"] + "api/authors/" + data["object"]["id"] + "/",  auth=HTTPBasicAuth(user_auth, pass_auth))
-                if response.status_code == 200:
-                    try:
-                        data = response.json()
-                        serializer = RemoteUserSerializer(data={"id": data["object"]["id"], "url": data["object"]["url"], "email": data["object"]["email"], "profileImage": data["object"]["profileImage"], "profileBackgroundImage": data["object"]["profileBackgroundImage"], "github": data["object"]["github"], "displayName": data["object"]["displayName"]})
-                        if serializer.is_valid():
-                            author = serializer.save()
-                        else: 
-                            print(serializer.errors)
-                    except Exception as e:
-                        print(e)
+                try:
+                    data = response.json()
+                    serializer = RemoteUserSerializer(data={"id": data["actor"]["id"], "url": data["actor"]["url"], "email": data["actor"]["email"], "profileImage": data["actor"]["profileImage"], "profileBackgroundImage": data["actor"]["profileBackgroundImage"], "github": data["actor"]["github"], "displayName": data["actor"]["displayName"]})
+                    if serializer.is_valid():
+                        author = serializer.save()
+                    else: 
+                        print(serializer.errors)
+                except Exception as e:
+                    print(e)
         
             
             serializer = SaveFollowSerializer(data={"actor": data["actor"]["id"],"obj":data["object"]["id"], "complete": False})
@@ -85,19 +83,17 @@ class InboxView(APIView):
             return Response({"Title":"Done"}, status = status.HTTP_200_OK)
         if data["type"] == "Unfollow":
             try:
-                obj_user = User.objects.get(id=data["object"]["id"])
+                obj_user = User.objects.get(id=data["actor"]["id"])
             except:
-                response = requests.get(data["object"]["host"] + "api/authors/" + data["object"]["id"] + "/",  auth=HTTPBasicAuth(user_auth, pass_auth))
-                if response.status_code == 200:
-                    try:
-                        data = response.json()
-                        serializer = RemoteUserSerializer(data={"id": data["object"]["id"], "url": data["object"]["url"], "email": data["object"]["email"], "profileImage": data["object"]["profileImage"], "profileBackgroundImage": data["object"]["profileBackgroundImage"], "github": data["object"]["github"], "displayName": data["object"]["displayName"]})
-                        if serializer.is_valid():
-                            author = serializer.save()
-                        else: 
-                            print(serializer.errors)
-                    except Exception as e:
-                        print(e)
+                try:
+                    data = response.json()
+                    serializer = RemoteUserSerializer(data={"id": data["actor"]["id"], "url": data["actor"]["url"], "email": data["actor"]["email"], "profileImage": data["actor"]["profileImage"], "profileBackgroundImage": data["actor"]["profileBackgroundImage"], "github": data["actor"]["github"], "displayName": data["actor"]["displayName"]})
+                    if serializer.is_valid():
+                        author = serializer.save()
+                    else: 
+                        print(serializer.errors)
+                except Exception as e:
+                    print(e)
             
             req = get_object_or_404(FollowStatus,actor=data["actor"]["id"],obj=data["object"]["id"])
             req.delete()
@@ -105,19 +101,17 @@ class InboxView(APIView):
             return Response({"Title":"Done"}, status = status.HTTP_200_OK)
         if data["type"] == "FollowResponse":
             try:
-                obj_user = User.objects.get(id=data["object"]["id"])
+                obj_user = User.objects.get(id=data["actor"]["id"])
             except:
-                response = requests.get(data["object"]["host"] + "api/authors/" + data["object"]["id"] + "/",  auth=HTTPBasicAuth(user_auth, pass_auth))
-                if response.status_code == 200:
-                    try:
-                        data = response.json()
-                        serializer = RemoteUserSerializer(data={"id": data["object"]["id"], "url": data["object"]["url"], "email": data["object"]["email"], "profileImage": data["object"]["profileImage"], "profileBackgroundImage": data["object"]["profileBackgroundImage"], "github": data["object"]["github"], "displayName": data["object"]["displayName"]})
-                        if serializer.is_valid():
-                            author = serializer.save()
-                        else: 
-                            print(serializer.errors)
-                    except Exception as e:
-                        print(e)
+                try:
+                    data = response.json()
+                    serializer = RemoteUserSerializer(data={"id": data["actor"]["id"], "url": data["actor"]["url"], "email": data["actor"]["email"], "profileImage": data["actor"]["profileImage"], "profileBackgroundImage": data["actor"]["profileBackgroundImage"], "github": data["actor"]["github"], "displayName": data["actor"]["displayName"]})
+                    if serializer.is_valid():
+                        author = serializer.save()
+                    else: 
+                        print(serializer.errors)
+                except Exception as e:
+                    print(e)
             if data["accepted"]:
                 req = get_object_or_404(FollowStatus,actor=data["actor"]["id"],obj=data["object"]["id"])
                 req.complete = True
