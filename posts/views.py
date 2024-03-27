@@ -228,10 +228,13 @@ class PostsView(APIView):
             
             if request.data.get("contentType") == "text/post": #this means the request is a shared post (share button was clicked)
                 original_post_id = request.data.get("content")
-               #replace request.data with content of the actual post but maintain source of shared post
-                post_response = requests.get(i.follower.host + "api/posts/" + original_post_id)
+                #replace request.data with content of the actual post but maintain source of shared post
+                post_response = requests.get(str(Node.objects.get(is_self=True).url) + "api/posts/" + original_post_id)
+                print("Post Response: ", post_response.status_code)
+
                 if post_response.status_code == 200:
                     original_post_data = post_response.json()
+                    print("Original Post Data: ", original_post_data)
                     shared_post_source = request.data.get("url")
                     request.data = original_post_data
                     request.data["url"] = shared_post_source

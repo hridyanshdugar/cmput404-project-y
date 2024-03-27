@@ -148,6 +148,22 @@ const SinglePost: React.FC<Props> = (props) => {
 		// 		getAPIEndpoint() + "/post/" + props.postId
 		// 	);
 		// }
+		
+		let actor = {
+			type: "author",
+			id: user["id"],
+			url: user["url"],
+			host: user["host"],
+			displayName: user["displayName"],
+			github: user["github"],
+			profileImage: user["profileImage"],
+		};
+
+		likePost(
+			actor,
+			getAPIEndpoint() + "/post/" + props.parentId + "/comments/" + props.postId,
+			auth["access"]
+		);
 		setLikes(likes + 1);
 		event.stopPropagation();
 	};
