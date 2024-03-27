@@ -133,7 +133,7 @@ class InboxView(APIView):
             except:
                 user_auth = get_object_or_404(Node,is_self=True).username
                 pass_auth = get_object_or_404(Node,is_self=True).password
-                response = requests.get(data["author"]["id"], auth=HTTPBasicAuth(user_auth, pass_auth))
+                response = requests.get(str(data["author"]["host"]) + "api/authors" + str(data["author"]["id"]) + "/", auth=HTTPBasicAuth(user_auth, pass_auth))
 
                 if response.status_code == 200:
                     try:
@@ -150,13 +150,13 @@ class InboxView(APIView):
             print("abc : 3")
             try:
                 print("abc : 4")
-                post_obj = Post.objects.get(id=data["post"]["id"])
+                post_obj = Post.objects.get(id=data["id"])
             except:
-                print("DATA:",data["post"])
+                print("DATA:",data)
                 print("abc : 4")
                 user_auth = get_object_or_404(Node,is_self=True).username
                 pass_auth = get_object_or_404(Node,is_self=True).password
-                response = requests.get(str(data["author"]["host"]) + "api/authors" + str(data["author"]["id"]) + "/", auth=HTTPBasicAuth(user_auth, pass_auth))
+                response = requests.get(str(data["author"]["host"]) + "api/authors/" + data["author"]["id"] + "/posts/" + str(data["id"]), auth=HTTPBasicAuth(user_auth, pass_auth))
                 print("abc : 5")
                 if response.status_code == 200:
                     print("abc : 6")
