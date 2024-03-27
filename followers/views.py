@@ -18,6 +18,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from .serializers import FollowSerializer, SaveFollowSerializer
 from .models import FollowStatus
+from inbox.models import Inbox
 import json
 val = URLValidator()
 
@@ -124,6 +125,10 @@ class FollowerView(APIView):
         res = requests.request(method="POST", url=request.data["object"]["host"] + "api/authors/" + str(follower_id) + "/inbox/",data=request.body)
         if res.status_code == 200:
             req = get_object_or_404(FollowStatus,actor=author_id,obj=follower_id)
+            inbox = Inbox.objects.get_or_create(id=author_id)[0]
+            inbox.author = User.objects.get(id=author_id)
+            inbox.followRequest.remove(req)
+            inbox.save()            
             if data["accepted"]:
                 serializer = FollowSerializer(req,data={"complete":True},partial=True)
                 if serializer.is_valid():
