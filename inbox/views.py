@@ -156,7 +156,7 @@ class InboxView(APIView):
                 print("abc : 4")
                 user_auth = get_object_or_404(Node,is_self=True).username
                 pass_auth = get_object_or_404(Node,is_self=True).password
-                response = requests.get(data["post"]["id"], auth=HTTPBasicAuth(user_auth, pass_auth))
+                response = requests.get(str(data["author"]["host"]) + "api/authors" + str(data["author"]["id"]) + "/", auth=HTTPBasicAuth(user_auth, pass_auth))
                 print("abc : 5")
                 if response.status_code == 200:
                     print("abc : 6")
