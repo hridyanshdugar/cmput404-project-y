@@ -108,9 +108,10 @@ class FollowerView(APIView):
         res = requests.request(method="POST", url=data["object"]["host"] + "api/authors/" + str(follower_id) + "/inbox/",data=request.body)
         if res.status_code == 200:
             if data["type"] == "Follow":
-                serializer = SaveFollowSerializer(data={"actor":author_id,"obj":follower_id , "complete": False})
-                if serializer.is_valid():
-                    serializer.save()
+                if not FollowStatus.objects.filter(actor=author_id,obj=follower_id).exists():
+                    serializer = SaveFollowSerializer(data={"actor":author_id,"obj":follower_id , "complete": False})
+                    if serializer.is_valid():
+                        serializer.save()
                     return Response(status=status.HTTP_200_OK)
                 return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
             elif data["type"] == "Unfollow":
