@@ -18,7 +18,7 @@ from nodes.views import is_basicAuth, basicAuth
 from requests.auth import HTTPBasicAuth
 from rest_framework.response import Response
 from followers.serializers import FollowSerializer
-
+import copy
 
 class Pager(PageNumberPagination):
     page_size = 10
@@ -211,18 +211,17 @@ class PostsView(APIView):
      POST /authors/{id}/posts/ and /posts/
      '''
      def post(self, request, author_id):
+        print("Request Datafdsrfdsfsdf: ", request.data)
         author = None
         try:
             author = User.objects.get(id=author_id)
         except User.DoesNotExist:
             return Response({"title": "Author not found.","message": "No valid author for the post was provided"}, status=status.HTTP_404_NOT_FOUND)
+    
+        bob = copy.deepcopy(request.data)
+        bob["author"] = author
 
-        request.data["author"] = author
-
-        JWT_authenticator = JWTAuthentication()
-        response = JWT_authenticator.authenticate(request)
-        serializer = PostSerializer(data = request.data, context={'request': request})
-        print(response)
+        serializer = PostSerializer(data = bob, context={'request': request})
         if serializer.is_valid():
             serializer.save(author=author)
             valid_post = True
