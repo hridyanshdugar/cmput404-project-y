@@ -125,7 +125,7 @@ class FollowerView(APIView):
         res = requests.request(method="POST", url=request.data["object"]["host"] + "api/authors/" + str(follower_id) + "/inbox/",data=request.body)
         if res.status_code == 200:
             req = get_object_or_404(FollowStatus,actor=author_id,obj=follower_id)
-            inbox = Inbox.objects.get_or_create(id=author_id)[0]
+            inbox = Inbox.objects.get_or_create(author__id=author_id)[0]
             inbox.author = User.objects.get(id=author_id)
             inbox.followRequest.remove(req)
             inbox.save()            
