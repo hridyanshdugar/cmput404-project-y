@@ -245,14 +245,14 @@ class PostsView(APIView):
                 if request.data.get("visibility") == "PUBLIC":
                     for i in FollowStatus.objects.filter(obj__id=author_id, complete=True):
                         print("Sending to: ", str(i.actor.host) + "api/author/" + str(i.actor.id) + "/inbox/")
-                        requests.post(str(i.actor.host) + "api/author/" + str(i.actor.id) + "/inbox/", data = serializer.data)
+                        requests.post(str(i.actor.host) + "api/author/" + str(i.actor.id) + "/inbox/", data = request.body)
 
                 if request.data.get("visibility") == "FRIENDS":
                     for follower in FollowSerializer(FollowStatus.objects.filter(obj__id=author_id, complete=True)).data:
                         for follow in FollowSerializer(FollowStatus.objects.filter(actor__id=author_id, complete=True)).data:
                             if follower["actor"]["id"] == follow["object"]["id"]:
                                 print("Sending to2: ", follower["object"]["host"] + "api/author/" + str(follower["object"]["id"]) + "/inbox/")
-                                requests.post(follower["object"]["host"] + "api/author/" + str(follower["object"]["id"]) + "/inbox/", data = serializer.data)    
+                                requests.post(follower["object"]["host"] + "api/author/" + str(follower["object"]["id"]) + "/inbox/", data = request.body)    
                 return Response(serializer.data, status = status.HTTP_200_OK)
         else:
             return Response({"title": "Invalid Fields", "message": serializer.errors}, status = status.HTTP_400_BAD_REQUEST)
