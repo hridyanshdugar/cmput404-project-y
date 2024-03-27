@@ -11,13 +11,14 @@ from django.shortcuts import get_object_or_404
 from users.models import User
 from django.db.models import Q
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from followers.views import getFriends
+from followers.views import getFriends, FollowStatus
 import json
 from requests.exceptions import JSONDecodeError
 from nodes.views import is_basicAuth, basicAuth
 from requests.auth import HTTPBasicAuth
 from rest_framework.response import Response
-from follows.models import FollowStatus
+
+
 class Pager(PageNumberPagination):
     page_size = 10
     page_size_query_param = 'size'
