@@ -242,6 +242,7 @@ class PostsView(APIView):
         print(response)
         if serializer.is_valid():
             serializer.save(author=author)
+            valid_post = True
             
             if request.data.get("contentType") == "text/post": #this means the request is a shared post (share button was clicked)
                 original_post_id = request.data.get("content")
@@ -252,22 +253,24 @@ class PostsView(APIView):
                     shared_post_source = request.data.get("source")
                     request.data = original_post_data
                     request.data["source"] = shared_post_source
-                pass
+                else:
+                    valid_post = False
             
-            # loops through followers and sends the post to them
-            if request.data.get("visibility") == "PUBLIC":
-                for i in FollowStatus.objects.filter(actor=author, complete=True):
-                    requests.post(i.follower.host + "api/author/" + str(i.obj.id) + "/inbox/", data = serializer.data)
+            if valid_post:
+                # loops through followers and sends the post to them
+                if request.data.get("visibility") == "PUBLIC":
+                    for i in FollowStatus.objects.filter(actor=author, complete=True):
+                        requests.post(i.follower.host + "api/author/" + str(i.obj.id) + "/inbox/", data = serializer.data)
 
-            if request.data.get("visibility") == "FRIENDS":
-                friends = []
-                for follower in FollowStatus.objects.filter(obj__id=author_id, complete=True).values():
-                    for follow in FollowStatus.objects.filter(actor__id=author_id, complete=True).values():
-                        if follower["actor"] == follow["obj"]:
-                            friends.append(follower)
-                for i in friends:
-                    requests.post(i.follower.host + "api/author/" + str(i.obj.id) + "/inbox/", data = serializer.data)                    
-            return Response(serializer.data, status = status.HTTP_200_OK)
+                if request.data.get("visibility") == "FRIENDS":
+                    friends = []
+                    for follower in list(FollowStatus.objects.filter(obj__id=author_id, complete=True).values()):
+                        for follow in list(FollowStatus.objects.filter(actor__id=author_id, complete=True).values()):
+                            if follower["actor"]["id"] == follow["obj"]["id"]:
+                                friends.append(follower)
+                    for i in friends:
+                        requests.post(i.follower.host + "api/author/" + str(i.obj.id) + "/inbox/", data = serializer.data)                    
+                return Response(serializer.data, status = status.HTTP_200_OK)
         else:
             return Response({"title": "Invalid Fields", "message": serializer.errors}, status = status.HTTP_400_BAD_REQUEST)
         

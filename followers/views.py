@@ -29,11 +29,11 @@ def getFollowers(request, author_id=None):
         if user.host == Node.objects.get(is_self=True).url:
             try:
                 print("here")
-                followers = FollowStatus.objects.filter(obj__id=author_id, complete=True).values()
+                followers = list(FollowStatus.objects.filter(obj__id=author_id, complete=True).values())
             except:
                 followers = []
             try:
-                following = FollowStatus.objects.filter(actor__id=author_id, complete=True).values()
+                following = list(FollowStatus.objects.filter(actor__id=author_id, complete=True).values())
             except:
                 following = []
             print(followers, following, "AAd")
@@ -88,9 +88,9 @@ def getFollowers(request, author_id=None):
 def getFriends(request, author_id=None):
     user = get_object_or_404(User,id=author_id)
     friends = []
-    for follower in FollowStatus.objects.filter(obj__id=author_id, complete=True).values():
-        for follow in FollowStatus.objects.filter(actor__id=author_id, complete=True).values():
-            if follower["actor"] == follow["obj"]:
+    for follower in list(FollowStatus.objects.filter(obj__id=author_id, complete=True).values()):
+        for follow in list(FollowStatus.objects.filter(actor__id=author_id, complete=True).values()):
+            if follower["actor"]["id"] == follow["obj"]["id"]:
                 friends.append(follower)
     friends = [friend["actor"]["id"] for friend in friends]
     return JsonResponse(friends, safe=False)
