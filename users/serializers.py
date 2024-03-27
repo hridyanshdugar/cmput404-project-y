@@ -60,6 +60,11 @@ class RemoteUserSerializer(serializers.ModelSerializer):
             if User.objects.filter(id=user_id).exists():
                 raise serializers.ValidationError('A user with this ID already exists.')
         
+        email = validated_data.get('email')
+        if User.objects.filter(email=email).exists():
+            email += ' '  # Append a space to make the email unique
+            validated_data['email'] = email
+        
         return super().create(validated_data)
 
 class AuthorSerializer(serializers.ModelSerializer):
