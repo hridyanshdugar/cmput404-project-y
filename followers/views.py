@@ -18,7 +18,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from .serializers import FollowSerializer
 from .models import FollowStatus
-
+import json
 val = URLValidator()
 
 def getFollowers(request, author_id=None):
@@ -102,7 +102,7 @@ class FollowerView(APIView):
         return Response({"follows": True},status=status.HTTP_200_OK)
 
     def post(self, request, author_id, follower_id):
-        data = request.data.json()
+        data = json.loads(request.body)
         print("cac", data)
         res = requests.request(method="POST", url=data["object"]["host"] + "api/authors/" + str(follower_id) + "/inbox/",data=data)
         if res.status_code == 200:
@@ -120,10 +120,11 @@ class FollowerView(APIView):
     
     # this put is for the notifications page for when you click accept it should go here
     def put(self, request, author_id, follower_id):
-        res = requests.request(method="POST", url=request.data["object"]["host"] + "api/authors/" + str(follower_id) + "/inbox/",data=request.data)
+        data = json.loads(request.body)
+        res = requests.request(method="POST", url=request.data["object"]["host"] + "api/authors/" + str(follower_id) + "/inbox/",data=data)
         if res.status_code == 200:
             req = get_object_or_404(FollowStatus,actor=author_id,obj=follower_id)
-            if request.data["accepted"]:
+            if data["accepted"]:
                 serializer = FollowSerializer(req,data={"complete":True},partial=True)
                 if serializer.is_valid():
                     serializer.save()
