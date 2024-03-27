@@ -115,7 +115,7 @@ export default function SideBar() {
                                 ></img>
                                 <div className={style.myName}>
                                     <div>{`${userData?.displayName}`}</div>
-                                    <div className={style.atNameText}>{`${userData?.email}`}</div>
+                                    <div className={style.atNameText}>{`${userData?.displayName}`}</div>
                                 </div>
                                 <div className={style.dotdotdoticon}>
                                     <FontAwesomeIcon icon={faEllipsis} inverse fixedWidth />

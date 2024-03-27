@@ -71,22 +71,6 @@ export default function Home() {
 			});
 		}
 		else {
-			/*
-			getFollowers(user.email)
-			.then(async (result: any) => {
-				if (result.status === 200) {
-					const Data = await result.json();
-					console.log(Data);
-					for (var i = 0; i < Data.length; i++) {
-						
-					}
-				} else {
-					throw new Error("Error fetching followers");
-				}
-			}).catch(error => {
-				console.log(error);
-			});
-			*/
 			getInbox(user.id, auth)
 			.then(async (result: any) => {
 				if (result.status === 200) {
@@ -137,7 +121,7 @@ export default function Home() {
                                 name={item.author.displayName}
                                 userId={item.author.id}
                                 profileImage={getMediaEndpoint() + item.author.profileImage?.split("?")[0]}
-                                username={item.author.email}
+                                username={item.author.displayName}
                                 text={item.content}
                                 postImage={undefined}
                                 date={Math.floor(new Date(item.published).getTime() / 1000)}
@@ -160,7 +144,7 @@ export default function Home() {
 								profileImage={
 									getMediaEndpoint() + item.author.profileImage?.split("?")[0]
 								}
-								username={item.author.email}
+								username={item.author.displayName}
 								text={item.content}
 								postImage={undefined}
 								date={Math.floor(new Date(item.published).getTime() / 1000)}

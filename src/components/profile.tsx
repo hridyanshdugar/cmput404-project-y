@@ -4,7 +4,7 @@ import styles from "./profile.module.css";
 import Button from "react-bootstrap/Button";
 import React from "react";
 import Cookies from "universal-cookie";
-import { navigate, sendFollowRequest, sendUnfollow } from "../utils/utils";
+import { navigate, sendFollow, sendUnfollow } from "../utils/utils";
 import { Link } from "react-router-dom";
 
 type Props = {
@@ -47,23 +47,6 @@ export default class Profile extends React.Component<Props> {
 		const activeUserId = cookies.get("user").id;
 		const externalUserId = this.props.userid;
 		if (request) {
-			sendUnfollow(this.props.userid, user["id"]);
-		}
-		this.followStatus = "Follow";
-		var div = document.getElementById("profileButton");
-		div!.classList.remove(styles.profileButtonFollowed);
-		div!.classList.add(styles.profileButton);
-		var button = document.getElementById("profileActionButton");
-		button!.innerHTML = this.followStatus;
-	};
-
-	notFollowing = (request: boolean) => {
-		const cookies = new Cookies();
-		const activeUserId = cookies.get("user").id;
-		const externalUserId = this.props.userid;
-		if (request) {
-			//API follow request !!NEEDED!!
-			// sendPostToInbox(follower.id, auth.access, post, follower)
 			let actor = {
 				type: "author",
 				id: user["id"],
@@ -82,7 +65,41 @@ export default class Profile extends React.Component<Props> {
 				github: this.props.github,
 				profileImage: this.props.profileImage,
 			};
-			sendFollowRequest(this.props.userid, auth.access, actor, object);
+			sendUnfollow(actor, object, auth.access);
+		}
+		this.followStatus = "Follow";
+		var div = document.getElementById("profileButton");
+		div!.classList.remove(styles.profileButtonFollowed);
+		div!.classList.add(styles.profileButton);
+		var button = document.getElementById("profileActionButton");
+		button!.innerHTML = this.followStatus;
+	};
+
+	notFollowing = (request: boolean) => {
+		const cookies = new Cookies();
+		const activeUserId = cookies.get("user").id;
+		const externalUserId = this.props.userid;
+		if (request) {
+			//API follow request !!NEEDED!!
+			let actor = {
+				type: "author",
+				id: user["id"],
+				url: user["url"],
+				host: user["host"],
+				displayName: user["displayName"],
+				github: user["github"],
+				profileImage: user["profileImage"],
+			};
+			let object = {
+				type: "author",
+				id: this.props.userid,
+				host: this.props.host,
+				displayName: this.props.name,
+				url: this.props.url,
+				github: this.props.github,
+				profileImage: this.props.profileImage,
+			};
+			sendFollow(actor, object, auth.access);
 		}
 		this.followStatus = "Following";
 		var div = document.getElementById("profileButton");
@@ -111,9 +128,6 @@ export default class Profile extends React.Component<Props> {
 							<h1 id="profileName" className={styles.title}>
 								{this.props.name}
 							</h1>
-							<div className={styles.postCount}>
-								{this.props.postCount} posts
-							</div>
 						</div>
 						<div id="profileBackround">
 							<img

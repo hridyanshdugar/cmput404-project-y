@@ -122,8 +122,6 @@ class UsersViewPK(APIView):
         serializer = AuthorSerializer(user,context={'request': request})
         return Response(serializer.data, status = status.HTTP_200_OK)
 
-            
-
     '''
     POST /users
     '''
@@ -158,7 +156,7 @@ class UsersView(APIView):
      GET /users
      '''
      def get(self, request):
-        users = User.objects.filter(approved=True)
+        users = User.objects.filter(approved=True, host=Node.objects.get(is_self=True).url)
         page_number = request.GET.get('page') or 1
 
         page = self.pagination.paginate_queryset(users, request, view=self)
@@ -185,8 +183,11 @@ class AllUsersView(APIView):
     def get(self, request):
         user_auth = get_object_or_404(Node,is_self=True).username
         pass_auth = get_object_or_404(Node,is_self=True).password
-        nodes = Node.objects.all()
-        node_responses = []
+        nodes = Node.objects.filter(is_self=False)
+
+        users = User.objects.filter(approved=True)
+        serializer = AuthorSerializer(users,many=True,context={'request': request})
+        node_responses = serializer.data
 
         for node in nodes:
             print(node.url + "api/users/")

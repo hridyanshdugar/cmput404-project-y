@@ -15,8 +15,8 @@ import {
 	getFrontend,
 	getPost,
 	likePost,
-	sendPostToInbox,
-	sendLikeToInbox,
+	// sendPostToInbox,
+	// sendLikeToInbox,
 } from "../utils/utils";
 import { Badge, Card } from "react-bootstrap";
 import Dropdown from "./dropdowns/dropdown";
@@ -129,23 +129,23 @@ const SinglePost: React.FC<Props> = (props) => {
 		const cookies = new Cookies();
 		const user = cookies.get("user");
 		const auth = cookies.get("auth");
-		if (props.parentId) {
-			sendLikeToInbox(
-				user["id"],
-				auth["access"],
-				getAPIEndpoint() +
-					"/post/" +
-					props.parentId +
-					"/comments/" +
-					props.postId
-			);
-		} else {
-			sendLikeToInbox(
-				user["id"],
-				auth["access"],
-				getAPIEndpoint() + "/post/" + props.postId
-			);
-		}
+		// if (props.parentId) {
+		// 	sendLikeToInbox(
+		// 		user["id"],
+		// 		auth["access"],
+		// 		getAPIEndpoint() +
+		// 			"/post/" +
+		// 			props.parentId +
+		// 			"/comments/" +
+		// 			props.postId
+		// 	);
+		// } else {
+		// 	sendLikeToInbox(
+		// 		user["id"],
+		// 		auth["access"],
+		// 		getAPIEndpoint() + "/post/" + props.postId
+		// 	);
+		// }
 		setLikes(likes + 1);
 		event.stopPropagation();
 	};
@@ -156,7 +156,7 @@ const SinglePost: React.FC<Props> = (props) => {
 		const user = cookies.get("user");
 		const auth = cookies.get("auth");
 		setuser(user);
-		getPost(auth["access"], props.postId)
+		getPost(auth["access"], props.postId,user.id)
 			.then(async (result: any) => {
 				if (result.status === 200) {
 					const Data = await result.json();
@@ -172,7 +172,7 @@ const SinglePost: React.FC<Props> = (props) => {
 		if (props.contentType === "text/post") {
 			console.log("shared post1");
 			var originalPostId = props.text;
-			getPost(auth.access, originalPostId)
+			getPost(auth.access, originalPostId, user.id)
 				.then(async (result: any) => {
 					const Data = await result.json();
 					setSharedPost(Data);
@@ -205,34 +205,6 @@ const SinglePost: React.FC<Props> = (props) => {
 			.then(async (result: any) => {
 				const Data = await result.json();
 				console.log(Data);
-			})
-			.catch(async (result: any) => {
-				const Data = await result.json();
-			});
-		//Share post to inboxes
-
-		getFollowers(user.email)
-			.then(async (result: any) => {
-				const Data = await result.json();
-				console.log(Data);
-				for (var i = 0; i < Data.length; i++) {
-					var follower = Data[i];
-					console.log("follower");
-					console.log(follower);
-					sendPostToInbox(follower.id, auth.access, post, follower)
-						.then(async (result: any) => {
-							if (result.status === 200) {
-								const Data = await result.json();
-								console.log("POST");
-								console.log(Data);
-							} else {
-								throw new Error("Error sending post to inbox");
-							}
-						})
-						.catch((error) => {
-							console.log(error);
-						});
-				}
 			})
 			.catch(async (result: any) => {
 				const Data = await result.json();
@@ -386,7 +358,7 @@ const SinglePost: React.FC<Props> = (props) => {
 										getMediaEndpoint() +
 										sharedPost.author.profileImage.split("?")[0]
 									}
-									username={sharedPost.author.email}
+									username={sharedPost.author.displayName}
 									text={sharedPost.content}
 									postImage={undefined}
 									date={Math.floor(

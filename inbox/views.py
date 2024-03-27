@@ -2,7 +2,6 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 from .models import Inbox, Post
-from followers.models import NewFollowRequest
 from comments.models import Comment
 from rest_framework.pagination import PageNumberPagination
 from posts.serializers import PostSerializer
@@ -16,11 +15,14 @@ from posts.serializers import RemotePostSerializer
 from .serializers import InboxSerializer
 import requests
 from requests.exceptions import JSONDecodeError
-from followers.models import Follower
 from nodes.models import Node
 from nodes.views import is_basicAuth, basicAuth
 from requests.auth import HTTPBasicAuth
-
+from followers.serializers import FollowSerializer, SaveFollowSerializer
+from followers.models import FollowStatus
+import json
+import copy 
+from users.views import download_profile, download_profileBack
 class Pager(PageNumberPagination):
     page_size = 10
     page_size_query_param = 'size'
@@ -41,92 +43,101 @@ class InboxView(APIView):
      '''
      def get(self, request, pk):
         print(pk)
-        post = get_object_or_404(Inbox, author__id=pk)
+        hi_user = User.objects.get(id=pk)
+        post = Inbox.objects.get_or_create(author=hi_user)[0]
         print("GOT")
         serializer = InboxSerializer(post)
         return Response(serializer.data, status = status.HTTP_200_OK)
 
      '''
-     PUT /authors/{id}/inbox
+     POST /authors/{id}/inbox
      '''
-     def put(self, request, pk):
-        inbox = Inbox.objects.get_or_create(id=pk)[0]
+     def post(self, request, pk):
+        def get_foreign_user(data):
+            response_data = copy.deepcopy(data)["actor"]
+            try:
+                obj_user = User.objects.get(id=data["actor"]["id"])
+            except:
+                hasPfp = False
+                hasPfpBack = False
+                if "profileImage" in response_data:
+                    hasPfp = response_data.pop("profileImage")
+                if "profileBackgroundImage" in response_data:
+                    hasPfpBack = response_data.pop("profileBackgroundImage")
+                print(response_data)
+                user = None
+                serializer = None
+                try:
+                    user = User.objects.get(id=pk)
+                    serializer = RemoteUserSerializer(user,data=response_data,partial=True)
+                except Exception as e:
+                    print(e)  
+
+                    serializer = RemoteUserSerializer(data=response_data)
+                if serializer.is_valid():
+                    user = serializer.save()
+                    if hasPfp:
+                        download_profile(user, hasPfp)
+                        response_data['profileImage'] = hasPfp
+                    if hasPfpBack:
+                        download_profileBack(user, hasPfpBack)
+                        response_data['profileBackgroundImage'] = hasPfpBack
+                else:
+                    print(f"Invalid data from : {serializer.errors}")
+
+        hi_user = User.objects.get(id=pk)
+        inbox = Inbox.objects.get_or_create(author=hi_user)[0]
 
         JWT_authenticator = JWTAuthentication()
         response = JWT_authenticator.authenticate(request)
-
-        if request.data["type"] == "Follow":
-            author = None
-            try:
-                author = User.objects.get(id=request.data["actor"]["id"])
-            except:
-                response = requests.get(request.data["actor"]["url"])
-
-                if response.status_code == 200:
-                    try:
-                        data = response.json()
-                        serializer = RemoteUserSerializer(data={"id": data["id"], "url": data["url"], "email": data["email"], "profileImage": data["profileImage"], "profileBackgroundImage": data["profileBackgroundImage"], "github": data["github"], "displayName": data["displayName"]})
-                        if serializer.is_valid():
-                            author = serializer.save()
-                        else: 
-                            print(serializer.errors)
-                    except Exception as e:
-                        print(e)
+        print("RESPONSEfdsfdsfsd", request.body)
+        data = json.loads(request.body)
+        print("big bug", data)
+        if data["type"] == "Follow":
+            get_foreign_user(data)
+        
             
-            follower_obj = request.data["object"]   # I see we are objectifying people now 
-            follower_obj = NewFollowRequest.objects.create(userId=follower_obj["id"], 
-                                                           followerId = author.id,
-                                                           host=author.host, 
-                                                           displayName=author.displayName, 
-                                                           url=author.url,
-                                                           github=author.github,
-                                                           profileImage=author.profileImage)
-            
-            # Dont really need to save in inbox (Design choice, not using inbox to retrieve the data)
-            # inbox.author = author
-            # inbox.followRequest.add(follower_obj)
-            # inbox.save()
+            serializer = SaveFollowSerializer(data={"actor": data["actor"]["id"],"obj":data["object"]["id"], "complete": False})
+            if serializer.is_valid():
+                if not FollowStatus.objects.filter(actor=data["actor"]["id"],obj=data["object"]["id"]).exists():
+                    follow_obj = serializer.save()
+                    inbox.author = User.objects.get(id=pk)
+                    inbox.followRequest.add(follow_obj)
+                    inbox.save()
+
             return Response({"Title":"Done"}, status = status.HTTP_200_OK)
-        if request.data["type"] == "unfollow":
-            author = None
-            try:
-                author = User.objects.get(id=request.data["actor"]["id"])
-            except:
-                user_auth = get_object_or_404(Node,is_self=True).username
-                pass_auth = get_object_or_404(Node,is_self=True).password
-                response = requests.get(request.data["actor"]["url"], auth=HTTPBasicAuth(user_auth, pass_auth))
-
-                if response.status_code == 200:
-                    try:
-                        data = response.json()
-                        serializer = RemoteUserSerializer(data={"id": data["id"], "global_id": data["global_id"], "url": data["url"], "email": data["email"], "profileImage": data["profileImage"], "profileBackgroundImage": data["profileBackgroundImage"], "github": data["github"], "displayName": data["displayName"]})
-                        if serializer.is_valid():
-                            author = serializer.save()
-                        else: 
-                            print(serializer.errors)
-                    except Exception as e:
-                        print(e)
-            follower_obj = request.data["object"] 
-            Follower.objects.delete(Q(userId=follower_obj["id"]) & Q(followerId=author.id))
+        if data["type"] == "Unfollow":
+            get_foreign_user(data)
             
-            # Dont really need to save in inbox (Design choice, not using inbox to retrieve the data)
-            # inbox.author = author
-            # inbox.followRequest.add(follower_obj)
-            # inbox.save()
-            return Response({"Title":"Deleted follower"}, status = status.HTTP_200_OK)
-        if request.data["type"] == "post":
+            req = get_object_or_404(FollowStatus,actor=data["actor"]["id"],obj=data["object"]["id"])
+            req.delete()
+
+            return Response({"Title":"Done"}, status = status.HTTP_200_OK)
+        if data["type"] == "FollowResponse":
+            get_foreign_user(data)
+            if data["accepted"]:
+                req = get_object_or_404(FollowStatus,actor=data["actor"]["id"],obj=data["object"]["id"])
+                req.complete = True
+                req.save()
+            else:
+                req = get_object_or_404(FollowStatus,actor=data["actor"]["id"],obj=data["object"]["id"])
+                req.delete()
+
+
+            return Response({"Title":"Done"}, status = status.HTTP_200_OK)        
+        if data["type"] == "post":
             author = None
             try:
-                author = User.objects.get(id=request.data["author"]["id"])
+                author = User.objects.get(id=data["author"]["id"])
             except:
                 user_auth = get_object_or_404(Node,is_self=True).username
                 pass_auth = get_object_or_404(Node,is_self=True).password
-                response = requests.get(request.data["author"]["id"], auth=HTTPBasicAuth(user_auth, pass_auth))
+                response = requests.get(data["author"]["id"], auth=HTTPBasicAuth(user_auth, pass_auth))
 
                 if response.status_code == 200:
                     try:
-                        data = response.json()
-                        serializer = RemoteUserSerializer(data={"id": data["id"], "url": data["url"], "email": data["email"], "profileImage": data["profileImage"], "profileBackgroundImage": data["profileBackgroundImage"], "github": data["github"], "displayName": data["displayName"]})
+                        bob = response.json()
+                        serializer = RemoteUserSerializer(data={"id": bob["id"], "url": bob["url"], "displayName": bob["displayName"], "profileImage": bob["profileImage"], "profileBackgroundImage": bob["profileBackgroundImage"], "github": bob["github"], "displayName": bob["displayName"]})
                         if serializer.is_valid():
                             author = serializer.save()
                         else: 
@@ -136,17 +147,17 @@ class InboxView(APIView):
             
             post_obj = None
             try:
-                post_obj = Post.objects.get(id=request.data["post"]["id"])
+                post_obj = Post.objects.get(id=data["post"]["id"])
             except:
-                print("DATA:",request.data["post"])
+                print("DATA:",data["post"])
                 user_auth = get_object_or_404(Node,is_self=True).username
                 pass_auth = get_object_or_404(Node,is_self=True).password
-                response = requests.get(request.data["post"]["id"], auth=HTTPBasicAuth(user_auth, pass_auth))
+                response = requests.get(data["post"]["id"], auth=HTTPBasicAuth(user_auth, pass_auth))
 
                 if response.status_code == 200:
                     try:
-                        data = response.json()
-                        serializer = RemotePostSerializer(data={"id": data["id"], "url": data["url"], "host": data["host"], "content": data["content"], "contentType": data["contentType"], "published": data["published"], "visibility": data["visibility"], "origin": data["origin"], "description": data["description"], "author": request.data["author"]["id"]})
+                        bob = response.json()
+                        serializer = RemotePostSerializer(data={"id": bob["id"], "url": bob["url"], "host": bob["host"], "content": bob["content"], "contentType": bob["contentType"], "published": data["published"], "visibility": data["visibility"], "origin": data["origin"], "description": bob["description"], "author": bob["author"]["id"]})
                         if serializer.is_valid():
                             post_obj = serializer.save()
                         else: 
@@ -158,17 +169,17 @@ class InboxView(APIView):
             inbox.author = author
             inbox.save()
             return Response({"Title":"Done"}, status = status.HTTP_200_OK)
-        if request.data["type"] == "comment":
+        if data["type"] == "comment":
             pass
-        if request.data["type"] == "liked":
-            if "comment" in request.data["object"]: 
-                usr = get_object_or_404(User,id=request.data["id"])
-                post = get_object_or_404(Comment,id=request.data["object"].split("/")[-1])
+        if data["type"] == "liked":
+            if "comment" in data["object"]: 
+                usr = get_object_or_404(User,id=data["id"])
+                post = get_object_or_404(Comment,id=data["object"].split("/")[-1])
                 print("NO")
 
-                new_data = request.data.copy()
-                new_data['author'] = request.data["id"]
-                new_data['comment'] = request.data["object"].split("/")[-1]
+                new_data = data.copy()
+                new_data['author'] = data["id"]
+                new_data['comment'] = data["object"].split("/")[-1]
 
                 serializer = EditCommentLikeSerializer(data=new_data)
                 if serializer.is_valid():
@@ -179,13 +190,13 @@ class InboxView(APIView):
                     return Response(serializer.data, status = status.HTTP_200_OK)
                 return Response({"Title": "Unsuccessfully Added","Message": "Unsuccessfully Added"}, status = status.HTTP_400_BAD_REQUEST)
             else:
-                usr = get_object_or_404(User,id=request.data["id"])
-                post = get_object_or_404(Post,id=request.data["object"].split("/")[-1])
+                usr = get_object_or_404(User,id=data["id"])
+                post = get_object_or_404(Post,id=data["object"].split("/")[-1])
                 print("NO")
 
-                new_data = request.data.copy()
-                new_data['author'] = request.data["id"]
-                new_data['post'] = request.data["object"].split("/")[-1]
+                new_data = data.copy()
+                new_data['author'] = data["id"]
+                new_data['post'] = data["object"].split("/")[-1]
 
                 serializer = EditPostLikeSerializer(data=new_data)
 

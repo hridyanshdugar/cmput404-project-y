@@ -4,30 +4,10 @@ from django.db import models
 USERNAME_MAX_LENGTH = 100
 URL_MAX_LENGTH = 300
 
-# Create your models here.
-class Friends(models.Model):
-    userId = models.TextField(editable=False, unique=False, default='')
-    friendId = models.TextField(editable=False, unique=False, default='')
-    host=models.TextField(blank=True, default='')
-    displayName=models.TextField(blank=True, default='')
-    url = models.TextField(blank=True, default='')
-    github=models.TextField(blank=True, default='')
-    profileImage=models.TextField(blank=True, default='')
-
-class Follower(models.Model):
-    userId = models.TextField(editable=False, unique=False, default='')
-    followerId = models.TextField(editable=False, unique=False, default='')
-    host=models.TextField(blank=True, default='')
-    displayName=models.TextField(blank=True, default='')
-    url = models.TextField(blank=True, default='')
-    github=models.TextField(blank=True, default='')
-    profileImage=models.TextField(blank=True, default='')
-
-class NewFollowRequest(models.Model):
-    userId = models.TextField(editable=False, unique=False, default='')
-    followerId = models.TextField(editable=False, unique=False, default='')
-    host=models.TextField(blank=True, default='')
-    displayName=models.TextField(blank=True, default='')
-    url = models.TextField(blank=True, default='')
-    github=models.TextField(blank=True, default='')
-    profileImage=models.TextField(blank=True, default='')
+class FollowStatus(models.Model):
+    actor = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='following')
+    obj = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='to_follow')
+    # Following status
+    # - Pending
+    # - Confirmed
+    complete = models.BooleanField(default=False)

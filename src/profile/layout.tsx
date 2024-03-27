@@ -58,36 +58,9 @@ export default function ProfileLayout() {
 				.then(async (result) => {
 					if (result.status === 200) {
 						const data = await result.json();
-						setFollowingNumber(data.items.length);
-						setFollowersNumber(data.followers.length);
+						setFollowersNumber(data.items.length);
+						setFollowingNumber(data.following.length);
 						setFriendsNumber(data.friends.length);
-					} else {
-						throw new Error("Error fetching posts");
-					}
-				})
-				.catch((error) => {
-					console.log(error);
-				});
-
-			getHomePosts(
-				cookies.get("user").host,
-				1,
-				100,
-				cookies.get("auth").access,
-				userId
-			)
-				.then(async (result: any) => {
-					if (result.status === 200) {
-						const Data = await result.json();
-						console.log("GET HOME POSTS");
-						console.log(Data);
-						let temp_count = 0;
-						for (var i = 0; i < Data.length; i++) {
-							if (Data[i].author.id == userId) {
-								temp_count++;
-							}
-						}
-						setPostCount(temp_count);
 					} else {
 						throw new Error("Error fetching posts");
 					}
@@ -110,7 +83,7 @@ export default function ProfileLayout() {
 	// API call to check if the user is already following the other user
 	// Not working as expected for some reason
 	if (!activeUser) {
-		checkFollowingStatus(userId, userIdCookie)
+		checkFollowingStatus(userId, userIdCookie, allcookies.auth.access)
 			.then((result) => {
 				console.log(result);
 				return result.json();
@@ -133,7 +106,7 @@ export default function ProfileLayout() {
 				<Profile
 					userid={userId!}
 					name={userInformation?.displayName}
-					username={userInformation?.email}
+					username={userInformation?.displayName}
 					bio={userInformation?.bio ? userInformation?.bio : "No Bio"}
 					website={
 						userInformation?.github ? userInformation?.github : "No Website"

@@ -6,7 +6,7 @@ import "../../global.css";
 interface InputProps {
     onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
     text?: string;
-    inputtype?: "text" | "email" | "password";
+    inputtype?: "text" | "displayName" | "password";
     placeholder?: string;
     type?: "primary" | "secondary" | "tertiary";
     size?: "small" | "medium" | "large";

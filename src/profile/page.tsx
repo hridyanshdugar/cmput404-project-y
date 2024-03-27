@@ -21,25 +21,29 @@ export default function Profiles() {
 	const [page, setPage] = useState<number>(1);
 	const [size, setSize] = useState<number>(100); // Temporary
 
-	const [posts, setPosts] = useContext(PostContext);
+	const [posts, setPosts] = useState<any>([]);
 
 	const [userId, setUserId] = useState<any>(null);
 	const [user, setuser] = useState<any>(null);
 	const [auth, setauth] = useState<any>(null);
 
+	const currentUrl = window.location.href;
+
+	const id = currentUrl.split("/").pop() || '';
+
 	useEffect(() => {
 		const cookies = new Cookies();
 		const auth = cookies.get("auth")["access"];
 		const user = cookies.get("user");
+		console.log("TESTED CHANGE");
 		setUserId(outletObject.userId);
 		setuser(user);
 		setauth(auth);
 
-		getHomePosts(user.host, page, size, auth, user.id)
+		getHomePosts(user.host, page, size, auth, id)
 			.then(async (result: any) => {
 				const Data = await result.json();
 				console.log(Data);
-				console.log("TESTED");
 				setPosts(Data);
 			})
 			.catch(async (result: any) => {
@@ -56,7 +60,7 @@ export default function Profiles() {
 							<>There are no posts available</>
 						) : (
 							posts.map((item: any, index: any) =>
-								item.author.id === userId ? (
+								true ? (
 									<SinglePost
 										key={index}
 										name={item.author.displayName}
@@ -65,7 +69,7 @@ export default function Profiles() {
 											getMediaEndpoint() +
 											item.author.profileImage?.split("?")[0]
 										}
-										username={item.author.email}
+										username={item.author.displayName}
 										text={item.content}
 										postImage={undefined}
 										date={Math.floor(new Date(item.published).getTime() / 1000)}

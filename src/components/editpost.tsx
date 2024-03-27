@@ -53,7 +53,7 @@ const EditPostt: React.FC<EditPostProps> = (props) => {
 		const user = cookies.get("user");
 		setuser(user);
 		setauth(auth);
-		getPost(auth, props.postId)
+		getPost(auth, props.postId,user.id)
 			.then((result) => {
 				if (result.status == 200) {
 					return result.json();
@@ -156,7 +156,8 @@ const EditPostt: React.FC<EditPostProps> = (props) => {
 					: postInformation?.contentType,
 			},
 			auth,
-			postInformation?.id
+			postInformation?.id,
+			user.id
 		)
 			.then(async (result: any) => {
 				const Data = await result.json();

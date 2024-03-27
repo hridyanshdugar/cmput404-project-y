@@ -60,6 +60,11 @@ class RemoteUserSerializer(serializers.ModelSerializer):
             if User.objects.filter(id=user_id).exists():
                 raise serializers.ValidationError('A user with this ID already exists.')
         
+        displayName = validated_data.get('displayName')
+        if User.objects.filter(displayName=displayName).exists():
+            displayName += ' '  # Append a space to make the displayName unique
+            validated_data['displayName'] = displayName
+        
         return super().create(validated_data)
 
 class AuthorSerializer(serializers.ModelSerializer):
@@ -68,7 +73,7 @@ class AuthorSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ["id", "host","url","type","displayName","email","profileImage","github","profileBackgroundImage"]
+        fields = ["id", "host","url","type","displayName","displayName","profileImage","github","profileBackgroundImage"]
     
     def get_type(self, obj):
         return "author"

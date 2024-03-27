@@ -6,12 +6,12 @@ from users.models import User
 class UsersTestCase(APITestCase):
     def setUp(self):
         password = make_password("test")
-        self.user = User.objects.create(email="test@email.com", password=password, approved=True)
-        response = self.client.post(f"/api/auth/login", {"email": "test@email.com", "password": "test"})
+        self.user = User.objects.create(displayName="test@displayName.com", password=password, approved=True)
+        response = self.client.post(f"/api/auth/login", {"displayName": "test@displayName.com", "password": "test"})
         self.user = response.data["user"]
         self.auth = response.data["auth"]
-        self.user2 = User.objects.create(email="test2@email.com", password=password, approved=True)
-        response = self.client.post(f"/api/auth/login", {"email": "test2@email.com", "password": "test"})
+        self.user2 = User.objects.create(displayName="test2@displayName.com", password=password, approved=True)
+        response = self.client.post(f"/api/auth/login", {"displayName": "test2@displayName.com", "password": "test"})
         self.user2 = response.data["user"]
         self.auth2 = response.data["auth"]
 
@@ -24,7 +24,7 @@ class UsersTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def testPostUser(self):
-        response = self.client.post(f"/api/users/{self.user['id']}", {"email": "testNew@email.com"})
+        response = self.client.post(f"/api/users/{self.user['id']}", {"displayName": "testNew@displayName.com"})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def testDeleteUser(self):
@@ -43,7 +43,7 @@ class UsersTestCase(APITestCase):
         self.assertEqual(len(response.data), 2)
     
     def testCreateUser(self):
-        response = self.client.post(f"/api/users/", {"email": "test3@email.com", "password": "test"})
+        response = self.client.post(f"/api/users/", {"displayName": "test3@displayName.com", "password": "test"})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         response = self.client.get(f"/api/users/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
