@@ -97,7 +97,7 @@ class PostsViewPK(APIView):
      '''
      PUT /authors/{id}/posts/{id} and /posts/{id}
      '''
-     def put(self, request,author_id, post_id):
+     def put(self, request, author_id, post_id):
         post = get_object_or_404(Post, id=post_id)
         try:
             author = User.objects.get(id=request.data.get("author"))
@@ -124,15 +124,9 @@ class PostsViewPK(APIView):
      DELETE /authors/{id}/posts/{id} and /posts/{id}
      '''
      def delete(self, request, pk):
-        JWT_authenticator = JWTAuthentication()
-        response = JWT_authenticator.authenticate(request)
         post = get_object_or_404(Post, id=pk)
-        serializer = PostSerializer(post, context={'request': request})
-        realAuthor = serializer.get_author(post)["id"]
-        if response and realAuthor == response[1]["user_id"]:
-            post.delete()
-            return Response({"title": "Successfully Deleted", "message": "Post was deleted"}, status = status.HTTP_200_OK)
-        return Response({"title": "Unauthorized", "message": "You are not authorized to delete this post"}, status = status.HTTP_401_UNAUTHORIZED)
+        post.delete()
+        return Response({"title": "Successfully Deleted", "message": "Post was deleted"}, status = status.HTTP_200_OK)
      
      '''
      PATCH /authors/{id}/posts/{id} and /posts/{id}

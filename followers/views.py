@@ -84,8 +84,8 @@ def getFollowers(request, author_id=None):
             return JsonResponse({
                 "type": "followers",
                 "items": followers and followers["items"] or [],
-                "following": [],
-                "friends": []
+                "following": "following" in followers and followers["following"] or [],
+                "friends": "friends" in followers and followers["friends"] or []
             })
     else:
         return HttpResponseBadRequest("Something went wrong!")        
