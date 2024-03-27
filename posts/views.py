@@ -116,9 +116,7 @@ class AllPostsView2(APIView):
      GET /authors/{id}/posts2/
      '''
      def get(self, request, author_id):
-        print("GETTING ALL POSTS 1")
         author = User.objects.get(id=author_id)
-        print("GETTING ALL POSTS 2")
 
         friends = []
         for follower in FollowSerializer(FollowStatus.objects.filter(obj__id=author_id, complete=True),many=True).data:
@@ -126,24 +124,16 @@ class AllPostsView2(APIView):
                 if follower["actor"]["id"] == follow["object"]["id"]:
                     friends.append(follower)
         friends = [friend["actor"]["id"] for friend in friends]        
-        print("GETTING ALL POSTS 3")
 
         posts = Post.objects.filter(Q(author=author) | Q(visibility="FRIENDS", author__id__in=friends) | Q(visibility="PUBLIC")).order_by('-published') 
         page_number = request.GET.get('page') or 1
-        print("GETTING ALL POSTS 4")
         posts = self.pagination.paginate_queryset(posts, request, view=self)
+        
         if posts is not None:
-            print("GETTING ALL POSTS 5")
-
             serializer = PostSerializer(posts, many=True, context={'request': request})
-            print("GETTING ALL POSTS 6")
-
             data = serializer.data
-            print("GETTING ALL POSTS 7")
-
             return Response(data, status = status.HTTP_200_OK)
         else:
-            print("GETTING ALL POSTS 8")
             return Response("hi", status = status.HTTP_400_BAD_REQUEST)
 
 
@@ -252,14 +242,16 @@ class PostsView(APIView):
             if valid_post:
                 # loops through followers and sends the post to them
                 if request.data.get("visibility") == "PUBLIC":
-                    for i in FollowStatus.objects.filter(actor=author, complete=True):
-                        requests.post(str(i.obj.host) + "api/author/" + str(i.obj.id) + "/inbox/", data = serializer.data)
+                    for i in FollowStatus.objects.filter(obj=author, complete=True):
+                        print("Sending to: ", str(i.actor.host) + "api/author/" + str(i.actor.id) + "/inbox/")
+                        requests.post(str(i.actor.host) + "api/author/" + str(i.actor.id) + "/inbox/", data = serializer.data)
 
                 if request.data.get("visibility") == "FRIENDS":
                     for follower in FollowSerializer(FollowStatus.objects.filter(obj__id=author_id, complete=True)).data:
                         for follow in FollowSerializer(FollowStatus.objects.filter(actor__id=author_id, complete=True)).data:
                             if follower["actor"]["id"] == follow["object"]["id"]:
-                                requests.post(follow["object"]["host"] + "api/author/" + str(follow["object"]["id"]) + "/inbox/", data = serializer.data)    
+                                print("Sending to2: ", follower["object"]["host"] + "api/author/" + str(follower["object"]["id"]) + "/inbox/")
+                                requests.post(follower["object"]["host"] + "api/author/" + str(follower["object"]["id"]) + "/inbox/", data = serializer.data)    
                 return Response(serializer.data, status = status.HTTP_200_OK)
         else:
             return Response({"title": "Invalid Fields", "message": serializer.errors}, status = status.HTTP_400_BAD_REQUEST)
