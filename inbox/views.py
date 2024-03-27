@@ -54,7 +54,7 @@ class InboxView(APIView):
 
         JWT_authenticator = JWTAuthentication()
         response = JWT_authenticator.authenticate(request)
-
+        print("big bug", request.data)
         if request.data["type"] == "Follow":
             try:
                 obj_user = User.objects.get(id=request.data["object"]["id"])

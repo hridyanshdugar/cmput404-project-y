@@ -241,7 +241,7 @@ class PostsView(APIView):
         serializer = PostSerializer(data = request.data, context={'request': request})
         print(response)
         if serializer.is_valid():
-            post_object = serializer.save(author=author)
+            serializer.save(author=author)
             # loops through followers and sends the post to them
             if request.data.get("visibility") == "PUBLIC":
                 for i in FollowStatus.objects.filter(actor=author, complete=True):
