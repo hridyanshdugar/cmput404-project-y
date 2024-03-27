@@ -20,7 +20,7 @@ def login(request):
     if 'password' not in request.data or 'displayName' not in request.data:
         return Response(status=status.HTTP_400_BAD_REQUEST,data={'title': 'Missing Fields','message': 'A password and displayName is required for logging in'})
     user = User.objects.filter(displayName=request.data['displayName'],approved=True).first()
-    inbox = Inbox.objects.get_or_create(author__id=user.id)[0]
+    inbox = Inbox.objects.get_or_create(author=user)[0]
     inbox.author = user
     inbox.save()
     if not user:

@@ -43,7 +43,8 @@ class InboxView(APIView):
      '''
      def get(self, request, pk):
         print(pk)
-        post = Inbox.objects.get_or_create(author__id=pk)[0]
+        hi_user = User.objects.get(id=pk)
+        post = Inbox.objects.get_or_create(author=hi_user)[0]
         print("GOT")
         serializer = InboxSerializer(post)
         return Response(serializer.data, status = status.HTTP_200_OK)
@@ -84,7 +85,8 @@ class InboxView(APIView):
                 else:
                     print(f"Invalid data from : {serializer.errors}")
 
-        inbox = Inbox.objects.get_or_create(author__id=pk, author__host=Node.objects.get(is_self=True).url)[0]
+        hi_user = User.objects.get(id=pk)
+        inbox = Inbox.objects.get_or_create(author=hi_user)[0]
 
         JWT_authenticator = JWTAuthentication()
         response = JWT_authenticator.authenticate(request)
