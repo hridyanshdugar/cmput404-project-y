@@ -104,7 +104,7 @@ class FollowerView(APIView):
     def post(self, request, author_id, follower_id):
         data = json.loads(request.body)
         print("cac", data)
-        res = requests.request(method="POST", url=data["object"]["host"] + "api/authors/" + str(follower_id) + "/inbox/",data=data)
+        res = requests.request(method="POST", url=data["object"]["host"] + "api/authors/" + str(follower_id) + "/inbox/",data=request.body)
         if res.status_code == 200:
             if data["type"] == "Follow":
                 serializer = FollowSerializer(data={"actor":author_id,"obj":follower_id})
@@ -121,7 +121,7 @@ class FollowerView(APIView):
     # this put is for the notifications page for when you click accept it should go here
     def put(self, request, author_id, follower_id):
         data = json.loads(request.body)
-        res = requests.request(method="POST", url=request.data["object"]["host"] + "api/authors/" + str(follower_id) + "/inbox/",data=data)
+        res = requests.request(method="POST", url=request.data["object"]["host"] + "api/authors/" + str(follower_id) + "/inbox/",data=request.body)
         if res.status_code == 200:
             req = get_object_or_404(FollowStatus,actor=author_id,obj=follower_id)
             if data["accepted"]:
