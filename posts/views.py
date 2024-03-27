@@ -229,7 +229,7 @@ class PostsView(APIView):
             if request.data.get("contentType") == "text/post": #this means the request is a shared post (share button was clicked)
                 original_post_id = request.data.get("content")
                #replace request.data with content of the actual post but maintain source of shared post
-                post_response = requests.get(i.follower.host + "api/authors/posts/" + original_post_id)
+                post_response = requests.get(i.follower.host + "api/posts/" + original_post_id)
                 if post_response.status_code == 200:
                     original_post_data = post_response.json()
                     shared_post_source = request.data.get("url")
@@ -241,6 +241,7 @@ class PostsView(APIView):
             if valid_post:
                 # loops through followers and sends the post to them
                 print("Visibility: ", request.data.get("visibility"))
+                print("dsfhsdif", serializer.data)
                 if request.data.get("visibility") == "PUBLIC":
                     for i in FollowStatus.objects.filter(obj__id=author_id, complete=True):
                         print("Sending to: ", str(i.actor.host) + "api/authors/" + str(i.actor.id) + "/inbox/")
