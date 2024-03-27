@@ -445,14 +445,14 @@ const SinglePost: React.FC<Props> = (props) => {
 							</>
 						)}
 
-						<div className={style.flexItemLike}>
+						{! props.parentId && <div className={style.flexItemLike}>
 							<FontAwesomeIcon
 								icon={faHeart}
 								fixedWidth
 								onClick={onClickLike}
 							/>{" "}
 							{likes}
-						</div>
+						</div>}
 						<div className={style.flexItem2}>
 							<FontAwesomeIcon icon={faArrowUpFromBracket} fixedWidth />
 						</div>
