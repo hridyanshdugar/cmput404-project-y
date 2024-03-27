@@ -7,7 +7,6 @@ import Cookies from "universal-cookie";
 import { useState, useEffect } from "react";
 import {
 	getFollowers,
-	getHomePosts,
 	getUserLocalInfo,
 	checkFollowingStatus,
 } from "../utils/utils";

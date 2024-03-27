@@ -19,7 +19,6 @@ import {
 	createPost,
 	getAPIEndpoint,
 	getFrontend,
-	getHomePosts,
 	getMediaEndpoint,
 	imageUploadHandler,
 } from "../utils/utils";

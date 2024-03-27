@@ -1,4 +1,5 @@
 from django.shortcuts import render
+import requests
 from .serializers import PostLikeSerializer, EditPostLikeSerializer, CommentLikeSerializer, EditCommentLikeSerializer
 from rest_framework.response import Response
 from rest_framework import status
@@ -8,7 +9,8 @@ from comments.models import Comment
 from users.models import User
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
-
+from nodes.views import is_basicAuth, basicAuth
+import copy
 
 class PostLikesViewPK(APIView):
      def perform_authentication(self, request):
@@ -28,15 +30,22 @@ class PostLikesViewPK(APIView):
      '''
      def put(self, request, author_id, post_id):
         print(author_id)
-        usr = get_object_or_404(User,id=author_id)
+        print("dobgg 1")
+        user = get_object_or_404(User,id=author_id)
+        print("dobgg2")
+
         post = get_object_or_404(Post,id=post_id)
-        print("NO")
+        print("dobgg 3")
+        body = copy.deepcopy(request.body)
+        print("dobgg 3")
 
-        new_data = request.data.copy()
-        new_data['author'] = author_id
-        new_data['post'] = post_id
+        requests.post(str(request.data["author"]["host"]) + "api/authors/" + str(request.data["author"]["id"]) + "/inbox/", data = body)
+        print("dobgg 4")
 
-        serializer = EditPostLikeSerializer(data=new_data)
+        request.data['post'] = post_id
+        print("dobgg 5")
+
+        serializer = EditPostLikeSerializer(data=request)
         if serializer.is_valid():
             Like = serializer.save()
             return Response(serializer.data, status = status.HTTP_200_OK)

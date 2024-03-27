@@ -105,15 +105,16 @@ export async function getUserLocalInfo(auth: string, id:string) {
   return await fetch(getAPIEndpoint() + `/users/all/${id}`, options);
 }
 
-export async function createPost(title:string, description:string, contentType:string, content:string, visibility:string , auth: string, id:string) {
+export async function createPost(title:string, description:string, contentType:string, content:string, visibility: string, auth: string, id:string) {
   const options: RequestInit = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${auth}`,
     },
-    body: JSON.stringify({ "title": title, "description": description, "contentType": contentType, "content": content, "author": id, "visibility": visibility })
+    body: JSON.stringify({ "title": title, "description": description, "contentType": contentType, "content": content, "author": id, "visibility": visibility})
   };
+  console.log("bibidfgsfrgj", JSON.stringify({ "title": title, "description": description, "contentType": contentType, "content": content, "author": id, "visibility": visibility}))
   return await fetch(getAPIEndpoint() + `/authors/${id}/posts/`, options);
 }
 
@@ -215,18 +216,30 @@ export async function createComment(contentType:string, comment:string, auth: st
   return await fetch(getAPIEndpoint() + `/posts/${postId}/comments/`, options);
 }
 
-export async function likePost(auth: string, id:string, postId:string) {
+export async function likePost(author: any, object: string, auth:string) {
   const options: RequestInit = {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${auth}`,
     },
+    body: JSON.stringify({"type": "Like", "author": author, "object": object})
   };
-  return await fetch(getAPIEndpoint() + `/authors/${id}/posts/${postId}/likes`, options);
+  return await fetch(getAPIEndpoint() + `/authors/${author.id}/posts/${object.split("/").at(-1)}/likes`, options);
 }
 
 export async function getHomePosts(host: string, page:number, size: number , auth: string, id:string) {
+  const options: RequestInit = {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${auth}`,
+    }
+  };
+  return await fetch(getAPIEndpoint() + `/authors/all/${id}/posts2/?page=${page}&size=${size}&host=${host}`, options);
+}
+
+export async function getAuthorPosts(host: string, page:number, size: number , auth: string, id:string) {
   const options: RequestInit = {
     method: 'GET',
     headers: {
@@ -256,7 +269,7 @@ export async function getPost(auth: string, postId:string, user_id:string) {
       'Authorization': `Bearer ${auth}`,
     }
   };
-  return await fetch(getAPIEndpoint() + `/authors/${user_id}/posts/${postId}/`, options);
+  return await fetch(getAPIEndpoint() + `/authors/${user_id}/posts/${postId}`, options);
 }
 
 export async function getComment(auth: string, postId:string, commentId:string) {

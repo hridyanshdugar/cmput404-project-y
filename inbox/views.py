@@ -127,12 +127,13 @@ class InboxView(APIView):
             return Response({"Title":"Done"}, status = status.HTTP_200_OK)        
         if data["type"] == "post":
             author = None
+            print("abc : 1")
             try:
                 author = User.objects.get(id=data["author"]["id"])
             except:
                 user_auth = get_object_or_404(Node,is_self=True).username
                 pass_auth = get_object_or_404(Node,is_self=True).password
-                response = requests.get(data["author"]["id"], auth=HTTPBasicAuth(user_auth, pass_auth))
+                response = requests.get(str(data["author"]["host"]) + "api/authors" + str(data["author"]["id"]) + "/", auth=HTTPBasicAuth(user_auth, pass_auth))
 
                 if response.status_code == 200:
                     try:
@@ -144,36 +145,49 @@ class InboxView(APIView):
                             print(serializer.errors)
                     except Exception as e:
                         print(e)
-            
+            print("abc : 2")
             post_obj = None
+            print("abc : 3")
             try:
-                post_obj = Post.objects.get(id=data["post"]["id"])
+                print("abc : 4")
+                post_obj = Post.objects.get(id=data["id"])
             except:
-                print("DATA:",data["post"])
+                print("DATA:",data)
+                print("abc : 4")
                 user_auth = get_object_or_404(Node,is_self=True).username
                 pass_auth = get_object_or_404(Node,is_self=True).password
-                response = requests.get(data["post"]["id"], auth=HTTPBasicAuth(user_auth, pass_auth))
-
+                response = requests.get(str(data["author"]["host"]) + "api/authors/" + data["author"]["id"] + "/posts/" + str(data["id"]), auth=HTTPBasicAuth(user_auth, pass_auth))
+                print("abc : 5")
                 if response.status_code == 200:
+                    print("abc : 6")
                     try:
                         bob = response.json()
+                        print("abc : 7")
                         serializer = RemotePostSerializer(data={"id": bob["id"], "url": bob["url"], "host": bob["host"], "content": bob["content"], "contentType": bob["contentType"], "published": data["published"], "visibility": data["visibility"], "origin": data["origin"], "description": bob["description"], "author": bob["author"]["id"]})
+                        print("abc : 8")
                         if serializer.is_valid():
-                            post_obj = serializer.save()
+                            print("abc : 9")
+                            if not Post.objects.filter(post__id=bob["id"]).exists():
+                                post_obj = serializer.save()
+                                print("abc : 12")
+                                inbox.author = author
+                                print("abc : 13")
+                                inbox.post.add(post_obj)
+                                print("abc : 14")
+                                inbox.save()
+                                print("abc : 15")
+                                print("abc : 10")
                         else: 
+                            print("abc : 11")
                             print(serializer.errors)
                     except Exception as e:
-                        print(e)
-            
-            inbox.post.add(post_obj)
-            inbox.author = author
-            inbox.save()
+                        print("dfsjafiusdarf78", e)
             return Response({"Title":"Done"}, status = status.HTTP_200_OK)
         if data["type"] == "comment":
             pass
-        if data["type"] == "liked":
+        if data["type"] == "Like":
             if "comment" in data["object"]: 
-                usr = get_object_or_404(User,id=data["id"])
+                user = get_object_or_404(User,id=data["id"])
                 post = get_object_or_404(Comment,id=data["object"].split("/")[-1])
                 print("NO")
 
@@ -185,12 +199,12 @@ class InboxView(APIView):
                 if serializer.is_valid():
                     Like = serializer.save()
                     inbox.commentLikes.add(Like)
-                    inbox.author = usr
+                    inbox.author = user
                     inbox.save()  
                     return Response(serializer.data, status = status.HTTP_200_OK)
                 return Response({"Title": "Unsuccessfully Added","Message": "Unsuccessfully Added"}, status = status.HTTP_400_BAD_REQUEST)
             else:
-                usr = get_object_or_404(User,id=data["id"])
+                user = get_object_or_404(User,id=data["id"])
                 post = get_object_or_404(Post,id=data["object"].split("/")[-1])
                 print("NO")
 
@@ -203,7 +217,7 @@ class InboxView(APIView):
                 if serializer.is_valid():
                     Like = serializer.save()
                     inbox.postLikes.add(Like)
-                    inbox.author = usr
+                    inbox.author = user
                     inbox.save()                    
                     return Response({"Title":"Done"}, status = status.HTTP_200_OK)
                 else:

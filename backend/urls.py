@@ -25,7 +25,7 @@ from likes.views import PostLikesViewPK, PostLikesView, CommentLikesViewPK
 from inbox.views import InboxView
 from users.views import UsersViewPK
 from followers.views import FollowerView, getFollowers
-from posts.views import AllPostsView, PostsView, PostsViewPK
+from posts.views import AllPostsView, AllPostsView2, PostsView, PostsViewPK
 
 heroku_react_django_urls = [
     re_path('.*', TemplateView.as_view(template_name='index.html', content_type='text/html'))
@@ -35,13 +35,13 @@ urlpatterns = [
     path('api/', include([
         path('admin/', admin.site.urls),
         path('schema/', SpectacularAPIView.as_view(), name='schema'),
+        path('authors/all/<str:author_id>/posts/', AllPostsView.as_view()),
+        path('authors/all/<str:author_id>/posts2/', AllPostsView2.as_view()),
         path('authors/<str:author_id>/posts/<uuid:fk>/comments/', include('comments.urls')),
         path('posts/<uuid:fk>/comments/', include('comments.urls')),
-        path('authors/<str:author_id>/posts/', include('posts.urls')),
         path('posts/', include('posts.urls')),
-        path('authors/all/<str:author_id>/posts/', AllPostsView.as_view()),
-        path('authors/<str:author_id>/posts/', PostsView.as_view()),
         path('authors/<str:author_id>/posts/<str:post_id>', PostsViewPK.as_view()),
+        path('authors/<str:author_id>/posts/', PostsView.as_view()),
         path('nodes/', include('nodes.urls')),
         path('auth/', include('userauth.urls')),
         path('users/', include('users.urls')),

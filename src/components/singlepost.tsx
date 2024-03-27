@@ -98,6 +98,7 @@ const SinglePost: React.FC<Props> = (props) => {
 		event.stopPropagation();
 	};
 	const onClickShare = (event: any) => {
+		console.log("Share Clicked");
 		share();
 		event.stopPropagation();
 	};
@@ -113,8 +114,9 @@ const SinglePost: React.FC<Props> = (props) => {
 	const [visibility, setVisibility] = useState<string>("");
 	const [likes, setLikes] = useState<number>(props.likes);
 	const share = () => {
+		console.log(post);
+		console.log(visibility);
 		if (!(props.contentType === "text/post")) {
-			/* */
 			if (visibility === "PUBLIC") {
 				sharePost();
 				console.log("shared post");
@@ -146,6 +148,22 @@ const SinglePost: React.FC<Props> = (props) => {
 		// 		getAPIEndpoint() + "/post/" + props.postId
 		// 	);
 		// }
+		
+		let author = {
+			type: "author",
+			id: user["id"],
+			url: user["url"],
+			host: user["host"],
+			displayName: user["displayName"],
+			github: user["github"],
+			profileImage: user["profileImage"],
+		};
+
+		likePost(
+			author,
+			getAPIEndpoint() + "/post/" + props.parentId + "/comments/" + props.postId,
+			auth["access"]
+		);
 		setLikes(likes + 1);
 		event.stopPropagation();
 	};
@@ -163,11 +181,13 @@ const SinglePost: React.FC<Props> = (props) => {
 					setPost(Data);
 					setVisibility(Data.visibility);
 				} else {
+					console.log("Error getting post")
+					console.log(result);
 					throw new Error("Error getting post");
 				}
 			})
 			.catch((error) => {
-				console.log(error);
+				console.log("failed getting post")
 			});
 		if (props.contentType === "text/post") {
 			console.log("shared post1");
