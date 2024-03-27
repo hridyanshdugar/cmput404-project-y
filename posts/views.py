@@ -102,6 +102,7 @@ class PostsViewPK(APIView):
         except User.DoesNotExist:
             return Response({"title": "Author not found.","message": "No valid author for the post was provided"}, status=status.HTTP_404_NOT_FOUND)
 
+
         request.data["author"] = post.author
 
         JWT_authenticator = JWTAuthentication()
