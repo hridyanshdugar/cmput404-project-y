@@ -128,7 +128,7 @@ class FollowerView(APIView):
             req = get_object_or_404(FollowStatus,actor=author_id,obj=follower_id)
             hi_user = User.objects.get(id=follower_id)
             inbox = Inbox.objects.get_or_create(author=hi_user)[0]
-            inbox.author = User.objects.get(id=follower_id)
+            inbox.author = hi_user
             inbox.followRequest.remove(req)
             inbox.save()            
             if data["accepted"]:
