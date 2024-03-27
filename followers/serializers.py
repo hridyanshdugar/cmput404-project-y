@@ -1,14 +1,5 @@
 from rest_framework import serializers
-from .models import Inbox
-from users.models import User
 from users.serializers import AuthorSerializer
-from urllib.parse import urlparse
-import uuid
-from comments.serializers import CommentSerializer
-from comments.models import Comment
-from posts.models import Post
-from posts.serializers import PostSerializer
-from likes.serializers import CommentLikeSerializer, PostLikeSerializer
 from .models import FollowStatus
 
 # Constants

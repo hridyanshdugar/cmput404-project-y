@@ -239,7 +239,7 @@ class PostsView(APIView):
         serializer = PostSerializer(data = request.data, context={'request': request})
         print(response)
         if serializer.is_valid():
-            serializer.save(author=author)
+            post_bject = serializer.save(author=author)
             return Response(serializer.data, status = status.HTTP_200_OK)
         else:
             return Response({"title": "Invalid Fields", "message": serializer.errors}, status = status.HTTP_400_BAD_REQUEST)

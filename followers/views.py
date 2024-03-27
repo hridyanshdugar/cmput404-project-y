@@ -6,12 +6,7 @@ from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
 from django.db.models import Q
 from users.models import User
-from rest_framework.decorators import api_view, authentication_classes, permission_classes
-from rest_framework.permissions import AllowAny
-from .helper import body_to_json, addToNewFollowRequestTable, addToFollowerTable
-from .models import NewFollowRequest, Follower, Friends
 from rest_framework.views import APIView
-from django.db import transaction
 from urllib.parse import unquote
 import requests
 from django.shortcuts import get_object_or_404
@@ -25,46 +20,6 @@ from .serializers import FollowSerializer
 from .models import FollowStatus
 
 val = URLValidator()
-
-# @api_view(['POST'])
-# @authentication_classes([])
-# @permission_classes((AllowAny,))
-# def follow(request):
-#     # This is supposed to be a post
-#     if request.method != "POST":
-#         return HttpResponseBadRequest("Invalid Request: Please send a post request")
-    
-#     # Get the request body and send follow request
-#     body = body_to_json(request.body)
-
-#     # Verify the url
-#     try:
-#         val(body['url'])
-#     except ValidationError as e:
-#          return HttpResponseBadRequest("Invalid Request: Invalid url")
-
-#     # Add to table
-#     addToNewFollowRequestTable(body)
-
-#     return HttpResponse()
-
-@api_view(['POST'])
-@authentication_classes([])
-@permission_classes((AllowAny,))
-def unfollow(request):
-    # This is supposed to be a post
-    if request.method != "POST":
-        return HttpResponseBadRequest("Invalid Request: Please send a put request with author 'name' and 'follower' name as headers")
-
-    body = body_to_json(request.body)
-
-    # delete from followers table
-    try:
-        Follower.objects.filter(Q(follower=body['friend']) & Q(name= body['name'])).delete()
-    except:
-        return HttpResponseBadRequest("Invalid Request: Follower not found, are you sending 'name' and 'follower' in the headers")
-
-    return HttpResponse()
 
 def getNewFollowRequests(request, author_id):
     # Get the name
@@ -138,54 +93,6 @@ def getFriends(request, author_id=None):
         return JsonResponse(friends, safe=False)
     else:
         return JsonResponse()
-
-# @api_view(['PUT'])
-# @authentication_classes([])
-# @permission_classes((AllowAny,))
-# # Deprecated
-# def acceptFollowRequest(request):
-#     body = body_to_json(request.body)
-#     if request.method != "PUT":
-#         return HttpResponseBadRequest("Invalid Request: Please send a put request")
-    
-#     try:
-#         name = body['name']
-#         follower = body['follower']
-#         url = list(NewFollowRequest.objects.filter(Q(name=name) & Q(follower=follower)))[0]
-#         url = url["followerUrl"]
-
-#         # Check if the follow request is not already accepted
-#         follows = True if list(Follower.objects.filter(Q(name=name) & Q(follower=follower))) else False
-#         newRequest = True if list(NewFollowRequest.objects.filter(Q(name=name) & Q(follower=follower))) else False
-
-#         if not follows and newRequest:
-#             addToFollowerTable(name=name, follower=follower, url=url)
-#             NewFollowRequest.objects.filter(Q(name=name) & Q(follower=follower)).delete()
-#             return HttpResponse()
-#         else:
-#             NewFollowRequest.objects.filter(Q(name=name) & Q(follower=follower)).delete()
-#             return HttpResponseBadRequest("Not able to follow, follows="+ str(follows) + " newRequest=" + str(newRequest)) 
-#     except:
-#         return HttpResponseBadRequest("Something went wrong!") 
-
-@api_view(['PUT'])
-@authentication_classes([])
-@permission_classes((AllowAny,))
-def declineFollowRequest(request, author_id, follower_id):
-    try:
-        # Check if the follow request is not already accepted
-        follows = True if Follower.objects.filter(Q(userId=author_id) & Q(followerId=follower_id)).exists() else False
-        newRequest = True if NewFollowRequest.objects.filter(Q(userId=author_id) & Q(followerId=follower_id)).exists() else False
-
-        if not follows and newRequest:
-            NewFollowRequest.objects.filter(Q(userId=author_id) & Q(followerId=follower_id)).delete()
-            return HttpResponse()
-        else:
-            NewFollowRequest.objects.filter(Q(userId=author_id) & Q(followerId=follower_id)).delete()
-            return HttpResponseBadRequest("Not able to decline request, follows="+ str(follows) + " newRequest=" + str(newRequest)) 
-    except:
-        return HttpResponseBadRequest("Something went wrong!") 
-
 
 class AllFollowerView(APIView):
     def perform_authentication(self, request):

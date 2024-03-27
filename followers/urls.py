@@ -8,6 +8,4 @@ urlpatterns = [
     path("<str:author_id>/followers/", views.getFollowers),
     path("<str:author_id>/requests/", views.getNewFollowRequests, name="getNewFollowRequests"),
     path("get/friends", views.getFriends, name= "getFriends"), 
-    path("<str:author_id>/decline/<str:follower_id>/", views.declineFollowRequest, name= "declineFollowRequest"),
-    path("<str:author_id>/unfollow/<str:follower_id>/", views.unfollow, name="unfollow")
 ]

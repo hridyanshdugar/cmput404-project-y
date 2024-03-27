@@ -2,7 +2,6 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 from .models import Inbox, Post
-from followers.models import NewFollowRequest
 from comments.models import Comment
 from rest_framework.pagination import PageNumberPagination
 from posts.serializers import PostSerializer
@@ -16,7 +15,6 @@ from posts.serializers import RemotePostSerializer
 from .serializers import InboxSerializer
 import requests
 from requests.exceptions import JSONDecodeError
-from followers.models import Follower
 from nodes.models import Node
 from nodes.views import is_basicAuth, basicAuth
 from requests.auth import HTTPBasicAuth

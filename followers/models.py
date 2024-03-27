@@ -4,11 +4,10 @@ from django.db import models
 USERNAME_MAX_LENGTH = 100
 URL_MAX_LENGTH = 300
 
-# Create your models here.
 class FollowStatus(models.Model):
-    actor = models.ForeignKey('users.User', on_delete=models.CASCADE)
-    obj = models.ForeignKey('users.User', on_delete=models.CASCADE)
+    actor = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='following')
+    obj = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='to_follow')
     # Following status
     # - Pending
     # - Confirmed
-    complete=models.BooleanField(default=False)
+    complete = models.BooleanField(default=False)

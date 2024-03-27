@@ -209,34 +209,32 @@ const SinglePost: React.FC<Props> = (props) => {
 			.catch(async (result: any) => {
 				const Data = await result.json();
 			});
-		//Share post to inboxes
-
-		getFollowers(user.email)
-			.then(async (result: any) => {
-				const Data = await result.json();
-				console.log(Data);
-				for (var i = 0; i < Data.length; i++) {
-					var follower = Data[i];
-					console.log("follower");
-					console.log(follower);
-					// sendPostToInbox(follower.id, auth.access, post, follower)
-					// 	.then(async (result: any) => {
-					// 		if (result.status === 200) {
-					// 			const Data = await result.json();
-					// 			console.log("POST");
-					// 			console.log(Data);
-					// 		} else {
-					// 			throw new Error("Error sending post to inbox");
-					// 		}
-					// 	})
-					// 	.catch((error) => {
-					// 		console.log(error);
-					// 	});
-				}
-			})
-			.catch(async (result: any) => {
-				const Data = await result.json();
-			});
+		// getFollowers(user.email)
+		// 	.then(async (result: any) => {
+		// 		const Data = await result.json();
+		// 		console.log(Data);
+		// 		for (var i = 0; i < Data.length; i++) {
+		// 			var follower = Data[i];
+		// 			console.log("follower");
+		// 			console.log(follower);
+		// 			// sendPostToInbox(follower.id, auth.access, post, follower)
+		// 			// 	.then(async (result: any) => {
+		// 			// 		if (result.status === 200) {
+		// 			// 			const Data = await result.json();
+		// 			// 			console.log("POST");
+		// 			// 			console.log(Data);
+		// 			// 		} else {
+		// 			// 			throw new Error("Error sending post to inbox");
+		// 			// 		}
+		// 			// 	})
+		// 			// 	.catch((error) => {
+		// 			// 		console.log(error);
+		// 			// 	});
+		// 		}
+		// 	})
+		// 	.catch(async (result: any) => {
+		// 		const Data = await result.json();
+		// 	});
 	};
 
 	const [sharedPost, setSharedPost] = useState<any>({});
