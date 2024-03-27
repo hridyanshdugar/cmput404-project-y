@@ -6,6 +6,7 @@ from urllib.parse import urlparse
 import uuid
 from comments.serializers import CommentSerializer
 from comments.models import Comment
+from users.serializers import AuthorSerializer
 
 # Constants
 TEXT_MAX_LENGTH = 300
@@ -31,7 +32,9 @@ class EditPostLikeSerializer(serializers.ModelSerializer):
 
       def get_object(self, obj):
          return obj.post
-
+      
+      def get_author(self, obj):
+         return AuthorSerializer(obj.author, context={'exclude_comments': True}).data
 class CommentLikeSerializer(serializers.ModelSerializer):
       type = serializers.SerializerMethodField(read_only=True)
       class Meta:
