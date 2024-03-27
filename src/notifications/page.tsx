@@ -10,11 +10,12 @@ import { useEffect, useState } from "react";
 export default function Notifications() {
   const [requests, setRequests] = useState<any>([]); 
   const [isLoading, setIsLoading] = useState<boolean>(true);
-
+  const [auth, setAuth] = useState<string>("");
 
 	useEffect(() => {
 		const cookies = new Cookies();
 		const auth = cookies.get("auth")["access"];
+    setAuth(auth);
     const user = cookies.get("user");
     
     getInbox(user.id, auth)
@@ -45,7 +46,8 @@ export default function Notifications() {
                       (
                         requests.map((request: any, index: any) => (
                             <FollowRequestNotification 
-                                key={index}
+                            key={index}
+                            auth={auth}
                           actor={request["actor"]} 
                           object={request["object"]} />
                         ))

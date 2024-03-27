@@ -13,12 +13,8 @@ import { getAPIEndpoint } from "../utils/utils";
 type Props = {
 	actor: any;
 	object: any;
+	auth: any;
 };
-
-const cookies = new Cookies();
-
-const auth = cookies.get("auth")["access"];
-const user = cookies.get("user");
 
 export default class FollowRequestNotification extends React.Component<Props> {
 	constructor(props: Props) {
@@ -49,8 +45,8 @@ export default class FollowRequestNotification extends React.Component<Props> {
 						</div>
 						<div className={style.separator} />
 						<div className={style.topRight}>
-							<Button text="✓" type="primary" size="verySmall" roundness="very" onClick={() => acceptFollowRequest(this.props.actor, this.props.object, auth).then(() => window.location.reload())} style={{}}/>
-							<Button text="⨉" type="primary" size="verySmall" roundness="very" onClick={() => denyFollowRequest(this.props.actor, this.props.object, auth).then(() => window.location.reload())} style={{marginLeft:"10px"}}/>
+							<Button text="✓" type="primary" size="verySmall" roundness="very" onClick={() => acceptFollowRequest(this.props.actor, this.props.object, this.props.auth).then(() => window.location.reload())} style={{}}/>
+							<Button text="⨉" type="primary" size="verySmall" roundness="very" onClick={() => denyFollowRequest(this.props.actor, this.props.object, this.props.auth).then(() => window.location.reload())} style={{marginLeft:"10px"}}/>
 					</div>
 					</div>
 					<div className={[style.topBottom].join(" ")}>
