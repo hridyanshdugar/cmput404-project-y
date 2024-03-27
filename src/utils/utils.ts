@@ -223,7 +223,7 @@ export async function likePost(auth: string, id:string, postId:string) {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${auth}`,
     },
-    body: JSON.stringify({"type": "Like", "author": id, object: postId})
+    body: JSON.stringify({"author": id, "post": postId})
   };
   return await fetch(getAPIEndpoint() + `/authors/${id}/posts/${postId}/likes`, options);
 }

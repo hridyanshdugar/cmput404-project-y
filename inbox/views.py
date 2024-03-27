@@ -175,9 +175,9 @@ class InboxView(APIView):
                     except Exception as e:
                         print("dfsjafiusdarf78", e)
             print("abc : 12")
-            inbox.post.add(post_obj)
-            print("abc : 13")
             inbox.author = author
+            print("abc : 13")
+            inbox.post.add(post_obj)
             print("abc : 14")
             inbox.save()
             print("abc : 15")
