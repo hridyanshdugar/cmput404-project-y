@@ -238,7 +238,7 @@ class PostsView(APIView):
                     request.data["url"] = shared_post_source
                 else:
                     valid_post = False
-            print("Valid Post: ", valid_post)
+            print("Valid Post: ", valid_post, "Request Data: ", request.data)
             if valid_post:
                 # loops through followers and sends the post to them
                 print("Visibility: ", request.data.get("visibility"))
