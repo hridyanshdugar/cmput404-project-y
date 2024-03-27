@@ -250,9 +250,9 @@ class PostsView(APIView):
                 post_response = requests.get(i.follower.host + "api/posts/" + original_post_id)
                 if post_response.status_code == 200:
                     original_post_data = post_response.json()
-                    shared_post_source = request.data.get("source")
+                    shared_post_source = request.data.get("url")
                     request.data = original_post_data
-                    request.data["source"] = shared_post_source
+                    request.data["url"] = shared_post_source
                 else:
                     valid_post = False
             
