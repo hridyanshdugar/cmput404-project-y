@@ -9,6 +9,7 @@ from comments.models import Comment
 from posts.models import Post
 from posts.serializers import PostSerializer
 from likes.serializers import CommentLikeSerializer, PostLikeSerializer
+from followers.serializers import FollowSerializer
 
 # Constants
 TEXT_MAX_LENGTH = 300
@@ -18,16 +19,20 @@ class InboxSerializer(serializers.ModelSerializer):
      posts = serializers.SerializerMethodField()
      comments = serializers.SerializerMethodField()
      author = serializers.SerializerMethodField()
+     followRequest = serializers.SerializerMethodField()
 
      postLikes = serializers.SerializerMethodField()
      commentLikes = serializers.SerializerMethodField()
 
      class Meta:
           model = Inbox
-          fields = ["id","author", "comments","type","commentLikes","postLikes","posts"]
+          fields = ["id","author", "followRequest", "comments","type","commentLikes","postLikes","posts"]
     
      def get_author(self, obj):
         return AuthorSerializer(obj.author, context={'exclude_comments': True}).data
+     
+     def get_followRequest(self, obj):
+        return FollowSerializer(obj.followRequest, many=True, read_only=True).data
 
      def get_comments(self, obj):
         return CommentSerializer(obj.comment, many=True, read_only=True).data

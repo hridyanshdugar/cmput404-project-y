@@ -24,7 +24,7 @@ export default function Notifications() {
         const Data = await result.json();
         console.log("Inbox");
         console.log(Data);
-        setRequests(Data["requests"]);
+        setRequests(Data["followRequest"]);
       } else {
         throw new Error("Error fetching inbox");
       }
