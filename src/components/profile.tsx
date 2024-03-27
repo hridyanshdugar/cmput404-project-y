@@ -6,6 +6,7 @@ import React from "react";
 import Cookies from "universal-cookie";
 import { getFrontend, navigate, sendFollow, sendUnfollow } from "../utils/utils";
 import { Link } from "react-router-dom";
+import { Badge } from "react-bootstrap";
 
 type Props = {
 	userid: string;
@@ -175,6 +176,9 @@ export default class Profile extends React.Component<Props> {
 						<div id="username" className={styles.username}>
 							{"@" + this.props.username}
 						</div>
+						<div id="profile99" className={[styles.username].join(" ")}>
+                                <Badge bg="primary">{this.props.host.split(".")[0].split("/").slice(-1)}</Badge>
+                            </div>   
 						<text id="bio" className={styles.bio}>
 							{this.props.bio !== "" ? this.props.bio : "No Bio"}
 						</text>
