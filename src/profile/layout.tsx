@@ -24,7 +24,7 @@ export default function ProfileLayout() {
 	const userIdCookie = cookies.get("user").id;
 	if (allcookies.auth && allcookies.user) {
 		//!!Change to userName when added!!//
-		if (userId == userIdCookie) {
+		if (userId === userIdCookie) {
 			activeUser = true;
 		}
 	}
