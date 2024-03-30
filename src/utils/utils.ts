@@ -175,7 +175,6 @@ export async function checkFollowingStatus(user:any, to_follow:any, auth: string
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${auth}`,
       },
-      body: JSON.stringify({"actor": user, "object": to_follow})
   };
   return await fetch(getAPIEndpoint() + `/authors/${user.id}/followers/${to_follow.id}/`, options);
 }
