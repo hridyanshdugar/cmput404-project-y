@@ -32,3 +32,63 @@ class PostTestCase(APITestCase):
             printFailed()
         else:
             printPassed()
+    def testCreateComment(self):
+        print("Testing create comment.......", end="")
+        try:
+            response = self.client.post(f"/api/posts/{self.postId}/comments/", {"content": "This is a test comment", "post": self.postId}, **{'HTTP_AUTHORIZATION': f'Bearer {self.auth2}'})
+            self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        except:
+            printFailed()
+        else:
+            printPassed()
+
+    def testCreateCommentUnauthenticated(self):
+        print("Testing create comment unauthenticated.......", end="")
+        try:
+            response = self.client.post(f"/api/posts/{self.postId}/comments/", {"content": "This is a test comment", "post": self.postId})
+            self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        except:
+            printFailed()
+        else:
+            printPassed()
+
+    def testGetSingleComment(self):
+        print("Testing get single comment.......", end="")
+        try:
+            response = self.client.get(f"/api/posts/{self.postId}/comments/{self.postId}/", **{'HTTP_AUTHORIZATION': f'Bearer {self.auth}'})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+        except:
+            printFailed()
+        else:
+            printPassed()
+
+    def testGetNonExistentComment(self):
+        print("Testing get non-existent comment.......", end="")
+        try:
+            response = self.client.get(f"/api/posts/{self.postId}/comments/1000/", **{'HTTP_AUTHORIZATION': f'Bearer {self.auth}'})
+            self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        except:
+            printFailed()
+        else:
+            printPassed()
+
+    def testDeleteComment(self):
+        print("Testing delete comment.......", end="")
+        try:
+            response = self.client.delete(f"/api/posts/{self.postId}/comments/{self.postId}/", **{'HTTP_AUTHORIZATION': f'Bearer {self.auth2}'})
+            self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        except:
+            printFailed()
+        else:
+            printPassed()
+
+    def testDeleteNonExistentComment(self):
+        print("Testing delete non-existent comment.......", end="")
+        try:
+            response = self.client.delete(f"/api/posts/{self.postId}/comments/1000/", **{'HTTP_AUTHORIZATION': f'Bearer {self.auth}'})
+            self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        except:
+            printFailed()
+        else:
+            printPassed()
+

@@ -21,7 +21,7 @@ type Props = {
 	following: number;
 	friends: number;
 	activeUser: boolean;
-	followingStatus: boolean;
+	followingStatus: string;
 	url: string;
 	postCount: number;
 	host: string;
@@ -40,8 +40,15 @@ export default class Profile extends React.Component<Props> {
 
 		//Change to reflect follow status using API if not activeUser !!NEEDED!!
 		//FollowingStatus should be aquired in /profile/[profile]/layout.tsx
-		this.followStatus = this.props.followingStatus ? "Following" : "Follow";
+		console.log(this.props.followingStatus, this.FollowStatusMap[this.props.followingStatus], "CHECK")
+		this.followStatus = this.FollowStatusMap[this.props.followingStatus];
 	}
+
+	FollowStatusMap: { [key: string]: string } = {
+		Following: "Unfollow",
+		Notfollowing: "Follow",
+		Requested: "Requested",
+	};
 
 	following = (request: boolean) => {
 		const cookies = new Cookies();
@@ -102,7 +109,7 @@ export default class Profile extends React.Component<Props> {
 			};
 			sendFollow(actor, object, auth.access);
 		}
-		this.followStatus = "Following";
+		this.followStatus = "Requested";
 		var div = document.getElementById("profileButton");
 		div!.classList.remove(styles.profileButton);
 		div!.classList.add(styles.profileButtonFollowed);
@@ -113,7 +120,7 @@ export default class Profile extends React.Component<Props> {
 	handleButtonClick = () => {
 		if (this.props.activeUser) {
 			navigate("/settings");
-		} else if (!this.props.followingStatus) {
+		} else if (this.followStatus === "Follow") {
 			this.notFollowing(true);
 		} else {
 			this.following(true);
@@ -152,7 +159,7 @@ export default class Profile extends React.Component<Props> {
 							<div
 								id="profileButton"
 								className={
-									this.props.followingStatus
+									this.followStatus === "Unfollow"
 										? styles.profileButtonFollowed
 										: styles.profileButton
 								}
@@ -164,9 +171,8 @@ export default class Profile extends React.Component<Props> {
 								>
 									{this.props.activeUser
 										? "Edit Profile"
-										: this.props.followingStatus
-										? "Following"
-										: "Follow"}
+										: this.followStatus
+									}
 								</Button>
 							</div>
 						</div>

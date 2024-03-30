@@ -52,10 +52,11 @@ class PostSerializer(serializers.ModelSerializer):
         return CommentSerializer(comments, many=True, read_only=True).data
      
      def get_url(self, obj):
-        request = self.context.get('request')
-        if request is not None:
-            host = request.build_absolute_uri('/') + "posts/" + str(obj.id)
-            return host
+        # request = self.context.get('request')
+        # if request is not None:
+        #     print(obj)
+        #     host = request.build_absolute_uri('/') + "posts/" + str(obj.id)
+        #     return host
         return None
 
      def create(self, validated_data):

@@ -95,3 +95,58 @@ class FollowersTestCase(APITestCase):
             printFailed()
         else:
             printPassed()
+    
+    def testGetFollowings(self):
+        print("Testing get followings......", end="")
+        try:
+            response = self.client.get(f"/api/followers/get/followings/{self.user['displayName']}")
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+        except:
+            printFailed()
+        else:
+            printPassed()
+
+    def testGetNonExistentFollowings(self):
+        print("Testing get non-existent followings......", end="")
+        try:
+            response = self.client.get("/api/followers/get/followings/nonexistentuser/")
+            self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        except:
+            printFailed()
+        else:
+            printPassed()
+
+    def testGetFollowStatus(self):
+        print("Testing get follow status......", end="")
+        try:
+            response = self.client.get(f"/api/followers/status/{self.user['displayName']}/{self.user2['displayName']}")
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+        except:
+            printFailed()
+        else:
+            printPassed()
+
+    def testGetNonExistentFollowStatus(self):
+        print("Testing get non-existent follow status......", end="")
+        try:
+            response = self.client.get("/api/followers/status/nonexistentuser/nonexistentfollower/")
+            self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        except:
+            printFailed()
+        else:
+            printPassed()
+
+    def testUnauthenticatedFollowRequest(self):
+        print("Testing unauthenticated follow request......", end="")
+        try:
+            client = APIClient()
+            response = client.post(f"/api/authors/{self.user2['id']}/inbox/", {
+                "type": "Follow",
+                "actor": self.user,
+                "object": self.user2
+            }, format="json")
+            self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        except:
+            printFailed()
+        else:
+            printPassed()

@@ -175,9 +175,8 @@ export async function checkFollowingStatus(user:any, to_follow:any, auth: string
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${auth}`,
       },
-      body: JSON.stringify({"actor": user, "object": to_follow})
   };
-  return await fetch(getAPIEndpoint() + `/authors/${user.id}/followers/${to_follow.id}/`, options);
+  return await fetch(getAPIEndpoint() + `/authors/${user}/followers/${to_follow}/`, options);
 }
 
 export async function getRemoteUsers(auth: string) {
@@ -204,16 +203,16 @@ export async function EditPost(payload: any, auth: string, id:string, user_id:st
   return await fetch(getAPIEndpoint() + `/authors/${user_id}/posts/${id}`, options);
 }
 
-export async function createComment(contentType:string, comment:string, auth: string, id:string, postId:string,) {
+export async function createComment(contentType:string, comment:string, auth: string, userId:string, postId:string,) {
   const options: RequestInit = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${auth}`,
     },
-    body: JSON.stringify({ "comment": comment, "contentType": contentType, "author": id, "post":postId })
+    body: JSON.stringify({ "comment": comment, "contentType": contentType, "author": userId, "post":postId })
   };
-  return await fetch(getAPIEndpoint() + `/posts/${postId}/comments/`, options);
+  return await fetch(getAPIEndpoint() + `/authors/${userId}/posts/${postId}/comments/`, options);
 }
 
 export async function likePost(author: any, object: string, auth:string) {
@@ -250,7 +249,7 @@ export async function getAuthorPosts(host: string, page:number, size: number , a
   return await fetch(getAPIEndpoint() + `/authors/all/${id}/posts/?page=${page}&size=${size}&host=${host}`, options);
 }
 
-export async function getPostComments(host: string, page:number, size: number , auth: string, id:string, postId:string) {
+export async function getPostComments(host: string, page:number, size: number , auth: string, userId:string, postId:string) {
   const options: RequestInit = {
     method: 'GET',
     headers: {
@@ -258,7 +257,7 @@ export async function getPostComments(host: string, page:number, size: number , 
       'Authorization': `Bearer ${auth}`,
     }
   };
-  return await fetch(getAPIEndpoint() + `/posts/${postId}/comments/?page=${page}&size=${size}&host=${host}&id=${id}`, options);
+  return await fetch(getAPIEndpoint() + `/authors/${userId}/posts/${postId}/comments/?page=${page}&size=${size}&host=${host}&id=${userId}`, options);
 }
 
 export async function getPost(auth: string, postId:string, user_id:string) {
@@ -272,7 +271,7 @@ export async function getPost(auth: string, postId:string, user_id:string) {
   return await fetch(getAPIEndpoint() + `/authors/${user_id}/posts/${postId}`, options);
 }
 
-export async function getComment(auth: string, postId:string, commentId:string) {
+export async function getComment(auth: string, postId:string, commentId:string, userId:string) {
   const options: RequestInit = {
     method: 'GET',
     headers: {
@@ -280,7 +279,7 @@ export async function getComment(auth: string, postId:string, commentId:string) 
       'Authorization': `Bearer ${auth}`,
     }
   };
-  return await fetch(getAPIEndpoint() + `/posts/${postId}/comments/${commentId}`, options);
+  return await fetch(getAPIEndpoint() + `/authors/${userId}/posts/${postId}/comments/${commentId}`, options);
 }
 
 export async function imageUploadHandler(image: File, auth: string) {
@@ -309,7 +308,7 @@ export async function deletePost(auth: string, postId:string) {
   return await fetch(getAPIEndpoint() + `/posts/${postId}`, options);
 }
 
-export async function deleteComment(auth: string, postId:string, commentId:string) {
+export async function deleteComment(auth: string, postId:string, commentId:string, userId:string) {
   const options: RequestInit = {
     method: 'DELETE',
     headers: {
@@ -317,7 +316,7 @@ export async function deleteComment(auth: string, postId:string, commentId:strin
       'Authorization': `Bearer ${auth}`,
     },
   };
-  return await fetch(getAPIEndpoint() + `/posts/${postId}/comments/${commentId}`, options);
+  return await fetch(getAPIEndpoint() + `/authors/${userId}/posts/${postId}/comments/${commentId}`, options);
 }
 
 export async function getFollowers(id:any) {

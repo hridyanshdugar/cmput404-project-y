@@ -36,22 +36,32 @@ class PostsViewPK(APIView):
      GET /authors/{id}/posts/{id}
      '''
      def get(self, request, author_id, post_id):
+        # add logs incrementing number by 1 each time
+        print(" hi 1")
         user_auth = get_object_or_404(Node,is_self=True).username
+        print(" hi 2")
         pass_auth = get_object_or_404(Node,is_self=True).password
         print(post_id)
-        
+        print(" hi 3")
         user = get_object_or_404(User, id=author_id)
+        print(" hi 4")
         if user.host == Node.objects.get(is_self=True).url:
+            print(" hi 5")
             post = get_object_or_404(Post, id=post_id)
+            print(" hi 6")
             serializer = PostSerializer(post, context={'request': request})
             return Response(serializer.data, status = status.HTTP_200_OK)
         else:
             try:
+                print(" hi 7")
                 response = requests.get(user.host + "api/authors/" + str(author_id) + "/posts/" + str(post_id), timeout=20,auth=HTTPBasicAuth(user_auth, pass_auth))
                 if response.status_code == 200:
-                    return Response(response.body, status = status.HTTP_200_OK)
+                    rbody = response.json()
+                    print("Response Body: ", rbody)
+                    return Response(data = rbody, status = status.HTTP_200_OK)
                 else:
                     print(f"Request to {user.host} failed with status code: {response.status_code}")
+                print(" hi 8")
             except requests.exceptions.RequestException as e:
                 print(f"Request to {user.host} failed: {e}")
 
@@ -151,9 +161,6 @@ class AllPostsView(APIView):
      '''
      def get(self, request, author_id):
         if User.objects.filter(id=author_id,host=Node.objects.get(is_self=True).url).exists():
-            JWT_authenticator = JWTAuthentication()
-            response = JWT_authenticator.authenticate(request)
-            author = User.objects.get(id=author_id)
             posts = Post.objects.filter(Q(visibility="PUBLIC", author=author_id)).order_by('-published') 
             page_number = request.GET.get('page') or 1
             posts = self.pagination.paginate_queryset(posts, request, view=self)
@@ -219,32 +226,16 @@ class PostsView(APIView):
     
         bob = copy.deepcopy(request.data)
         bob["author"] = author
+        bob["id"] = author
 
         serializer = PostSerializer(data = bob, context={'request': request})
         if serializer.is_valid():
-            pppobje = serializer.save(author=author)
+            if request.data.get("title") != "Share":
+                serializer.save(author=author)
             valid_post = True
             print("yes1")
             if request.data.get("contentType") == "text/post": #this means the request is a shared post (share button was clicked)
-                print("yes2")
-                original_post_id = request.data.get("content")
-                print("yes3", original_post_id)
-                #replace request.data with content of the actual post but maintain source of shared post
-                post_response = requests.get(str(Node.objects.get(is_self=True).url) + "api/posts/" + original_post_id)
-                print("yes4")
-                print("Post Response: ", post_response.status_code)
-
-                if post_response.status_code == 200:
-                    print("yes5")
-                    original_post_data = post_response.json()
-                    print("Original Post Data: ", original_post_data)
-                    bob = copy.deepcopy(original_post_data)
-                    print("yes6")
-                    serializer = PostSerializer(data = bob, context={'request': post_response})
-                    print("yes7")
-                else:
-                    print("failed")
-                    valid_post = False
+                valid_post = False
             print("Valid Post: ", valid_post, "Request Data: ", request.data)
             if valid_post:
                 # loops through followers and sends the post to them

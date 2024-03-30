@@ -18,13 +18,13 @@ import { Outlet, useParams } from "react-router-dom";
 export default function ProfileLayout() {
 	const { userId } = useParams();
 	let activeUser: boolean = false;
-	const [followingStatus, setFollowingStatus] = useState<boolean>(false);
+	const [followingStatus, setFollowingStatus] = useState<string>("Notfollowing");
 	const cookies = new Cookies();
 	const allcookies = cookies.getAll();
 	const userIdCookie = cookies.get("user").id;
 	if (allcookies.auth && allcookies.user) {
 		//!!Change to userName when added!!//
-		if (userId == userIdCookie) {
+		if (userId === userIdCookie) {
 			activeUser = true;
 		}
 	}
@@ -82,17 +82,21 @@ export default function ProfileLayout() {
 	// API call to check if the user is already following the other user
 	// Not working as expected for some reason
 	if (!activeUser) {
+		console.log("them: ", userId, " me: ", userIdCookie)
 		checkFollowingStatus(userId, userIdCookie, allcookies.auth.access)
-			.then((result) => {
-				console.log(result);
+			.then(async (result) => {
+				console.log(result, "status1");
+				result = await result.json();
+				console.log(result, "status2");
 				return result.json();
 			})
 			.catch((error) => {
 				console.log(error);
 			})
 			.then((data) => {
-				console.log(data);
-				setFollowingStatus(data?.follows);
+				console.log(data, "status3");
+				setFollowingStatus("Notfollowing");
+				console.log(followingStatus, "status4");
 			});
 	}
 

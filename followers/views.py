@@ -111,13 +111,14 @@ class FollowerView(APIView):
         """
         check if FOREIGN_AUTHOR_ID is a follower of AUTHOR_ID
         """
-        ff = get_object_or_404(FollowStatus,actor__id=author_id,obj__id=follower_id,complete=True)
-        return Response({"follows": True},status=status.HTTP_200_OK)
+        ff = FollowSerializer(get_object_or_404(FollowStatus,actor__id=author_id,obj__id=follower_id)).data
+        return Response(ff,status=status.HTTP_200_OK)
 
     def post(self, request, author_id, follower_id):
         data = json.loads(request.body)
         print("cac", data)
         res = requests.request(method="POST", url=data["object"]["host"] + "api/authors/" + str(follower_id) + "/inbox/",data=request.body)
+        print(res.data, res.body, "IDK")
         if res.status_code == 200:
             if data["type"] == "Follow":
                 if not FollowStatus.objects.filter(actor=author_id,obj=follower_id).exists():
@@ -125,7 +126,6 @@ class FollowerView(APIView):
                     if serializer.is_valid():
                         serializer.save()
                     return Response(status=status.HTTP_200_OK)
-                return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
             elif data["type"] == "Unfollow":
                 item =  get_object_or_404(FollowStatus,actor=author_id,obj=follower_id)
                 item.delete()

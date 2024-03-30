@@ -90,6 +90,7 @@ type Props = {
 	onPostPage?: boolean;
 	contentType: string;
 	parentId?: string;
+	author: any;
 };
 
 const SinglePost: React.FC<Props> = (props) => {
@@ -104,7 +105,7 @@ const SinglePost: React.FC<Props> = (props) => {
 	};
 	const onClickPost = (event: any) => {
 		if (!props.parentId) {
-			navigate("/post/" + props.postId);
+			navigate("/profile/"+props.author.id+"/post/" + props.postId);
 		}
 		event.stopPropagation();
 	};
@@ -114,7 +115,6 @@ const SinglePost: React.FC<Props> = (props) => {
 	const [visibility, setVisibility] = useState<string>("");
 	const [likes, setLikes] = useState<number>(props.likes);
 	const share = () => {
-		console.log(post);
 		console.log(visibility);
 		if (!(props.contentType === "text/post")) {
 			if (visibility === "PUBLIC") {
@@ -148,20 +148,20 @@ const SinglePost: React.FC<Props> = (props) => {
 		// 		getAPIEndpoint() + "/post/" + props.postId
 		// 	);
 		// }
-		
+		console.log("COCK", props.author)
 		let author = {
 			type: "author",
-			id: user["id"],
-			url: user["url"],
-			host: user["host"],
-			displayName: user["displayName"],
-			github: user["github"],
-			profileImage: user["profileImage"],
+			id: props.author["id"],
+			url: props.author["url"],
+			host: props.author["host"],
+			displayName: props.author["displayName"],
+			github: props.author["github"],
+			profileImage: props.author["profileImage"],
 		};
 
 		likePost(
 			author,
-			getAPIEndpoint() + "/post/" + props.parentId + "/comments/" + props.postId,
+			getAPIEndpoint() + "authors/"+author.id+"/posts/" + props.postId,
 			auth["access"]
 		);
 		setLikes(likes + 1);
@@ -174,21 +174,7 @@ const SinglePost: React.FC<Props> = (props) => {
 		const user = cookies.get("user");
 		const auth = cookies.get("auth");
 		setuser(user);
-		getPost(auth["access"], props.postId,user.id)
-			.then(async (result: any) => {
-				if (result.status === 200) {
-					const Data = await result.json();
-					setPost(Data);
-					setVisibility(Data.visibility);
-				} else {
-					console.log("Error getting post")
-					console.log(result);
-					throw new Error("Error getting post");
-				}
-			})
-			.catch((error) => {
-				console.log("failed getting post")
-			});
+
 		if (props.contentType === "text/post") {
 			console.log("shared post1");
 			var originalPostId = props.text;
@@ -229,6 +215,40 @@ const SinglePost: React.FC<Props> = (props) => {
 			.catch(async (result: any) => {
 				const Data = await result.json();
 			});
+			getPost(auth["access"], props.postId,user.id)
+				.then(async (result: any) => {
+					if (result.status === 200) {
+						const Data = await result.json();
+						setPost(Data);
+						setVisibility(Data.visibility);
+					} else {
+						console.log("Error getting post")
+						console.log(result);
+						throw new Error("Error getting post");
+					}
+				})
+				.catch((error) => {
+					console.log("failed getting post")
+				});		
+			console.log("Post");
+			console.log(post);
+			console.log(post.author);
+		createPost(
+			"Share",
+			post.description,
+			post.contentType,
+			post.content,
+			post.visibility,
+			auth.access,
+			post.author.id
+		)
+			.then(async (result: any) => {
+				const Data = await result.json();
+				console.log(Data);
+			})
+			.catch(async (result: any) => {
+				const Data = await result.json();
+			});
 	};
 
 	const [sharedPost, setSharedPost] = useState<any>({});
@@ -238,7 +258,7 @@ const SinglePost: React.FC<Props> = (props) => {
 		const auth = cookies.get("auth")["access"];
 		if (selection === "Delete") {
 			if (props.parentId) {
-				deleteComment(auth, props.parentId, props.postId)
+				deleteComment(auth, props.parentId, props.postId, props.userId)
 					.then(async (result: any) => {
 						const Data = await result.json();
 						console.log(Data);
@@ -371,7 +391,8 @@ const SinglePost: React.FC<Props> = (props) => {
 							{typeof sharedPost.author === "undefined" ? (
 								<div className={style.missingEmbed}>Post Not Found</div>
 							) : (
-								<SinglePost
+									<SinglePost
+										author={sharedPost.author}
 									name={sharedPost.author.displayName}
 									userId={sharedPost.author.id}
 									profileImage={
@@ -429,14 +450,14 @@ const SinglePost: React.FC<Props> = (props) => {
 							</>
 						)}
 
-						<div className={style.flexItemLike}>
+						{! props.parentId && <div className={style.flexItemLike}>
 							<FontAwesomeIcon
 								icon={faHeart}
 								fixedWidth
 								onClick={onClickLike}
 							/>{" "}
 							{likes}
-						</div>
+						</div>}
 						<div className={style.flexItem2}>
 							<FontAwesomeIcon icon={faArrowUpFromBracket} fixedWidth />
 						</div>

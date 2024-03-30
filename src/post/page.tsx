@@ -22,10 +22,11 @@ export default function Post() {
 	const [page, setPage] = useState<number>(1);
 	const [size, setSize] = useState<number>(100);
 	const [posts, setPosts, replies, setReplies] = useContext(PostContext);
-	console.log(posts, replies);
 	const [auth, setAuth] = useState<any>(null);
+	console.log(posts, replies);
 	const [user, setUser] = useState<any>(null);
-	const { postId } = useParams();
+	const [loading, setLoading] = useState<boolean>(false);
+	const { userId, postId } = useParams();
 
 	useEffect(() => {
 		const cookies = new Cookies();
@@ -33,36 +34,47 @@ export default function Post() {
 		const user = cookies.get("user");
 		setAuth(auth);
 		setUser(user);
-		if (postId) {
-			getPost(auth, postId,user.id)
+		console.log("big mac postId", postId, userId);
+		if (postId && userId) {
+			getPost(auth, postId, userId)
 				.then(async (result: any) => {
+					console.log("error burgerddd2");
 					if (result.status === 200) {
+						console.log("error burgerddd3", result );
 						const Data = await result.json();
+						console.log("error burgerddd4", Data);
 						const postsArray = [];
+						console.log("error burgerddd5", postsArray);
 						postsArray.push(Data);
+						console.log("error burgerddd6", postsArray);
 						setPosts(postsArray);
+						console.log("error burgerddd7");
 						console.log(Data, posts, "posts");
 					} else {
-						navigate("/home");
+						console.log("error burgerddd", result);
+						// navigate("/home");
 					}
 				})
 				.catch(async (result: any) => {
-					navigate("/home");
+					// navigate("/home");
 					// const Data = await result?.json();
 					// console.log(Data);
 				});
 			getPostComments(user.host, page, size, auth, user.id, postId)
 				.then(async (result: any) => {
-					const Data = await result.json();
-					setReplies(Data);
-					console.log(Data, replies, "replies");
+					console.log(result, "pensi");
+					const d = await result.json();
+					console.log("d", d);
+					setReplies(d);
+					console.log(d, replies, "replies");
 				})
 				.catch(async (result: any) => {
 					// const Data = await result.json();
 					console.log(result, "result");
 				});
+			setLoading(true);
 		} else {
-			navigate("/home");
+			// navigate("/home");
 		}
 	}, []);
 
@@ -78,9 +90,10 @@ export default function Post() {
 			</div>
 			<div className={style.mainContentView}>
 				{posts ? (
-					posts.length > 0 ? (
+					loading ? (
 						posts.map((item: any, index: any) => (
 							<SinglePost
+								author={item.author}
 								key={index}
 								name={item.author.displayName}
 								userId={item.author.id}
@@ -118,9 +131,10 @@ export default function Post() {
 					/>
 				)}
 				{replies && posts && posts.length > 0 ? (
-					replies.length > 0 &&
+					loading &&
 					replies.map((item: any, index: any) => (
 						<SinglePost
+							author={item.author}
 							key={index}
 							name={item.author.displayName}
 							userId={item.author.id}

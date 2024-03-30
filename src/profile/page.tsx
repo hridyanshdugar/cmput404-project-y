@@ -62,6 +62,7 @@ export default function Profiles() {
 							posts.map((item: any, index: any) =>
 								true ? (
 									<SinglePost
+										author={item.author}
 										key={index}
 										name={item.author.displayName}
 										userId={item.author.id}
