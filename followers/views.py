@@ -125,7 +125,6 @@ class FollowerView(APIView):
                     if serializer.is_valid():
                         serializer.save()
                     return Response(status=status.HTTP_200_OK)
-                return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
             elif data["type"] == "Unfollow":
                 item =  get_object_or_404(FollowStatus,actor=author_id,obj=follower_id)
                 item.delete()

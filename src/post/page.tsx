@@ -33,6 +33,7 @@ export default function Post() {
 		const user = cookies.get("user");
 		setAuth(auth);
 		setUser(user);
+		console.log("big mac postId", postId, userId);
 		if (postId && userId) {
 			getPost(auth, postId, userId)
 				.then(async (result: any) => {
@@ -43,11 +44,11 @@ export default function Post() {
 						setPosts(postsArray);
 						console.log(Data, posts, "posts");
 					} else {
-						navigate("/home");
+						// navigate("/home");
 					}
 				})
 				.catch(async (result: any) => {
-					navigate("/home");
+					// navigate("/home");
 					// const Data = await result?.json();
 					// console.log(Data);
 				});
@@ -62,7 +63,7 @@ export default function Post() {
 					console.log(result, "result");
 				});
 		} else {
-			navigate("/home");
+			// navigate("/home");
 		}
 	}, []);
 
