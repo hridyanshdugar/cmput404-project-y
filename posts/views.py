@@ -42,19 +42,24 @@ class PostsViewPK(APIView):
         print(" hi 2")
         pass_auth = get_object_or_404(Node,is_self=True).password
         print(post_id)
-        prin
+        print(" hi 3")
         user = get_object_or_404(User, id=author_id)
+        print(" hi 4")
         if user.host == Node.objects.get(is_self=True).url:
+            print(" hi 5")
             post = get_object_or_404(Post, id=post_id)
+            print(" hi 6")
             serializer = PostSerializer(post, context={'request': request})
             return Response(serializer.data, status = status.HTTP_200_OK)
         else:
             try:
+                print(" hi 7")
                 response = requests.get(user.host + "api/authors/" + str(author_id) + "/posts/" + str(post_id), timeout=20,auth=HTTPBasicAuth(user_auth, pass_auth))
                 if response.status_code == 200:
                     return Response(response.body, status = status.HTTP_200_OK)
                 else:
                     print(f"Request to {user.host} failed with status code: {response.status_code}")
+                print(" hi 8")
             except requests.exceptions.RequestException as e:
                 print(f"Request to {user.host} failed: {e}")
 
