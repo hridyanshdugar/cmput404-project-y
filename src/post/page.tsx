@@ -25,7 +25,6 @@ export default function Post() {
 	console.log(posts, replies);
 	const [auth, setAuth] = useState<any>(null);
 	const [user, setUser] = useState<any>(null);
-	const [posts, setPosts] = useState<any>(null);
 	const { userId, postId } = useParams();
 
 	useEffect(() => {
@@ -43,11 +42,11 @@ export default function Post() {
 						console.log("error burgerddd3");
 						const Data = await result.json();
 						console.log("error burgerddd4");
+						const postsArray = [];
 						console.log("error burgerddd5");
+						postsArray.push(Data);
 						console.log("error burgerddd6");
-
 						setPosts(postsArray);
-
 						console.log("error burgerddd7");
 						console.log(Data, posts, "posts");
 					} else {
