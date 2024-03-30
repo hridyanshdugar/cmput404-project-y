@@ -72,6 +72,7 @@ export default function Post() {
 					// const Data = await result.json();
 					console.log(result, "result");
 				});
+			console.log("LOADING DONE")
 			setLoading(true);
 		} else {
 			// navigate("/home");
@@ -89,8 +90,8 @@ export default function Post() {
 				<BackSelector contentType={"Post"} />
 			</div>
 			<div className={style.mainContentView}>
-				{loading ? (
-					loading ? (
+				{
+					loading && posts && posts.length > 0 ? (
 						posts.map((item: any, index: any) => (
 							<SinglePost
 								author={item.author}
@@ -111,9 +112,6 @@ export default function Post() {
                                 host={item.author.host}
 							/>
 						))
-					) : (
-						navigate("/home")
-					)
 				) : (
 					<Spinner animation="border" role="status">
 						<span className="visually-hidden">Loading...</span>
@@ -131,7 +129,7 @@ export default function Post() {
 					/>
 				)}
 				{loading ? (
-					loading &&
+					replies && posts && posts.length > 0 &&
 					replies.map((item: any, index: any) => (
 						<SinglePost
 							author={item.author}
