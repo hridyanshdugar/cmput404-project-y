@@ -46,7 +46,7 @@ export default class Profile extends React.Component<Props> {
 
 	FollowStatusMap: { [key: string]: string } = {
 		Following: "Unfollow",
-		NotFollowing: "Follow",
+		Notfollowing: "Follow",
 		Requested: "Requested",
 	};
 
