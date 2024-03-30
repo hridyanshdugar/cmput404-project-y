@@ -43,10 +43,10 @@ export default function Post() {
 						console.log("error burgerddd3", result );
 						const Data = await result.json();
 						console.log("error burgerddd4", Data);
-						const postsArray = [];
+						const postsArray: any[] = [];
 						console.log("error burgerddd5", postsArray);
 						postsArray.push(Data);
-						console.log("error burgerddd6", postsArray);
+						console.log("error burgerddd6");
 						setPosts(postsArray);
 						console.log("error burgerddd7");
 						console.log(Data, posts, "posts");
@@ -89,7 +89,7 @@ export default function Post() {
 				<BackSelector contentType={"Post"} />
 			</div>
 			<div className={style.mainContentView}>
-				{posts ? (
+				{loading ? (
 					loading ? (
 						posts.map((item: any, index: any) => (
 							<SinglePost
@@ -130,7 +130,7 @@ export default function Post() {
 						}}
 					/>
 				)}
-				{replies && posts && posts.length > 0 ? (
+				{loading ? (
 					loading &&
 					replies.map((item: any, index: any) => (
 						<SinglePost
