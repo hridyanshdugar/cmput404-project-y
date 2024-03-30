@@ -111,8 +111,8 @@ class FollowerView(APIView):
         """
         check if FOREIGN_AUTHOR_ID is a follower of AUTHOR_ID
         """
-        ff = get_object_or_404(FollowStatus,actor__id=author_id,obj__id=follower_id,complete=True)
-        return Response({"follows": True},status=status.HTTP_200_OK)
+        ff = FollowSerializer(get_object_or_404(FollowStatus,actor__id=author_id,obj__id=follower_id)).data
+        return Response(ff,status=status.HTTP_200_OK)
 
     def post(self, request, author_id, follower_id):
         data = json.loads(request.body)

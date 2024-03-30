@@ -39,9 +39,9 @@ export default function Post() {
 				.then(async (result: any) => {
 					console.log("error burgerddd2");
 					if (result.status === 200) {
-						console.log("error burgerddd3");
+						console.log("error burgerddd3", result );
 						const Data = await result.json();
-						console.log("error burgerddd4");
+						console.log("error burgerddd4", Data);
 						const postsArray = [];
 						console.log("error burgerddd5");
 						postsArray.push(Data);
