@@ -22,8 +22,8 @@ export default function Post() {
 	const [page, setPage] = useState<number>(1);
 	const [size, setSize] = useState<number>(100);
 	const [posts, setPosts, replies, setReplies] = useContext(PostContext);
-	console.log(posts, replies);
 	const [auth, setAuth] = useState<any>(null);
+	console.log(posts, replies);
 	const [user, setUser] = useState<any>(null);
 	const { userId, postId } = useParams();
 
@@ -50,7 +50,7 @@ export default function Post() {
 						console.log("error burgerddd7");
 						console.log(Data, posts, "posts");
 					} else {
-						console.log("error burgerddd");
+						console.log("error burgerddd", result);
 						// navigate("/home");
 					}
 				})

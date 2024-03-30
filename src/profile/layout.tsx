@@ -95,7 +95,7 @@ export default function ProfileLayout() {
 			})
 			.then((data) => {
 				console.log(data, "status3");
-				setFollowingStatus(data ? (data.complete ? "Following" : "Requested") : "Notfollowing");
+				setFollowingStatus("Notfollowing");
 				console.log(followingStatus, "status4");
 			});
 	}

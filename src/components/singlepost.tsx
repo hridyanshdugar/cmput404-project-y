@@ -115,7 +115,6 @@ const SinglePost: React.FC<Props> = (props) => {
 	const [visibility, setVisibility] = useState<string>("");
 	const [likes, setLikes] = useState<number>(props.likes);
 	const share = () => {
-		console.log(post);
 		console.log(visibility);
 		if (!(props.contentType === "text/post")) {
 			if (visibility === "PUBLIC") {
@@ -149,7 +148,7 @@ const SinglePost: React.FC<Props> = (props) => {
 		// 		getAPIEndpoint() + "/post/" + props.postId
 		// 	);
 		// }
-		
+		console.log("COCK", props.author)
 		let author = {
 			type: "author",
 			id: props.author["id"],
@@ -175,21 +174,7 @@ const SinglePost: React.FC<Props> = (props) => {
 		const user = cookies.get("user");
 		const auth = cookies.get("auth");
 		setuser(user);
-		getPost(auth["access"], props.postId,user.id)
-			.then(async (result: any) => {
-				if (result.status === 200) {
-					const Data = await result.json();
-					setPost(Data);
-					setVisibility(Data.visibility);
-				} else {
-					console.log("Error getting post")
-					console.log(result);
-					throw new Error("Error getting post");
-				}
-			})
-			.catch((error) => {
-				console.log("failed getting post")
-			});
+
 		if (props.contentType === "text/post") {
 			console.log("shared post1");
 			var originalPostId = props.text;
@@ -230,6 +215,21 @@ const SinglePost: React.FC<Props> = (props) => {
 			.catch(async (result: any) => {
 				const Data = await result.json();
 			});
+			getPost(auth["access"], props.postId,user.id)
+				.then(async (result: any) => {
+					if (result.status === 200) {
+						const Data = await result.json();
+						setPost(Data);
+						setVisibility(Data.visibility);
+					} else {
+						console.log("Error getting post")
+						console.log(result);
+						throw new Error("Error getting post");
+					}
+				})
+				.catch((error) => {
+					console.log("failed getting post")
+				});		
 			console.log("Post");
 			console.log(post);
 			console.log(post.author);
