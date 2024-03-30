@@ -25,9 +25,9 @@ function App() {
             <Route path="/notifications" element={ <Notifications/>} />
             <Route path="/settings" element={ <Settings/>} />            
         </Route>
+        <Route path="/profile/:userId/post/:postId" element={ <Post/>} />
         <Route path="/profile/:userId" element={<ProfileLayout/>}>
             <Route index element={<Profiles />} />
-            <Route path="post/:postId" element={ <Post/>} />
             <Route path="media" element={ <PostsMedia/>} />
             <Route path="likes" element={ <PostsLikes/>} />
         </Route>

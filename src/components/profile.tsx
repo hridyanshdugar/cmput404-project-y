@@ -158,7 +158,7 @@ export default class Profile extends React.Component<Props> {
 							<div
 								id="profileButton"
 								className={
-									this.props.followingStatus
+									this.followStatus === "Unfollow"
 										? styles.profileButtonFollowed
 										: styles.profileButton
 								}
