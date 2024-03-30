@@ -119,7 +119,7 @@ export default class Profile extends React.Component<Props> {
 	handleButtonClick = () => {
 		if (this.props.activeUser) {
 			navigate("/settings");
-		} else if (this.props.followingStatus === "Notfollowing") {
+		} else if (this.followStatus === "Follow") {
 			this.notFollowing(true);
 		} else {
 			this.following(true);
@@ -170,7 +170,7 @@ export default class Profile extends React.Component<Props> {
 								>
 									{this.props.activeUser
 										? "Edit Profile"
-										: this.FollowStatusMap[this.props.followingStatus]
+										: this.followStatus
 									}
 								</Button>
 							</div>

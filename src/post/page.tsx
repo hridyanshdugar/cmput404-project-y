@@ -25,7 +25,7 @@ export default function Post() {
 	console.log(posts, replies);
 	const [auth, setAuth] = useState<any>(null);
 	const [user, setUser] = useState<any>(null);
-	const { postId } = useParams();
+	const { userId, postId } = useParams();
 
 	useEffect(() => {
 		const cookies = new Cookies();
@@ -33,8 +33,8 @@ export default function Post() {
 		const user = cookies.get("user");
 		setAuth(auth);
 		setUser(user);
-		if (postId) {
-			getPost(auth, postId,user.id)
+		if (postId && userId) {
+			getPost(auth, postId, userId)
 				.then(async (result: any) => {
 					if (result.status === 200) {
 						const Data = await result.json();

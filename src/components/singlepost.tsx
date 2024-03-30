@@ -105,7 +105,7 @@ const SinglePost: React.FC<Props> = (props) => {
 	};
 	const onClickPost = (event: any) => {
 		if (!props.parentId) {
-			navigate("/post/" + props.postId);
+			navigate("/profile/"+props.author.id+"/post/" + props.postId);
 		}
 		event.stopPropagation();
 	};
