@@ -54,6 +54,7 @@ export default function Post() {
 				});
 			getPostComments(user.host, page, size, auth, user.id, postId)
 				.then(async (result: any) => {
+					console.log(result, "pensi");
 					const Data = await result.json();
 					setReplies(Data);
 					console.log(Data, replies, "replies");
