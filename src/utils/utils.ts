@@ -176,7 +176,7 @@ export async function checkFollowingStatus(user:any, to_follow:any, auth: string
           'Authorization': `Bearer ${auth}`,
       },
   };
-  return await fetch(getAPIEndpoint() + `/authors/${user.id}/followers/${to_follow.id}/`, options);
+  return await fetch(getAPIEndpoint() + `/authors/${user}/followers/${to_follow}/`, options);
 }
 
 export async function getRemoteUsers(auth: string) {
