@@ -83,16 +83,19 @@ export default function ProfileLayout() {
 	// Not working as expected for some reason
 	if (!activeUser) {
 		checkFollowingStatus(userId, userIdCookie, allcookies.auth.access)
-			.then((result) => {
-				console.log(result);
+			.then(async (result) => {
+				console.log(result, "status1");
+				result = await result.json();
+				console.log(result, "status2");
 				return result.json();
 			})
 			.catch((error) => {
 				console.log(error);
 			})
 			.then((data) => {
-				console.log(data, "status");
-				setFollowingStatus(data ? (data.complete ? "Following" : "Notfollowing") : "Requested");
+				console.log(data, "status3");
+				setFollowingStatus(data ? (data.complete ? "Following" : "Requested") : "Notfollowing");
+				console.log(followingStatus, "status4");
 			});
 	}
 
