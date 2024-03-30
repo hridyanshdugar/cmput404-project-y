@@ -46,7 +46,7 @@ export default function Post() {
 						const postsArray: any[] = [];
 						console.log("error burgerddd5", postsArray);
 						postsArray.push(Data);
-						console.log("error burgerddd6");
+						console.log("error burgerddd6", postsArray);
 						setPosts(postsArray);
 						console.log("error burgerddd7");
 						console.log(Data, posts, "posts");
@@ -64,13 +64,14 @@ export default function Post() {
 				.then(async (result: any) => {
 					console.log(result, "pensi");
 					const d = await result.json();
-					console.log("d", d);
-					setReplies(d);
-					console.log(d, replies, "replies");
+					if (result.status === 200) {
+						console.log("d", d);
+						setReplies(d);
+						console.log(d, replies, "replies");
+					}
 				})
 				.catch(async (result: any) => {
-					// const Data = await result.json();
-					console.log(result, "result");
+					console.log("lol");
 				});
 			console.log("LOADING DONE")
 			setLoading(true);
