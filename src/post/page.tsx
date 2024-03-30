@@ -44,9 +44,9 @@ export default function Post() {
 						const Data = await result.json();
 						console.log("error burgerddd4", Data);
 						const postsArray = [];
-						console.log("error burgerddd5");
+						console.log("error burgerddd5", postsArray);
 						postsArray.push(Data);
-						console.log("error burgerddd6");
+						console.log("error burgerddd6", postsArray);
 						setPosts(postsArray);
 						console.log("error burgerddd7");
 						console.log(Data, posts, "posts");
