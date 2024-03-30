@@ -170,9 +170,8 @@ export default class Profile extends React.Component<Props> {
 								>
 									{this.props.activeUser
 										? "Edit Profile"
-										: this.props.followingStatus
-										? "Following"
-										: "Follow"}
+										: this.FollowStatusMap[this.props.followingStatus]
+									}
 								</Button>
 							</div>
 						</div>
