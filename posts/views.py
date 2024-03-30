@@ -56,7 +56,9 @@ class PostsViewPK(APIView):
                 print(" hi 7")
                 response = requests.get(user.host + "api/authors/" + str(author_id) + "/posts/" + str(post_id), timeout=20,auth=HTTPBasicAuth(user_auth, pass_auth))
                 if response.status_code == 200:
-                    return Response(response.body, status = status.HTTP_200_OK)
+                    rbody = response.body
+                    print("Response Body: ", rbody)
+                    return Response(data = rbody, status = status.HTTP_200_OK)
                 else:
                     print(f"Request to {user.host} failed with status code: {response.status_code}")
                 print(" hi 8")

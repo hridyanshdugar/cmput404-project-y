@@ -25,6 +25,7 @@ export default function Post() {
 	const [auth, setAuth] = useState<any>(null);
 	console.log(posts, replies);
 	const [user, setUser] = useState<any>(null);
+	const [loading, setLoading] = useState<boolean>(false);
 	const { userId, postId } = useParams();
 
 	useEffect(() => {
@@ -71,6 +72,7 @@ export default function Post() {
 					// const Data = await result.json();
 					console.log(result, "result");
 				});
+			setLoading(true);
 		} else {
 			// navigate("/home");
 		}
@@ -88,7 +90,7 @@ export default function Post() {
 			</div>
 			<div className={style.mainContentView}>
 				{posts ? (
-					posts.length > 0 ? (
+					loading ? (
 						posts.map((item: any, index: any) => (
 							<SinglePost
 								author={item.author}
@@ -129,7 +131,7 @@ export default function Post() {
 					/>
 				)}
 				{replies && posts && posts.length > 0 ? (
-					replies.length > 0 &&
+					loading &&
 					replies.map((item: any, index: any) => (
 						<SinglePost
 							author={item.author}
