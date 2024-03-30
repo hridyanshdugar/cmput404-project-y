@@ -90,6 +90,7 @@ type Props = {
 	onPostPage?: boolean;
 	contentType: string;
 	parentId?: string;
+	author: any;
 };
 
 const SinglePost: React.FC<Props> = (props) => {
@@ -151,12 +152,12 @@ const SinglePost: React.FC<Props> = (props) => {
 		
 		let author = {
 			type: "author",
-			id: user["id"],
-			url: user["url"],
-			host: user["host"],
-			displayName: user["displayName"],
-			github: user["github"],
-			profileImage: user["profileImage"],
+			id: props.author["id"],
+			url: props.author["url"],
+			host: props.author["host"],
+			displayName: props.author["displayName"],
+			github: props.author["github"],
+			profileImage: props.author["profileImage"],
 		};
 
 		likePost(
@@ -390,7 +391,8 @@ const SinglePost: React.FC<Props> = (props) => {
 							{typeof sharedPost.author === "undefined" ? (
 								<div className={style.missingEmbed}>Post Not Found</div>
 							) : (
-								<SinglePost
+									<SinglePost
+										author={sharedPost.author}
 									name={sharedPost.author.displayName}
 									userId={sharedPost.author.id}
 									profileImage={

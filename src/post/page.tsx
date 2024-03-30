@@ -81,6 +81,7 @@ export default function Post() {
 					posts.length > 0 ? (
 						posts.map((item: any, index: any) => (
 							<SinglePost
+								author={item.author}
 								key={index}
 								name={item.author.displayName}
 								userId={item.author.id}
@@ -121,6 +122,7 @@ export default function Post() {
 					replies.length > 0 &&
 					replies.map((item: any, index: any) => (
 						<SinglePost
+							author={item.author}
 							key={index}
 							name={item.author.displayName}
 							userId={item.author.id}

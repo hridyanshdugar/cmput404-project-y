@@ -117,6 +117,7 @@ export default function Home() {
 					(
 						posts.map((item: any, index: any) => (
 							<SinglePost
+								author={item.author}
                                 key={index}
                                 name={item.author.displayName}
                                 userId={item.author.id}
@@ -138,6 +139,7 @@ export default function Home() {
 					) : (
 						posts.map((item: any, index: any) => (
 							<SinglePost
+								author={item.author}
 								key={index}
 								name={item.author.displayName}
 								userId={item.author.id}

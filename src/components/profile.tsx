@@ -21,7 +21,7 @@ type Props = {
 	following: number;
 	friends: number;
 	activeUser: boolean;
-	followingStatus: boolean;
+	followingStatus: string;
 	url: string;
 	postCount: number;
 	host: string;
@@ -40,8 +40,14 @@ export default class Profile extends React.Component<Props> {
 
 		//Change to reflect follow status using API if not activeUser !!NEEDED!!
 		//FollowingStatus should be aquired in /profile/[profile]/layout.tsx
-		this.followStatus = this.props.followingStatus ? "Following" : "Follow";
+		this.followStatus = this.FollowStatusMap[this.props.followingStatus];
 	}
+
+	FollowStatusMap: { [key: string]: string } = {
+		Following: "Unfollow",
+		NotFollowing: "Follow",
+		Requested: "Requested",
+	};
 
 	following = (request: boolean) => {
 		const cookies = new Cookies();
@@ -102,7 +108,7 @@ export default class Profile extends React.Component<Props> {
 			};
 			sendFollow(actor, object, auth.access);
 		}
-		this.followStatus = "Following";
+		this.followStatus = "Requested";
 		var div = document.getElementById("profileButton");
 		div!.classList.remove(styles.profileButton);
 		div!.classList.add(styles.profileButtonFollowed);

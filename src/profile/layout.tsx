@@ -18,7 +18,7 @@ import { Outlet, useParams } from "react-router-dom";
 export default function ProfileLayout() {
 	const { userId } = useParams();
 	let activeUser: boolean = false;
-	const [followingStatus, setFollowingStatus] = useState<boolean>(false);
+	const [followingStatus, setFollowingStatus] = useState<string>("Notfollowing");
 	const cookies = new Cookies();
 	const allcookies = cookies.getAll();
 	const userIdCookie = cookies.get("user").id;
@@ -92,7 +92,7 @@ export default function ProfileLayout() {
 			})
 			.then((data) => {
 				console.log(data);
-				setFollowingStatus(data?.follows);
+				setFollowingStatus(data ? (data.complete ? "Following" : "Notfollowing") : "Requested");
 			});
 	}
 
