@@ -21,9 +21,10 @@ import { Spinner } from "react-bootstrap";
 export default function Post() {
 	const [page, setPage] = useState<number>(1);
 	const [size, setSize] = useState<number>(100);
-	const [posts, setPosts, replies, setReplies] = useContext(PostContext);
+
 	const [auth, setAuth] = useState<any>(null);
-	console.log(posts, replies);
+	const [post, setPost] = useState<any>(null);
+	const [replies, setReplies] = useState<any>(null);
 	const [user, setUser] = useState<any>(null);
 	const [loading, setLoading] = useState<boolean>(false);
 	const { userId, postId } = useParams();
@@ -43,13 +44,8 @@ export default function Post() {
 						console.log("error burgerddd3", result );
 						const Data = await result.json();
 						console.log("error burgerddd4", Data);
-						const postsArray: any[] = [];
-						console.log("error burgerddd5", postsArray);
-						postsArray.push(Data);
-						console.log("error burgerddd6", postsArray);
-						setPosts(postsArray);
+						setPost(Data);
 						console.log("error burgerddd7");
-						console.log(Data, posts, "posts");
 					} else {
 						console.log("error burgerddd", result);
 						// navigate("/home");
@@ -82,7 +78,6 @@ export default function Post() {
 
 	const updateReplies = (State: any) => {
 		setReplies((replies: any[]) => [State, ...replies]);
-		setPosts(posts.map((post: any) => ({ ...post, count: post.count + 1 })));
 	};
 
 	return (
@@ -92,27 +87,24 @@ export default function Post() {
 			</div>
 			<div className={style.mainContentView}>
 				{
-					loading && posts && posts.length > 0 ? (
-						posts.map((item: any, index: any) => (
-							<SinglePost
-								author={item.author}
-								key={index}
-								name={item.author.displayName}
-								userId={item.author.id}
-								profileImage={
-									getMediaEndpoint() + item.author.profileImage?.split("?")[0]
-								}
-								username={item.author.displayName}
-								text={item.content}
-								postImage={undefined}
-								date={Math.floor(new Date(item.published).getTime() / 1000)}
-								likes={item.likes}
-								comments={item.count}
-								postId={item.id}
-                                contentType={item.contentType}
-                                host={item.author.host}
-							/>
-						))
+					loading && post ? (
+						<SinglePost
+							author={post.author}
+							name={post.author.displayName}
+							userId={post.author.id}
+							profileImage={
+								getMediaEndpoint() + post.author.profileImage?.split("?")[0]
+							}
+							username={post.author.displayName}
+							text={post.content}
+							postImage={undefined}
+							date={Math.floor(new Date(post.published).getTime() / 1000)}
+							likes={post.likes}
+							comments={post.count}
+							postId={post.id}
+							contentType={post.contentType}
+							host={post.author.host}
+						/>
 				) : (
 					<Spinner animation="border" role="status">
 						<span className="visually-hidden">Loading...</span>
@@ -130,7 +122,7 @@ export default function Post() {
 					/>
 				)}
 				{loading ? (
-					replies && posts && posts.length > 0 &&
+					replies && replies.length > 0 &&
 					replies.map((item: any, index: any) => (
 						<SinglePost
 							author={item.author}
@@ -147,7 +139,7 @@ export default function Post() {
                             host={item.author.host}
 							postId={item.id}
 							contentType={item.contentType}
-							parentId={posts[0].id}
+							parentId={post[0].id}
 						/>
 					))
 				) : (
