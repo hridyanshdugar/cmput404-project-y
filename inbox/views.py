@@ -59,7 +59,7 @@ class InboxView(APIView):
         def get_foreign_user(data):
             response_data = copy.deepcopy(data)
             try:
-                obj_user = User.objects.get(id=response_data["id"])
+                obj_user = User.objects.get(id=response_data["id"].split("/")[-1])
             except:
                 hasPfp = False
                 hasPfpBack = False
@@ -189,11 +189,11 @@ class InboxView(APIView):
         if data["type"] == "comment":
             # add print statements with incremental numbers for debbuing
             get_foreign_user(data["author"])
-            user = get_object_or_404(User,id=data["author"]["id"])
+            user = get_object_or_404(User,id=data["author"]["id"].split("/")[-1])
             post = get_object_or_404(Post,id=data["id"].split("/")[-1])
 
             new_data = data.copy()
-            new_data["author"] = data["author"]["id"]
+            new_data["author"] = data["author"]["id"].split("/")[-1]
             new_data['post'] = data["id"].split("/")[-1]
             new_data.pop("id")
 
