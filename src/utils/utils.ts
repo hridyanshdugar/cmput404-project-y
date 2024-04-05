@@ -114,7 +114,18 @@ export async function createPost(title:string, description:string, contentType:s
     },
     body: JSON.stringify({ "title": title, "description": description, "contentType": contentType, "content": content, "author": id, "visibility": visibility})
   };
-  console.log("bibidfgsfrgj", JSON.stringify({ "title": title, "description": description, "contentType": contentType, "content": content, "author": id, "visibility": visibility}))
+  return await fetch(getAPIEndpoint() + `/authors/${id}/posts/`, options);
+}
+
+export async function createSharedPost(title:string, description:string, contentType:string, content:string, visibility: string, auth: string, id:string, source_id:string) {
+  const options: RequestInit = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${auth}`,
+    },
+    body: JSON.stringify({ "title": title, "description": description, "contentType": contentType, "content": content, "author": id, "visibility": visibility, "source": source_id})
+  };
   return await fetch(getAPIEndpoint() + `/authors/${id}/posts/`, options);
 }
 
