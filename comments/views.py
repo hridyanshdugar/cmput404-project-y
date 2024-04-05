@@ -134,6 +134,8 @@ class CommentsView(APIView):
      '''
      def post(self, request, author_id, fk):
         body = request.body
+        print("BODY: ", body)
         data = json.loads(body)
+        print("DATA: ", data)
         res = requests.post(str(data["author"]["host"]) + "api/authors/" + str(data["author"]["id"]) + "/inbox/", data = body)
         return Response(res, status = res.status_code)
