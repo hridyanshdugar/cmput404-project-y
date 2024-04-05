@@ -203,16 +203,21 @@ export async function EditPost(payload: any, auth: string, id:string, user_id:st
   return await fetch(getAPIEndpoint() + `/authors/${user_id}/posts/${id}`, options);
 }
 
-export async function createComment(contentType:string, comment:string, auth: string, userId:string, postId:string,) {
+export async function createComment(contentType: string, comment: string, auth: string, author: any, postId: string,) {
+  
   const options: RequestInit = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${auth}`,
     },
-    body: JSON.stringify({ "comment": comment, "contentType": contentType, "author": userId, "post":postId })
+    body: JSON.stringify({
+      "type": "comment", "comment": comment,
+      "published": Math.round(+new Date() / 1000), "contentType": contentType, "author": author,
+      "id": getAPIEndpoint() + `/authors/${author.id}/posts/${postId}`
+    })
   };
-  return await fetch(getAPIEndpoint() + `/authors/${userId}/posts/${postId}/comments/`, options);
+  return await fetch(getAPIEndpoint() + `/authors/${author}/posts/${postId}/comments/`, options);
 }
 
 export async function likePost(author: any, object: string, auth:string) {

@@ -23,6 +23,9 @@ from followers.models import FollowStatus
 import json
 import copy 
 from users.views import download_profile, download_profileBack
+from comments.serializers import CommentSerializer
+
+
 class Pager(PageNumberPagination):
     page_size = 10
     page_size_query_param = 'size'
@@ -54,9 +57,9 @@ class InboxView(APIView):
      '''
      def post(self, request, pk):
         def get_foreign_user(data):
-            response_data = copy.deepcopy(data)["actor"]
+            response_data = copy.deepcopy(data)
             try:
-                obj_user = User.objects.get(id=data["actor"]["id"])
+                obj_user = User.objects.get(id=response_data["id"])
             except:
                 hasPfp = False
                 hasPfpBack = False
@@ -94,7 +97,7 @@ class InboxView(APIView):
         data = json.loads(request.body)
         # print("big bug", data)
         if data["type"] == "Follow":
-            get_foreign_user(data)
+            get_foreign_user(data["actor"])
         
             
             serializer = SaveFollowSerializer(data={"actor": data["actor"]["id"],"obj":data["object"]["id"], "complete": False})
@@ -107,14 +110,14 @@ class InboxView(APIView):
 
             return Response({"Title":"Done"}, status = status.HTTP_200_OK)
         if data["type"] == "Unfollow":
-            get_foreign_user(data)
+            get_foreign_user(data["actor"])
             
             req = get_object_or_404(FollowStatus,actor=data["actor"]["id"],obj=data["object"]["id"])
             req.delete()
 
             return Response({"Title":"Done"}, status = status.HTTP_200_OK)
         if data["type"] == "FollowResponse":
-            get_foreign_user(data)
+            get_foreign_user(data["actor"])
             if data["accepted"]:
                 req = get_object_or_404(FollowStatus,actor=data["actor"]["id"],obj=data["object"]["id"])
                 req.complete = True
@@ -184,7 +187,28 @@ class InboxView(APIView):
                         print("dfsjafiusdarf78", e)
             return Response({"Title":"Done"}, status = status.HTTP_200_OK)
         if data["type"] == "comment":
-            pass
+            # add print statements with incremental numbers for debbuing
+            get_foreign_user(data["author"])
+            user = get_object_or_404(User,id=data["author"]["id"])
+            post = get_object_or_404(Post,id=data["id"].split("/")[-1])
+
+            new_data = data.copy()
+            new_data["author"] = data["author"]["id"]
+            new_data['post'] = data["id"].split("/")[-1]
+            new_data.pop("id")
+
+            print("dfaiadsfudasod :  4")
+            serializer = CommentSerializer(data=new_data)
+
+            if serializer.is_valid():
+                Like = serializer.save()
+                inbox.comment.add(Like)
+                inbox.author = user
+                inbox.save()                    
+                return Response({"Title":"Done"}, status = status.HTTP_200_OK)
+            else:
+                print(serializer.errors)
+            return Response({"Title": "Unsuccessfully Added","Message": "Unsuccessfully Added"}, status = status.HTTP_400_BAD_REQUEST)
         if data["type"] == "Like":
             if "comment" in data["object"]: 
                 user = get_object_or_404(User,id=data["author"]["id"])
