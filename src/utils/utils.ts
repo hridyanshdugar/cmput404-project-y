@@ -228,7 +228,7 @@ export async function createComment(contentType: string, comment: string, auth: 
       "id": getAPIEndpoint() + `/authors/${author.id}/posts/${postId}`
     })
   };
-  return await fetch(getAPIEndpoint() + `/authors/${author}/posts/${postId}/comments/`, options);
+  return await fetch(getAPIEndpoint() + `/authors/${author.id}/posts/${postId}/comments/`, options);
 }
 
 export async function likePost(author: any, object: string, auth:string) {
