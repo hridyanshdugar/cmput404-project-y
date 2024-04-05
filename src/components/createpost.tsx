@@ -133,7 +133,7 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 			contentToSend = content;
 		}
 		if (props.postId) {
-			createComment(contentTypeF, contentToSend, auth, user.id, props.postId)
+			createComment(contentTypeF, contentToSend, auth, user, props.postId)
 				.then(async (result: any) => {
 					const Data = await result.json();
 					props.updatePosts(Data);
