@@ -24,7 +24,7 @@ export default function Post() {
 
 	const [auth, setAuth] = useState<any>(null);
 	const [post, setPost] = useState<any>(null);
-	const [replies, setReplies] = useState<any>(null);
+	const [replies, setReplies] = useState<any>([]);
 	const [user, setUser] = useState<any>(null);
 	const [loading, setLoading] = useState<boolean>(false);
 	const { userId, postId } = useParams();
@@ -77,6 +77,7 @@ export default function Post() {
 	}, []);
 
 	const updateReplies = (State: any) => {
+		console.log("Stat4r3w43243", replies);
 		setReplies((replies: any[]) => [State, ...replies]);
 	};
 
@@ -89,6 +90,7 @@ export default function Post() {
 				{
 					loading && post ? (
 						<SinglePost
+							post2={post}
 							author={post.author}
 							name={post.author.displayName}
 							userId={post.author.id}
@@ -125,6 +127,7 @@ export default function Post() {
 					replies && replies.length > 0 &&
 					replies.map((item: any, index: any) => (
 						<SinglePost
+						post2={item}
 							author={item.author}
 							key={index}
 							name={item.author.displayName}

@@ -197,7 +197,7 @@ class InboxView(APIView):
             new_data['post'] = data["id"].split("/")[-1]
             new_data.pop("id")
 
-            print("dfaiadsfudasod :  4")
+            print("dfaiadsfudasod :  4", new_data)
             serializer = CommentSerializer(data=new_data)
 
             if serializer.is_valid():
@@ -210,49 +210,31 @@ class InboxView(APIView):
                 print(serializer.errors)
             return Response({"Title": "Unsuccessfully Added","Message": "Unsuccessfully Added"}, status = status.HTTP_400_BAD_REQUEST)
         if data["type"] == "Like":
-            if "comment" in data["object"]: 
-                user = get_object_or_404(User,id=data["author"]["id"])
-                post = get_object_or_404(Comment,id=data["object"].split("/")[-1])
-                print("NO")
+            # add print statements with incremental numbers for debbuing
+            print("dfaiadsfudasod :  1")
+            print("bisfdagihjshjbi", data)
+            user = get_object_or_404(User,id=data["author"]["id"])
+            print("dfaiadsfudasod :  2")
+            post = get_object_or_404(Post,id=data["object"].split("/")[-1])
+            print("dfaiadsfudasod :  3")
+            print("NO")
 
-                new_data = data.copy()
-                new_data["author"] = data["author"]["id"]
-                new_data['comment'] = data["object"].split("/")[-1]
+            new_data = data.copy()
+            new_data["author"] = data["author"]["id"]
+            new_data['post'] = data["object"].split("/")[-1]
 
-                serializer = EditCommentLikeSerializer(data=new_data)
-                if serializer.is_valid():
-                    Like = serializer.save()
-                    inbox.commentLikes.add(Like)
-                    inbox.author = user
-                    inbox.save()  
-                    return Response(serializer.data, status = status.HTTP_200_OK)
-                return Response({"Title": "Unsuccessfully Added","Message": "Unsuccessfully Added"}, status = status.HTTP_400_BAD_REQUEST)
+            print("dfaiadsfudasod :  4")
+            serializer = EditPostLikeSerializer(data=new_data)
+
+            if serializer.is_valid():
+                Like = serializer.save()
+                inbox.postLikes.add(Like)
+                inbox.author = user
+                inbox.save()                    
+                return Response({"Title":"Done"}, status = status.HTTP_200_OK)
             else:
-                # add print statements with incremental numbers for debbuing
-                print("dfaiadsfudasod :  1")
-                print("bisfdagihjshjbi", data)
-                user = get_object_or_404(User,id=data["author"]["id"])
-                print("dfaiadsfudasod :  2")
-                post = get_object_or_404(Post,id=data["object"].split("/")[-1])
-                print("dfaiadsfudasod :  3")
-                print("NO")
-
-                new_data = data.copy()
-                new_data["author"] = data["author"]["id"]
-                new_data['post'] = data["object"].split("/")[-1]
-
-                print("dfaiadsfudasod :  4")
-                serializer = EditPostLikeSerializer(data=new_data)
-
-                if serializer.is_valid():
-                    Like = serializer.save()
-                    inbox.postLikes.add(Like)
-                    inbox.author = user
-                    inbox.save()                    
-                    return Response({"Title":"Done"}, status = status.HTTP_200_OK)
-                else:
-                    print(serializer.errors)
-                return Response({"Title": "Unsuccessfully Added","Message": "Unsuccessfully Added"}, status = status.HTTP_400_BAD_REQUEST)
+                print(serializer.errors)
+            return Response({"Title": "Unsuccessfully Added","Message": "Unsuccessfully Added"}, status = status.HTTP_400_BAD_REQUEST)
         # if response and realAuthor == response[1]["user_id"]:
         #     if serializer.is_valid():
         #         serializer.save(author=author)
