@@ -1,3 +1,4 @@
+import requests
 from rest_framework import serializers
 from .models import Post
 from users.models import User
@@ -86,4 +87,8 @@ class PostSerializer(serializers.ModelSerializer):
          return len(Comment.objects.filter(post=obj))
      
      def get_likes(self, obj):
-         return len(PostLike.objects.filter(post=obj))
+         res = requests.get(str(obj.author.host) + "api/authors/" + str(obj.author.id) + "/posts/" + str(obj.id) + "/likes/")
+         if res.status_code == 200:
+             return len(len(res.json()["authors"]))
+         print("Error: " + str(res.body))
+         return -1
