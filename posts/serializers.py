@@ -99,3 +99,4 @@ class PostSerializer(serializers.ModelSerializer):
                  return -2
          print("Error: " + str(res.content))
          return -1
+
