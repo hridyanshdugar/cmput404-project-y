@@ -87,11 +87,8 @@ export default function ProfileLayout() {
 					}
 				})
 				.catch((error) => {
-					console.log(error);
-				})
-				.then((data) => {
-					console.log(data, "status3");
-					setFollowingStatus("Notfollowing");
+                    console.log(error);
+                    setFollowingStatus("Notfollowing");
 					console.log(followingStatus, "status4");
 				});
 			}
