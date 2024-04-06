@@ -148,8 +148,9 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 				.then(async (result: any) => {
                     const Data = await result.json();
 					console.log(Data, "check data")
+					console.log(Data[0], "check data")
                     
-                    if (Data[0] === "'{\"Title\":\"Done\"}'") {
+                    if (Data[0] === '{"Title":"Done"}') {
 						console.log("HIT")
                         console.log("prro")
                         if (props.setPopupOpen) {
