@@ -89,6 +89,8 @@ class PostSerializer(serializers.ModelSerializer):
      def get_likes(self, obj):
          res = requests.get(str(obj.author.host) + "api/authors/" + str(obj.author.id) + "/posts/" + str(obj.id) + "/likes/")
          if res.status_code == 200:
-             return len(len(res.json()["authors"]))
+             hi = res.json()
+             print("yogurt", hi)
+             return len(hi["authors"])
          print("Error: " + str(res.body))
          return -1
