@@ -239,7 +239,7 @@ export async function getLikePost(author_id: string, post_id: string, auth:strin
         'Authorization': `Bearer ${auth}`,
       },
     };
-    return await fetch(getAPIEndpoint() + `/authors/${author_id}/posts/${post_id}/likes`, options);
+    return await fetch(getAPIEndpoint() + `/authors/${author_id}/posts/${post_id}/likes2`, options);
   }
 
 export async function likePost(author: any, object: string, auth:string) {
