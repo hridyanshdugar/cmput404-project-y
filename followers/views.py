@@ -111,8 +111,8 @@ class FollowerView(APIView):
         """
         check if FOREIGN_AUTHOR_ID is a follower of AUTHOR_ID
         """
+        ff = None
         if User.objects.filter(id=author_id).exists():
-            ff = None
             user = User.objects.get(id=author_id)
             if user.host == Node.objects.get(is_self=True).url:
                 ff = FollowSerializer(get_object_or_404(FollowStatus,actor__id=author_id,obj__id=follower_id)).data
@@ -132,7 +132,10 @@ class FollowerView(APIView):
                         print(f"Invalid JSON response from {user.host}: {response.text}")
                 else:
                     print(f"Request to {user.host} failed")
-        return Response(ff,status=status.HTTP_200_OK)
+        if ff:
+            return Response(ff,status=status.HTTP_200_OK)
+        else:
+            return HttpResponseBadRequest("Something went wrong!") 
 
     def post(self, request, author_id, follower_id):
         data = json.loads(request.body)
