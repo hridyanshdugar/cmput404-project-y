@@ -214,7 +214,7 @@ export async function EditPost(payload: any, auth: string, id:string, user_id:st
   return await fetch(getAPIEndpoint() + `/authors/${user_id}/posts/${id}`, options);
 }
 
-export async function createComment(contentType: string, comment: string, auth: string, author: any, postId: string,) {
+export async function createComment(contentType: string, comment: string, auth: string, author: any, postId: string, postAuthorId: string) {
   
   const options: RequestInit = {
     method: 'POST',
@@ -228,8 +228,19 @@ export async function createComment(contentType: string, comment: string, auth: 
       "id": getAPIEndpoint() + `/authors/${author.id}/posts/${postId}`
     })
   };
-  return await fetch(getAPIEndpoint() + `/authors/${author.id}/posts/${postId}/comments/`, options);
+  return await fetch(getAPIEndpoint() + `/authors/${postAuthorId}/posts/${postId}/comments/`, options);
 }
+
+export async function getLikePost(author_id: string, post_id: string, auth:string) {
+    const options: RequestInit = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${auth}`,
+      },
+    };
+    return await fetch(getAPIEndpoint() + `/authors/${author_id}/posts/${post_id}/likes2`, options);
+  }
 
 export async function likePost(author: any, object: string, auth:string) {
   const options: RequestInit = {
@@ -273,7 +284,7 @@ export async function getPostComments(host: string, page:number, size: number , 
       'Authorization': `Bearer ${auth}`,
     }
   };
-  return await fetch(getAPIEndpoint() + `/authors/${userId}/posts/${postId}/comments/?page=${page}&size=${size}&host=${host}&id=${userId}`, options);
+  return await fetch(getAPIEndpoint() + `/authors/${userId}/posts/${postId}/comments2/?page=${page}&size=${size}&host=${host}&id=${userId}`, options);
 }
 
 export async function getPost(auth: string, postId:string, user_id:string) {

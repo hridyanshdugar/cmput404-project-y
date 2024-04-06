@@ -29,6 +29,7 @@ import MDEditor from "@uiw/react-md-editor";
 interface CreatePostProps {
 	style?: React.CSSProperties;
 	postId?: string | undefined;
+	postAuthorId ?: string | undefined;
 	setPopupOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 	updatePosts: (State: any) => void;
 }
@@ -132,7 +133,8 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 			var contentTypeF = "text/plain";
 			contentToSend = content;
 		}
-		if (props.postId) {
+		console.log(props.postId, "id");
+		if (props.postId && props.postAuthorId) {
 			let author = {
 				type: "author",
 				id: user["id"],
@@ -142,20 +144,30 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 				github: user["github"],
 				profileImage: user["profileImage"],
 			};
-			createComment(contentTypeF, contentToSend, auth, author, props.postId)
+			console.log("author", author)
+			createComment(contentTypeF, contentToSend, auth, author, props.postId, props.postAuthorId)
 				.then(async (result: any) => {
-					const Data = await result.json();
-					props.updatePosts(Data);
-					if (props.setPopupOpen) {
-						props.setPopupOpen(false);
-					}
-					if (contentTypeMinimal === "plain") {
-						setcontent("");
-					} else if (contentTypeMinimal === "markdown") {
-						setMarkdownValue("");
-					} else if (contentTypeMinimal === "picture") {
-						setPFPbackgroundurl("");
-					}
+                    const Data = await result.json();
+					console.log(Data, "check data")
+					console.log(Data[0], "check data")
+                    
+                    if (Data[0] === '{"Title":"Done"}') {
+						console.log("HIT")
+                        console.log("prro")
+                        if (props.setPopupOpen) {
+                            props.setPopupOpen(false);
+                        }
+                        if (contentTypeMinimal === "plain") {
+                            setcontent("");
+                        } else if (contentTypeMinimal === "markdown") {
+                            setMarkdownValue("");
+                        } else if (contentTypeMinimal === "picture") {
+                            setPFPbackgroundurl("");
+                        }
+                        console.log("big boss");
+                        window.location.reload();
+                    }
+                    
 				})
 				.catch(async (result: any) => {
 					const Data = await result.json();

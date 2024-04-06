@@ -1,6 +1,8 @@
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
+
+from nodes.models import Node
 from .models import Comment
 from rest_framework.pagination import PageNumberPagination
 from .serializers import CommentSerializer
@@ -93,6 +95,57 @@ class CommentsViewPK(APIView):
             comment.delete()
             return Response({"title": "Successfully Deleted", "message": "Comment was deleted"}, status = status.HTTP_200_OK)
         return Response({"title": "Unauthorized", "message": "You are not authorized to delete this comment"}, status = status.HTTP_401_UNAUTHORIZED)
+
+class CommentsView2(APIView):
+     def perform_authentication(self, request):
+        if is_basicAuth(request):
+            if not basicAuth(request):
+                return Response(status=status.HTTP_401_UNAUTHORIZED)
+        if 'HTTP_AUTHORIZATION' in request.META:
+            request.META.pop('HTTP_AUTHORIZATION')
+    
+     pagination = Pager()
+     '''
+     GET /authors/{id}/posts/{id}/comments/ 
+     '''
+     def get(self, request, author_id, fk):
+        user = get_object_or_404(User, id=author_id)
+        if user.host == Node.objects.get(is_self=True).url:
+            comments=None
+
+            friends = []
+            for follower in FollowSerializer(FollowStatus.objects.filter(obj__id=author_id, complete=True),many=True).data:
+                for follow in FollowSerializer(FollowStatus.objects.filter(actor__id=author_id, complete=True),many=True).data:
+                    if follower["actor"]["id"] == follow["object"]["id"]:
+                        friends.append(follower)
+            friends = [friend["actor"]["id"] for friend in friends]
+
+            if request.GET.get('local',False):
+                comments = Comment.objects.filter(Q(host=request.GET.get('host'), post=fk))
+                # comments = Comment.objects.filter(Q(visibility="PUBLIC", host=request.GET.get('host')) | Q(visibility="FRIENDS")) # FINISH UP
+            else:
+                comments = Comment.objects.filter(Q(post=fk, post__visibility__in=["PUBLIC", "UNLISTED"]) | Q(post=fk, post__visibility="FRIENDS", author__id__in=friends) | Q(post=fk, post__author=author_id)).order_by('-published')
+            page_number = request.GET.get('page') or 1
+            page = self.pagination.paginate_queryset(comments, request, view=self)
+            if page is not None:
+                serializer = CommentSerializer(page, many=True, context={'request': request})
+                return Response(serializer.data, status = status.HTTP_200_OK)
+            else:
+                return Response(serializer.data, status = status.HTTP_400_BAD_REQUEST)
+        else:
+            try:
+                print(" hi 7")
+                url = user.host + "api/authors/" + str(author_id) + "/posts/" + str(fk) + "/comments/"
+                response = requests.get(url, timeout=20)
+                if response.status_code == 200:
+                    rbody = response.json()
+                    print("Response Body: ", rbody)
+                    return Response(data = rbody, status = status.HTTP_200_OK)
+                else:
+                    print(f"Request to {user.host} failed with status code: {response.status_code} : {url}")
+                print(" hi 8")
+            except requests.exceptions.RequestException as e:
+                print(f"Request to {user.host} failed: {e}")     
 
 class CommentsView(APIView):
      def perform_authentication(self, request):

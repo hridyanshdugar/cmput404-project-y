@@ -17,23 +17,18 @@ import { Outlet, useParams } from "react-router-dom";
 
 export default function ProfileLayout() {
 	const { userId } = useParams();
-	let activeUser: boolean = false;
+	const [activeUser, setActiveUser ]= useState(false);
 	const [followingStatus, setFollowingStatus] = useState<string>("Notfollowing");
 	const cookies = new Cookies();
 	const allcookies = cookies.getAll();
 	const userIdCookie = cookies.get("user").id;
-	if (allcookies.auth && allcookies.user) {
-		//!!Change to userName when added!!//
-		if (userId === userIdCookie) {
-			activeUser = true;
-		}
-	}
 
 	const [userInformation, setUserInformation] = useState<any>(null);
 	const [postCount, setPostCount] = useState<number>(0);
 	const [followingNumber, setFollowingNumber] = useState<number>(0);
 	const [followersNumber, setFollowersNumber] = useState<number>(0);
-	const [friendsNumber, setFriendsNumber] = useState<number>(0);
+    const [friendsNumber, setFriendsNumber] = useState<number>(0);
+    
 	useEffect(() => {
 		if (userId) {
 			getUserLocalInfo(allcookies.auth.access, userId!)
@@ -67,41 +62,51 @@ export default function ProfileLayout() {
 				.catch((error) => {
 					console.log(error);
 				});
+			}
+			
+			if (allcookies.auth && allcookies.user) {
+				//!!Change to userName when added!!//
+				if (userId === userIdCookie) {
+					setActiveUser(true);
+				}
+			}
+			
+			if (!activeUser) {
+				console.log("them: ", userId, " me: ", userIdCookie)
+				checkFollowingStatus(userId, userIdCookie, allcookies.auth.access)
+				.then(async (result: any) => {
+					console.log(result, "status1");
+					result = await result.json();
+					console.log(result, "status2");
+					console.log(result.complete, result.complete === true, result.complete == true, "status222");
+					if (result.complete === true) {
+						console.log("HIT")
+						setFollowingStatus("Following");
+					} else if (result.complete === false) {	 
+						setFollowingStatus("Requested");
+					} else {
+						setFollowingStatus("Notfollowing");
+					}
+				})
+				.catch((error) => {
+                    console.log(error);
+                    setFollowingStatus("Notfollowing");
+					console.log(followingStatus, "status4");
+				});
+			}
+		}, []);
+		
+		if (!userInformation) {
+			return (
+				<div style={{ backgroundColor: "#000" }}>
+					<SideBar />
+					<Rightbar />
+				</div>
+			);
 		}
-	}, [followingStatus]);
-
-	if (!userInformation) {
-		return (
-			<div style={{ backgroundColor: "#000" }}>
-				<SideBar />
-				<Rightbar />
-			</div>
-		);
-	}
-
-	// API call to check if the user is already following the other user
-	// Not working as expected for some reason
-	if (!activeUser) {
-		console.log("them: ", userId, " me: ", userIdCookie)
-		checkFollowingStatus(userId, userIdCookie, allcookies.auth.access)
-			.then(async (result) => {
-				console.log(result, "status1");
-				result = await result.json();
-				console.log(result, "status2");
-				return result.json();
-			})
-			.catch((error) => {
-				console.log(error);
-			})
-			.then((data) => {
-				console.log(data, "status3");
-				setFollowingStatus("Notfollowing");
-				console.log(followingStatus, "status4");
-			});
-	}
-
-	//Query username
-	//If username not in database, return 404 / user not found page
+		
+		//Query username
+		//If username not in database, return 404 / user not found page
 	return (
 		<PostContextProvider>
 			<div style={{ backgroundColor: "#000" }}>

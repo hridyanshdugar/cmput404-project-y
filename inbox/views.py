@@ -5,7 +5,7 @@ from .models import Inbox, Post
 from comments.models import Comment
 from rest_framework.pagination import PageNumberPagination
 from posts.serializers import PostSerializer
-from likes.serializers import EditCommentLikeSerializer, EditPostLikeSerializer
+from likes.serializers import EditPostLikeSerializer
 from django.shortcuts import get_object_or_404
 from users.models import User
 from django.db.models import Q
@@ -48,8 +48,8 @@ class InboxView(APIView):
         # print(pk)
         hi_user = User.objects.get(id=pk)
         post = Inbox.objects.get_or_create(author=hi_user)[0]
-        print("GOT")
         serializer = InboxSerializer(post)
+        print("SERIALIZED", serializer.data)
         return Response(serializer.data, status = status.HTTP_200_OK)
 
      '''
@@ -88,32 +88,38 @@ class InboxView(APIView):
                 else:
                     print(f"Invalid data from : {serializer.errors}")
 
+        print("cuudddt 1")
         hi_user = User.objects.get(id=pk)
+        print("cuudddt 2")
         inbox = Inbox.objects.get_or_create(author=hi_user)[0]
+        print("cuudddt 3")
 
         JWT_authenticator = JWTAuthentication()
         response = JWT_authenticator.authenticate(request)
-        # print("RESPONSEfdsfdsfsd", request.body)
+        print("RESPONSEfdsfdsfsd", request.body)
         data = json.loads(request.body)
-        # print("big bug", data)
+        print("big bug", data)
         if data["type"] == "Follow":
+            print("aa")
             get_foreign_user(data["actor"])
-        
+            print("aa2")
             
             serializer = SaveFollowSerializer(data={"actor": data["actor"]["id"],"obj":data["object"]["id"], "complete": False})
             if serializer.is_valid():
                 if not FollowStatus.objects.filter(actor=data["actor"]["id"],obj=data["object"]["id"]).exists():
                     follow_obj = serializer.save()
-                    inbox.author = User.objects.get(id=pk)
                     inbox.followRequest.add(follow_obj)
                     inbox.save()
 
             return Response({"Title":"Done"}, status = status.HTTP_200_OK)
         if data["type"] == "Unfollow":
+            print("bb 1")
             get_foreign_user(data["actor"])
-            
+            print("bb 2")
             req = get_object_or_404(FollowStatus,actor=data["actor"]["id"],obj=data["object"]["id"])
+            print("bb 3")
             req.delete()
+            print("bb 4")
 
             return Response({"Title":"Done"}, status = status.HTTP_200_OK)
         if data["type"] == "FollowResponse":
@@ -165,18 +171,18 @@ class InboxView(APIView):
                     print("abc : 6")
                     try:
                         bob = response.json()
-                        print("abc : 7")
+                        print("abc : 7", bob)
                         serializer = RemotePostSerializer(data={"id": bob["id"], "url": bob["url"], "host": bob["host"], "content": bob["content"], "contentType": bob["contentType"], "published": data["published"], "visibility": data["visibility"], "origin": data["origin"], "description": bob["description"], "author": bob["author"]["id"]})
                         print("abc : 8")
                         if serializer.is_valid():
                             print("abc : 9")
-                            if not Post.objects.filter(post__id=bob["id"]).exists():
+                            if not Post.objects.filter(id=bob["id"]).exists():
+                                print("abc : 99")
                                 post_obj = serializer.save()
                                 print("abc : 12")
-                                inbox.author = author
                                 print("abc : 13")
                                 inbox.post.add(post_obj)
-                                print("abc : 14")
+                                print("abc : 13")
                                 inbox.save()
                                 print("abc : 15")
                                 print("abc : 10")
@@ -203,7 +209,6 @@ class InboxView(APIView):
             if serializer.is_valid():
                 Like = serializer.save()
                 inbox.comment.add(Like)
-                inbox.author = user
                 inbox.save()                    
                 return Response({"Title":"Done"}, status = status.HTTP_200_OK)
             else:
@@ -222,14 +227,13 @@ class InboxView(APIView):
             new_data = data.copy()
             new_data["author"] = data["author"]["id"]
             new_data['post'] = data["object"].split("/")[-1]
-
+            
             print("dfaiadsfudasod :  4")
             serializer = EditPostLikeSerializer(data=new_data)
 
             if serializer.is_valid():
                 Like = serializer.save()
                 inbox.postLikes.add(Like)
-                inbox.author = user
                 inbox.save()                    
                 return Response({"Title":"Done"}, status = status.HTTP_200_OK)
             else:

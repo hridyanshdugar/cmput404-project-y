@@ -15,13 +15,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include, re_path
+from comments.views import CommentsView2
 from index.views import main
 from userauth import urls
 from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
 from drf_spectacular.views import SpectacularAPIView
-from likes.views import PostLikesViewPK, PostLikesView, CommentLikesViewPK
+from likes.views import PostLikesViewPK, PostLikesView, PostLikesViewPK2
 from inbox.views import InboxView
 from users.views import UsersViewPK
 from followers.views import FollowerView, getFollowers
@@ -38,6 +39,7 @@ urlpatterns = [
         path('authors/all/<str:author_id>/posts/', AllPostsView.as_view()),
         path('authors/all/<str:author_id>/posts2/', AllPostsView2.as_view()),
         path('authors/<str:author_id>/posts/<uuid:fk>/comments/', include('comments.urls')),
+        path('authors/<str:author_id>/posts/<uuid:fk>/comments2/', CommentsView2.as_view()),
         path('posts/', include('posts.urls')),
         path('authors/<str:author_id>/posts/<str:post_id>', PostsViewPK.as_view()),
         path('authors/<str:author_id>/posts/', PostsView.as_view()),
@@ -47,7 +49,7 @@ urlpatterns = [
         path('images/', include('image.urls')),
         path('followers/', include('followers.urls')),
         path('authors/<str:author_id>/posts/<str:post_id>/likes', PostLikesViewPK.as_view()),
-        path('authors/<str:author_id>/comments/<str:post_id>/likes', CommentLikesViewPK.as_view()),
+        path('authors/<str:author_id>/posts/<str:post_id>/likes2', PostLikesViewPK2.as_view()),
         path('authors/<str:author_id>/liked', PostLikesView.as_view()),
         path('authors/<str:pk>/', UsersViewPK.as_view()),
         path('authors/<str:author_id>/followers/<str:follower_id>/', FollowerView.as_view()),

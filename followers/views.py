@@ -111,23 +111,46 @@ class FollowerView(APIView):
         """
         check if FOREIGN_AUTHOR_ID is a follower of AUTHOR_ID
         """
-        ff = FollowSerializer(get_object_or_404(FollowStatus,actor__id=author_id,obj__id=follower_id)).data
-        return Response(ff,status=status.HTTP_200_OK)
+        ff = None
+        if User.objects.filter(id=author_id).exists():
+            user = User.objects.get(id=author_id)
+            if user.host == Node.objects.get(is_self=True).url:
+                ff = FollowSerializer(get_object_or_404(FollowStatus,actor__id=author_id,obj__id=follower_id)).data
+            else:
+                user_auth = get_object_or_404(Node,is_self=True).username
+                pass_auth = get_object_or_404(Node,is_self=True).password
+                try:
+                    response = requests.get(user.host + "api/authors/" + author_id + "/followers/" + follower_id + "/",timeout=3, auth=HTTPBasicAuth(user_auth, pass_auth))
+                except Exception as e:
+                    print(e, "wwhy")
+                if response != None and response.status_code == 200:
+                    print("this hit")
+                    try:
+                        ff = response.json()
+                        print(ff, "help me")
+                    except JSONDecodeError:
+                        print(f"Invalid JSON response from {user.host}: {response.text}")
+                else:
+                    print(f"Request to {user.host} failed")
+        if ff:
+            return Response(ff,status=status.HTTP_200_OK)
+        else:
+            return HttpResponseBadRequest("Something went wrong!") 
 
     def post(self, request, author_id, follower_id):
         data = json.loads(request.body)
         print("cac", data)
         res = requests.request(method="POST", url=data["object"]["host"] + "api/authors/" + str(follower_id) + "/inbox/",data=request.body)
-        print(res.data, res.body, "IDK")
+        print(res, "IDK")
         if res.status_code == 200:
             if data["type"] == "Follow":
-                if not FollowStatus.objects.filter(actor=author_id,obj=follower_id).exists():
+                if not FollowStatus.objects.filter(actor__id=author_id,obj__id=follower_id).exists():
                     serializer = SaveFollowSerializer(data={"actor":author_id,"obj":follower_id , "complete": False})
                     if serializer.is_valid():
                         serializer.save()
                     return Response(status=status.HTTP_200_OK)
             elif data["type"] == "Unfollow":
-                item =  get_object_or_404(FollowStatus,actor=author_id,obj=follower_id)
+                item =  get_object_or_404(FollowStatus,actor__id=author_id,obj__id=follower_id)
                 item.delete()
                 return Response(status=status.HTTP_200_OK)
         return Response("NOPE",status=status.HTTP_400_BAD_REQUEST)
@@ -138,10 +161,9 @@ class FollowerView(APIView):
         print("boblb", data)
         res = requests.request(method="POST", url=request.data["actor"]["host"] + "api/authors/" + str(author_id) + "/inbox/",data=request.body)
         if res.status_code == 200:
-            req = get_object_or_404(FollowStatus,actor=author_id,obj=follower_id)
+            req = get_object_or_404(FollowStatus,actor__id=author_id,obj__id=follower_id)
             hi_user = User.objects.get(id=follower_id)
             inbox = Inbox.objects.get_or_create(author=hi_user)[0]
-            inbox.author = hi_user
             inbox.followRequest.remove(req)
             inbox.save()            
             if data["accepted"]:

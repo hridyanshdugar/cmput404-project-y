@@ -79,6 +79,7 @@ export default function Post() {
 	const updateReplies = (State: any) => {
 		console.log("Stat4r3w43243", replies);
 		setReplies((replies: any[]) => [State, ...replies]);
+		console.log("Stat4r3w43243", replies);
 	};
 
 	return (
@@ -116,6 +117,7 @@ export default function Post() {
 					<CreatePost
 						updatePosts={updateReplies}
 						postId={postId}
+						postAuthorId={userId}
 						style={{
 							border: "1px solid rgb(47, 51, 54)",
 							paddingBottom: "10px",
@@ -124,8 +126,8 @@ export default function Post() {
 					/>
 				)}
 				{loading ? (
-					replies && replies.length > 0 &&
-					replies.map((item: any, index: any) => (
+					post && replies && replies.length > 0 &&
+                    replies.map((item: any, index: any) => (
 						<SinglePost
 						post2={item}
 							author={item.author}
@@ -139,10 +141,10 @@ export default function Post() {
 							date={Math.floor(new Date(item.published).getTime() / 1000)}
 							likes={item.likes}
                             comments={item.count}
-                            host={item.author.host}
 							postId={item.id}
+							parentId={post.id}
 							contentType={item.contentType}
-							parentId={post[0].id}
+                            host={item.author.host}
 						/>
 					))
 				) : (
