@@ -214,7 +214,7 @@ export async function EditPost(payload: any, auth: string, id:string, user_id:st
   return await fetch(getAPIEndpoint() + `/authors/${user_id}/posts/${id}`, options);
 }
 
-export async function createComment(contentType: string, comment: string, auth: string, author: any, postId: string,) {
+export async function createComment(contentType: string, comment: string, auth: string, author: any, postId: string, postAuthorId: string) {
   
   const options: RequestInit = {
     method: 'POST',
@@ -228,7 +228,7 @@ export async function createComment(contentType: string, comment: string, auth: 
       "id": getAPIEndpoint() + `/authors/${author.id}/posts/${postId}`
     })
   };
-  return await fetch(getAPIEndpoint() + `/authors/${author.id}/posts/${postId}/comments/`, options);
+  return await fetch(getAPIEndpoint() + `/authors/${postAuthorId}/posts/${postId}/comments/`, options);
 }
 
 export async function likePost(author: any, object: string, auth:string) {

@@ -29,6 +29,7 @@ import MDEditor from "@uiw/react-md-editor";
 interface CreatePostProps {
 	style?: React.CSSProperties;
 	postId?: string | undefined;
+	postAuthorId ?: string | undefined;
 	setPopupOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 	updatePosts: (State: any) => void;
 }
@@ -133,7 +134,7 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 			contentToSend = content;
 		}
 		console.log(props.postId, "id");
-		if (props.postId) {
+		if (props.postId && props.postAuthorId) {
 			let author = {
 				type: "author",
 				id: user["id"],
@@ -144,7 +145,7 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 				profileImage: user["profileImage"],
 			};
 			console.log("author", author)
-			createComment(contentTypeF, contentToSend, auth, author, props.postId)
+			createComment(contentTypeF, contentToSend, auth, author, props.postId, props.postAuthorId)
 				.then(async (result: any) => {
                     const Data = await result.json();
 					console.log(Data, "check data")

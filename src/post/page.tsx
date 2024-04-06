@@ -117,6 +117,7 @@ export default function Post() {
 					<CreatePost
 						updatePosts={updateReplies}
 						postId={postId}
+						postAuthorId={userId}
 						style={{
 							border: "1px solid rgb(47, 51, 54)",
 							paddingBottom: "10px",
