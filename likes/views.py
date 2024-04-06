@@ -22,8 +22,8 @@ class PostLikesViewPK(APIView):
      
      def get(self, request, author_id, post_id):
         print("hihihi 1", author_id, post_id)
-        Like = get_object_or_404(PostLike,author__id=author_id,post__id=post_id)
-        serializer = PostLikeSerializer(Like)
+        Likes = PostLike.objects.filter(author__id=author_id,post__id=post_id)
+        serializer = PostLikeSerializer(Likes, many=True)
         return Response(serializer.data, status = status.HTTP_200_OK)
 
      '''
