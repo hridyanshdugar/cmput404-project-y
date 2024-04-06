@@ -23,7 +23,7 @@ from followers.models import FollowStatus
 import json
 import copy 
 from users.views import download_profile, download_profileBack
-from comments.serializers import CommentSerializer
+from comments.serializers import CommentSerializer, EditCommentSerializer
 
 
 class Pager(PageNumberPagination):
@@ -198,7 +198,7 @@ class InboxView(APIView):
             new_data.pop("id")
 
             print("dfaiadsfudasod :  4", new_data)
-            serializer = CommentSerializer(data=new_data)
+            serializer = EditCommentSerializer(data=new_data)
 
             if serializer.is_valid():
                 Like = serializer.save()

@@ -137,5 +137,5 @@ class CommentsView(APIView):
         print("BODY: ", body)
         data = json.loads(body)
         print("DATA: ", data)
-        res = requests.post(str(data["author"]["host"]) + "api/authors/" + str(data["author"]["id"]) + "/inbox/", data = body)
+        res = requests.post(str(data["author"]["host"]) + "api/authors/" + str(data["author"]["id"].split("/")[-1]) + "/inbox/", data = body)
         return Response(res, status = res.status_code)
