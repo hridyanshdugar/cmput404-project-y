@@ -100,8 +100,9 @@ class InboxView(APIView):
         data = json.loads(request.body)
         print("big bug", data)
         if data["type"] == "Follow":
+            print("aa")
             get_foreign_user(data["actor"])
-        
+            print("aa2")
             
             serializer = SaveFollowSerializer(data={"actor": data["actor"]["id"],"obj":data["object"]["id"], "complete": False})
             if serializer.is_valid():
@@ -112,10 +113,13 @@ class InboxView(APIView):
 
             return Response({"Title":"Done"}, status = status.HTTP_200_OK)
         if data["type"] == "Unfollow":
+            print("bb 1")
             get_foreign_user(data["actor"])
-            
+            print("bb 2")
             req = get_object_or_404(FollowStatus,actor=data["actor"]["id"],obj=data["object"]["id"])
+            print("bb 3")
             req.delete()
+            print("bb 4")
 
             return Response({"Title":"Done"}, status = status.HTTP_200_OK)
         if data["type"] == "FollowResponse":
