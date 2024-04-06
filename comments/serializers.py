@@ -10,23 +10,20 @@ from likes.serializers import CommentLike
 TEXT_MAX_LENGTH = 300
 class CommentSerializer(serializers.ModelSerializer):
    type = serializers.SerializerMethodField()
-   author = AuthorSerializer(read_only=True)
-   likes = serializers.SerializerMethodField()
+   author = serializers.SerializerMethodField()
    
    class Meta:
       model = Comment
-      fields = ["id","type","post","contentType","comment","author","published","likes"]
-
-   def create(self, validated_data):
-      request = self.context.get('request')
-      validated_data["id"] = uuid.uuid4()
-      return super().create(validated_data)
+      fields = ["id","type","post","contentType","comment","author","published"]
      
    def get_author(self, obj):
       return AuthorSerializer(obj.author, context={'exclude_comments': True}).data
 
    def get_type(self, obj):
       return "comment"
-   
-   def get_likes(self, obj):
-      return len(CommentLike.objects.filter(comment=obj))
+
+
+class EditCommentSerializer(serializers.ModelSerializer):
+      class Meta:
+         model = Comment
+         fields = '__all__'

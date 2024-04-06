@@ -14,6 +14,8 @@ import json
 from nodes.views import is_basicAuth, basicAuth
 from followers.serializers import FollowSerializer
 from followers.models import FollowStatus
+import requests
+
 class Pager(PageNumberPagination):
     page_size = 10
     page_size_query_param = 'size'
@@ -131,29 +133,9 @@ class CommentsView(APIView):
      POST /authors/{id}/posts/{id}/comments/
      '''
      def post(self, request, author_id, fk):
-        author = None
-
-        try:
-            post = Post.objects.get(id=fk)
-        except Post.DoesNotExist:
-            return Response({"title": "Post not found", "message": "No valid post for the comment was provided" })
-        
-        try:
-            author = User.objects.get(id=request.data.get("author"))
-        except User.DoesNotExist:
-            return Response({"title": "Author not found.","message": "No valid author for the comment was provided"}, status=status.HTTP_404_NOT_FOUND)
-        
-        request.data["author"] = author
-
-        JWT_authenticator = JWTAuthentication()
-        response = JWT_authenticator.authenticate(request)
-        serializer = CommentSerializer(data = request.data, context={'request': request})
-
-        if response and str(author.id) == response[1]["user_id"]:
-            if serializer.is_valid():
-                serializer.save(author=author)
-                return Response(serializer.data, status = status.HTTP_200_OK)
-            else:
-                return Response({"title": "Invalid Fields", "message": serializer.errors}, status = status.HTTP_400_BAD_REQUEST)
-        else:
-            return Response({"title": "Unauthorized", "message": "You are not authorized to create this comment"}, status = status.HTTP_401_UNAUTHORIZED)
+        body = request.body
+        print("BODY: ", body)
+        data = json.loads(body)
+        print("DATA: ", data)
+        res = requests.post(str(data["author"]["host"]) + "api/authors/" + str(data["author"]["id"].split("/")[-1]) + "/inbox/", data = body)
+        return Response(res, status = res.status_code)

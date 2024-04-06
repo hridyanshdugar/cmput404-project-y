@@ -23,9 +23,9 @@ function App() {
             <Route path="/home" element={<Home />} />
             <Route path="/explore" element={<Explore />} />
             <Route path="/notifications" element={ <Notifications/>} />
-            <Route path="/settings" element={ <Settings/>} />            
+            <Route path="/settings" element={<Settings />} />    
+            <Route path="/profile/:userId/post/:postId" element={ <Post/>} />
         </Route>
-        <Route path="/profile/:userId/post/:postId" element={ <Post/>} />
         <Route path="/profile/:userId" element={<ProfileLayout/>}>
             <Route index element={<Profiles />} />
             <Route path="media" element={ <PostsMedia/>} />

@@ -15,6 +15,7 @@ import {
 	getFrontend,
 	getPost,
 	likePost,
+	createSharedPost,
 	// sendPostToInbox,
 	// sendLikeToInbox,
 } from "../utils/utils";
@@ -77,6 +78,7 @@ export function TimeConverter(date: Date) {
 
 type Props = {
 	name: string;
+	post2: any;
 	profileImage: string;
 	username: string;
 	userId: string;
@@ -175,7 +177,7 @@ const SinglePost: React.FC<Props> = (props) => {
 		const auth = cookies.get("auth");
 		setuser(user);
 
-		if (props.contentType === "text/post") {
+		if (props.post2.orign !== props.post2.source) {
 			console.log("shared post1");
 			var originalPostId = props.text;
 			getPost(auth.access, originalPostId, user.id)
@@ -233,14 +235,15 @@ const SinglePost: React.FC<Props> = (props) => {
 			console.log("Post");
 			console.log(post);
 			console.log(post.author);
-		createPost(
+			createSharedPost(
 			"Share",
 			post.description,
 			post.contentType,
 			post.content,
 			post.visibility,
 			auth.access,
-			post.author.id
+				post.author.id,
+			post.id
 		)
 			.then(async (result: any) => {
 				const Data = await result.json();
@@ -366,32 +369,13 @@ const SinglePost: React.FC<Props> = (props) => {
 							/>
 						</div>
 					</div>
-					{props.contentType.includes("image") ? (
-						<Card className="bg-dark text-white">
-							<Card.Img src={props.text} alt="Card image" />
-						</Card>
-					) : (
-						<></>
-					)}
-					{props.contentType === "text/markdown" ? (
-						<MarkdownPreview
-							source={props.text}
-							className={style.markdownColor}
-						/>
-					) : (
-						<></>
-					)}
-					{props.contentType === "text/plain" ? (
-						<div className={style.topBottom}>{props.text}</div>
-					) : (
-						<></>
-					)}
-					{props.contentType === "text/post" ? (
+					{props.post2.origin !== props.post2.source ? <>
 						<Card className={style.postEmbed} id="embedPost">
 							{typeof sharedPost.author === "undefined" ? (
 								<div className={style.missingEmbed}>Post Not Found</div>
 							) : (
 									<SinglePost
+										post2={sharedPost}
 										author={sharedPost.author}
 									name={sharedPost.author.displayName}
 									userId={sharedPost.author.id}
@@ -413,9 +397,30 @@ const SinglePost: React.FC<Props> = (props) => {
 								/>
 							)}
 						</Card>
-					) : (
-						<></>
-					)}
+					</> : <>
+						{props.contentType.includes("image") ? (
+							<Card className="bg-dark text-white">
+								<Card.Img src={props.text} alt="Card image" />
+							</Card>
+						) : (
+							<></>
+						)}
+						{props.contentType === "text/markdown" ? (
+							<MarkdownPreview
+								source={props.text}
+								className={style.markdownColor}
+							/>
+						) : (
+							<></>
+						)}
+						{props.contentType === "text/plain" ? (
+							<div className={style.topBottom}>{props.text}</div>
+						) : (
+							<></>
+						)}					
+					
+					</>}
+
 					<div>
 						{props.postImage && (
 							<Card className="bg-dark text-white">
