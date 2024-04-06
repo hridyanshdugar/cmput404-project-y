@@ -118,7 +118,7 @@ class FollowerView(APIView):
         data = json.loads(request.body)
         print("cac", data)
         res = requests.request(method="POST", url=data["object"]["host"] + "api/authors/" + str(follower_id) + "/inbox/",data=request.body)
-        print(res.data, res.body, "IDK")
+        print(res.status, "IDK")
         if res.status_code == 200:
             if data["type"] == "Follow":
                 if not FollowStatus.objects.filter(actor=author_id,obj=follower_id).exists():

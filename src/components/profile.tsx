@@ -41,7 +41,8 @@ export default class Profile extends React.Component<Props> {
 		//Change to reflect follow status using API if not activeUser !!NEEDED!!
 		//FollowingStatus should be aquired in /profile/[profile]/layout.tsx
 		console.log(this.props.followingStatus, this.FollowStatusMap[this.props.followingStatus], "CHECK")
-		this.followStatus = this.FollowStatusMap[this.props.followingStatus];
+        this.followStatus = this.FollowStatusMap[this.props.followingStatus];
+        console.log("bbidfigbfiiiiiii", this.props.host, getFrontend())
 	}
 
 	FollowStatusMap: { [key: string]: string } = {
