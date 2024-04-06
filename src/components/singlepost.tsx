@@ -177,19 +177,19 @@ const SinglePost: React.FC<Props> = (props) => {
 		const auth = cookies.get("auth");
 		setuser(user);
 
-		if (props.post2.origin !== props.post2.source) {
-			console.log("shared post1");
-			var originalPostId = props.post2.id;
-			getPost(auth.access, originalPostId, user.id)
-				.then(async (result: any) => {
-					const Data = await result.json();
-					setSharedPost(Data);
-				})
-				.catch(async (result: any) => {
-					const Data = await result.json();
-					console.log("shared post error");
-				});
-		}
+		// if (props.post2.origin !== props.post2.source) {
+		// 	console.log("shared post1");
+		// 	var originalPostId = props.post2.id;
+		// 	getPost(auth.access, originalPostId, user.id)
+		// 		.then(async (result: any) => {
+		// 			const Data = await result.json();
+		// 			setSharedPost(Data);
+		// 		})
+		// 		.catch(async (result: any) => {
+		// 			const Data = await result.json();
+		// 			console.log("shared post error");
+		// 		});
+		// }
 	}, [props.postId, props.contentType, props.text]);
 
 	const sharePost = () => {
@@ -369,7 +369,7 @@ const SinglePost: React.FC<Props> = (props) => {
 							/>
 						</div>
 					</div>
-					{props.post2.origin !== props.post2.source ? <>
+					{/* {props.post2.origin !== props.post2.source ? <>
 						<Card className={style.postEmbed} id="embedPost">
 							{typeof sharedPost.author === "undefined" ? (
 								<div className={style.missingEmbed}>Post Not Found</div>
@@ -397,7 +397,7 @@ const SinglePost: React.FC<Props> = (props) => {
 								/>
 							)}
 						</Card>
-					</> : <>
+					</> : <> */}
 						{props.contentType.includes("image") ? (
 							<Card className="bg-dark text-white">
 								<Card.Img src={props.text} alt="Card image" />
@@ -419,7 +419,7 @@ const SinglePost: React.FC<Props> = (props) => {
 							<></>
 						)}					
 					
-					</>}
+					{/* </>} */}
 
 					<div>
 						{props.postImage && (
