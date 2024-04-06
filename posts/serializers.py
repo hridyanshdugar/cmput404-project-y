@@ -87,7 +87,7 @@ class PostSerializer(serializers.ModelSerializer):
          return len(Comment.objects.filter(post=obj))
      
      def get_likes(self, obj):
-         res = requests.get(str(obj.author.host) + "api/authors/" + str(obj.author.id) + "/posts/" + str(obj.id) + "/likes/")
+         res = requests.get(str(obj.author.host) + "api/authors/" + str(obj.author.id) + "/posts/" + str(obj.id) + "/likes")
          if res.status_code == 200:
              try:
                 print("yogurt", res.content)
