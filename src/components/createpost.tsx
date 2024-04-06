@@ -132,6 +132,7 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 			var contentTypeF = "text/plain";
 			contentToSend = content;
 		}
+		console.log(props.postId, "id");
 		if (props.postId) {
 			let author = {
 				type: "author",
