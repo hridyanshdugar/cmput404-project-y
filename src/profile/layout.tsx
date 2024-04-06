@@ -78,6 +78,7 @@ export default function ProfileLayout() {
 					console.log(result, "status1");
 					result = await result.json();
 					console.log(result, "status2");
+					console.log(result.complete, "status222");
 					if (result.complete === true) {
 						setFollowingStatus("Following");
 					} else {
