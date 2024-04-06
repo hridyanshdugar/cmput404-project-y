@@ -134,14 +134,6 @@ const SinglePost: React.FC<Props> = (props) => {
 		const cookies = new Cookies();
 		const user = cookies.get("user");
         const auth = cookies.get("auth");
-        getLikePost(props.author.id, props.postId, auth["access"])
-        		.then(async (result: any) => {
-            			const Data = await result.json();
-            			setLikes(Data.items.length);
-            		})
-            		.catch(async (result: any) => {
-            			console.log("shared post error", result);
-            		});
 		// if (props.parentId) {
 		// 	sendLikeToInbox(
 		// 		user["id"],
@@ -159,7 +151,7 @@ const SinglePost: React.FC<Props> = (props) => {
 		// 		getAPIEndpoint() + "/post/" + props.postId
 		// 	);
 		// }
-		console.log("COCK", props.author)
+		console.log("THING", props.author)
 		let author = {
 			type: "author",
 			id: props.author["id"],
@@ -185,7 +177,15 @@ const SinglePost: React.FC<Props> = (props) => {
 		const user = cookies.get("user");
 		const auth = cookies.get("auth");
 		setuser(user);
-
+        getLikePost(props.author.id, props.postId, auth["access"])
+        		.then(async (result: any) => {
+                    const Data = await result.json();
+                    console.log("shared post", Data)
+            			setLikes(Data.items.length);
+            		})
+            		.catch(async (result: any) => {
+            			console.log("shared post error", result);
+            		});
 		// if (props.post2.origin !== props.post2.source) {
 		// 	console.log("shared post1");
 		// 	var originalPostId = props.post2.id;

@@ -26,7 +26,7 @@ class PostLikesViewPK(APIView):
         print("hihihi 2")
         serializer = PostLikeSerializer(Likes, many=True)
         print("hihihi 3")
-        return Response(serializer.data, status = status.HTTP_200_OK)
+        return Response({"type": "Liked", "items": serializer.data}, status = status.HTTP_200_OK)
 
      '''
      PUT /authors/{id}/posts/ and /posts/
