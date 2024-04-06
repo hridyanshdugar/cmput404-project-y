@@ -48,7 +48,6 @@ class InboxView(APIView):
         # print(pk)
         hi_user = User.objects.get(id=pk)
         post = Inbox.objects.get_or_create(author=hi_user)[0]
-        print("GOT", post.data)
         serializer = InboxSerializer(post)
         print("SERIALIZED", serializer.data)
         return Response(serializer.data, status = status.HTTP_200_OK)
