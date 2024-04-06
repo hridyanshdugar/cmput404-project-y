@@ -21,7 +21,7 @@ from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
 from drf_spectacular.views import SpectacularAPIView
-from likes.views import PostLikesViewPK, PostLikesView, CommentLikesViewPK
+from likes.views import PostLikesViewPK, PostLikesView
 from inbox.views import InboxView
 from users.views import UsersViewPK
 from followers.views import FollowerView, getFollowers
@@ -47,7 +47,6 @@ urlpatterns = [
         path('images/', include('image.urls')),
         path('followers/', include('followers.urls')),
         path('authors/<str:author_id>/posts/<str:post_id>/likes', PostLikesViewPK.as_view()),
-        path('authors/<str:author_id>/comments/<str:post_id>/likes', CommentLikesViewPK.as_view()),
         path('authors/<str:author_id>/liked', PostLikesView.as_view()),
         path('authors/<str:pk>/', UsersViewPK.as_view()),
         path('authors/<str:author_id>/followers/<str:follower_id>/', FollowerView.as_view()),

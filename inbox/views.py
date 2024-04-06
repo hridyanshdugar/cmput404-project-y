@@ -5,7 +5,7 @@ from .models import Inbox, Post
 from comments.models import Comment
 from rest_framework.pagination import PageNumberPagination
 from posts.serializers import PostSerializer
-from likes.serializers import EditCommentLikeSerializer, EditPostLikeSerializer
+from likes.serializers import EditPostLikeSerializer
 from django.shortcuts import get_object_or_404
 from users.models import User
 from django.db.models import Q
@@ -48,7 +48,7 @@ class InboxView(APIView):
         # print(pk)
         hi_user = User.objects.get(id=pk)
         post = Inbox.objects.get_or_create(author=hi_user)[0]
-        print("GOT")
+        print("GOT", post)
         serializer = InboxSerializer(post)
         print("SERIALIZED", serializer.data)
         return Response(serializer.data, status = status.HTTP_200_OK)
@@ -223,7 +223,7 @@ class InboxView(APIView):
             new_data = data.copy()
             new_data["author"] = data["author"]["id"]
             new_data['post'] = data["object"].split("/")[-1]
-
+            
             print("dfaiadsfudasod :  4")
             serializer = EditPostLikeSerializer(data=new_data)
 

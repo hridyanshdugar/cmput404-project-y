@@ -5,7 +5,6 @@ from django.contrib.auth.hashers import make_password
 import uuid
 from urllib.parse import urlparse
 from likes.models import PostLike
-from likes.serializers import CommentLike
 
 TEXT_MAX_LENGTH = 300
 class CommentSerializer(serializers.ModelSerializer):

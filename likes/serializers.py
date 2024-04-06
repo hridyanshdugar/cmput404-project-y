@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CommentLike, PostLike
+from .models import PostLike
 from users.models import User
 from users.serializers import AuthorSerializer
 from urllib.parse import urlparse
@@ -46,19 +46,3 @@ class EditPostLikeSerializer(serializers.ModelSerializer):
       def get_type(self, obj):
         return "Like"
       
-class CommentLikeSerializer(serializers.ModelSerializer):
-      type = serializers.SerializerMethodField(read_only=True)
-      class Meta:
-         model = CommentLike
-         fields = ["summary","type", "author", "comment"]
-      
-      def get_author(self, obj):
-         return AuthorSerializer(obj.author, context={'exclude_comments': True}).data
-      
-      def get_type(self, obj):
-        return "Like"
-      
-class EditCommentLikeSerializer(serializers.ModelSerializer):
-      class Meta:
-         model = CommentLike
-         fields = '__all__'

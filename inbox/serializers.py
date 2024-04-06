@@ -8,7 +8,7 @@ from comments.serializers import CommentSerializer
 from comments.models import Comment
 from posts.models import Post
 from posts.serializers import PostSerializer
-from likes.serializers import CommentLikeSerializer, PostLikeSerializer
+from likes.serializers import PostLikeSerializer
 from followers.serializers import FollowSerializer
 
 # Constants
@@ -22,11 +22,10 @@ class InboxSerializer(serializers.ModelSerializer):
      followRequest = serializers.SerializerMethodField()
 
      postLikes = serializers.SerializerMethodField()
-     commentLikes = serializers.SerializerMethodField()
 
      class Meta:
           model = Inbox
-          fields = ["id","author", "followRequest", "comments","type","commentLikes","postLikes","posts"]
+          fields = ["id","author", "followRequest", "comments","type","postLikes","posts"]
     
      def get_author(self, obj):
         return AuthorSerializer(obj.author, context={'exclude_comments': True}).data
@@ -42,9 +41,6 @@ class InboxSerializer(serializers.ModelSerializer):
      
      def get_postLikes(self, obj):
         return PostLikeSerializer(obj.postLikes, many=True, read_only=True).data
-     
-     def get_commentLikes(self, obj):
-        return CommentLikeSerializer(obj.commentLikes, many=True, read_only=True).data
      
      def get_type(self, obj):
         return "inbox"
