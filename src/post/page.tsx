@@ -79,6 +79,7 @@ export default function Post() {
 	const updateReplies = (State: any) => {
 		console.log("Stat4r3w43243", replies);
 		setReplies((replies: any[]) => [State, ...replies]);
+		console.log("Stat4r3w43243", replies);
 	};
 
 	return (
@@ -125,7 +126,7 @@ export default function Post() {
 				)}
 				{loading ? (
 					replies && replies.length > 0 &&
-					replies.map((item: any, index: any) => (
+                    replies.map((item: any, index: any) => (
 						<SinglePost
 						post2={item}
 							author={item.author}
@@ -142,7 +143,7 @@ export default function Post() {
                             host={item.author.host}
 							postId={item.id}
 							contentType={item.contentType}
-							parentId={post[0].id}
+							parentId={post.id}
 						/>
 					))
 				) : (
