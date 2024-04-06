@@ -104,7 +104,6 @@ class InboxView(APIView):
             if serializer.is_valid():
                 if not FollowStatus.objects.filter(actor=data["actor"]["id"],obj=data["object"]["id"]).exists():
                     follow_obj = serializer.save()
-                    inbox.author = User.objects.get(id=pk)
                     inbox.followRequest.add(follow_obj)
                     inbox.save()
 
@@ -203,7 +202,6 @@ class InboxView(APIView):
             if serializer.is_valid():
                 Like = serializer.save()
                 inbox.comment.add(Like)
-                inbox.author = user
                 inbox.save()                    
                 return Response({"Title":"Done"}, status = status.HTTP_200_OK)
             else:
@@ -229,7 +227,6 @@ class InboxView(APIView):
             if serializer.is_valid():
                 Like = serializer.save()
                 inbox.postLikes.add(Like)
-                inbox.author = user
                 inbox.save()                    
                 return Response({"Title":"Done"}, status = status.HTTP_200_OK)
             else:
