@@ -171,6 +171,7 @@ class InboxView(APIView):
                         if serializer.is_valid():
                             print("abc : 9")
                             if not Post.objects.filter(post__id=bob["id"]).exists():
+                                print("abc : 99")
                                 post_obj = serializer.save()
                                 print("abc : 12")
                                 inbox.author = author
