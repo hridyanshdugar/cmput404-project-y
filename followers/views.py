@@ -121,13 +121,13 @@ class FollowerView(APIView):
         print(res, "IDK")
         if res.status_code == 200:
             if data["type"] == "Follow":
-                if not FollowStatus.objects.filter(actor=author_id,obj=follower_id).exists():
+                if not FollowStatus.objects.filter(actor__id=author_id,obj__id=follower_id).exists():
                     serializer = SaveFollowSerializer(data={"actor":author_id,"obj":follower_id , "complete": False})
                     if serializer.is_valid():
                         serializer.save()
                     return Response(status=status.HTTP_200_OK)
             elif data["type"] == "Unfollow":
-                item =  get_object_or_404(FollowStatus,actor=author_id,obj=follower_id)
+                item =  get_object_or_404(FollowStatus,actor__id=author_id,obj__id=follower_id)
                 item.delete()
                 return Response(status=status.HTTP_200_OK)
         return Response("NOPE",status=status.HTTP_400_BAD_REQUEST)
@@ -138,7 +138,7 @@ class FollowerView(APIView):
         print("boblb", data)
         res = requests.request(method="POST", url=request.data["actor"]["host"] + "api/authors/" + str(author_id) + "/inbox/",data=request.body)
         if res.status_code == 200:
-            req = get_object_or_404(FollowStatus,actor=author_id,obj=follower_id)
+            req = get_object_or_404(FollowStatus,actor__id=author_id,obj__d=follower_id)
             hi_user = User.objects.get(id=follower_id)
             inbox = Inbox.objects.get_or_create(author=hi_user)[0]
             inbox.author = hi_user
