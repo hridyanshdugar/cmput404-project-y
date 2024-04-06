@@ -177,9 +177,9 @@ const SinglePost: React.FC<Props> = (props) => {
 		const auth = cookies.get("auth");
 		setuser(user);
 
-		if (props.post2.orign !== props.post2.source) {
+		if (props.post2.origin !== props.post2.source) {
 			console.log("shared post1");
-			var originalPostId = props.text;
+			var originalPostId = props.post2.id;
 			getPost(auth.access, originalPostId, user.id)
 				.then(async (result: any) => {
 					const Data = await result.json();
