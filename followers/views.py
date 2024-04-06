@@ -112,6 +112,7 @@ class FollowerView(APIView):
         check if FOREIGN_AUTHOR_ID is a follower of AUTHOR_ID
         """
         if User.objects.filter(id=author_id).exists():
+            ff = None
             user = User.objects.get(id=author_id)
             if user.host == Node.objects.get(is_self=True).url:
                 ff = FollowSerializer(get_object_or_404(FollowStatus,actor__id=author_id,obj__id=follower_id)).data
@@ -119,13 +120,14 @@ class FollowerView(APIView):
                 user_auth = get_object_or_404(Node,is_self=True).username
                 pass_auth = get_object_or_404(Node,is_self=True).password
                 try:
-                    response = requests.get(user.host + "api/authors/" + author_id + "/followers/" + follower_id,timeout=3, auth=HTTPBasicAuth(user_auth, pass_auth))
+                    response = requests.get(user.host + "api/authors/" + author_id + "/followers/" + follower_id + "/",timeout=3, auth=HTTPBasicAuth(user_auth, pass_auth))
                 except Exception as e:
-                    print(e)
+                    print(e, "wwhy")
                 if response != None and response.status_code == 200:
+                    print("this hit")
                     try:
                         ff = response.json()
-                        print(ff)
+                        print(ff, "help me")
                     except JSONDecodeError:
                         print(f"Invalid JSON response from {user.host}: {response.text}")
                 else:
