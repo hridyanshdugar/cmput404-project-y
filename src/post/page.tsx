@@ -126,7 +126,7 @@ export default function Post() {
 					/>
 				)}
 				{loading ? (
-					replies && replies.length > 0 &&
+					post && replies && replies.length > 0 &&
                     replies.map((item: any, index: any) => (
 						<SinglePost
 						post2={item}
