@@ -22,7 +22,7 @@ class PostLikesViewPK(APIView):
      
      def get(self, request, author_id, post_id):
         print("hihihi 1", author_id, post_id)
-        Likes = PostLike.objects.filter(author__id=author_id,post__id=post_id)
+        Likes = PostLike.objects.filter(author__id=author_id,object__id=post_id)
         serializer = PostLikeSerializer(Likes, many=True)
         return Response(serializer.data, status = status.HTTP_200_OK)
 
@@ -31,7 +31,7 @@ class PostLikesViewPK(APIView):
      '''
      def put(self, request, author_id, post_id):
         body = copy.deepcopy(request.body)
-        res = requests.post(str(request.data["author"]["host"]) + "api/authors/" + str(request.data["author"]["id"]) + "/inbox/", data = body)
+        res = requests.post(str(request.data["author"]["host"]) + "api/authors/" + author_id + "/inbox/", data = body)
         print("hihihi 5")
         return Response (res.json(), status = status.HTTP_200_OK)
 
