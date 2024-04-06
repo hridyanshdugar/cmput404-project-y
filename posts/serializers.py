@@ -90,6 +90,7 @@ class PostSerializer(serializers.ModelSerializer):
          res = requests.get(str(obj.author.host) + "api/authors/" + str(obj.author.id) + "/posts/" + str(obj.id) + "/likes/")
          if res.status_code == 200:
              try:
+                print("yogurt", res.content)
                 hi = res.json()
                 print("yogurt", hi)
                 return len(hi["authors"])
