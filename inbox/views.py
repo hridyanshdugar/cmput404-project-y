@@ -165,7 +165,7 @@ class InboxView(APIView):
                     print("abc : 6")
                     try:
                         bob = response.json()
-                        print("abc : 7")
+                        print("abc : 7", bob)
                         serializer = RemotePostSerializer(data={"id": bob["id"], "url": bob["url"], "host": bob["host"], "content": bob["content"], "contentType": bob["contentType"], "published": data["published"], "visibility": data["visibility"], "origin": data["origin"], "description": bob["description"], "author": bob["author"]["id"]})
                         print("abc : 8")
                         if serializer.is_valid():
