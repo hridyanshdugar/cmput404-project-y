@@ -147,7 +147,11 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 			createComment(contentTypeF, contentToSend, auth, author, props.postId)
 				.then(async (result: any) => {
                     const Data = await result.json();
+					console.log(Data, "check data")
+                    
                     if (Data["Title"] === "Done") {
+						console.log("HIT")
+                        console.log("prro")
                         if (props.setPopupOpen) {
                             props.setPopupOpen(false);
                         }
@@ -158,6 +162,7 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
                         } else if (contentTypeMinimal === "picture") {
                             setPFPbackgroundurl("");
                         }
+                        console.log("big boss");
                         window.location.reload();
                     }
                     
