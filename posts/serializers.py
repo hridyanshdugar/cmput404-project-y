@@ -35,7 +35,7 @@ class PostSerializer(serializers.ModelSerializer):
 
      class Meta:
           model = Post
-          fields = ["id", "title", "host","source","type", "url", "content","contentType","published","comments","commentsSrc","visibility","origin","description", "author","count","likes"]
+          fields = ["id", "title", "host","source","type", "url", "content","contentType","published","comments","commentsSrc","visibility","origin","description", "author","count"]
 
      def __init__(self, *args, **kwargs):
         exclude_comments = False
@@ -85,18 +85,3 @@ class PostSerializer(serializers.ModelSerializer):
      
      def get_count(self, obj):
          return len(Comment.objects.filter(post=obj))
-     
-     def get_likes(self, obj):
-         res = requests.get(str(obj.author.host) + "api/authors/" + str(obj.author.id) + "/posts/" + str(obj.id) + "/likes")
-         if res.status_code == 200:
-             try:
-                print("yogurt", res.content)
-                hi = res.json()
-                print("yogurt", hi)
-                return len(hi["authors"])
-             except Exception as e:
-                 print("dfgfdgdfgdfg4rg4444: " + str(e))
-                 return -2
-         print("Error: " + str(res.content))
-         return -1
-

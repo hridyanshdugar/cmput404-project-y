@@ -231,6 +231,17 @@ export async function createComment(contentType: string, comment: string, auth: 
   return await fetch(getAPIEndpoint() + `/authors/${postAuthorId}/posts/${postId}/comments/`, options);
 }
 
+export async function getLikePost(author_id: string, post_id: string, auth:string) {
+    const options: RequestInit = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${auth}`,
+      },
+    };
+    return await fetch(getAPIEndpoint() + `/authors/${author_id}/posts/${post_id}/likes`, options);
+  }
+
 export async function likePost(author: any, object: string, auth:string) {
   const options: RequestInit = {
     method: 'PUT',

@@ -16,6 +16,7 @@ import {
 	getPost,
 	likePost,
 	createSharedPost,
+    getLikePost,
 	// sendPostToInbox,
 	// sendLikeToInbox,
 } from "../utils/utils";
@@ -132,7 +133,15 @@ const SinglePost: React.FC<Props> = (props) => {
 		console.log("CLICKED");
 		const cookies = new Cookies();
 		const user = cookies.get("user");
-		const auth = cookies.get("auth");
+        const auth = cookies.get("auth");
+        getLikePost(props.author.id, props.postId, auth["access"])
+        		.then(async (result: any) => {
+            			const Data = await result.json();
+            			setLikes(Data.items.length);
+            		})
+            		.catch(async (result: any) => {
+            			console.log("shared post error", result);
+            		});
 		// if (props.parentId) {
 		// 	sendLikeToInbox(
 		// 		user["id"],
