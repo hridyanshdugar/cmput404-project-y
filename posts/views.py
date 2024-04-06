@@ -54,13 +54,14 @@ class PostsViewPK(APIView):
         else:
             try:
                 print(" hi 7")
-                response = requests.get(user.host + "api/authors/" + str(author_id) + "/posts/" + str(post_id), timeout=20,auth=HTTPBasicAuth(user_auth, pass_auth))
+                url = user.host + "api/authors/" + str(author_id) + "/posts/" + str(post_id)
+                response = requests.get(url, timeout=20,auth=HTTPBasicAuth(user_auth, pass_auth))
                 if response.status_code == 200:
                     rbody = response.json()
                     print("Response Body: ", rbody)
                     return Response(data = rbody, status = status.HTTP_200_OK)
                 else:
-                    print(f"Request to {user.host} failed with status code: {response.status_code}")
+                    print(f"Request to {user.host} failed with status code: {response.status_code} : {url}")
                 print(" hi 8")
             except requests.exceptions.RequestException as e:
                 print(f"Request to {user.host} failed: {e}")
