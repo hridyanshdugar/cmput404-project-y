@@ -21,6 +21,7 @@ class PostLikesViewPK(APIView):
             request.META.pop('HTTP_AUTHORIZATION')
      
      def get(self, request, author_id, post_id):
+        print("hihihi 1", author_id, post_id)
         Like = get_object_or_404(PostLike,author__id=author_id,post__id=post_id)
         serializer = PostLikeSerializer(Like)
         return Response(serializer.data, status = status.HTTP_200_OK)
