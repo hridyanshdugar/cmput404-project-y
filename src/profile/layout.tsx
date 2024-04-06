@@ -82,8 +82,10 @@ export default function ProfileLayout() {
 					if (result.complete === true) {
 						console.log("HIT")
 						setFollowingStatus("Following");
-					} else {
+					} else if (result.complete === false) {	 
 						setFollowingStatus("Requested");
+					} else {
+						setFollowingStatus("Notfollowing");
 					}
 				})
 				.catch((error) => {
