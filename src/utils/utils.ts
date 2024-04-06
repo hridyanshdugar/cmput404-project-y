@@ -284,7 +284,7 @@ export async function getPostComments(host: string, page:number, size: number , 
       'Authorization': `Bearer ${auth}`,
     }
   };
-  return await fetch(getAPIEndpoint() + `/authors/${userId}/posts/${postId}/comments/?page=${page}&size=${size}&host=${host}&id=${userId}`, options);
+  return await fetch(getAPIEndpoint() + `/authors/${userId}/posts/${postId}/comments2/?page=${page}&size=${size}&host=${host}&id=${userId}`, options);
 }
 
 export async function getPost(auth: string, postId:string, user_id:string) {
