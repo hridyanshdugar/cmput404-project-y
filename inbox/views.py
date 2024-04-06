@@ -174,9 +174,11 @@ class InboxView(APIView):
                                 print("abc : 99")
                                 post_obj = serializer.save()
                                 print("abc : 12")
-                                inbox.author = author
+                                user = get_object_or_404(User,id=bob["author"]["id"])
                                 print("abc : 13")
                                 inbox.post.add(post_obj)
+                                print("abc : 13")
+                                inbox.author = user
                                 print("abc : 14")
                                 inbox.save()
                                 print("abc : 15")
