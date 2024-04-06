@@ -227,7 +227,6 @@ class PostsView(APIView):
     
         bob = copy.deepcopy(request.data)
         bob["author"] = author
-        bob["id"] = author
 
         serializer = PostSerializer(data = bob, context={'request': request})
         if serializer.is_valid():
