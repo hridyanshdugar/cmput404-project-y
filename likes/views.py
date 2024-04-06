@@ -22,8 +22,10 @@ class PostLikesViewPK(APIView):
      
      def get(self, request, author_id, post_id):
         print("hihihi 1", author_id, post_id)
-        Likes = PostLike.objects.filter(author__id=author_id,object__id=post_id)
+        Likes = PostLike.objects.filter(author__id=author_id,post__id=post_id)
+        print("hihihi 2")
         serializer = PostLikeSerializer(Likes, many=True)
+        print("hihihi 3")
         return Response(serializer.data, status = status.HTTP_200_OK)
 
      '''
