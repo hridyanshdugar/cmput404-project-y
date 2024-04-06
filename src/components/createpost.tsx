@@ -147,18 +147,20 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 			createComment(contentTypeF, contentToSend, auth, author, props.postId)
 				.then(async (result: any) => {
                     const Data = await result.json();
-                    console.log("bbbooo3321", Data);
-					props.updatePosts(Data);
-					if (props.setPopupOpen) {
-						props.setPopupOpen(false);
-					}
-					if (contentTypeMinimal === "plain") {
-						setcontent("");
-					} else if (contentTypeMinimal === "markdown") {
-						setMarkdownValue("");
-					} else if (contentTypeMinimal === "picture") {
-						setPFPbackgroundurl("");
-					}
+                    if (Data["Title"] === "Done") {
+                        if (props.setPopupOpen) {
+                            props.setPopupOpen(false);
+                        }
+                        if (contentTypeMinimal === "plain") {
+                            setcontent("");
+                        } else if (contentTypeMinimal === "markdown") {
+                            setMarkdownValue("");
+                        } else if (contentTypeMinimal === "picture") {
+                            setPFPbackgroundurl("");
+                        }
+                        window.location.reload();
+                    }
+                    
 				})
 				.catch(async (result: any) => {
 					const Data = await result.json();
