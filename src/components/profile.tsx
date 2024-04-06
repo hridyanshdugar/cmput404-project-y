@@ -202,7 +202,7 @@ export default class Profile extends React.Component<Props> {
 								{this.props.followers}
 								<span style={{ color: "grey" }}> Followers</span>
 							</div>
-							{this.props.host === getFrontend() ? <>
+							{this.props.host === getFrontend() + "/" ? <>
 								<div id="following" className={styles.followCount}>
 									{this.props.following}
 									<span style={{ color: "grey" }}> Following</span>
