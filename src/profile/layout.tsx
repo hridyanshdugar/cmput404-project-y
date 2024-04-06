@@ -84,11 +84,15 @@ export default function ProfileLayout() {
 	if (!activeUser) {
 		console.log("them: ", userId, " me: ", userIdCookie)
 		checkFollowingStatus(userId, userIdCookie, allcookies.auth.access)
-			.then(async (result) => {
+			.then(async (result: any) => {
 				console.log(result, "status1");
 				result = await result.json();
 				console.log(result, "status2");
-				return result.json();
+				if (result.complete === true) {
+					setFollowingStatus("Following");
+				} else {
+					setFollowingStatus("Requested");
+				}
 			})
 			.catch((error) => {
 				console.log(error);
