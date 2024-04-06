@@ -97,5 +97,5 @@ class PostSerializer(serializers.ModelSerializer):
              except Exception as e:
                  print("dfgfdgdfgdfg4rg4444: " + str(e))
                  return -2
-         print("Error: " + str(res.body))
+         print("Error: " + str(res.content))
          return -1
