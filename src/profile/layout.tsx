@@ -17,7 +17,7 @@ import { Outlet, useParams } from "react-router-dom";
 
 export default function ProfileLayout() {
 	const { userId } = useParams();
-	let activeUser: boolean = false;
+	const [activeUser, setActiveUser ]= useState(false);
 	const [followingStatus, setFollowingStatus] = useState<string>("Notfollowing");
 	const cookies = new Cookies();
 	const allcookies = cookies.getAll();
@@ -67,7 +67,7 @@ export default function ProfileLayout() {
 			if (allcookies.auth && allcookies.user) {
 				//!!Change to userName when added!!//
 				if (userId === userIdCookie) {
-					activeUser = true;
+					setActiveUser(true);
 				}
 			}
 			
