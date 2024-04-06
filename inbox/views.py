@@ -88,14 +88,17 @@ class InboxView(APIView):
                 else:
                     print(f"Invalid data from : {serializer.errors}")
 
+        print("cuudddt 1")
         hi_user = User.objects.get(id=pk)
+        print("cuudddt 2")
         inbox = Inbox.objects.get_or_create(author=hi_user)[0]
+        print("cuudddt 3")
 
         JWT_authenticator = JWTAuthentication()
         response = JWT_authenticator.authenticate(request)
-        # print("RESPONSEfdsfdsfsd", request.body)
+        print("RESPONSEfdsfdsfsd", request.body)
         data = json.loads(request.body)
-        # print("big bug", data)
+        print("big bug", data)
         if data["type"] == "Follow":
             get_foreign_user(data["actor"])
         
