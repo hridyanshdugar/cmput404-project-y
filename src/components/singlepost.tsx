@@ -173,7 +173,7 @@ const SinglePost: React.FC<Props> = (props) => {
             		.catch(async (result: any) => {
             			console.log("shared post error", result);
             		});
-		if (props.post.origin !== props.post.source) {
+		if (props.post.origin !== props.post.source && !props.embedParentId) {
 			//Get shared post information
 			console.log("shared post1", props.post.source.split("/").slice(-1)[0], props.post.source.split("/").slice(-3)[0]);
 			getPost(auth["access"], props.post.source.split("/").slice(-1)[0], props.post.source.split("/").slice(-3)[0])
@@ -300,7 +300,7 @@ const SinglePost: React.FC<Props> = (props) => {
                             </div>                        
                         </>}
 					</div>
-                    {!props.parentId && props.post.origin !== props.post.source ? <>
+                    {!props.parentId && props.post.origin !== props.post.source && !props.embedParentId ? <>
 						<Card className={style.postEmbed} id="embedPost">
 							{typeof sharedPost.author === "undefined" ? (
 								<div className={style.missingEmbed}>Post Not Found</div>
@@ -344,7 +344,7 @@ const SinglePost: React.FC<Props> = (props) => {
 									<FontAwesomeIcon icon={faComment} fixedWidth />{" "}
 									{props.post.count}
 								</div>
-								{props.post.origin !== props.post.source ? (
+								{props.post.origin !== props.post.source  && !props.embedParentId ? (
 									<div
                                     className={style.flexItemShare}
                                     id={"sharePost" + props.post.id.split("/").at(-1)}
