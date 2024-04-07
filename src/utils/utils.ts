@@ -147,7 +147,7 @@ export async function sendFollow(actor:any, object:any, auth: string) {
       body: JSON.stringify({"type": "Follow", "actor": actor, "object": object})
   };
   console.log("big boss: ", JSON.stringify({"type": "Follow", "actor": actor, "object": object}))
-  return await fetch(getAPIEndpoint() + `/authors/${object.id}/followers/${actor.id}/`, options);
+  return await fetch(getAPIEndpoint() + `/authors/${object.id.split("/").at(-1)}/followers/${actor.id.split("/").at(-1)}/`, options);
 }
 
 export async function acceptFollowRequest(actor:any, object:any, auth: string) {
@@ -159,7 +159,7 @@ export async function acceptFollowRequest(actor:any, object:any, auth: string) {
       },
       body: JSON.stringify({"type": "FollowResponse", "accepted": true, "actor": actor, "object": object})
   };
-  return await fetch(getAPIEndpoint() + `/authors/${object.id}/followers/${actor.id}/`, options);
+  return await fetch(getAPIEndpoint() + `/authors/${object.id.split("/").at(-1)}/followers/${actor.id.split("/").at(-1)}/`, options);
 }
 
 export async function denyFollowRequest(actor:any, object:any, auth: string) {
@@ -171,7 +171,7 @@ export async function denyFollowRequest(actor:any, object:any, auth: string) {
       },
       body: JSON.stringify({"type": "FollowResponse", "accepted": false, "actor": actor, "object": object})
   };
-  return await fetch(getAPIEndpoint() + `/authors/${object.id}/followers/${actor.id}/`, options);
+  return await fetch(getAPIEndpoint() + `/authors/${object.id.split("/").at(-1)}/followers/${actor.id.split("/").at(-1)}/`, options);
 }
 
 
@@ -184,7 +184,7 @@ export async function sendUnfollow(actor:any, object:any, auth: string) {
       },
       body: JSON.stringify({"type": "Unfollow", "actor": actor, "object": object})
   };
-  return await fetch(getAPIEndpoint() + `/authors/${object.id}/followers/${actor.id}/`, options);
+  return await fetch(getAPIEndpoint() + `/authors/${object.id.split("/").at(-1)}/followers/${actor.id.split("/").at(-1)}/`, options);
 }
 
 export async function checkFollowingStatus(actor:any, object:any, auth: string) {
