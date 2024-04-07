@@ -136,7 +136,8 @@ class AllPostsView2(APIView):
             for follow in FollowSerializer(FollowStatus.objects.filter(actor__id=author_id, complete=True),many=True).data:
                 if follower["actor"]["id"] == follow["object"]["id"]:
                     friends.append(follower)
-        friends = [friend["actor"]["id"] for friend in friends]       
+        friends = [friend["actor"]["id"] for friend in friends]   
+        print("bijbbbbbbbbbbbbbbbbbbj34343", friends)    
         posts = Post.objects.filter(Q(author__id=author.id) | Q(visibility="FRIENDS", author__id__in=friends) | Q(visibility="PUBLIC")).order_by('-published') 
         page_number = request.GET.get('page') or 1
         posts = self.pagination.paginate_queryset(posts, request, view=self)
