@@ -223,6 +223,7 @@ export default class Profile extends React.Component<Props> {
 								<li>
 									<Link to={"/profile/" + this.props.userid!}>Posts</Link>
 								</li>
+								{/* 								
 								<li>
 									<Link to={"/profile/" + this.props.userid + "/media"}>
 										Media
@@ -232,7 +233,7 @@ export default class Profile extends React.Component<Props> {
 									<Link to={"/profile/" + this.props.userid + "/likes"}>
 										Likes
 									</Link>
-								</li>
+								</li> */}
 							</ul>
 						</nav>
 					</div>
