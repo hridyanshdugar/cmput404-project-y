@@ -126,7 +126,7 @@ export default function Home() {
 					posts.length === 0 ? (
 						<div className={styles.noPosts}>There are no posts available</div>
 					) : (
-						posts.map((item: any, index: any) => (
+						posts.sort((a: { published: number; }, b: { published: number; }) => a.published - b.published).map((item: any, index: any) => (
 							<SinglePost
 								post={item}
 								key={index}
