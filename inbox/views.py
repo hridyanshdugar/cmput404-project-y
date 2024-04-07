@@ -58,6 +58,7 @@ class InboxView(APIView):
      def post(self, request, pk):
         def get_foreign_user(data):
             response_data = copy.deepcopy(data)
+            response_data['id'] = response_data['id'].split("/")[-1]
             # try:
             #     obj_user = User.objects.get(id=response_data["id"].split("/")[-1])
             # except:
