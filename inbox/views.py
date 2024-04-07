@@ -58,35 +58,35 @@ class InboxView(APIView):
      def post(self, request, pk):
         def get_foreign_user(data):
             response_data = copy.deepcopy(data)
+            # try:
+            #     obj_user = User.objects.get(id=response_data["id"].split("/")[-1])
+            # except:
+            hasPfp = False
+            hasPfpBack = False
+            if "profileImage" in response_data:
+                hasPfp = response_data.pop("profileImage")
+            if "profileBackgroundImage" in response_data:
+                hasPfpBack = response_data.pop("profileBackgroundImage")
+            print(response_data)
+            user = None
+            serializer = None
             try:
-                obj_user = User.objects.get(id=response_data["id"].split("/")[-1])
-            except:
-                hasPfp = False
-                hasPfpBack = False
-                if "profileImage" in response_data:
-                    hasPfp = response_data.pop("profileImage")
-                if "profileBackgroundImage" in response_data:
-                    hasPfpBack = response_data.pop("profileBackgroundImage")
-                print(response_data)
-                user = None
-                serializer = None
-                try:
-                    user = User.objects.get(id=pk)
-                    serializer = RemoteUserSerializer(user,data=response_data,partial=True)
-                except Exception as e:
-                    print(e)  
+                user = User.objects.get(id=pk)
+                serializer = RemoteUserSerializer(user,data=response_data,partial=True)
+            except Exception as e:
+                print(e)  
 
-                    serializer = RemoteUserSerializer(data=response_data)
-                if serializer.is_valid():
-                    user = serializer.save()
-                    if hasPfp:
-                        download_profile(user, hasPfp)
-                        response_data['profileImage'] = hasPfp
-                    if hasPfpBack:
-                        download_profileBack(user, hasPfpBack)
-                        response_data['profileBackgroundImage'] = hasPfpBack
-                else:
-                    print(f"Invalid data from : {serializer.errors}")
+                serializer = RemoteUserSerializer(data=response_data)
+            if serializer.is_valid():
+                user = serializer.save()
+                if hasPfp:
+                    download_profile(user, hasPfp)
+                    response_data['profileImage'] = hasPfp
+                if hasPfpBack:
+                    download_profileBack(user, hasPfpBack)
+                    response_data['profileBackgroundImage'] = hasPfpBack
+            else:
+                print(f"Invalid data from : {serializer.errors}")
 
         print("cuudddt 1")
         hi_user = User.objects.get(id=pk)
