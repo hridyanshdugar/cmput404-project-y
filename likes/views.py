@@ -67,7 +67,7 @@ class PostLikesViewPK(APIView):
      '''
      def put(self, request, author_id, post_id):
         body = copy.deepcopy(request.body)
-        res = requests.post(str(request.data["author"]["host"]) + "api/authors/" + author_id + "/inbox/", data = body)
+        res = requests.post(str(request.data["author"]["host"]) + "api/authors/" + author_id + "/inbox", data = body)
         print("hihihi 5")
         return Response(res.json(), status = status.HTTP_200_OK)
 

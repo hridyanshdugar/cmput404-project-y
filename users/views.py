@@ -200,7 +200,7 @@ class AllUsersView(APIView):
         for node in nodes:
             print(node.url + "api/users/ ffjjff")
             try:
-                response = requests.get(node.url + "api/users/", timeout=3,auth=HTTPBasicAuth(user_auth, pass_auth))
+                response = requests.get(node.url + "api/users", timeout=3,auth=HTTPBasicAuth(user_auth, pass_auth))
                 
                 if response.status_code == 200:
                     try:

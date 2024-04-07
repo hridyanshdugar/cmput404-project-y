@@ -135,7 +135,7 @@ class CommentsView2(APIView):
         else:
             try:
                 print(" hi 7")
-                url = user.host + "api/authors/" + str(author_id) + "/posts/" + str(fk) + "/comments/"
+                url = user.host + "api/authors/" + str(author_id) + "/posts/" + str(fk) + "/comments"
                 response = requests.get(url, timeout=20)
                 if response.status_code == 200:
                     rbody = response.json()
@@ -190,5 +190,5 @@ class CommentsView(APIView):
         print("BODY: ", body)
         data = json.loads(body)
         print("DATA: ", data)
-        res = requests.post(str(data["author"]["host"]) + "api/authors/" + str(data["author"]["id"].split("/")[-1]) + "/inbox/", data = body)
+        res = requests.post(str(data["author"]["host"]) + "api/authors/" + str(data["author"]["id"].split("/")[-1]) + "/inbox", data = body)
         return Response(res, status = res.status_code)

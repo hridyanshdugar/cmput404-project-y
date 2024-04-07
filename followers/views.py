@@ -67,7 +67,7 @@ def getFollowers(request, author_id=None):
             followers = None
             response = None
             try:
-                response = requests.get(user.host + "api/authors/" + author_id + "/followers/",timeout=3, auth=HTTPBasicAuth(user_auth, pass_auth))
+                response = requests.get(user.host + "api/authors/" + author_id + "/followers",timeout=3, auth=HTTPBasicAuth(user_auth, pass_auth))
             except Exception as e:
                 print(e)
             if response != None and response.status_code == 200:
@@ -123,7 +123,7 @@ class FollowerView(APIView):
                 user_auth = get_object_or_404(Node,is_self=True).username
                 pass_auth = get_object_or_404(Node,is_self=True).password
                 try:
-                    response = requests.get(user.host + "api/authors/" + author_id + "/followers/" + follower_id + "/",timeout=3, auth=HTTPBasicAuth(user_auth, pass_auth))
+                    response = requests.get(user.host + "api/authors/" + author_id + "/followers/" + follower_id,timeout=3, auth=HTTPBasicAuth(user_auth, pass_auth))
                 except Exception as e:
                     print(e, "wwhy")
                 if response != None and response.status_code == 200:
@@ -143,7 +143,7 @@ class FollowerView(APIView):
     def post(self, request, author_id, follower_id):
         data = json.loads(request.body)
         print("cac", data)
-        res = requests.request(method="POST", url=data["object"]["host"] + "api/authors/" + str(author_id) + "/inbox/",data=request.body)
+        res = requests.request(method="POST", url=data["object"]["host"] + "api/authors/" + str(author_id) + "/inbox",data=request.body)
         print(res, "IDK")
         if res.status_code == 200:
             if data["type"] == "Follow":
@@ -163,7 +163,7 @@ class FollowerView(APIView):
     def put(self, request, author_id, follower_id):
         data = json.loads(request.body)
         print("boblb", data)
-        res = requests.request(method="POST", url=request.data["actor"]["host"] + "api/authors/" + str(follower_id) + "/inbox/",data=request.body)
+        res = requests.request(method="POST", url=request.data["actor"]["host"] + "api/authors/" + str(follower_id) + "/inbox",data=request.body)
         if res.status_code == 200:
             print("sent to actor inbox")
             req = get_object_or_404(FollowStatus,actor__id=follower_id,obj__id=author_id)
