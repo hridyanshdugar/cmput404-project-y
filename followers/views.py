@@ -96,7 +96,7 @@ def getFriends(request, author_id):
         for follow in FollowSerializer(FollowStatus.objects.filter(actor__id=author_id, complete=True),many=True).data:
             if follower["actor"]["id"] == follow["object"]["id"]:
                 friends.append(follower)
-    friends = [friend["actor"]["id"] for friend in friends]
+    friends = [friend["actor"]["id"].split("/")[-1] for friend in friends]
     return JsonResponse(friends, safe=False)
 
 class FollowerView(APIView):
