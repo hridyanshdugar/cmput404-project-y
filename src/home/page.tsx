@@ -21,6 +21,7 @@ import {
 	getMediaEndpoint,
 	getInbox,
 	getFollowers,
+	navigate
 } from "../utils/utils";
 
 import Cookies from "universal-cookie";
@@ -40,8 +41,13 @@ export default function Home() {
 
 	useEffect(() => {
 		const cookies = new Cookies();
-		const auth = cookies.get("auth")["access"];
-		const user = cookies.get("user");
+		const authCookie = cookies.get("auth");
+		const userCookie = cookies.get("user");
+		if (!authCookie || !userCookie || !authCookie.access || !userCookie.id) {
+			navigate("/");
+		}
+		const auth = authCookie.access;
+		const user = userCookie;
 		setuser(user);
 		setauth(auth);
 
