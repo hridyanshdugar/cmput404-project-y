@@ -34,7 +34,8 @@ class PostSerializer(serializers.ModelSerializer):
 
     def to_internal_value(self, data):
         internal_data = super().to_internal_value(data)
-        internal_data['id'] = internal_data['id'].split('/')[-1]
+        if "id" in internal_data:
+            internal_data['id'] = internal_data['id'].split('/')[-1]
         return internal_data
     
     def to_representation(self, instance):
