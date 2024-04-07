@@ -29,7 +29,7 @@ type Props = {
 
 const SingleProfile: React.FC<Props> = (props) => {
 	const onClickF = (event: React.MouseEvent<HTMLElement>) => {
-			navigate("/profile/" + props.userId);
+			navigate("/profile/" + props.userId.split("/").slice(-1));
     };
     
 	const [user, setuser] = useState<any>(null);
