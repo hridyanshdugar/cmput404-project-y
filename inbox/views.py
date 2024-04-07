@@ -105,7 +105,9 @@ class InboxView(APIView):
             print("aa2")
             
             serializer = SaveFollowSerializer(data={"actor": data["actor"]["id"],"obj":data["object"]["id"], "complete": False})
+            print(":aa3")
             if serializer.is_valid():
+                print("aa4")
                 if not FollowStatus.objects.filter(actor=data["actor"]["id"],obj=data["object"]["id"]).exists():
                     follow_obj = serializer.save()
                     inbox.followRequest.add(follow_obj)

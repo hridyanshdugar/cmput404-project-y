@@ -117,69 +117,77 @@ export async function createPost(title:string, description:string, contentType:s
   return await fetch(getAPIEndpoint() + `/authors/${id}/posts/`, options);
 }
 
-export async function createSharedPost(title:string, description:string, contentType:string, content:string, visibility: string, auth: string, id:string, source_id:string) {
+export async function createSharedPost(title:string, description:string, contentType:string, content:string, visibility: string, auth: string, id:string, source:string) {
   const options: RequestInit = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${auth}`,
     },
-    body: JSON.stringify({ "title": title, "description": description, "contentType": contentType, "content": content, "author": id, "visibility": visibility, "source": source_id})
+    body: JSON.stringify({
+      "title": title,
+      "description": description,
+      "contentType": contentType,
+      "content": content,
+      "author": id,
+      "visibility": visibility,
+      "source": source
+    })
   };
   return await fetch(getAPIEndpoint() + `/authors/${id}/posts/`, options);
 }
 
-export async function sendFollow(user:any, to_follow:any, auth: string) {
+export async function sendFollow(actor:any, object:any, auth: string) {
   const options: RequestInit = {
       method: 'POST',
       headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${auth}`,
       },
-      body: JSON.stringify({"type": "Follow", "actor": user, "object": to_follow})
+      body: JSON.stringify({"type": "Follow", "actor": actor, "object": object})
   };
-  console.log("big boss: ", JSON.stringify({"type": "Follow", "actor": user, "object": to_follow}))
-  return await fetch(getAPIEndpoint() + `/authors/${user.id}/followers/${to_follow.id}/`, options);
+  console.log("big boss: ", JSON.stringify({"type": "Follow", "actor": actor, "object": object}))
+  return await fetch(getAPIEndpoint() + `/authors/${object.id}/followers/${actor.id}/`, options);
 }
 
-export async function acceptFollowRequest(user:any, to_follow:any, auth: string) {
+export async function acceptFollowRequest(actor:any, object:any, auth: string) {
   const options: RequestInit = {
       method: 'PUT',
       headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${auth}`,
       },
-      body: JSON.stringify({"type": "FollowResponse", "accepted": true, "actor": user, "object": to_follow})
+      body: JSON.stringify({"type": "FollowResponse", "accepted": true, "actor": actor, "object": object})
   };
-  return await fetch(getAPIEndpoint() + `/authors/${user.id}/followers/${to_follow.id}/`, options);
+  return await fetch(getAPIEndpoint() + `/authors/${object.id}/followers/${actor.id}/`, options);
 }
 
-export async function denyFollowRequest(user:any, to_follow:any, auth: string) {
+export async function denyFollowRequest(actor:any, object:any, auth: string) {
   const options: RequestInit = {
       method: 'PUT',
       headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${auth}`,
       },
-      body: JSON.stringify({"type": "FollowResponse", "accepted": false, "actor": user, "object": to_follow})
+      body: JSON.stringify({"type": "FollowResponse", "accepted": false, "actor": actor, "object": object})
   };
-  return await fetch(getAPIEndpoint() + `/authors/${user.id}/followers/${to_follow.id}/`, options);
+  return await fetch(getAPIEndpoint() + `/authors/${object.id}/followers/${actor.id}/`, options);
 }
 
 
-export async function sendUnfollow(user:any, to_follow:any, auth: string) {
+export async function sendUnfollow(actor:any, object:any, auth: string) {
   const options: RequestInit = {
       method: 'POST',
       headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${auth}`,
       },
-      body: JSON.stringify({"type": "Unfollow", "actor": user, "object": to_follow})
+      body: JSON.stringify({"type": "Unfollow", "actor": actor, "object": object})
   };
-  return await fetch(getAPIEndpoint() + `/authors/${user.id}/followers/${to_follow.id}/`, options);
+  return await fetch(getAPIEndpoint() + `/authors/${object.id}/followers/${actor.id}/`, options);
 }
 
-export async function checkFollowingStatus(user:any, to_follow:any, auth: string) {
+export async function checkFollowingStatus(actor:any, object:any, auth: string) {
   const options: RequestInit = {
       method: 'GET',
       headers: {
@@ -187,7 +195,7 @@ export async function checkFollowingStatus(user:any, to_follow:any, auth: string
           'Authorization': `Bearer ${auth}`,
       },
   };
-  return await fetch(getAPIEndpoint() + `/authors/${user}/followers/${to_follow}/`, options);
+  return await fetch(getAPIEndpoint() + `/authors/${object}/followers/${actor}/`, options);
 }
 
 export async function getRemoteUsers(auth: string) {

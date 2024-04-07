@@ -91,22 +91,7 @@ export default function Post() {
 				{
 					loading && post ? (
 						<SinglePost
-							post2={post}
-							author={post.author}
-							name={post.author.displayName}
-							userId={post.author.id}
-							profileImage={
-								getMediaEndpoint() + post.author.profileImage?.split("?")[0]
-							}
-							username={post.author.displayName}
-							text={post.content}
-							postImage={undefined}
-							date={Math.floor(new Date(post.published).getTime() / 1000)}
-							likes={post.likes}
-							comments={post.count}
-							postId={post.id}
-							contentType={post.contentType}
-							host={post.author.host}
+							post={post}
 						/>
 				) : (
 					<Spinner animation="border" role="status">
@@ -129,22 +114,9 @@ export default function Post() {
 					post && replies && replies.length > 0 &&
                     replies.map((item: any, index: any) => (
 						<SinglePost
-						post2={item}
-							author={item.author}
+						post={item}
 							key={index}
-							name={item.author.displayName}
-							userId={item.author.id}
-							profileImage={item.author.profileImage?.split("?")[0]}
-							username={item.author.displayName}
-							text={item.comment}
-							postImage={undefined}
-							date={Math.floor(new Date(item.published).getTime() / 1000)}
-							likes={item.likes}
-                            comments={item.count}
-							postId={item.id}
 							parentId={post.id}
-							contentType={item.contentType}
-                            host={item.author.host}
 						/>
 					))
 				) : (

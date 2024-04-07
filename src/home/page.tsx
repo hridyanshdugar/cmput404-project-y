@@ -117,21 +117,9 @@ export default function Home() {
 					(
 						posts.map((item: any, index: any) => (
 							<SinglePost
-								post2={item}
-								author={item.author}
+								post={item}
                                 key={index}
-                                name={item.author.displayName}
-                                userId={item.author.id}
-                                profileImage={getMediaEndpoint() + item.author.profileImage?.split("?")[0]}
-                                username={item.author.displayName}
-                                text={item.content}
-                                postImage={undefined}
-                                date={Math.floor(new Date(item.published).getTime() / 1000)}
-                                likes={item.likes}
-                                comments={item.count}
-                                postId={item.id}
-                                contentType={item.contentType}
-                                host={item.author.host} />
+							/>
 						))
 					)
 				) : posts ? (
@@ -140,23 +128,8 @@ export default function Home() {
 					) : (
 						posts.map((item: any, index: any) => (
 							<SinglePost
-							post2={item}
-								author={item.author}
+								post={item}
 								key={index}
-								name={item.author.displayName}
-								userId={item.author.id}
-								profileImage={
-									getMediaEndpoint() + item.author.profileImage?.split("?")[0]
-								}
-								username={item.author.displayName}
-								text={item.content}
-								postImage={undefined}
-								date={Math.floor(new Date(item.published).getTime() / 1000)}
-								likes={item.likes}
-								comments={item.count}
-                                postId={item.id}
-                                host={item.author.host}
-								contentType={item.contentType}
 							/>
 						))
 					)
