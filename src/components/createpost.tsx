@@ -116,91 +116,95 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 	};
 
 	const onSubmit = () => {
-		const VisibilityMap: { [key: string]: string } = {
-			Everyone: "PUBLIC",
-			Unlisted: "UNLISTED",
-			Friends: "FRIENDS",
-		};
-		var contentToSend: string = "";
-		if (contentTypeMinimal === "picture") {
-			var contentTypeF =
-				PFPbackgroundurl?.split("base64")[0]?.split("data:")[1] + "base64";
-			contentToSend = PFPbackgroundurl;
-		} else if (contentTypeMinimal === "markdown") {
-			var contentTypeF = "text/markdown";
-			contentToSend = markdownValue!;
-		} else {
-			var contentTypeF = "text/plain";
-			contentToSend = content;
-		}
-		console.log(props.postId, "id");
-		if (props.postId && props.postAuthorId) {
-			let author = {
-				type: "author",
-				id: user["id"],
-				url: user["url"],
-				host: user["host"],
-				displayName: user["displayName"],
-				github: user["github"],
-				profileImage: user["profileImage"],
+		if (content !== "" && !(/^\s*$/.test(content))) {
+			const VisibilityMap: { [key: string]: string } = {
+				Everyone: "PUBLIC",
+				Unlisted: "UNLISTED",
+				Friends: "FRIENDS",
 			};
-			console.log("author", author)
-			createComment(contentTypeF, contentToSend, auth, author, props.postId, props.postAuthorId)
-				.then(async (result: any) => {
-                    const Data = await result.json();
-					console.log(Data, "check data")
-					console.log(Data[0], "check data")
-                    
-                    if (Data[0] === '{"Title":"Done"}') {
-						console.log("HIT")
-                        console.log("prro")
-                        if (props.setPopupOpen) {
-                            props.setPopupOpen(false);
-                        }
-                        if (contentTypeMinimal === "plain") {
-                            setcontent("");
-                        } else if (contentTypeMinimal === "markdown") {
-                            setMarkdownValue("");
-                        } else if (contentTypeMinimal === "picture") {
-                            setPFPbackgroundurl("");
-                        }
-                        console.log("big boss");
-                        window.location.reload();
-                    }
-                    
-				})
-				.catch(async (result: any) => {
-					const Data = await result.json();
-					console.log(Data);
-				});
+			var contentToSend: string = "";
+			if (contentTypeMinimal === "picture") {
+				var contentTypeF =
+					PFPbackgroundurl?.split("base64")[0]?.split("data:")[1] + "base64";
+				contentToSend = PFPbackgroundurl;
+			} else if (contentTypeMinimal === "markdown") {
+				var contentTypeF = "text/markdown";
+				contentToSend = markdownValue!;
+			} else {
+				var contentTypeF = "text/plain";
+				contentToSend = content;
+			}
+			console.log(props.postId, "id");
+			if (props.postId && props.postAuthorId) {
+				let author = {
+					type: "author",
+					id: user["id"],
+					url: user["url"],
+					host: user["host"],
+					displayName: user["displayName"],
+					github: user["github"],
+					profileImage: user["profileImage"],
+				};
+				console.log("author", author)
+				createComment(contentTypeF, contentToSend, auth, author, props.postId, props.postAuthorId)
+					.then(async (result: any) => {
+						const Data = await result.json();
+						console.log(Data, "check data")
+						console.log(Data[0], "check data")
+						
+						if (Data[0] === '{"Title":"Done"}') {
+							console.log("HIT")
+							console.log("prro")
+							if (props.setPopupOpen) {
+								props.setPopupOpen(false);
+							}
+							if (contentTypeMinimal === "plain") {
+								setcontent("");
+							} else if (contentTypeMinimal === "markdown") {
+								setMarkdownValue("");
+							} else if (contentTypeMinimal === "picture") {
+								setPFPbackgroundurl("");
+							}
+							console.log("big boss");
+							window.location.reload();
+						}
+						
+					})
+					.catch(async (result: any) => {
+						const Data = await result.json();
+						console.log(Data);
+					});
+			} else {
+				createPost(
+					title,
+					description,
+					contentTypeF,
+					contentToSend,
+					VisibilityMap[visibility],
+					auth,
+					user.id
+				)
+					.then(async (result: any) => {
+						const Data = await result.json();
+						props.updatePosts(Data);
+						if (props.setPopupOpen) {
+							props.setPopupOpen(false);
+						}
+						if (contentTypeMinimal === "plain") {
+							setcontent("");
+						} else if (contentTypeMinimal === "markdown") {
+							setMarkdownValue("");
+						} else if (contentTypeMinimal === "picture") {
+							setPFPbackgroundurl("");
+						}
+					})
+					.catch(async (result: any) => {
+						const Data = await result.json();
+						console.log(Data);
+					});
+			}
 		} else {
-			createPost(
-				title,
-				description,
-				contentTypeF,
-				contentToSend,
-				VisibilityMap[visibility],
-				auth,
-				user.id
-			)
-				.then(async (result: any) => {
-					const Data = await result.json();
-					props.updatePosts(Data);
-					if (props.setPopupOpen) {
-						props.setPopupOpen(false);
-					}
-					if (contentTypeMinimal === "plain") {
-						setcontent("");
-					} else if (contentTypeMinimal === "markdown") {
-						setMarkdownValue("");
-					} else if (contentTypeMinimal === "picture") {
-						setPFPbackgroundurl("");
-					}
-				})
-				.catch(async (result: any) => {
-					const Data = await result.json();
-					console.log(Data);
-				});
+			console.log("Empty post");
 		}
 	};
 

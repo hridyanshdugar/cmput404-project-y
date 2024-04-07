@@ -6,7 +6,7 @@ import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import { faArrowUpFromBracket } from "@fortawesome/free-solid-svg-icons";
 import React from "react";
 import Button from "./buttons/button";
-import { acceptFollowRequest, denyFollowRequest, getMediaEndpoint } from "../utils/utils";
+import { acceptFollowRequest, denyFollowRequest, getFrontend, getMediaEndpoint } from "../utils/utils";
 import Cookies from "universal-cookie";
 import { getAPIEndpoint } from "../utils/utils";
 
@@ -19,7 +19,6 @@ type Props = {
 export default class FollowRequestNotification extends React.Component<Props> {
 	constructor(props: Props) {
 		super(props);
-		console.log("cock", props)
 	}
 
 	render() {
@@ -30,7 +29,7 @@ export default class FollowRequestNotification extends React.Component<Props> {
 				<div className={style.blockImage}>
 					<img
 						className={style.img}
-						src={getMediaEndpoint() + "/media/" + this.props.actor.profileImage || ""}
+						src={this.props.actor.profileImage || ""}
 						alt={""}
 						width={40}
 						height={40}

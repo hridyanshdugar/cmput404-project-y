@@ -9,7 +9,6 @@ VISIBILITY_CHOICES = [("PUBLIC", "PUBLIC"), ("FRIENDS", "FRIENDS"), ("UNLISTED",
 class Post(models.Model):
     title = models.CharField(max_length=TEXT_MAX_LENGTH, blank=True, null=True)
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, unique=True)
-    host = models.URLField(max_length=TEXT_MAX_LENGTH,default='')
     source = models.URLField(max_length=TEXT_MAX_LENGTH,default='')
     origin = models.URLField(max_length=TEXT_MAX_LENGTH,default='')
     description = models.TextField(blank=True, default='')

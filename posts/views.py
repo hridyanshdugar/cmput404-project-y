@@ -95,21 +95,18 @@ class PostsViewPK(APIView):
      '''
      DELETE /authors/{id}/posts/{id} and /posts/{id}
      '''
-     def delete(self, request, pk):
-        post = get_object_or_404(Post, id=pk)
+     def delete(self, request, author_id, post_id):
+        post = get_object_or_404(Post, id=post_id)
         post.delete()
         return Response({"title": "Successfully Deleted", "message": "Post was deleted"}, status = status.HTTP_200_OK)
      
      '''
      PATCH /authors/{id}/posts/{id} and /posts/{id}
      '''
-     def patch(self, request, pk):
-        JWT_authenticator = JWTAuthentication()
-        response = JWT_authenticator.authenticate(request)
-        post = get_object_or_404(Post, id=pk)
+     def patch(self, request, author_id, post_id):
+        post = get_object_or_404(Post, id=post_id)
         serializer = PostEditSerializer(post, partial=True,data = request.data)
-        
-        if response and serializer.is_valid():
+        if serializer.is_valid():
             serializer.save()
             return Response({"title": "Successfully Updated", "message": "Post was updated"}, status = status.HTTP_200_OK)
         return Response({"title": "Bad Request", "message": "Invalid Request Sent"}, status = status.HTTP_400_BAD_REQUEST)
@@ -127,16 +124,18 @@ class AllPostsView2(APIView):
      GET /authors/{id}/posts2/
      '''
      def get(self, request, author_id):
+        print("bbbdffffffffffffffffffffffff", author_id)
         author = User.objects.get(id=author_id)
+        print("bbbdffffffffffffffffffffffff 2", author)
 
         friends = []
         for follower in FollowSerializer(FollowStatus.objects.filter(obj__id=author_id, complete=True),many=True).data:
             for follow in FollowSerializer(FollowStatus.objects.filter(actor__id=author_id, complete=True),many=True).data:
                 if follower["actor"]["id"] == follow["object"]["id"]:
                     friends.append(follower)
-        friends = [friend["actor"]["id"] for friend in friends]        
-
-        posts = Post.objects.filter(Q(author=author) | Q(visibility="FRIENDS", author__id__in=friends) | Q(visibility="PUBLIC")).order_by('-published') 
+        friends = [friend["actor"]["id"].split("/")[-1] for friend in friends]   
+        print("bijbbbbbbbbbbbbbbbbbbj34343", friends)    
+        posts = Post.objects.filter(Q(author__id=author.id) | Q(visibility="FRIENDS", author__id__in=friends) | Q(visibility="PUBLIC")).order_by('-published') 
         page_number = request.GET.get('page') or 1
         posts = self.pagination.paginate_queryset(posts, request, view=self)
         

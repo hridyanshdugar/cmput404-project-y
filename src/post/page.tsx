@@ -31,8 +31,13 @@ export default function Post() {
 
 	useEffect(() => {
 		const cookies = new Cookies();
-		const auth = cookies.get("auth")["access"];
-		const user = cookies.get("user");
+		const authCookie = cookies.get("auth");
+		const userCookie = cookies.get("user");
+		if (!authCookie || !userCookie || !authCookie.access || !userCookie.id) {
+			navigate("/");
+		}
+		const auth = authCookie.access;
+		const user = userCookie;
 		setAuth(auth);
 		setUser(user);
 		console.log("big mac postId", postId, userId);
@@ -58,7 +63,7 @@ export default function Post() {
 				});
 			getPostComments(user.host, page, size, auth, user.id, postId)
 				.then(async (result: any) => {
-					console.log(result, "pensi");
+					console.log(result, "post comments");
 					const d = await result.json();
 					if (result.status === 200) {
 						console.log("d", d);
@@ -116,7 +121,7 @@ export default function Post() {
 						<SinglePost
 						post={item}
 							key={index}
-							parentId={post.id}
+							parentId={post.id.split("/").at(-1)}
 						/>
 					))
 				) : (

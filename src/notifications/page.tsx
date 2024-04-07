@@ -3,7 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./page.module.css";
 import { NewNotifications, NoNewNotifications } from "../components/newNotifications";
 import FollowRequestNotification from "../components/FollowRequestNotification";
-import { getInbox } from "../utils/utils";
+import { getInbox, navigate } from "../utils/utils";
 import Cookies from "universal-cookie";
 import { useEffect, useState } from "react";
 import { Spinner } from "react-bootstrap";
@@ -14,9 +14,14 @@ export default function Notifications() {
 
 	useEffect(() => {
 		const cookies = new Cookies();
-		const auth = cookies.get("auth")["access"];
+    const authCookie = cookies.get("auth");
+		const userCookie = cookies.get("user");
+		if (!authCookie || !userCookie || !authCookie.access || !userCookie.id) {
+			navigate("/");
+		}
+		const auth = authCookie.access;
+		const user = userCookie;
     setAuth(auth);
-    const user = cookies.get("user");
     
     getInbox(user.id, auth)
     .then(async (result: any) => {
@@ -25,7 +30,7 @@ export default function Notifications() {
         console.log("Inbox");
         console.log(Data);
         setRequests(Data["followRequest"]);
-        console.log("big cock", requests)
+        console.log("requests (male chicken)", requests)
       } else {
         throw new Error("Error fetching inbox");
       }

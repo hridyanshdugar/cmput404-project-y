@@ -45,7 +45,6 @@ urlpatterns = [
         path('authors/<str:author_id>/posts/', PostsView.as_view()),
         path('nodes/', include('nodes.urls')),
         path('auth/', include('userauth.urls')),
-        path('users/', include('users.urls')),
         path('images/', include('image.urls')),
         path('followers/', include('followers.urls')),
         path('authors/<str:author_id>/posts/<str:post_id>/likes', PostLikesViewPK.as_view()),

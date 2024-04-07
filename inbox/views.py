@@ -104,11 +104,11 @@ class InboxView(APIView):
             get_foreign_user(data["actor"])
             print("aa2")
             
-            serializer = SaveFollowSerializer(data={"actor": data["actor"]["id"],"obj":data["object"]["id"], "complete": False})
+            serializer = SaveFollowSerializer(data={"actor": data["actor"]["id"].split("/")[-1],"obj":data["object"]["id"].split("/")[-1], "complete": False})
             print(":aa3")
             if serializer.is_valid():
                 print("aa4")
-                if not FollowStatus.objects.filter(actor=data["actor"]["id"],obj=data["object"]["id"]).exists():
+                if not FollowStatus.objects.filter(actor=data["actor"]["id"].split("/")[-1],obj=data["object"]["id"].split("/")[-1]).exists():
                     follow_obj = serializer.save()
                     inbox.followRequest.add(follow_obj)
                     inbox.save()
@@ -118,7 +118,7 @@ class InboxView(APIView):
             print("bb 1")
             get_foreign_user(data["actor"])
             print("bb 2")
-            req = get_object_or_404(FollowStatus,actor=data["actor"]["id"],obj=data["object"]["id"])
+            req = get_object_or_404(FollowStatus,actor=data["actor"]["id"].split("/")[-1],obj=data["object"]["id"].split("/")[-1])
             print("bb 3")
             req.delete()
             print("bb 4")
@@ -127,58 +127,39 @@ class InboxView(APIView):
         if data["type"] == "FollowResponse":
             get_foreign_user(data["actor"])
             if data["accepted"]:
-                req = get_object_or_404(FollowStatus,actor=data["actor"]["id"],obj=data["object"]["id"])
+                req = get_object_or_404(FollowStatus,actor=data["actor"]["id"].split("/")[-1],obj=data["object"]["id"].split("/")[-1])
                 req.complete = True
                 req.save()
             else:
-                req = get_object_or_404(FollowStatus,actor=data["actor"]["id"],obj=data["object"]["id"])
+                req = get_object_or_404(FollowStatus,actor=data["actor"]["id"].split("/")[-1],obj=data["object"]["id"].split("/")[-1])
                 req.delete()
 
 
             return Response({"Title":"Done"}, status = status.HTTP_200_OK)        
         if data["type"] == "post":
-            author = None
-            print("abc : 1")
-            try:
-                author = User.objects.get(id=data["author"]["id"])
-            except:
-                user_auth = get_object_or_404(Node,is_self=True).username
-                pass_auth = get_object_or_404(Node,is_self=True).password
-                response = requests.get(str(data["author"]["host"]) + "api/authors" + str(data["author"]["id"]) + "/", auth=HTTPBasicAuth(user_auth, pass_auth))
-
-                if response.status_code == 200:
-                    try:
-                        bob = response.json()
-                        serializer = RemoteUserSerializer(data={"id": bob["id"], "url": bob["url"], "displayName": bob["displayName"], "profileImage": bob["profileImage"], "profileBackgroundImage": bob["profileBackgroundImage"], "github": bob["github"], "displayName": bob["displayName"]})
-                        if serializer.is_valid():
-                            author = serializer.save()
-                        else: 
-                            print(serializer.errors)
-                    except Exception as e:
-                        print(e)
-            print("abc : 2")
+            get_foreign_user(data["author"])
             post_obj = None
             print("abc : 3")
             try:
                 print("abc : 4")
-                post_obj = Post.objects.get(id=data["id"])
+                post_obj = Post.objects.get(id=data["id"].split("/")[-1])
             except:
                 print("DATA:",data)
                 print("abc : 4")
                 user_auth = get_object_or_404(Node,is_self=True).username
                 pass_auth = get_object_or_404(Node,is_self=True).password
-                response = requests.get(str(data["author"]["host"]) + "api/authors/" + data["author"]["id"] + "/posts/" + str(data["id"]), auth=HTTPBasicAuth(user_auth, pass_auth))
+                response = requests.get(str(data["author"]["host"]) + "api/authors/" + data["author"]["id"].split("/")[-1] + "/posts/" + str(data["id"].split("/")[-1]), auth=HTTPBasicAuth(user_auth, pass_auth))
                 print("abc : 5")
                 if response.status_code == 200:
                     print("abc : 6")
                     try:
                         bob = response.json()
                         print("abc : 7", bob)
-                        serializer = RemotePostSerializer(data={"id": bob["id"], "url": bob["url"], "host": bob["host"], "content": bob["content"], "contentType": bob["contentType"], "published": data["published"], "visibility": data["visibility"], "origin": data["origin"], "description": bob["description"], "author": bob["author"]["id"]})
+                        serializer = RemotePostSerializer(data={"id": bob["id"].split("/")[-1], "host": bob["host"], "content": bob["content"], "contentType": bob["contentType"], "published": data["published"], "visibility": data["visibility"], "origin": data["origin"], "source": data["source"], "description": bob["description"], "author": bob["author"]["id"]})
                         print("abc : 8")
                         if serializer.is_valid():
                             print("abc : 9")
-                            if not Post.objects.filter(id=bob["id"]).exists():
+                            if not Post.objects.filter(id=bob["id"].split("/")[-1]).exists():
                                 print("abc : 99")
                                 post_obj = serializer.save()
                                 print("abc : 12")
@@ -192,7 +173,7 @@ class InboxView(APIView):
                             print("abc : 11")
                             print(serializer.errors)
                     except Exception as e:
-                        print("dfsjafiusdarf78", e)
+                        print("dfsjafiusdarf78 errer", e)
             return Response({"Title":"Done"}, status = status.HTTP_200_OK)
         if data["type"] == "comment":
             # add print statements with incremental numbers for debbuing
@@ -220,14 +201,14 @@ class InboxView(APIView):
             # add print statements with incremental numbers for debbuing
             print("dfaiadsfudasod :  1")
             print("bisfdagihjshjbi", data)
-            user = get_object_or_404(User,id=data["author"]["id"])
+            user = get_object_or_404(User,id=data["author"]["id"].split("/")[-1])
             print("dfaiadsfudasod :  2")
             post = get_object_or_404(Post,id=data["object"].split("/")[-1])
             print("dfaiadsfudasod :  3")
             print("NO")
 
             new_data = data.copy()
-            new_data["author"] = data["author"]["id"]
+            new_data["author"] = data["author"]["id"].split("/")[-1]
             new_data['post'] = data["object"].split("/")[-1]
             
             print("dfaiadsfudasod :  4")
@@ -257,7 +238,7 @@ class InboxView(APIView):
         response = JWT_authenticator.authenticate(request)
         post = get_object_or_404(Post, id=pk)
         serializer = PostSerializer(post, context={'request': request})
-        realAuthor = serializer.get_author(post)["id"]
+        realAuthor = serializer.get_author(post)["id"].split("/")[-1]
         if response and realAuthor == response[1]["user_id"]:
             post.delete()
             return Response({"title": "Successfully Deleted", "message": "Post was deleted"}, status = status.HTTP_200_OK)

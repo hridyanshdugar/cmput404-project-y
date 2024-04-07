@@ -70,6 +70,16 @@ class RemoteUserSerializer(serializers.ModelSerializer):
 class AuthorSerializer(serializers.ModelSerializer):
     type = serializers.SerializerMethodField()
 
+    def to_internal_value(self, data):
+        internal_data = super().to_internal_value(data)
+        internal_data['id'] = internal_data['id'].split('/')[-1]
+        return internal_data
+    
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        id = Node.objects.get(is_self=True).url + "api/authors/" + str(data["id"])
+        data["id"] = id
+        return data
 
     class Meta:
         model = User

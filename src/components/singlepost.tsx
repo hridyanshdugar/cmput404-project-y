@@ -86,7 +86,7 @@ type Props = {
 
 const SinglePost: React.FC<Props> = (props) => {
 	const onClickProfile = (event: any) => {
-		navigate("/profile/" + props.post.author.id);
+		navigate("/profile/" + props.post.author.id.split("/").at(-1));
 		event.stopPropagation();
 	};
 	const onClickShare = (event: any) => {
@@ -96,7 +96,7 @@ const SinglePost: React.FC<Props> = (props) => {
 	};
 	const onClickPost = (event: any) => {
 		if (!props.parentId) {
-			navigate("/profile/"+props.post.author.id+"/post/" + props.post.id);
+			navigate("/profile/"+props.post.author.id.split("/").at(-1)+"/post/" + props.post.id.split("/").at(-1));
 		}
 		event.stopPropagation();
 	};
@@ -151,7 +151,7 @@ const SinglePost: React.FC<Props> = (props) => {
 
 		likePost(
 			author,
-			getAPIEndpoint() + "authors/"+author.id+"/posts/" + props.post.id,
+			getAPIEndpoint() + "authors/"+author.id.split("/").at(-1)+"/posts/" + props.post.id.split("/").at(-1),
 			auth["access"]
 		);
 		setLikes(likes + 1);
@@ -164,7 +164,7 @@ const SinglePost: React.FC<Props> = (props) => {
 		const user = cookies.get("user");
 		const auth = cookies.get("auth");
 		setuser(user);
-        getLikePost(props.post.author.id, props.post.id, auth["access"])
+        getLikePost(props.post.author.id.split("/").at(-1), props.post.id.split("/").at(-1), auth["access"])
         		.then(async (result: any) => {
                     const Data = await result.json();
                     console.log("shared post", Data)
@@ -173,10 +173,10 @@ const SinglePost: React.FC<Props> = (props) => {
             		.catch(async (result: any) => {
             			console.log("shared post error", result);
             		});
-		if (props.post.origin !== props.post.source) {
+		if (props.post.origin !== props.post.source && !props.embedParentId) {
 			//Get shared post information
-			console.log("shared post1", props.post.source.split("/").slice(-1), props.post.source.split("/").slice(-3));
-			getPost(auth["access"], props.post.source.split("/").slice(-1), props.post.source.split("/").slice(-3))
+			console.log("shared post1", props.post.source.split("/").slice(-1)[0], props.post.source.split("/").slice(-3)[0]);
+			getPost(auth["access"], props.post.source.split("/").slice(-1)[0], props.post.source.split("/").slice(-3)[0])
 				.then(async (result: any) => {
 					if (result.status !== 200) {
 						console.log("shared post error", result);
@@ -197,14 +197,14 @@ const SinglePost: React.FC<Props> = (props) => {
 		const auth = cookies.get("auth")["access"];
 		if (selection === "Delete") {
 			if (props.parentId) {
-				deleteComment(auth, props.parentId, props.post.id, props.post.author.id)
+				deleteComment(auth, props.parentId, props.post.id.split("/").at(-1), props.post.author.id.split("/").at(-1))
 					.then(async (result: any) => {
 						const Data = await result.json();
 						console.log(Data);
 
 						if (result.status === 200) {
 							setReplies(
-								replies.filter((post: any) => post.id !== props.post.id)
+								replies.filter((post: any) => post.id.split("/").at(-1) !== props.post.id.split("/").at(-1))
 							);
 							setPosts(
 								posts.map((post: any) => ({ ...post, count: post.count - 1 }))
@@ -215,14 +215,14 @@ const SinglePost: React.FC<Props> = (props) => {
 						console.log(result);
 					});
 			} else {
-				deletePost(auth, props.post.id)
+				deletePost(auth, props.post.id.split("/").at(-1), props.post.author.id.split("/").at(-1))
 					.then(async (result: any) => {
 						const Data = await result.json();
 						console.log(Data);
 
 						if (result.status === 200) {
 							console.log(posts);
-							setPosts(posts.filter((post: any) => post.id !== props.post.id));
+							setPosts(posts.filter((post: any) => post.id.split("/").at(-1) !== props.post.id.split("/").at(-1)));
 							console.log(posts);
 						}
 					})
@@ -236,7 +236,7 @@ const SinglePost: React.FC<Props> = (props) => {
 			document.body.style.overflow = "hidden";
 		} else if (selection === "Copy Link") {
 			console.log("copy link");
-			navigator.clipboard.writeText(getFrontend() + "/post/" + props.post.id);
+			navigator.clipboard.writeText(getFrontend() + "/post/" + props.post.id.split("/").at(-1));
 		}
 	};
 	const date = new Date(0);
@@ -247,7 +247,7 @@ const SinglePost: React.FC<Props> = (props) => {
 	return (
 		<>
 			{popupOpen && (
-				<EditPopupPanel setPopupOpen={setPopupOpen} postId={props.post.id} />
+				<EditPopupPanel setPopupOpen={setPopupOpen} postId={props.post.id.split("/").at(-1)} />
 			)}
 			<div
 				className={style.overflow}
@@ -283,56 +283,59 @@ const SinglePost: React.FC<Props> = (props) => {
 								· {formattedDate}
                             </div>
                             <div id="profile99" className={[style.topUserText, style.inlineBlock].join(" ")}>
-                                <Badge bg="primary">{props.post.host.split(".")[0].split("/").slice(-1)}</Badge>
+                                <Badge bg="primary">{props.post.author.host.split(".")[0].split("/").slice(-1)}</Badge>
                             </div>
 						</div>
-						<div className={style.separator} />
-						<div>
-							<Dropdown
-								icon={faEllipsis}
-								options={(props.post.author.id === user?.id
-									? ["Delete", "Edit"]
-									: []
-								).concat(["Copy Link"])}
-								onChange={onPostOptionSelect}
-							/>
-						</div>
+                        <div className={style.separator} />
+                        {props.embedParentId ? <></> : <>
+                            <div>
+                                <Dropdown
+                                    icon={faEllipsis}
+                                    options={(props.post.author.id.split("/").at(-1) === user?.id
+                                        ? ["Delete", "Edit"]
+                                        : []
+                                    ).concat(["Copy Link"])}
+                                    onChange={onPostOptionSelect}
+                                />
+                            </div>                        
+                        </>}
 					</div>
-					{props.post.origin !== props.post.source ? <>
+                    {!props.parentId && props.post.origin !== props.post.source && !props.embedParentId ? <>
 						<Card className={style.postEmbed} id="embedPost">
 							{typeof sharedPost.author === "undefined" ? (
 								<div className={style.missingEmbed}>Post Not Found</div>
 							) : (
 									<SinglePost
 										post={sharedPost}
-										embedParentId={props.post.id}
+										embedParentId={props.post.id.split("/").at(-1)}
 									/>
 							)}
 						</Card>
-					</> : <>
+                    </> : <>
 						{props.post.contentType.includes("image") ? (
 							<Card className="bg-dark text-white">
-								<Card.Img src={props.post.content} alt="Card image" />
+								<Card.Img src={props.parentId ? props.post.comment : props.post.content} alt="Card image" />
 							</Card>
 						) : (
 							<></>
 						)}
 						{props.post.contentType === "text/markdown" ? (
 							<MarkdownPreview
-								source={props.post.content}
+								source={props.parentId ? props.post.comment : props.post.content}
 								className={style.markdownColor}
 							/>
 						) : (
 							<></>
 						)}
 						{props.post.contentType === "text/plain" ? (
-							<div className={style.topBottom}>{props.post.content}</div>
+							<div className={style.topBottom}>{props.parentId ? props.post.comment : props.post.content}</div>
 						) : (
 							<></>
 						)}					
 					
-					</>}
-					<div className={style.flexContainer}>
+                    </>}
+                    {props.embedParentId ? <></> : <>
+                    <div className={style.flexContainer}>
 						{props.parentId ? (
 							<></>
 						) : (
@@ -341,12 +344,17 @@ const SinglePost: React.FC<Props> = (props) => {
 									<FontAwesomeIcon icon={faComment} fixedWidth />{" "}
 									{props.post.count}
 								</div>
-								{props.post.contentType === "text/post" ? (
-									<></>
+								{props.post.origin !== props.post.source  && !props.embedParentId ? (
+									<div
+                                    className={style.flexItemShare}
+                                    id={"sharePost" + props.post.id.split("/").at(-1)}
+                                    onClick={onClickShare}
+                                >
+                                </div>
 								) : (
 									<div
 										className={style.flexItemShare}
-										id={"sharePost" + props.post.id}
+										id={"sharePost" + props.post.id.split("/").at(-1)}
 										onClick={onClickShare}
 									>
 										<FontAwesomeIcon
@@ -371,7 +379,8 @@ const SinglePost: React.FC<Props> = (props) => {
 							<FontAwesomeIcon icon={faArrowUpFromBracket} fixedWidth />
 						</div>
 					</div>
-				</div>
+                </>}
+                </div> 
 			</div>
 		</>
 	);

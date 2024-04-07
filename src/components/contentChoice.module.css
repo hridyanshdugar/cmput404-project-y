@@ -13,6 +13,7 @@
     justify-content: space-between;
     font-size: 16px;
     color: rgb(113, 118, 123);
+    z-index: 20;
   }
   
   .flexContainer::before {
@@ -48,10 +49,10 @@
   background-color: hsl(0, 0%, 13%) !important;
 }
 
-.flexItem:focus span {
+.boby span {
+  color: white;
   padding-bottom: calc(1rem - 4px);
   border-bottom: 4px solid rgb(29, 155, 240);
-
 }
 
 .fullPageContainer {

@@ -71,16 +71,6 @@ export default function SideBar() {
 						</a>
 					</li>
 					<li>
-						<a href="/message">
-							<div className={style.inline}>
-								<FontAwesomeIcon icon={faEnvelope} inverse fixedWidth />
-							</div>
-							<div className={[style.inline, style.inlinetitle].join(" ")}>
-								Messages
-							</div>
-						</a>
-					</li>
-					<li>
                         <a href={"/profile/" +  (userData ? userData.id : "null")}>
 							<div className={style.inline}>
 								<FontAwesomeIcon icon={faPerson} inverse fixedWidth />

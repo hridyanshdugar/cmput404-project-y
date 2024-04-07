@@ -90,7 +90,7 @@ export async function saveSettings(Name: string, Github: string, PFP: File | nul
     },
     body: formData
   };
-  return await fetch(getAPIEndpoint() + `/users/${id}`, options);
+  return await fetch(getAPIEndpoint() + `/authors/${id}`, options);
 }
 
 
@@ -102,7 +102,7 @@ export async function getUserLocalInfo(auth: string, id:string) {
       'Authorization': `Bearer ${auth}`,
     }
   };
-  return await fetch(getAPIEndpoint() + `/users/all/${id}`, options);
+  return await fetch(getAPIEndpoint() + `/authors/all/${id}`, options);
 }
 
 export async function createPost(title:string, description:string, contentType:string, content:string, visibility: string, auth: string, id:string) {
@@ -147,7 +147,7 @@ export async function sendFollow(actor:any, object:any, auth: string) {
       body: JSON.stringify({"type": "Follow", "actor": actor, "object": object})
   };
   console.log("big boss: ", JSON.stringify({"type": "Follow", "actor": actor, "object": object}))
-  return await fetch(getAPIEndpoint() + `/authors/${object.id}/followers/${actor.id}/`, options);
+  return await fetch(getAPIEndpoint() + `/authors/${object.id.split("/").at(-1)}/followers/${actor.id.split("/").at(-1)}/`, options);
 }
 
 export async function acceptFollowRequest(actor:any, object:any, auth: string) {
@@ -159,7 +159,7 @@ export async function acceptFollowRequest(actor:any, object:any, auth: string) {
       },
       body: JSON.stringify({"type": "FollowResponse", "accepted": true, "actor": actor, "object": object})
   };
-  return await fetch(getAPIEndpoint() + `/authors/${object.id}/followers/${actor.id}/`, options);
+  return await fetch(getAPIEndpoint() + `/authors/${object.id.split("/").at(-1)}/followers/${actor.id.split("/").at(-1)}/`, options);
 }
 
 export async function denyFollowRequest(actor:any, object:any, auth: string) {
@@ -171,7 +171,7 @@ export async function denyFollowRequest(actor:any, object:any, auth: string) {
       },
       body: JSON.stringify({"type": "FollowResponse", "accepted": false, "actor": actor, "object": object})
   };
-  return await fetch(getAPIEndpoint() + `/authors/${object.id}/followers/${actor.id}/`, options);
+  return await fetch(getAPIEndpoint() + `/authors/${object.id.split("/").at(-1)}/followers/${actor.id.split("/").at(-1)}/`, options);
 }
 
 
@@ -184,7 +184,7 @@ export async function sendUnfollow(actor:any, object:any, auth: string) {
       },
       body: JSON.stringify({"type": "Unfollow", "actor": actor, "object": object})
   };
-  return await fetch(getAPIEndpoint() + `/authors/${object.id}/followers/${actor.id}/`, options);
+  return await fetch(getAPIEndpoint() + `/authors/${object.id.split("/").at(-1)}/followers/${actor.id.split("/").at(-1)}/`, options);
 }
 
 export async function checkFollowingStatus(actor:any, object:any, auth: string) {
@@ -206,10 +206,11 @@ export async function getRemoteUsers(auth: string) {
       'Authorization': `Bearer ${auth}`,
     },
   };
-  return await fetch(getAPIEndpoint() + `/users/all`, options);
+  return await fetch(getAPIEndpoint() + `/authors/all`, options);
 }
 
 export async function EditPost(payload: any, auth: string, id:string, user_id:string) {
+  console.log("editing post: ", payload)
   const options: RequestInit = {
     method: 'PATCH',
     headers: {
@@ -233,7 +234,7 @@ export async function createComment(contentType: string, comment: string, auth: 
     body: JSON.stringify({
       "type": "comment", "comment": comment,
       "published": Math.round(+new Date() / 1000), "contentType": contentType, "author": author,
-      "id": getAPIEndpoint() + `/authors/${author.id}/posts/${postId}`
+      "id": getAPIEndpoint() + `/authors/${author.id.split("/").at(-1)}/posts/${postId}`
     })
   };
   return await fetch(getAPIEndpoint() + `/authors/${postAuthorId}/posts/${postId}/comments/`, options);
@@ -259,7 +260,7 @@ export async function likePost(author: any, object: string, auth:string) {
     },
     body: JSON.stringify({"type": "Like", "author": author, "object": object})
   };
-  return await fetch(getAPIEndpoint() + `/authors/${author.id}/posts/${object.split("/").at(-1)}/likes`, options);
+  return await fetch(getAPIEndpoint() + `/authors/${author.id.split("/").at(-1)}/posts/${object.split("/").at(-1)}/likes`, options);
 }
 
 export async function getHomePosts(host: string, page:number, size: number , auth: string, id:string) {
@@ -332,7 +333,7 @@ export async function imageUploadHandler(image: File, auth: string) {
     return await fetch(getAPIEndpoint() + `/images/`, options);
 }
     
-export async function deletePost(auth: string, postId:string) {
+export async function deletePost(auth: string, postId:string, authorId:string) {
   const options: RequestInit = {
     method: 'DELETE',
     headers: {
@@ -340,7 +341,7 @@ export async function deletePost(auth: string, postId:string) {
       'Authorization': `Bearer ${auth}`,
     },
   };
-  return await fetch(getAPIEndpoint() + `/posts/${postId}`, options);
+  return await fetch(getAPIEndpoint() + `/authors/${authorId}/posts/${postId}`, options);
 }
 
 export async function deleteComment(auth: string, postId:string, commentId:string, userId:string) {

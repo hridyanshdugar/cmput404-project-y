@@ -118,7 +118,7 @@ class CommentsView2(APIView):
                 for follow in FollowSerializer(FollowStatus.objects.filter(actor__id=author_id, complete=True),many=True).data:
                     if follower["actor"]["id"] == follow["object"]["id"]:
                         friends.append(follower)
-            friends = [friend["actor"]["id"] for friend in friends]
+            friends = [friend["actor"]["id"].split("/")[-1] for friend in friends]
 
             if request.GET.get('local',False):
                 comments = Comment.objects.filter(Q(host=request.GET.get('host'), post=fk))
@@ -167,7 +167,7 @@ class CommentsView(APIView):
             for follow in FollowSerializer(FollowStatus.objects.filter(actor__id=author_id, complete=True),many=True).data:
                 if follower["actor"]["id"] == follow["object"]["id"]:
                     friends.append(follower)
-        friends = [friend["actor"]["id"] for friend in friends]
+        friends = [friend["actor"]["id"].split("/")[-1] for friend in friends]
 
         if request.GET.get('local',False):
             comments = Comment.objects.filter(Q(host=request.GET.get('host'), post=fk))

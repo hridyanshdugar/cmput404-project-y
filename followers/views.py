@@ -96,7 +96,7 @@ def getFriends(request, author_id):
         for follow in FollowSerializer(FollowStatus.objects.filter(actor__id=author_id, complete=True),many=True).data:
             if follower["actor"]["id"] == follow["object"]["id"]:
                 friends.append(follower)
-    friends = [friend["actor"]["id"] for friend in friends]
+    friends = [friend["actor"]["id"].split("/")[-1] for friend in friends]
     return JsonResponse(friends, safe=False)
 
 class FollowerView(APIView):
@@ -148,7 +148,7 @@ class FollowerView(APIView):
         if res.status_code == 200:
             if data["type"] == "Follow":
                 if not FollowStatus.objects.filter(actor__id=follower_id,obj__id=author_id).exists():
-                    serializer = SaveFollowSerializer(data={"actor":author_id,"obj":follower_id , "complete": False})
+                    serializer = SaveFollowSerializer(data={"actor":follower_id,"obj":author_id , "complete": False})
                     if serializer.is_valid():
                         serializer.save()
                     return Response(status=status.HTTP_200_OK)
@@ -163,20 +163,23 @@ class FollowerView(APIView):
     def put(self, request, author_id, follower_id):
         data = json.loads(request.body)
         print("boblb", data)
-        res = requests.request(method="POST", url=request.data["actor"]["host"] + "api/authors/" + str(author_id) + "/inbox/",data=request.body)
+        res = requests.request(method="POST", url=request.data["actor"]["host"] + "api/authors/" + str(follower_id) + "/inbox/",data=request.body)
         if res.status_code == 200:
+            print("sent to actor inbox")
             req = get_object_or_404(FollowStatus,actor__id=follower_id,obj__id=author_id)
-            hi_user = User.objects.get(id=follower_id)
+            hi_user = User.objects.get(id=author_id)
             inbox = Inbox.objects.get_or_create(author=hi_user)[0]
             inbox.followRequest.remove(req)
             inbox.save()            
             if data["accepted"]:
+                print("accepted")
                 serializer = FollowSerializer(req,data={"complete":True},partial=True)
                 if serializer.is_valid():
                     serializer.save()
                     return Response(status=status.HTTP_200_OK)
                 return Response(status=status.HTTP_400_BAD_REQUEST)
             else:
+                print("declined")
                 req.delete()
                 return Response(status=status.HTTP_200_OK)
         return Response(status=status.HTTP_400_BAD_REQUEST)
