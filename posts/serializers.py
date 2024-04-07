@@ -22,7 +22,7 @@ class PostEditSerializer(serializers.ModelSerializer):
 class RemotePostSerializer(serializers.ModelSerializer):
      class Meta:
           model = Post
-          fields = ["id", "host", "origin", "source","content","contentType","published","visibility","description", "author"]
+          fields = ["id", "origin", "source","content","contentType","published","visibility","description", "author"]
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -35,7 +35,7 @@ class PostSerializer(serializers.ModelSerializer):
 
      class Meta:
           model = Post
-          fields = ["id", "title", "host", "origin", "source", "type", "content","contentType","published","comments","commentsSrc","visibility", "description", "author","count"]
+          fields = ["id", "title", "origin", "source", "type", "content","contentType","published","comments","commentsSrc","visibility", "description", "author","count"]
 
      def __init__(self, *args, **kwargs):
         exclude_comments = False
@@ -52,6 +52,8 @@ class PostSerializer(serializers.ModelSerializer):
         comments = Comment.objects.filter(post=obj)
         return CommentSerializer(comments, many=True, read_only=True).data
    
+     def get_id(self, obj):
+        return obj.origin
 
      def create(self, validated_data):
         request = self.context.get('request')
@@ -65,19 +67,13 @@ class PostSerializer(serializers.ModelSerializer):
         if "source" not in validated_data:
                 validated_data["source"] = origin
         print("hi 14")
-        validated_data["host"] = Node.objects.get(is_self=True).url
-        print("hi 15")
         return super().create(validated_data)
      
      def get_type(self, obj):
         return "post"
 
      def get_comments(self, obj):
-        request = self.context.get('request')
-        if request is not None:
-            host = request.build_absolute_uri('/') + "posts/" + str(obj.id) + "/comments/"
-            return host
-        return None
+        return obj.origin + "/comments"
      
      def get_count(self, obj):
          return len(Comment.objects.filter(post=obj))

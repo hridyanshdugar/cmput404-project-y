@@ -30,6 +30,7 @@ export default function Settings() {
 
 	useEffect(() => {
 		const auth = cookies.get("auth")["access"];
+		
 		const id = cookies.get("user")["id"];
 		getUserLocalInfo(auth, id)
 			.then(async (result: any) => {

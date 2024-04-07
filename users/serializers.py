@@ -77,3 +77,9 @@ class AuthorSerializer(serializers.ModelSerializer):
     
     def get_type(self, obj):
         return "author"
+    
+    def get_id(self, obj):
+        return str(obj.host) + "api/authors/" + str(obj.id)
+    
+    def get_url(self, obj):
+        return str(obj.host) + "api/authors/" + str(obj.id)    
