@@ -40,6 +40,7 @@ class PostSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         data = super().to_representation(instance)
         data["id"] = data["origin"]
+        return data
 
     class Meta:
         model = Post
