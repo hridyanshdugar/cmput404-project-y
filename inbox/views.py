@@ -67,6 +67,9 @@ class InboxView(APIView):
                 hasPfp = False
                 if "profileImage" in response_data:
                     hasPfp = response_data.pop("profileImage")
+                if "profileBackgroundImage" in response_data:
+                    ffff = response_data.pop("profileBackgroundImage")
+
                 
                 serializer = RemoteUserSerializer(obj_user,data=response_data,partial=True)
                 if serializer.is_valid():
@@ -83,6 +86,8 @@ class InboxView(APIView):
                 hasPfp = False
                 if "profileImage" in response_data:
                     hasPfp = response_data.pop("profileImage")
+                if "profileBackgroundImage" in response_data:
+                        ffff = response_data.pop("profileImage")                    
                 print("beacon 3", response_data)
                 serializer = RemoteUserSerializer(data=response_data)
                 print("beacon 4")
