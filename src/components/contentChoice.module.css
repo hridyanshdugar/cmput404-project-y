@@ -49,6 +49,7 @@
 }
 
 .boby span {
+  color: white;
   padding-bottom: calc(1rem - 4px);
   border-bottom: 4px solid rgb(29, 155, 240);
 }
