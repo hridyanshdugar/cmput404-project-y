@@ -155,7 +155,7 @@ class InboxView(APIView):
                     try:
                         bob = response.json()
                         print("abc : 7", bob)
-                        serializer = RemotePostSerializer(data={"id": bob["id"].split("/")[-1], "host": bob["host"], "content": bob["content"], "contentType": bob["contentType"], "published": data["published"], "visibility": data["visibility"], "origin": data["origin"], "source": data["source"], "description": bob["description"], "author": bob["author"]["id"]})
+                        serializer = RemotePostSerializer(data={"id": bob["id"].split("/")[-1], "content": bob["content"], "contentType": bob["contentType"], "published": data["published"], "visibility": data["visibility"], "origin": data["origin"], "source": data["source"], "description": bob["description"], "author": bob["author"]["id"]})
                         print("abc : 8")
                         if serializer.is_valid():
                             print("abc : 9")

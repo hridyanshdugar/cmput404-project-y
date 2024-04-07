@@ -250,7 +250,7 @@ class PostsView(APIView):
                     for follower in FollowSerializer(FollowStatus.objects.filter(obj__id=author_id, complete=True)).data:
                         for follow in FollowSerializer(FollowStatus.objects.filter(actor__id=author_id, complete=True)).data:
                             if follower["actor"]["id"] == follow["object"]["id"]:
-                                print("Sending to2: ", follower["object"]["host"] + "api/authors/" + str(follower["object"]["id"]) + "/inbox/")
+                                print("Sending to2: ", follower["object"]["host"] + "api/authors/" + str(follower["object"]["id"]) + "/inbox")
                                 requests.post(follower["object"]["host"] + "api/authors/" + str(follower["object"]["id"]) + "/inbox", data = json.dumps(serializer.data), headers={'Content-Type': 'application/json'})    
                 return Response(serializer.data, status = status.HTTP_200_OK)
         else:
