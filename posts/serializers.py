@@ -31,7 +31,6 @@ class PostSerializer(serializers.ModelSerializer):
     comments = serializers.SerializerMethodField()
     author = serializers.SerializerMethodField()
     count = serializers.SerializerMethodField()
-    id = serializers.SerializerMethodField()
 
     def to_internal_value(self, data):
         internal_data = super().to_internal_value(data)

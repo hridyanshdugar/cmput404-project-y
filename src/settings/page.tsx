@@ -31,7 +31,9 @@ export default function Settings() {
 	useEffect(() => {
 		const authCookie = cookies.get("auth");
 		const userCookie = cookies.get("user");
-		
+		if (!authCookie || !userCookie || !authCookie.access || !userCookie.id) {
+			navigate("/");
+		}
 		const auth = authCookie.access;
 		const id = userCookie.id;
 		getUserLocalInfo(auth, id)
