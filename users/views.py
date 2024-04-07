@@ -62,6 +62,7 @@ class AllUsersViewPK(APIView):
                     if response.status_code == 200:
                         try:
                             response_data = response.json()
+                            response_data2 = response.json()
                             print(response_data, node.url)
                             
                             if node.url == response_data["host"]:
@@ -90,7 +91,8 @@ class AllUsersViewPK(APIView):
                                         response_data['profileBackgroundImage'] = hasPfpBack
                                     user = User.objects.get(id=pk)
                                     serializer = AuthorSerializer(user)
-                                    return Response(serializer.data, status = status.HTTP_200_OK)
+                                    print("yoyogaba 1", serializer.data)
+                                    return JsonResponse(response_data2)
                                 else:
                                     print(f"Invalid data from {node.url}: {serializer.errors}")
                                 return JsonResponse(response_data)
