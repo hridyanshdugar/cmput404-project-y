@@ -96,7 +96,7 @@ class AllUsersViewPK(APIView):
                                     return JsonResponse(response_data2)
                                 else:
                                     print(f"Invalid data from {node.url}: {serializer.errors}")
-                                return JsonResponse(response_data)
+                                return JsonResponse(response_data2)
                         except JSONDecodeError:
                             print(f"Invalid JSON response from {node.url}: {response.text}")
                     else:
