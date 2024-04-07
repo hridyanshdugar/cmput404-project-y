@@ -40,8 +40,9 @@ class PostSerializer(serializers.ModelSerializer):
         return internal_data
     
     def to_representation(self, instance):
-        print("fat stacks3", data)
+        print("fat stacks4", instance)
         data = super().to_representation(instance)
+        print("fat stacks3", data)
         data["id"] = data["origin"]
         print("fat stacks5", data)
         return data
