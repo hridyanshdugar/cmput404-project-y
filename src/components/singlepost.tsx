@@ -283,7 +283,7 @@ const SinglePost: React.FC<Props> = (props) => {
 								· {formattedDate}
                             </div>
                             <div id="profile99" className={[style.topUserText, style.inlineBlock].join(" ")}>
-                                <Badge bg="primary">{props.post.host.split(".")[0].split("/").slice(-1)}</Badge>
+                                <Badge bg="primary">{props.post.author.host.split(".")[0].split("/").slice(-1)}</Badge>
                             </div>
 						</div>
                         <div className={style.separator} />
