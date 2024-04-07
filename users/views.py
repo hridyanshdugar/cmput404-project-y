@@ -57,9 +57,9 @@ class AllUsersViewPK(APIView):
             return Response(serializer.data, status = status.HTTP_200_OK)
         else:
             for node in Node.objects.filter(is_self=False):
-                print(node.url + "api/users/" + str(pk))
+                print(node.url + "api/authors/" + str(pk))
                 try:
-                    response = requests.get(node.url + "api/users/" + str(pk), timeout=3, auth=HTTPBasicAuth(user_auth, pass_auth))
+                    response = requests.get(node.url + "api/authors/" + str(pk), timeout=3, auth=HTTPBasicAuth(user_auth, pass_auth))
                     
                     if response.status_code == 200:
                         try:
@@ -117,7 +117,7 @@ class UsersViewPK(APIView):
 
 
     '''
-    GET /users/id
+    GET /authors/id
     '''
     def get(self, request,pk):
         # I am getting a 403 error if I send a request to the server with basicauth how to fix this?
@@ -127,7 +127,7 @@ class UsersViewPK(APIView):
         return Response(serializer.data, status = status.HTTP_200_OK)
 
     '''
-    POST /users
+    POST /authors
     '''
     def post(self, request,pk):
         user = get_object_or_404(User,id=pk)
@@ -138,7 +138,7 @@ class UsersViewPK(APIView):
         else:
             return Response({"title": "Invalid Fields", "message": serializer.errors}, status = status.HTTP_400_BAD_REQUEST) # Need to change the error message
     '''
-    delete /users
+    delete /authors
     '''
     def delete(self, request,pk):
         user = get_object_or_404(User,id=pk)
@@ -156,7 +156,7 @@ class UsersView(APIView):
 
      pagination = Pager()
      '''
-     GET /users
+     GET /authors
      '''
      def get(self, request):
         try:
@@ -175,7 +175,7 @@ class UsersView(APIView):
             return Response(serializer.data, status = status.HTTP_400_BAD_REQUEST)
 
      '''
-     POST /users
+     POST /authors
      '''
      def post(self, request):
         serializer = UserSerializer(data = request.data)
@@ -198,9 +198,9 @@ class AllUsersView(APIView):
         node_responses = serializer.data
 
         for node in nodes:
-            print(node.url + "api/users/ ffjjff")
+            print(node.url + "api/authors/ ffjjff")
             try:
-                response = requests.get(node.url + "api/users", timeout=3,auth=HTTPBasicAuth(user_auth, pass_auth))
+                response = requests.get(node.url + "api/authors", timeout=3,auth=HTTPBasicAuth(user_auth, pass_auth))
                 
                 if response.status_code == 200:
                     try:

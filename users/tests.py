@@ -19,7 +19,7 @@ class UsersTestCase(APITestCase):
     def testGetUser(self):
         print("Testing get user......", end="")
         try:
-            response = self.client.get(f"/api/users/{self.user['id']}")
+            response = self.client.get(f"/api/authors/{self.user['id']}")
             self.assertEqual(response.status_code, status.HTTP_200_OK)
         except:
             printFailed()
@@ -29,7 +29,7 @@ class UsersTestCase(APITestCase):
     def testGetUserId(self):
         print("Testing get userid.......", end="")
         try:
-            response = self.client.get(f"/api/users/a")
+            response = self.client.get(f"/api/authors/a")
             self.assertEqual(response.status_code, status.HTTP_200_OK)
         except:
             printFailed()
@@ -39,7 +39,7 @@ class UsersTestCase(APITestCase):
     def testPostUser(self):
         print("Testing post user.........", end="")
         try:
-            response = self.client.post(f"/api/users/{self.user['id']}", {"displayName": "testNew@displayName.com"})
+            response = self.client.post(f"/api/authors/{self.user['id']}", {"displayName": "testNew@displayName.com"})
             self.assertEqual(response.status_code, status.HTTP_200_OK)
         except:
             printFailed()
@@ -49,7 +49,7 @@ class UsersTestCase(APITestCase):
     def testDeleteUser(self):
         print("Testing delete user......", end="")
         try:
-            response = self.client.delete(f"/api/users/{self.user['id']}")
+            response = self.client.delete(f"/api/authors/{self.user['id']}")
             self.assertEqual(response.status_code, status.HTTP_200_OK)
         except:
             printFailed()
@@ -59,9 +59,9 @@ class UsersTestCase(APITestCase):
     def testDeleteUserNone(self):
         print("Testing delete user none......", end="")
         try:
-            response = self.client.delete(f"/api/users/{self.user['id']}")
+            response = self.client.delete(f"/api/authors/{self.user['id']}")
             self.assertEqual(response.status_code, status.HTTP_200_OK)
-            response = self.client.delete(f"/api/users/{self.user['id']}")
+            response = self.client.delete(f"/api/authors/{self.user['id']}")
             self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         except:
             printFailed()
@@ -71,7 +71,7 @@ class UsersTestCase(APITestCase):
     def testGetAllUsers(self):
         print("Testing get all users......", end="")
         try:
-            response = self.client.get(f"/api/users/")
+            response = self.client.get(f"/api/authors/")
             self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
             self.assertEqual(len(response.data), 0)
         except:
@@ -82,9 +82,9 @@ class UsersTestCase(APITestCase):
     def testCreateUser(self):
         print("Testing create user", end="")
         try:
-            response = self.client.post(f"/api/users/", {"displayName": "test3@displayName.com", "password": "test"})
+            response = self.client.post(f"/api/authors/", {"displayName": "test3@displayName.com", "password": "test"})
             self.assertEqual(response.status_code, status.HTTP_200_OK)
-            response = self.client.get(f"/api/users/")
+            response = self.client.get(f"/api/authors/")
             self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
             self.assertEqual(len(response.data), 0)
         except:
@@ -95,7 +95,7 @@ class UsersTestCase(APITestCase):
     def testUpdateUser(self):
         print("Testing update user......", end="")
         try:
-            response = self.client.put(f"/api/users/{self.user['id']}", {"displayName": "updatedDisplayName"})
+            response = self.client.put(f"/api/authors/{self.user['id']}", {"displayName": "updatedDisplayName"})
             self.assertIn(response.status_code, [status.HTTP_200_OK, status.HTTP_404_NOT_FOUND])
         except:
             printFailed()
@@ -135,7 +135,7 @@ class UsersTestCase(APITestCase):
     def testBadRequest(self):
         print("Testing bad request......", end="")
         try:
-            response = self.client.post("/api/users/", {})  # Sending empty data intentionally for a bad request
+            response = self.client.post("/api/authors/", {})  # Sending empty data intentionally for a bad request
             self.assertIn(response.status_code, [status.HTTP_400_BAD_REQUEST])
         except:
             printFailed()
