@@ -198,7 +198,7 @@ class AllUsersView(APIView):
         node_responses = serializer.data
 
         for node in nodes:
-            print(node.url + "api/users/")
+            print(node.url + "api/users/ ffjjff")
             try:
                 response = requests.get(node.url + "api/users/", timeout=3,auth=HTTPBasicAuth(user_auth, pass_auth))
                 
