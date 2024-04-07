@@ -300,7 +300,7 @@ const SinglePost: React.FC<Props> = (props) => {
                             </div>                        
                         </>}
 					</div>
-					{props.post.origin !== props.post.source && !props.parentId ? <>
+					{!props.parentId && props.post.origin !== props.post.source ? <>
 						<Card className={style.postEmbed} id="embedPost">
 							{typeof sharedPost.author === "undefined" ? (
 								<div className={style.missingEmbed}>Post Not Found</div>
