@@ -26,36 +26,42 @@ class RemotePostSerializer(serializers.ModelSerializer):
 
 
 class PostSerializer(serializers.ModelSerializer):
-     type = serializers.SerializerMethodField(read_only=True)
-     commentsSrc = serializers.SerializerMethodField()
-     comments = serializers.SerializerMethodField()
-     author = serializers.SerializerMethodField()
-     count = serializers.SerializerMethodField()
-     id = serializers.SerializerMethodField()
+    type = serializers.SerializerMethodField(read_only=True)
+    commentsSrc = serializers.SerializerMethodField()
+    comments = serializers.SerializerMethodField()
+    author = serializers.SerializerMethodField()
+    count = serializers.SerializerMethodField()
+    id = serializers.SerializerMethodField()
 
-     class Meta:
-          model = Post
-          fields = ["id", "title", "origin", "source", "type", "content","contentType","published","comments","commentsSrc","visibility", "description", "author","count"]
+    def to_internal_value(self, data):
+        internal_data = super().to_internal_value(data)
+        internal_data['id'] = internal_data['id'].split('/')[:-1]
+        return internal_data
+    
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data["id"] = data["origin"]
 
-     def __init__(self, *args, **kwargs):
+    class Meta:
+        model = Post
+        fields = ["id", "title", "origin", "source", "type", "content","contentType","published","comments","commentsSrc","visibility", "description", "author","count"]
+
+    def __init__(self, *args, **kwargs):
         exclude_comments = False
         if 'context' in kwargs and 'exclude_comments' in kwargs['context']:
             exclude_comments = kwargs['context'].get('exclude_comments', False)
         super(PostSerializer, self).__init__(*args, **kwargs)
         if exclude_comments:
             self.fields.pop('commentsSrc', None)
-    
-     def get_author(self, obj):
+
+    def get_author(self, obj):
         return AuthorSerializer(obj.author, context={'exclude_comments': True}).data
 
-     def get_commentsSrc(self, obj):
+    def get_commentsSrc(self, obj):
         comments = Comment.objects.filter(post=obj)
         return CommentSerializer(comments, many=True, read_only=True).data
-   
-     def get_id(self, obj):
-        return obj.origin
 
-     def create(self, validated_data):
+    def create(self, validated_data):
         request = self.context.get('request')
         print("hi 1")
         validated_data["id"] = uuid.uuid4()
@@ -68,12 +74,12 @@ class PostSerializer(serializers.ModelSerializer):
                 validated_data["source"] = origin
         print("hi 14")
         return super().create(validated_data)
-     
-     def get_type(self, obj):
+    
+    def get_type(self, obj):
         return "post"
 
-     def get_comments(self, obj):
+    def get_comments(self, obj):
         return obj.origin + "/comments"
-     
-     def get_count(self, obj):
-         return len(Comment.objects.filter(post=obj))
+    
+    def get_count(self, obj):
+        return len(Comment.objects.filter(post=obj))
