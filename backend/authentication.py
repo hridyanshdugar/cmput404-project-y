@@ -12,7 +12,7 @@ class RemoteNodeAuthentication(BaseAuthentication):
   """
 
   def authenticate(self, request: HttpRequest):
-    our_node = Node.objects.filter(is_self=True)
+    our_node = Node.objects.get(is_self=True)
 
     auth_parts = get_authorization_header(request).split()
     request.is_node_authenticated = False
