@@ -104,12 +104,9 @@ class PostsViewPK(APIView):
      PATCH /authors/{id}/posts/{id} and /posts/{id}
      '''
      def patch(self, request, author_id, post_id):
-        JWT_authenticator = JWTAuthentication()
-        response = JWT_authenticator.authenticate(request)
         post = get_object_or_404(Post, id=post_id)
         serializer = PostEditSerializer(post, partial=True,data = request.data)
-        print(response, serializer.is_valid(), "dasdsa")
-        if response and serializer.is_valid():
+        if serializer.is_valid():
             serializer.save()
             return Response({"title": "Successfully Updated", "message": "Post was updated"}, status = status.HTTP_200_OK)
         return Response({"title": "Bad Request", "message": "Invalid Request Sent"}, status = status.HTTP_400_BAD_REQUEST)
