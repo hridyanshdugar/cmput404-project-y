@@ -34,7 +34,7 @@ class PostSerializer(serializers.ModelSerializer):
 
     def to_internal_value(self, data):
         internal_data = super().to_internal_value(data)
-        internal_data['id'] = internal_data['id'].split('/')[:-1]
+        internal_data['id'] = internal_data['id'].split('/')[-1]
         return internal_data
     
     def to_representation(self, instance):
@@ -68,7 +68,6 @@ class PostSerializer(serializers.ModelSerializer):
         print("hi 12", validated_data)
         #     "origin":"<http://domain_z>/api/authors/<author_id_z>/posts/<post_id_z>",
         origin = Node.objects.get(is_self=True).url + "api/authors/" + str(validated_data["author"].id) + "/posts/" + str(validated_data["id"])
-        validated_data["origin"] = origin
         print("hi 13", origin)
         if "source" not in validated_data:
                 validated_data["source"] = origin
