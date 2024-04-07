@@ -336,7 +336,7 @@ const SinglePost: React.FC<Props> = (props) => {
                     </>}
                     {props.embedParentId ? <></> : <>
                     <div className={style.flexContainer}>
-						{props.parentId || props.post.origin !== props.post.source ? (
+						{props.parentId ? (
 							<></>
 						) : (
 							<>
@@ -344,7 +344,7 @@ const SinglePost: React.FC<Props> = (props) => {
 									<FontAwesomeIcon icon={faComment} fixedWidth />{" "}
 									{props.post.count}
 								</div>
-								{props.post.contentType === "text/post" ? (
+								{props.post.origin !== props.post.source ? (
 									<></>
 								) : (
 									<div
