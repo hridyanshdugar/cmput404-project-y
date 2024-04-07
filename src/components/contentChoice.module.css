@@ -48,10 +48,9 @@
   background-color: hsl(0, 0%, 13%) !important;
 }
 
-.flexItem:focus span {
+.boby span {
   padding-bottom: calc(1rem - 4px);
   border-bottom: 4px solid rgb(29, 155, 240);
-
 }
 
 .fullPageContainer {
