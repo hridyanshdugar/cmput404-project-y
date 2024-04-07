@@ -31,6 +31,7 @@ class PostSerializer(serializers.ModelSerializer):
      comments = serializers.SerializerMethodField()
      author = serializers.SerializerMethodField()
      count = serializers.SerializerMethodField()
+     id = serializers.SerializerMethodField()
 
      class Meta:
           model = Post

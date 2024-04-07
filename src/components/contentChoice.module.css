@@ -13,6 +13,7 @@
     justify-content: space-between;
     font-size: 16px;
     color: rgb(113, 118, 123);
+    z-index: 20;
   }
   
   .flexContainer::before {
