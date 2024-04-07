@@ -60,45 +60,41 @@ class InboxView(APIView):
             print("beacon 1")
             response_data = copy.deepcopy(data)
             response_data['id'] = response_data['id'].split("/")[-1]
-            # try:
-            #     obj_user = User.objects.get(id=response_data["id"].split("/")[-1])
-            # except:
-            print("beacon 2")
-
-            hasPfp = False
-            hasPfpBack = False
-            if "profileImage" in response_data:
-                hasPfp = response_data.pop("profileImage")
-            if "profileBackgroundImage" in response_data:
-                hasPfpBack = response_data.pop("profileBackgroundImage")
-
-            print("beacon 3")
-
-            print(response_data)
-            user = None
-            serializer = None
+            # updates existing user
             try:
-                user = User.objects.get(id=pk)
-                serializer = RemoteUserSerializer(user,data=response_data,partial=True)
+                obj_user = User.objects.get(id=response_data["id"].split("/")[-1])
+                print("beacon supreme", obj_user)
+                hasPfp = False
+                if "profileImage" in response_data:
+                    hasPfp = response_data.pop("profileImage")
+                
+                serializer = RemoteUserSerializer(obj_user,data=response_data,partial=True)
+                if serializer.is_valid():
+                    user = serializer.save()
+                    if hasPfp:
+                        download_profile(user, hasPfp)
+                        response_data['profileImage'] = hasPfp
+                else:
+                    print(f"Invalid data from : {serializer.errors}")
+            # downloads new user
             except Exception as e:
-                print("bigger", e)  
+                print("beacon 2,e", e)
 
+                hasPfp = False
+                if "profileImage" in response_data:
+                    hasPfp = response_data.pop("profileImage")
+                print("beacon 3", response_data)
                 serializer = RemoteUserSerializer(data=response_data)
-            print("beacon 4")
+                print("beacon 4")
+                if serializer.is_valid():
+                    user = serializer.save()
+                    if hasPfp:
+                        download_profile(user, hasPfp)
+                        response_data['profileImage'] = hasPfp
+                else:
+                    print(f"Invalid data from : {serializer.errors}")
 
-
-            if serializer.is_valid():
-                user = serializer.save()
-                if hasPfp:
-                    download_profile(user, hasPfp)
-                    response_data['profileImage'] = hasPfp
-                if hasPfpBack:
-                    download_profileBack(user, hasPfpBack)
-                    response_data['profileBackgroundImage'] = hasPfpBack
-            else:
-                print(f"Invalid data from : {serializer.errors}")
-
-            print("beacon 5")
+                print("beacon 5")
             
 
         print("cuudddt 1")
