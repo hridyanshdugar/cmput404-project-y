@@ -138,7 +138,7 @@ class AllPostsView2(APIView):
                     friends.append(follower)
         friends = [friend["actor"]["id"] for friend in friends]        
         print("bgifgig", author)
-        posts = Post.objects.filter(Q(author=author) | Q(visibility="FRIENDS", author__id__in=friends) | Q(visibility="PUBLIC")).order_by('-published') 
+        posts = Post.objects.filter(Q(author__id=author.id.split("/")[-1]) | Q(visibility="FRIENDS", author__id__in=friends) | Q(visibility="PUBLIC")).order_by('-published') 
         page_number = request.GET.get('page') or 1
         posts = self.pagination.paginate_queryset(posts, request, view=self)
         
