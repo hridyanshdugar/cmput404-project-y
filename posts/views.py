@@ -128,7 +128,7 @@ class AllPostsView2(APIView):
      '''
      def get(self, request, author_id):
         print("bbbdffffffffffffffffffffffff", author_id)
-        author = User.objects.get(id=author_id)
+        author = User.objects.get_object_or_404(id=author_id)
         print("bbbdffffffffffffffffffffffff 2", author)
 
         friends = []

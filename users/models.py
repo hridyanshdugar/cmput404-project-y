@@ -89,8 +89,6 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     objects = UserManager()
 
-    def __str__(self):
-        return self.displayName
 
 @receiver(post_delete, sender=User)
 def delete_media_on_user_delete(sender, instance, **kwargs):
