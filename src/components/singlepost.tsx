@@ -86,7 +86,7 @@ type Props = {
 
 const SinglePost: React.FC<Props> = (props) => {
 	const onClickProfile = (event: any) => {
-		navigate("/profile/" + props.post.author.id);
+		navigate("/profile/" + props.post.author.id.split("/").at(-1));
 		event.stopPropagation();
 	};
 	const onClickShare = (event: any) => {
@@ -96,7 +96,7 @@ const SinglePost: React.FC<Props> = (props) => {
 	};
 	const onClickPost = (event: any) => {
 		if (!props.parentId) {
-			navigate("/profile/"+props.post.author.id+"/post/" + props.post.id);
+			navigate("/profile/"+props.post.author.id.split("/").at(-1)+"/post/" + props.post.id);
 		}
 		event.stopPropagation();
 	};
@@ -151,7 +151,7 @@ const SinglePost: React.FC<Props> = (props) => {
 
 		likePost(
 			author,
-			getAPIEndpoint() + "authors/"+author.id+"/posts/" + props.post.id,
+			getAPIEndpoint() + "authors/"+author.id.split("/").at(-1)+"/posts/" + props.post.id,
 			auth["access"]
 		);
 		setLikes(likes + 1);
@@ -164,7 +164,7 @@ const SinglePost: React.FC<Props> = (props) => {
 		const user = cookies.get("user");
 		const auth = cookies.get("auth");
 		setuser(user);
-        getLikePost(props.post.author.id, props.post.id, auth["access"])
+        getLikePost(props.post.author.id.split("/").at(-1), props.post.id, auth["access"])
         		.then(async (result: any) => {
                     const Data = await result.json();
                     console.log("shared post", Data)
@@ -197,7 +197,7 @@ const SinglePost: React.FC<Props> = (props) => {
 		const auth = cookies.get("auth")["access"];
 		if (selection === "Delete") {
 			if (props.parentId) {
-				deleteComment(auth, props.parentId, props.post.id, props.post.author.id)
+				deleteComment(auth, props.parentId, props.post.id, props.post.author.id.split("/").at(-1))
 					.then(async (result: any) => {
 						const Data = await result.json();
 						console.log(Data);
@@ -291,7 +291,7 @@ const SinglePost: React.FC<Props> = (props) => {
                             <div>
                                 <Dropdown
                                     icon={faEllipsis}
-                                    options={(props.post.author.id === user?.id
+                                    options={(props.post.author.id.split("/").at(-1) === user?.id
                                         ? ["Delete", "Edit"]
                                         : []
                                     ).concat(["Copy Link"])}

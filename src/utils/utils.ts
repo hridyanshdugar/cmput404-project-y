@@ -233,7 +233,7 @@ export async function createComment(contentType: string, comment: string, auth: 
     body: JSON.stringify({
       "type": "comment", "comment": comment,
       "published": Math.round(+new Date() / 1000), "contentType": contentType, "author": author,
-      "id": getAPIEndpoint() + `/authors/${author.id}/posts/${postId}`
+      "id": getAPIEndpoint() + `/authors/${author.id.split("/").at(-1)}/posts/${postId}`
     })
   };
   return await fetch(getAPIEndpoint() + `/authors/${postAuthorId}/posts/${postId}/comments/`, options);
@@ -259,7 +259,7 @@ export async function likePost(author: any, object: string, auth:string) {
     },
     body: JSON.stringify({"type": "Like", "author": author, "object": object})
   };
-  return await fetch(getAPIEndpoint() + `/authors/${author.id}/posts/${object.split("/").at(-1)}/likes`, options);
+  return await fetch(getAPIEndpoint() + `/authors/${author.id.split("/").at(-1)}/posts/${object.split("/").at(-1)}/likes`, options);
 }
 
 export async function getHomePosts(host: string, page:number, size: number , auth: string, id:string) {
