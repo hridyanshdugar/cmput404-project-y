@@ -336,7 +336,7 @@ const SinglePost: React.FC<Props> = (props) => {
                     </>}
                     {props.embedParentId ? <></> : <>
                     <div className={style.flexContainer}>
-						{props.parentId || props.embedParentId ? (
+						{props.parentId || props.post.origin !== props.post.source ? (
 							<></>
 						) : (
 							<>
