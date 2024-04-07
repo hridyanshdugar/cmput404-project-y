@@ -137,26 +137,7 @@ class InboxView(APIView):
 
             return Response({"Title":"Done"}, status = status.HTTP_200_OK)        
         if data["type"] == "post":
-            author = None
-            print("abc : 1")
-            try:
-                author = User.objects.get(id=data["author"]["id"])
-            except:
-                user_auth = get_object_or_404(Node,is_self=True).username
-                pass_auth = get_object_or_404(Node,is_self=True).password
-                response = requests.get(str(data["author"]["host"]) + "api/authors" + str(data["author"]["id"]) + "/", auth=HTTPBasicAuth(user_auth, pass_auth))
-
-                if response.status_code == 200:
-                    try:
-                        bob = response.json()
-                        serializer = RemoteUserSerializer(data={"id": bob["id"], "url": bob["url"], "displayName": bob["displayName"], "profileImage": bob["profileImage"], "profileBackgroundImage": bob["profileBackgroundImage"], "github": bob["github"], "displayName": bob["displayName"]})
-                        if serializer.is_valid():
-                            author = serializer.save()
-                        else: 
-                            print(serializer.errors)
-                    except Exception as e:
-                        print(e)
-            print("abc : 2")
+            get_foreign_user(data["author"])
             post_obj = None
             print("abc : 3")
             try:
@@ -174,7 +155,7 @@ class InboxView(APIView):
                     try:
                         bob = response.json()
                         print("abc : 7", bob)
-                        serializer = RemotePostSerializer(data={"id": bob["id"], "url": bob["url"], "host": bob["host"], "content": bob["content"], "contentType": bob["contentType"], "published": data["published"], "visibility": data["visibility"], "origin": data["origin"], "description": bob["description"], "author": bob["author"]["id"]})
+                        serializer = RemotePostSerializer(data={"id": bob["id"], "host": bob["host"], "content": bob["content"], "contentType": bob["contentType"], "published": data["published"], "visibility": data["visibility"], "origin": data["origin"], "source": data["source"], "description": bob["description"], "author": bob["author"]["id"]})
                         print("abc : 8")
                         if serializer.is_valid():
                             print("abc : 9")
@@ -192,7 +173,7 @@ class InboxView(APIView):
                             print("abc : 11")
                             print(serializer.errors)
                     except Exception as e:
-                        print("dfsjafiusdarf78", e)
+                        print("dfsjafiusdarf78 errer", e)
             return Response({"Title":"Done"}, status = status.HTTP_200_OK)
         if data["type"] == "comment":
             # add print statements with incremental numbers for debbuing
