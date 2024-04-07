@@ -127,7 +127,9 @@ class AllPostsView2(APIView):
      GET /authors/{id}/posts2/
      '''
      def get(self, request, author_id):
+        print("bbbdffffffffffffffffffffffff", author_id)
         author = User.objects.get(id=author_id)
+        print("bbbdffffffffffffffffffffffff 2", author)
 
         friends = []
         for follower in FollowSerializer(FollowStatus.objects.filter(obj__id=author_id, complete=True),many=True).data:
