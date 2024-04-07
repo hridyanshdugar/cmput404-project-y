@@ -146,13 +146,13 @@ class UsersViewPK(APIView):
         return Response({"title": "Successfully Deleted", "message": "User was deleted"}, status = status.HTTP_200_OK)
 
 class UsersView(APIView):     
-     def perform_authentication(self, request):
-        if is_basicAuth(request):
-            if not basicAuth(request):
-                return Response(status=status.HTTP_401_UNAUTHORIZED)
-        if 'HTTP_AUTHORIZATION' in request.META:
-            request.META.pop('HTTP_AUTHORIZATION')
-    #  permission_classes = [ RemoteOrSessionAuthenticated ]
+    #  def perform_authentication(self, request):
+    #     if is_basicAuth(request):
+    #         if not basicAuth(request):
+    #             return Response(status=status.HTTP_401_UNAUTHORIZED)
+    #     if 'HTTP_AUTHORIZATION' in request.META:
+    #         request.META.pop('HTTP_AUTHORIZATION')
+     permission_classes = [ RemoteOrSessionAuthenticated ]
 
      pagination = Pager()
      '''
