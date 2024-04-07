@@ -215,7 +215,7 @@ const SinglePost: React.FC<Props> = (props) => {
 						console.log(result);
 					});
 			} else {
-				deletePost(auth, props.post.id.split("/").at(-1))
+				deletePost(auth, props.post.id.split("/").at(-1), props.post.author.id.split("/").at(-1))
 					.then(async (result: any) => {
 						const Data = await result.json();
 						console.log(Data);

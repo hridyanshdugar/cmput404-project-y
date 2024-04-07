@@ -333,7 +333,7 @@ export async function imageUploadHandler(image: File, auth: string) {
     return await fetch(getAPIEndpoint() + `/images/`, options);
 }
     
-export async function deletePost(auth: string, postId:string) {
+export async function deletePost(auth: string, postId:string, authorId:string) {
   const options: RequestInit = {
     method: 'DELETE',
     headers: {
@@ -341,7 +341,7 @@ export async function deletePost(auth: string, postId:string) {
       'Authorization': `Bearer ${auth}`,
     },
   };
-  return await fetch(getAPIEndpoint() + `/posts/${postId}`, options);
+  return await fetch(getAPIEndpoint() + `/authors/${authorId}/posts/${postId}`, options);
 }
 
 export async function deleteComment(auth: string, postId:string, commentId:string, userId:string) {
