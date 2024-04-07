@@ -37,7 +37,7 @@ export default function Post() {
 			navigate("/");
 		}
 		const auth = authCookie.access;
-		const id = userCookie.id;
+		const user = userCookie;
 		setAuth(auth);
 		setUser(user);
 		console.log("big mac postId", postId, userId);
@@ -121,7 +121,7 @@ export default function Post() {
 						<SinglePost
 						post={item}
 							key={index}
-							parentId={post.id}
+							parentId={post.id.split("/").at(-1)}
 						/>
 					))
 				) : (

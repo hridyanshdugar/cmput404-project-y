@@ -96,7 +96,7 @@ const SinglePost: React.FC<Props> = (props) => {
 	};
 	const onClickPost = (event: any) => {
 		if (!props.parentId) {
-			navigate("/profile/"+props.post.author.id.split("/").at(-1)+"/post/" + props.post.id);
+			navigate("/profile/"+props.post.author.id.split("/").at(-1)+"/post/" + props.post.id.split("/").at(-1));
 		}
 		event.stopPropagation();
 	};
@@ -151,7 +151,7 @@ const SinglePost: React.FC<Props> = (props) => {
 
 		likePost(
 			author,
-			getAPIEndpoint() + "authors/"+author.id.split("/").at(-1)+"/posts/" + props.post.id,
+			getAPIEndpoint() + "authors/"+author.id.split("/").at(-1)+"/posts/" + props.post.id.split("/").at(-1),
 			auth["access"]
 		);
 		setLikes(likes + 1);
@@ -164,7 +164,7 @@ const SinglePost: React.FC<Props> = (props) => {
 		const user = cookies.get("user");
 		const auth = cookies.get("auth");
 		setuser(user);
-        getLikePost(props.post.author.id.split("/").at(-1), props.post.id, auth["access"])
+        getLikePost(props.post.author.id.split("/").at(-1), props.post.id.split("/").at(-1), auth["access"])
         		.then(async (result: any) => {
                     const Data = await result.json();
                     console.log("shared post", Data)
@@ -197,14 +197,14 @@ const SinglePost: React.FC<Props> = (props) => {
 		const auth = cookies.get("auth")["access"];
 		if (selection === "Delete") {
 			if (props.parentId) {
-				deleteComment(auth, props.parentId, props.post.id, props.post.author.id.split("/").at(-1))
+				deleteComment(auth, props.parentId, props.post.id.split("/").at(-1), props.post.author.id.split("/").at(-1))
 					.then(async (result: any) => {
 						const Data = await result.json();
 						console.log(Data);
 
 						if (result.status === 200) {
 							setReplies(
-								replies.filter((post: any) => post.id !== props.post.id)
+								replies.filter((post: any) => post.id.split("/").at(-1) !== props.post.id.split("/").at(-1))
 							);
 							setPosts(
 								posts.map((post: any) => ({ ...post, count: post.count - 1 }))
@@ -215,14 +215,14 @@ const SinglePost: React.FC<Props> = (props) => {
 						console.log(result);
 					});
 			} else {
-				deletePost(auth, props.post.id)
+				deletePost(auth, props.post.id.split("/").at(-1))
 					.then(async (result: any) => {
 						const Data = await result.json();
 						console.log(Data);
 
 						if (result.status === 200) {
 							console.log(posts);
-							setPosts(posts.filter((post: any) => post.id !== props.post.id));
+							setPosts(posts.filter((post: any) => post.id.split("/").at(-1) !== props.post.id.split("/").at(-1)));
 							console.log(posts);
 						}
 					})
@@ -236,7 +236,7 @@ const SinglePost: React.FC<Props> = (props) => {
 			document.body.style.overflow = "hidden";
 		} else if (selection === "Copy Link") {
 			console.log("copy link");
-			navigator.clipboard.writeText(getFrontend() + "/post/" + props.post.id);
+			navigator.clipboard.writeText(getFrontend() + "/post/" + props.post.id.split("/").at(-1));
 		}
 	};
 	const date = new Date(0);
@@ -247,7 +247,7 @@ const SinglePost: React.FC<Props> = (props) => {
 	return (
 		<>
 			{popupOpen && (
-				<EditPopupPanel setPopupOpen={setPopupOpen} postId={props.post.id} />
+				<EditPopupPanel setPopupOpen={setPopupOpen} postId={props.post.id.split("/").at(-1)} />
 			)}
 			<div
 				className={style.overflow}
@@ -307,7 +307,7 @@ const SinglePost: React.FC<Props> = (props) => {
 							) : (
 									<SinglePost
 										post={sharedPost}
-										embedParentId={props.post.id}
+										embedParentId={props.post.id.split("/").at(-1)}
 									/>
 							)}
 						</Card>
@@ -349,7 +349,7 @@ const SinglePost: React.FC<Props> = (props) => {
 								) : (
 									<div
 										className={style.flexItemShare}
-										id={"sharePost" + props.post.id}
+										id={"sharePost" + props.post.id.split("/").at(-1)}
 										onClick={onClickShare}
 									>
 										<FontAwesomeIcon
