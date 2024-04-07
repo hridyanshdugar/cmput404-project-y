@@ -148,7 +148,7 @@ class FollowerView(APIView):
         if res.status_code == 200:
             if data["type"] == "Follow":
                 if not FollowStatus.objects.filter(actor__id=follower_id,obj__id=author_id).exists():
-                    serializer = SaveFollowSerializer(data={"actor":author_id,"obj":follower_id , "complete": False})
+                    serializer = SaveFollowSerializer(data={"actor":follower_id,"obj":author_id , "complete": False})
                     if serializer.is_valid():
                         serializer.save()
                     return Response(status=status.HTTP_200_OK)
