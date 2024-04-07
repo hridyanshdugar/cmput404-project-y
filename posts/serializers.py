@@ -33,14 +33,17 @@ class PostSerializer(serializers.ModelSerializer):
     count = serializers.SerializerMethodField()
 
     def to_internal_value(self, data):
+        print("fat stacks1", data)
         internal_data = super().to_internal_value(data)
         internal_data['id'] = internal_data.get('id', "").split('/')[-1]
         print("fat stacks", internal_data)
         return internal_data
     
     def to_representation(self, instance):
+        print("fat stacks3", data)
         data = super().to_representation(instance)
         data["id"] = data["origin"]
+        print("fat stacks5", data)
         return data
 
     class Meta:
