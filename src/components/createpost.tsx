@@ -116,7 +116,7 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 	};
 
 	const onSubmit = () => {
-		if (content !== "" || /^\s*$/.test(content)) {
+		if (content !== "" || !/^\s*$/.test(content)) {
 			const VisibilityMap: { [key: string]: string } = {
 				Everyone: "PUBLIC",
 				Unlisted: "UNLISTED",
@@ -204,7 +204,7 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 					});
 			}
 		} else {
-			alert("Cannot post empty post");
+			console.log("Empty post");
 		}
 	};
 

@@ -210,6 +210,7 @@ export async function getRemoteUsers(auth: string) {
 }
 
 export async function EditPost(payload: any, auth: string, id:string, user_id:string) {
+  console.log("editing post: ", payload)
   const options: RequestInit = {
     method: 'PATCH',
     headers: {
