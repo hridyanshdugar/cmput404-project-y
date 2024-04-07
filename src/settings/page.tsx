@@ -29,9 +29,11 @@ export default function Settings() {
 	const [PFPbackgroundurl, setPFPbackgroundurl] = useState<string | null>(null);
 
 	useEffect(() => {
-		const auth = cookies.get("auth")["access"];
-		
-		const id = cookies.get("user")["id"];
+		const authCookie = cookies.get("auth");
+		const userCookie = cookies.get("user");
+		if (!)
+		const auth = authCookie.access;
+		const id = userCookie.id;
 		getUserLocalInfo(auth, id)
 			.then(async (result: any) => {
 				const Data = await result.json();
