@@ -175,8 +175,8 @@ const SinglePost: React.FC<Props> = (props) => {
             		});
 		if (props.post.origin !== props.post.source) {
 			//Get shared post information
-			console.log("shared post1", props.post.source.split("/").slice(-1), props.post.source.split("/").slice(-3));
-			getPost(auth["access"], props.post.source.split("/").slice(-1), props.post.source.split("/").slice(-3))
+			console.log("shared post1", props.post.source.split("/").slice(-1)[0], props.post.source.split("/").slice(-3)[0]);
+			getPost(auth["access"], props.post.source.split("/").slice(-1)[0], props.post.source.split("/").slice(-3)[0])
 				.then(async (result: any) => {
 					if (result.status !== 200) {
 						console.log("shared post error", result);
