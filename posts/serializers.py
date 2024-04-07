@@ -56,17 +56,16 @@ class PostSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         print("hi 1")
         validated_data["id"] = uuid.uuid4()
-        if request is not None: 
-            print("hi 12", validated_data)
-            #     "origin":"<http://domain_z>/api/authors/<author_id_z>/posts/<post_id_z>",
-            origin = Node.objects.get(is_self=True).url + "api/authors/" + str(validated_data.author.id) + "/posts/" + str(validated_data["id"])
-            validated_data["origin"] = origin
-            print("hi 13")
-            if "source" not in validated_data:
-                  validated_data["source"] = origin
-            print("hi 14")
-            validated_data["host"] = request.build_absolute_uri('/')
-            print("hi 15")
+        print("hi 12", validated_data)
+        #     "origin":"<http://domain_z>/api/authors/<author_id_z>/posts/<post_id_z>",
+        origin = Node.objects.get(is_self=True).url + "api/authors/" + str(validated_data.author.id) + "/posts/" + str(validated_data["id"])
+        validated_data["origin"] = origin
+        print("hi 13", origin)
+        if "source" not in validated_data:
+                validated_data["source"] = origin
+        print("hi 14")
+        validated_data["host"] = Node.objects.get(is_self=True).url
+        print("hi 15")
         return super().create(validated_data)
      
      def get_type(self, obj):
