@@ -58,7 +58,7 @@ class PostSerializer(serializers.ModelSerializer):
         validated_data["id"] = uuid.uuid4()
         print("hi 12", validated_data)
         #     "origin":"<http://domain_z>/api/authors/<author_id_z>/posts/<post_id_z>",
-        origin = Node.objects.get(is_self=True).url + "api/authors/" + str(validated_data.author.id) + "/posts/" + str(validated_data["id"])
+        origin = Node.objects.get(is_self=True).url + "api/authors/" + str(validated_data["author"].id) + "/posts/" + str(validated_data["id"])
         validated_data["origin"] = origin
         print("hi 13", origin)
         if "source" not in validated_data:
