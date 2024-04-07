@@ -300,7 +300,8 @@ const SinglePost: React.FC<Props> = (props) => {
                             </div>                        
                         </>}
 					</div>
-					{!props.parentId && props.post.origin !== props.post.source ? <>
+                    {!props.parentId && props.post.origin !== props.post.source ? <>
+                        bbb
 						<Card className={style.postEmbed} id="embedPost">
 							{typeof sharedPost.author === "undefined" ? (
 								<div className={style.missingEmbed}>Post Not Found</div>
@@ -311,7 +312,8 @@ const SinglePost: React.FC<Props> = (props) => {
 									/>
 							)}
 						</Card>
-					</> : <>
+                    </> : <>
+                            ccc
 						{props.post.contentType.includes("image") ? (
 							<Card className="bg-dark text-white">
 								<Card.Img src={props.post.content} alt="Card image" />
