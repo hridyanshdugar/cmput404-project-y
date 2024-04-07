@@ -116,7 +116,7 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 	};
 
 	const onSubmit = () => {
-		if (content !== "") {
+		if (content !== "" || /^\s*$/.test(content)) {
 			const VisibilityMap: { [key: string]: string } = {
 				Everyone: "PUBLIC",
 				Unlisted: "UNLISTED",

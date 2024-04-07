@@ -95,18 +95,18 @@ class PostsViewPK(APIView):
      '''
      DELETE /authors/{id}/posts/{id} and /posts/{id}
      '''
-     def delete(self, request, pk):
-        post = get_object_or_404(Post, id=pk)
+     def delete(self, request, author_id, post_id):
+        post = get_object_or_404(Post, id=post_id)
         post.delete()
         return Response({"title": "Successfully Deleted", "message": "Post was deleted"}, status = status.HTTP_200_OK)
      
      '''
      PATCH /authors/{id}/posts/{id} and /posts/{id}
      '''
-     def patch(self, request, pk):
+     def patch(self, request, author_id, post_id):
         JWT_authenticator = JWTAuthentication()
         response = JWT_authenticator.authenticate(request)
-        post = get_object_or_404(Post, id=pk)
+        post = get_object_or_404(Post, id=post_id)
         serializer = PostEditSerializer(post, partial=True,data = request.data)
         
         if response and serializer.is_valid():
