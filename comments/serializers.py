@@ -17,6 +17,7 @@ class CommentSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         data = super().to_representation(instance)
         # http://127.0.0.1:5454/authors/<author_id>/posts/de305d54-75b4-431b-adb2-eb6b9e546013/comments/f6255bb01c648fe967714d52a89e8e9c",
+        print("gifdgujrsfdg'fd ", data)
         data["id"] = Node.objects.get(is_self=True).url + "api/authors/" + str(data["author"].id) + "/posts/" + str(data["post"]) + "/comments/" + str(data["id"])
         return data
 
