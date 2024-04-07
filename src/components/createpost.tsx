@@ -203,6 +203,8 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 						console.log(Data);
 					});
 			}
+		} else {
+			alert("Cannot post empty post");
 		}
 	};
 
