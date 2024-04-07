@@ -115,7 +115,7 @@ export default function Home() {
 				/>
 				{selectedSection === "following" ? (
 					(
-						posts.sort((a: { published: number; }, b: { published: number; }) => b.published - a.published).map((item: any, index: any) => (
+						posts.sort((a: { published: string; }, b: { published: string; }) => a.published.localeCompare(b.published)).map((item: any, index: any) => (
 							<SinglePost
 								post={item}
                                 key={index}
