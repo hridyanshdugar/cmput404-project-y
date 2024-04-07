@@ -286,17 +286,19 @@ const SinglePost: React.FC<Props> = (props) => {
                                 <Badge bg="primary">{props.post.host.split(".")[0].split("/").slice(-1)}</Badge>
                             </div>
 						</div>
-						<div className={style.separator} />
-						<div>
-							<Dropdown
-								icon={faEllipsis}
-								options={(props.post.author.id === user?.id
-									? ["Delete", "Edit"]
-									: []
-								).concat(["Copy Link"])}
-								onChange={onPostOptionSelect}
-							/>
-						</div>
+                        <div className={style.separator} />
+                        {props.embedParentId ? <></> : <>
+                            <div>
+                                <Dropdown
+                                    icon={faEllipsis}
+                                    options={(props.post.author.id === user?.id
+                                        ? ["Delete", "Edit"]
+                                        : []
+                                    ).concat(["Copy Link"])}
+                                    onChange={onPostOptionSelect}
+                                />
+                            </div>                        
+                        </>}
 					</div>
 					{props.post.origin !== props.post.source ? <>
 						<Card className={style.postEmbed} id="embedPost">
@@ -331,8 +333,9 @@ const SinglePost: React.FC<Props> = (props) => {
 							<></>
 						)}					
 					
-					</>}
-					<div className={style.flexContainer}>
+                    </>}
+                    {props.embedParentId ? <></> : <>
+                    <div className={style.flexContainer}>
 						{props.parentId ? (
 							<></>
 						) : (
@@ -371,7 +374,8 @@ const SinglePost: React.FC<Props> = (props) => {
 							<FontAwesomeIcon icon={faArrowUpFromBracket} fixedWidth />
 						</div>
 					</div>
-				</div>
+                </>}
+                </div> 
 			</div>
 		</>
 	);

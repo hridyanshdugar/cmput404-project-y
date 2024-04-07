@@ -165,18 +165,21 @@ class FollowerView(APIView):
         print("boblb", data)
         res = requests.request(method="POST", url=request.data["actor"]["host"] + "api/authors/" + str(follower_id) + "/inbox/",data=request.body)
         if res.status_code == 200:
+            print("sent to actor inbox")
             req = get_object_or_404(FollowStatus,actor__id=follower_id,obj__id=author_id)
             hi_user = User.objects.get(id=author_id)
-            inbox = Inbox.objects.get_or_create(author=data["object"])[0]
+            inbox = Inbox.objects.get_or_create(author=hi_user)[0]
             inbox.followRequest.remove(req)
             inbox.save()            
             if data["accepted"]:
+                print("accepted")
                 serializer = FollowSerializer(req,data={"complete":True},partial=True)
                 if serializer.is_valid():
                     serializer.save()
                     return Response(status=status.HTTP_200_OK)
                 return Response(status=status.HTTP_400_BAD_REQUEST)
             else:
+                print("declined")
                 req.delete()
                 return Response(status=status.HTTP_200_OK)
         return Response(status=status.HTTP_400_BAD_REQUEST)
