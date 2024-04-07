@@ -57,17 +57,23 @@ class InboxView(APIView):
      '''
      def post(self, request, pk):
         def get_foreign_user(data):
+            print("beacon 1")
             response_data = copy.deepcopy(data)
             response_data['id'] = response_data['id'].split("/")[-1]
             # try:
             #     obj_user = User.objects.get(id=response_data["id"].split("/")[-1])
             # except:
+            print("beacon 2")
+
             hasPfp = False
             hasPfpBack = False
             if "profileImage" in response_data:
                 hasPfp = response_data.pop("profileImage")
             if "profileBackgroundImage" in response_data:
                 hasPfpBack = response_data.pop("profileBackgroundImage")
+
+            print("beacon 3")
+
             print(response_data)
             user = None
             serializer = None
@@ -75,9 +81,12 @@ class InboxView(APIView):
                 user = User.objects.get(id=pk)
                 serializer = RemoteUserSerializer(user,data=response_data,partial=True)
             except Exception as e:
-                print(e)  
+                print("bigger", e)  
 
                 serializer = RemoteUserSerializer(data=response_data)
+            print("beacon 4")
+
+
             if serializer.is_valid():
                 user = serializer.save()
                 if hasPfp:
@@ -88,6 +97,9 @@ class InboxView(APIView):
                     response_data['profileBackgroundImage'] = hasPfpBack
             else:
                 print(f"Invalid data from : {serializer.errors}")
+
+            print("beacon 5")
+            
 
         print("cuudddt 1")
         hi_user = User.objects.get(id=pk)
