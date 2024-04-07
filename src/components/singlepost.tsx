@@ -345,7 +345,12 @@ const SinglePost: React.FC<Props> = (props) => {
 									{props.post.count}
 								</div>
 								{props.post.origin !== props.post.source ? (
-									<></>
+									<div
+                                    className={style.flexItemShare}
+                                    id={"sharePost" + props.post.id.split("/").at(-1)}
+                                    onClick={onClickShare}
+                                >
+                                </div>
 								) : (
 									<div
 										className={style.flexItemShare}
