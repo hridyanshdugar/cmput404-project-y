@@ -1,3 +1,4 @@
+import copy
 import uuid
 from django.http import JsonResponse
 from django.shortcuts import render
@@ -62,7 +63,7 @@ class AllUsersViewPK(APIView):
                     if response.status_code == 200:
                         try:
                             response_data = response.json()
-                            response_data2 = response.json()
+                            response_data2 = copy.deepcopy(response.json())
                             print(response_data, node.url)
                             
                             if node.url == response_data["host"]:
