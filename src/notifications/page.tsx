@@ -30,7 +30,7 @@ export default function Notifications() {
         console.log("Inbox");
         console.log(Data);
         setRequests(Data["followRequest"]);
-        console.log("requests", requests)
+        console.log("requests (male chicken)", requests)
       } else {
         throw new Error("Error fetching inbox");
       }
