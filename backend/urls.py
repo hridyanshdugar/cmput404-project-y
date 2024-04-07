@@ -24,7 +24,7 @@ from django.conf.urls.static import static
 from drf_spectacular.views import SpectacularAPIView
 from likes.views import PostLikesViewPK, PostLikesView, PostLikesViewPK2
 from inbox.views import InboxView
-from users.views import UsersViewPK
+from users.views import AllUsersView, AllUsersViewPK, UsersView, UsersViewPK
 from followers.views import FollowerView, getFollowers
 from posts.views import AllPostsView, AllPostsView2, PostsView, PostsViewPK
 
@@ -36,6 +36,10 @@ urlpatterns = [
     path('api/', include([
         path('admin', admin.site.urls),
         path('schema', SpectacularAPIView.as_view(), name='schema'),
+        path('authors', UsersView.as_view()),
+        path('authors/all', AllUsersView.as_view()),
+        path('authors/all/<uuid:pk>',  AllUsersViewPK.as_view()),
+        path('authors/<uuid:pk>',  UsersViewPK.as_view()),
         path('authors/all/<str:author_id>/posts', AllPostsView.as_view()),
         path('authors/all/<str:author_id>/posts2', AllPostsView2.as_view()),
         path('authors/<str:author_id>/posts/<uuid:fk>/comments', include('comments.urls')),

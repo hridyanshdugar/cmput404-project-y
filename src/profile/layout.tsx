@@ -96,14 +96,14 @@ export default function ProfileLayout() {
 			}
 		}, []);
 		
-		if (!userInformation) {
-			return (
-				<div style={{ backgroundColor: "#000" }}>
-					<SideBar />
-					<Rightbar />
-				</div>
-			);
-		}
+		// if (!userInformation) {
+		// 	return (
+		// 		<div style={{ backgroundColor: "#000" }}>
+		// 			<SideBar />
+		// 			<Rightbar />
+		// 		</div>
+		// 	);
+		// }
 		
 		//Query username
 		//If username not in database, return 404 / user not found page
@@ -111,7 +111,7 @@ export default function ProfileLayout() {
 		<PostContextProvider>
 			<div style={{ backgroundColor: "#000" }}>
 				<SideBar />
-				<Profile
+				{ userInformation && <Profile
 					userid={userId!}
 					name={userInformation?.displayName}
 					username={userInformation?.displayName}
@@ -131,7 +131,7 @@ export default function ProfileLayout() {
 					postCount={postCount}
 					host={userInformation?.host || ""}
 					github={userInformation?.github || ""}
-				/>
+				/>}
 				<Outlet context={{ userId: userId }} />
 				<Rightbar />
 			</div>

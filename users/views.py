@@ -17,6 +17,7 @@ from rest_framework.pagination import PageNumberPagination
 from nodes.models import Node
 from nodes.views import is_basicAuth, basicAuth
 from requests.auth import HTTPBasicAuth
+from backend.permissions import RemoteOrSessionAuthenticated
 
 class Pager(PageNumberPagination):
     page_size = 10
@@ -144,16 +145,15 @@ class UsersViewPK(APIView):
         user.delete()
         return Response({"title": "Successfully Deleted", "message": "User was deleted"}, status = status.HTTP_200_OK)
 
-class UsersView(APIView):
-     
-     def perform_authentication(self, request):
-        if is_basicAuth(request):
-            if not basicAuth(request):
-                return Response(status=status.HTTP_401_UNAUTHORIZED)
-        if 'HTTP_AUTHORIZATION' in request.META:
-            request.META.pop('HTTP_AUTHORIZATION')
+class UsersView(APIView):     
+    #  def perform_authentication(self, request):
+    #     if is_basicAuth(request):
+    #         if not basicAuth(request):
+    #             return Response(status=status.HTTP_401_UNAUTHORIZED)
+    #     if 'HTTP_AUTHORIZATION' in request.META:
+    #         request.META.pop('HTTP_AUTHORIZATION')
+     permission_classes = [ RemoteOrSessionAuthenticated ]
 
-    
      pagination = Pager()
      '''
      GET /users
