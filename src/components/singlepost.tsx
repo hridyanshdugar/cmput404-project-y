@@ -183,7 +183,7 @@ const SinglePost: React.FC<Props> = (props) => {
         }
 
         if (props.post.author.host.split(".")[0].split("/").slice(-1) !== getAPIEndpoint().split(".")[0].split("/").slice(-1)) {
-            getPost(auth, props.post.id.split("/").at(-1), props.post.author.id.split("/").at(-1))
+            getPost(auth["access"], props.post.id.split("/").at(-1), props.post.author.id.split("/").at(-1))
             .then(async (result: any) => {
                 console.log("error burgerddd2");
                 if (result.status === 200) {
