@@ -185,6 +185,8 @@ class AllUsersView(APIView):
                     try:
                         response_data = response.json()
                         print(response_data)
+                        if "items" in response_data:
+                            response_data = response_data["items"]
                         node_responses.extend(response_data)
                     except JSONDecodeError:
                         print(f"Invalid JSON response from {node.url}: {response.text}")
