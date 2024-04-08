@@ -219,18 +219,18 @@ class PostsView(APIView):
                 print("dsfhsdif", serializer.data)
                 if request.data.get("visibility") == "PUBLIC":
                     for i in FollowStatus.objects.filter(obj__id=author_id, complete=True):
-                        print("Sending to: ", str(i.actor.host) + "api/authors/" + str(i.actor.id) + "/inbox/")
+                        print("Sending to: ", str(i.actor.host) + "api/authors/" + str(i.actor.id.split("/")[-1]) + "/inbox/")
                         # make request post json data to the inbox of the follower
                         auth = Node.objects.get(url = i.actor.host)
-                        requests.post(str(i.actor.host) + "api/authors/" + str(i.actor.id) + "/inbox", data = json.dumps(serializer.data), headers={'Content-Type': 'application/json'}, auth=HTTPBasicAuth(auth.username, auth.password))
+                        requests.post(str(i.actor.host) + "api/authors/" + str(i.actor.id.split("/")[-1]) + "/inbox", data = json.dumps(serializer.data), headers={'Content-Type': 'application/json'}, auth=HTTPBasicAuth(auth.username, auth.password))
 
                 if request.data.get("visibility") == "FRIENDS":
                     for follower in FollowSerializer(FollowStatus.objects.filter(obj__id=author_id, complete=True), many=True).data:
                         for follow in FollowSerializer(FollowStatus.objects.filter(actor__id=author_id, complete=True), many=True).data:
                             if follower["actor"]["id"] == follow["object"]["id"]:
-                                print("Sending to2: ", follower["object"]["host"] + "api/authors/" + str(follower["object"]["id"]) + "/inbox")
+                                print("Sending to2: ", follower["object"]["host"] + "api/authors/" + str(follower["object"]["id"].split("/")[-1]) + "/inbox")
                                 auth = Node.objects.get(url = follower["object"]["host"])
-                                requests.post(follower["object"]["host"] + "api/authors/" + str(follower["object"]["id"]) + "/inbox", data = json.dumps(serializer.data), headers={'Content-Type': 'application/json'}, auth=HTTPBasicAuth(auth.username, auth.password))    
+                                requests.post(follower["object"]["host"] + "api/authors/" + str(follower["object"]["id"].split("/")[-1]) + "/inbox", data = json.dumps(serializer.data), headers={'Content-Type': 'application/json'}, auth=HTTPBasicAuth(auth.username, auth.password))    
                 return Response(serializer.data, status = status.HTTP_200_OK)
         else:
             return Response({"title": "Invalid Fields", "message": serializer.errors}, status = status.HTTP_400_BAD_REQUEST)
