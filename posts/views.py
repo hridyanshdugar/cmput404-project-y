@@ -186,7 +186,9 @@ class PostsView(APIView):
         posts = Post.objects.filter(visibility="PUBLIC", author__id=author_id)
         if User.objects.filter(id=author_id,host=Node.objects.get(is_self=True).url).exists():
             serializer = PostSerializer(posts, many=True, context={'request': request})
-            data = serializer.data
+            data = dict()
+            data["items"] = serializer.data
+            data["type"] = "posts"
             return Response(data, status = status.HTTP_200_OK)
         else:
             return Response("BAD", status = status.HTTP_400_BAD_REQUEST)

@@ -44,7 +44,7 @@ export default function Profiles() {
 			.then(async (result: any) => {
 				const Data = await result.json();
 				console.log(Data);
-				setPosts(Data);
+				setPosts(Data["items"]);
 			})
 			.catch(async (result: any) => {
 				console.log(result);
