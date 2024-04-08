@@ -7,9 +7,9 @@ export const fetch2 = async (input: RequestInfo | URL, init?: RequestInit): Prom
     }, init || {});
 
     const headers = new Headers(data.headers);
-    const csrfToken = document.cookie.split("; ").find(cookie => cookie.startsWith("csrftoken"))!.split("=").slice(1).join("=");
-    if (csrfToken !== null) {
-        headers.set("X-CSRFToken", csrfToken);
+    const csrfToken = document.cookie.split("; ").find(cookie => cookie.startsWith("csrftoken"));
+    if (csrfToken) {
+        headers.set("X-CSRFToken", csrfToken.split("=").slice(1).join("="));
     }
 
     data.headers = headers;
