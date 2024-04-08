@@ -2,7 +2,6 @@ import copy
 import uuid
 from django.http import JsonResponse
 from django.shortcuts import render
-from rest_framework.permissions import IsAuthenticated
 
 from rest_framework.response import Response
 from rest_framework import status
@@ -18,7 +17,7 @@ from rest_framework.pagination import PageNumberPagination
 from nodes.models import Node
 from nodes.views import is_basicAuth, basicAuth
 from requests.auth import HTTPBasicAuth
-from backend.permissions import RemoteOrSessionAuthenticated
+from backend.permissions import RemoteOrSessionAuthenticated, SessionAuthenticated
 
 class Pager(PageNumberPagination):
     page_size = 10
@@ -39,7 +38,7 @@ def download_profileBack(instance, url):
     return False
 
 class AllUsersViewPK(APIView):
-    permission_classes = [ IsAuthenticated ]
+    permission_classes = [ SessionAuthenticated ]
     def get(self, request,pk):
         user_auth = get_object_or_404(Node,is_self=True).username
         pass_auth = get_object_or_404(Node,is_self=True).password

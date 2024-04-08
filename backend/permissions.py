@@ -1,4 +1,5 @@
 from rest_framework.permissions import BasePermission, IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 class RemoteNodeAuthenticated(BasePermission):
   """
@@ -16,5 +17,12 @@ class RemoteOrSessionAuthenticated(RemoteNodeAuthenticated):
   """
 
   def has_permission(self, request, view):
-    session_authenticated = IsAuthenticated().has_permission(request, view)
+    session_authenticated = SessionAuthenticated().has_permission(request, view)
     return super().has_permission(request, view) or session_authenticated
+
+class SessionAuthenticated(BasePermission):
+  def has_permission(self, request, view):
+    JWT_authenticator = JWTAuthentication()
+    response = JWT_authenticator.authenticate(request)
+    print(f"JWT detected? {str(response != None)}")
+    return super().has_permission(request, view) and response != None
