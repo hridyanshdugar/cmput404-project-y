@@ -187,11 +187,11 @@ class AllUsersView(APIView):
                 
                 if response.status_code == 200:
                     try:
-                        response_data = response.json()
+                        response_data = json.loads(response.json())
                         print(response_data)
                         if "items" in response_data:
                             response_data = response_data["items"]
-                        node_responses.extend(json.loads(response_data))
+                        node_responses.extend(response_data)
                     except JSONDecodeError:
                         print(f"Invalid JSON response from {node.url}: {response.text}")
                 else:
