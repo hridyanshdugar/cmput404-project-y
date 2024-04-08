@@ -1,6 +1,7 @@
 from django.shortcuts import render
 import requests
 
+from backend.permissions import RemoteOrSessionAuthenticated, SessionAuthenticated
 from nodes.models import Node
 from .serializers import PostLikeSerializer, EditPostLikeSerializer
 from rest_framework.response import Response
@@ -15,12 +16,7 @@ from nodes.views import is_basicAuth, basicAuth
 import copy
 
 class PostLikesViewPK2(APIView):
-     def perform_authentication(self, request):
-        if is_basicAuth(request):
-            if not basicAuth(request):
-                return Response(status=status.HTTP_401_UNAUTHORIZED)
-        if 'HTTP_AUTHORIZATION' in request.META:
-            request.META.pop('HTTP_AUTHORIZATION')
+     permission_classes = [ SessionAuthenticated ]
      
      def get(self, request, author_id, post_id):
         user = get_object_or_404(User, id=author_id)
@@ -47,12 +43,7 @@ class PostLikesViewPK2(APIView):
                 print(f"Request to {user.host} failed: {e}")     
 
 class PostLikesViewPK(APIView):
-     def perform_authentication(self, request):
-        if is_basicAuth(request):
-            if not basicAuth(request):
-                return Response(status=status.HTTP_401_UNAUTHORIZED)
-        if 'HTTP_AUTHORIZATION' in request.META:
-            request.META.pop('HTTP_AUTHORIZATION')
+     permission_classes = [ RemoteOrSessionAuthenticated ]
      
      def get(self, request, author_id, post_id):
         print("hihihi 1", author_id, post_id)
@@ -81,12 +72,7 @@ class PostLikesViewPK(APIView):
         return Response({"Title": "Successfully Deleted","Message": "Successfully Deleted"}, status = status.HTTP_200_OK)
 
 class PostLikesView(APIView):
-     def perform_authentication(self, request):
-        if is_basicAuth(request):
-            if not basicAuth(request):
-                return Response(status=status.HTTP_401_UNAUTHORIZED)
-        if 'HTTP_AUTHORIZATION' in request.META:
-            request.META.pop('HTTP_AUTHORIZATION')
+     permission_classes = [ RemoteOrSessionAuthenticated ]
      
      def get(self, request, author_id):
         Likes = PostLike.objects.filter(author__id=author_id)

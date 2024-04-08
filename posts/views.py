@@ -3,6 +3,8 @@ import requests
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
+
+from backend.permissions import RemoteOrSessionAuthenticated, SessionAuthenticated
 from .models import Post
 from nodes.models import Node
 from rest_framework.pagination import PageNumberPagination
@@ -25,12 +27,7 @@ class Pager(PageNumberPagination):
     page_size_query_param = 'size'
 
 class PostsViewPK(APIView):
-     def perform_authentication(self, request):
-        if is_basicAuth(request):
-            if not basicAuth(request):
-                return Response(status=status.HTTP_401_UNAUTHORIZED)
-        if 'HTTP_AUTHORIZATION' in request.META:
-            request.META.pop('HTTP_AUTHORIZATION')
+     permission_classes = [ RemoteOrSessionAuthenticated ]
 
      '''
      GET /authors/{id}/posts/{id}
@@ -112,12 +109,7 @@ class PostsViewPK(APIView):
         return Response({"title": "Bad Request", "message": "Invalid Request Sent"}, status = status.HTTP_400_BAD_REQUEST)
 
 class AllPostsView2(APIView):
-     def perform_authentication(self, request):
-        if is_basicAuth(request):
-            if not basicAuth(request):
-                return Response(status=status.HTTP_401_UNAUTHORIZED)
-        if 'HTTP_AUTHORIZATION' in request.META:
-            request.META.pop('HTTP_AUTHORIZATION')
+     permission_classes = [ SessionAuthenticated ]
 
      pagination = Pager()
      '''
@@ -148,12 +140,7 @@ class AllPostsView2(APIView):
 
 
 class AllPostsView(APIView):
-     def perform_authentication(self, request):
-        if is_basicAuth(request):
-            if not basicAuth(request):
-                return Response(status=status.HTTP_401_UNAUTHORIZED)
-        if 'HTTP_AUTHORIZATION' in request.META:
-            request.META.pop('HTTP_AUTHORIZATION')
+     permission_classes = [ RemoteOrSessionAuthenticated ]
 
      pagination = Pager()
      '''
@@ -194,12 +181,7 @@ class AllPostsView(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
 class PostsView(APIView):
-     def perform_authentication(self, request):
-        if is_basicAuth(request):
-            if not basicAuth(request):
-                return Response(status=status.HTTP_401_UNAUTHORIZED)
-        if 'HTTP_AUTHORIZATION' in request.META:
-            request.META.pop('HTTP_AUTHORIZATION')
+     permission_classes = [ RemoteOrSessionAuthenticated ]
     
      pagination = Pager()
      '''

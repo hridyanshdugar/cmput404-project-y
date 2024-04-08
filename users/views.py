@@ -100,12 +100,7 @@ class AllUsersViewPK(APIView):
 
 class UsersViewPK(APIView):
 
-    def perform_authentication(self, request):
-        if is_basicAuth(request):
-            if not basicAuth(request):
-                return Response(status=status.HTTP_401_UNAUTHORIZED)
-        if 'HTTP_AUTHORIZATION' in request.META:
-            request.META.pop('HTTP_AUTHORIZATION')
+    permission_classes = [ RemoteOrSessionAuthenticated ]
 
 
     '''

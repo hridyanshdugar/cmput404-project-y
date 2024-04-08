@@ -2,6 +2,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 
+from backend.permissions import RemoteOrSessionAuthenticated, SessionAuthenticated
 from nodes.models import Node
 from .models import Comment
 from rest_framework.pagination import PageNumberPagination
@@ -23,12 +24,7 @@ class Pager(PageNumberPagination):
     page_size_query_param = 'size'
 
 class CommentsViewPK(APIView):
-     def perform_authentication(self, request):
-        if is_basicAuth(request):
-            if not basicAuth(request):
-                return Response(status=status.HTTP_401_UNAUTHORIZED)
-        if 'HTTP_AUTHORIZATION' in request.META:
-            request.META.pop('HTTP_AUTHORIZATION')
+     permission_classes = [ RemoteOrSessionAuthenticated ]
 
      '''
      GET /authors/{id}/posts/{id}/comments/{id}
@@ -97,12 +93,7 @@ class CommentsViewPK(APIView):
         return Response({"title": "Unauthorized", "message": "You are not authorized to delete this comment"}, status = status.HTTP_401_UNAUTHORIZED)
 
 class CommentsView2(APIView):
-     def perform_authentication(self, request):
-        if is_basicAuth(request):
-            if not basicAuth(request):
-                return Response(status=status.HTTP_401_UNAUTHORIZED)
-        if 'HTTP_AUTHORIZATION' in request.META:
-            request.META.pop('HTTP_AUTHORIZATION')
+     permission_classes = [ SessionAuthenticated ]
     
      pagination = Pager()
      '''
@@ -148,12 +139,7 @@ class CommentsView2(APIView):
                 print(f"Request to {user.host} failed: {e}")     
 
 class CommentsView(APIView):
-     def perform_authentication(self, request):
-        if is_basicAuth(request):
-            if not basicAuth(request):
-                return Response(status=status.HTTP_401_UNAUTHORIZED)
-        if 'HTTP_AUTHORIZATION' in request.META:
-            request.META.pop('HTTP_AUTHORIZATION')
+     permission_classes = [ RemoteOrSessionAuthenticated ]
     
      pagination = Pager()
      '''

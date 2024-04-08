@@ -5,6 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
 from django.db.models import Q
+from backend.permissions import RemoteOrSessionAuthenticated
 from users.models import User
 from rest_framework.views import APIView
 from urllib.parse import unquote
@@ -100,12 +101,7 @@ def getFriends(request, author_id):
     return JsonResponse(friends, safe=False)
 
 class FollowerView(APIView):
-    def perform_authentication(self, request):
-        if is_basicAuth(request):
-            if not basicAuth(request):
-                return Response(status=status.HTTP_401_UNAUTHORIZED)
-        if 'HTTP_AUTHORIZATION' in request.META:
-            request.META.pop('HTTP_AUTHORIZATION')
+    permission_classes = [ RemoteOrSessionAuthenticated ]
 
     def get(self, request, author_id, follower_id):
         """

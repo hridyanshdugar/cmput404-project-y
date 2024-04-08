@@ -1,6 +1,8 @@
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
+
+from backend.permissions import RemoteOrSessionAuthenticated
 from .models import Inbox, Post
 from comments.models import Comment
 from rest_framework.pagination import PageNumberPagination
@@ -32,12 +34,7 @@ class Pager(PageNumberPagination):
 
 # Create your views here.
 class InboxView(APIView):
-     def perform_authentication(self, request):
-        if is_basicAuth(request):
-            if not basicAuth(request):
-                return Response(status=status.HTTP_401_UNAUTHORIZED)
-        if 'HTTP_AUTHORIZATION' in request.META:
-            request.META.pop('HTTP_AUTHORIZATION')
+     permission_classes = [ RemoteOrSessionAuthenticated ]
 
      pagination = Pager()
 
