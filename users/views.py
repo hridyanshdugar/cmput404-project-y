@@ -62,13 +62,14 @@ class AllUsersViewPK(APIView):
                             response_data2 = copy.deepcopy(response.json())
                             print("bob22323232 ", response_data, node.url )
                             
+                            response_data["host"] = response_data["host"] if (response_data["host"][-1] == "/") else response_data["host"] + "/"
                             if node.url == response_data["host"]:
                                 print("bob22323232 1")
                                 get_foreign_user(response_data)
                                 print("bob22323232 2")
                                 return JsonResponse(response_data2)
-                        except JSONDecodeError:
-                            print(f"I44nvalid JSON response from {node.url}: {response.text}")
+                        except Exception as e:
+                            print(f"I44nvalid JSON response from {node.url}: {response.text} failed: {e}")
                     else:
                         print(f"R33equest to {node.url} failed with status code: {response.status_code}")
                 except Exception as e:
