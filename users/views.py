@@ -1,4 +1,5 @@
 import copy
+import json
 import uuid
 from django.http import JsonResponse
 from django.shortcuts import render
@@ -150,10 +151,13 @@ class UsersView(APIView):
         except:
             page = None
         serializer = AuthorSerializer(page,many=True,context={'request': request})
+        data = dict()
+        data["items"] = serializer.data
+        data["type"] = "authors"
         if page is not None:
-            return Response(serializer.data, status = status.HTTP_200_OK)
+            return Response(data, status = status.HTTP_200_OK)
         else:
-            return Response(serializer.data, status = status.HTTP_400_BAD_REQUEST)
+            return Response(data, status = status.HTTP_400_BAD_REQUEST)
 
      '''
      POST /authors
@@ -174,7 +178,7 @@ class AllUsersView(APIView):
 
         users = User.objects.filter(approved=True)
         serializer = AuthorSerializer(users,many=True,context={'request': request})
-        node_responses = serializer.data
+        node_responses = json.dumps(serializer.data)
 
         for node in nodes:
             print(node.url + "api/authors/ ffjjff")
