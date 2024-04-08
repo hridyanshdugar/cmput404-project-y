@@ -146,7 +146,7 @@ export async function createSharedPost(title:string, description:string, content
       "content": content,
       "author": id,
       "visibility": visibility,
-      "source": source
+      "origin": source
     })
   };
   return await fetch2(getAPIEndpoint() + `/authors/${id}/posts`, options);

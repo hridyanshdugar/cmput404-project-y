@@ -147,11 +147,11 @@ class InboxView(APIView):
         if data["type"] == "FollowResponse":
             get_foreign_user(data["actor"])
             if data["accepted"]:
-                req = get_object_or_404(FollowStatus,actor=data["actor"]["id"].split("/")[-1],obj=data["object"]["id"].split("/")[-1])
+                req = get_object_or_404(FollowStatus,obj=data["actor"]["id"].split("/")[-1],actor=data["object"]["id"].split("/")[-1])
                 req.complete = True
                 req.save()
             else:
-                req = get_object_or_404(FollowStatus,actor=data["actor"]["id"].split("/")[-1],obj=data["object"]["id"].split("/")[-1])
+                req = get_object_or_404(FollowStatus,obj=data["actor"]["id"].split("/")[-1],actor=data["object"]["id"].split("/")[-1])
                 req.delete()
 
 

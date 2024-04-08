@@ -166,8 +166,8 @@ const SinglePost: React.FC<Props> = (props) => {
         setuser(user);
         if (props.post.origin !== props.post.source && !props.embedParentId) {
 			//Get shared post information
-			console.log("shared post1", props.post.source.split("/").slice(-1)[0], props.post.source.split("/").slice(-3)[0]);
-			getPost(auth["access"], props.post.source.split("/").slice(-1)[0], props.post.source.split("/").slice(-3)[0])
+			console.log("shared post1", props.post.origin.split("/").slice(-1)[0], props.post.origin.split("/").slice(-3)[0]);
+			getPost(auth["access"], props.post.origin.split("/").slice(-1)[0], props.post.origin.split("/").slice(-3)[0])
 				.then(async (result: any) => {
 					if (result.status !== 200) {
 						console.log("shared post error", result);
