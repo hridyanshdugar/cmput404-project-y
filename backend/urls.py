@@ -27,14 +27,28 @@ from inbox.views import InboxView
 from users.views import AllUsersView, AllUsersViewPK, UsersView, UsersViewPK
 from followers.views import FollowerView, getFollowers
 from posts.views import AllPostsView, AllPostsView2, PostsView, PostsViewPK
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
+from rest_framework import permissions
 
 heroku_react_django_urls = [
     re_path('.*', TemplateView.as_view(template_name='index.html', content_type='text/html'))
 ]
 
+schema_view = get_schema_view(
+    openapi.Info(
+        title="Y API Docs",
+        default_version='v1',
+        description="Swagger style api",
+    ),
+    public=True,
+    permission_classes=(permissions.AllowAny,),
+)
+
 urlpatterns = [
     path('api/', include([
         path('admin', admin.site.urls),
+        path('swagger', schema_view.with_ui('swagger', cache_timeout=0), name="swagger"),
         path('schema', SpectacularAPIView.as_view(), name='schema'),
         path('authors', UsersView.as_view()),
         path('authors/', UsersView.as_view()),

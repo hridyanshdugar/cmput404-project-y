@@ -136,6 +136,9 @@ class FollowerView(APIView):
             return HttpResponseBadRequest("Something went wrong!") 
 
     def post(self, request, author_id, follower_id):
+        """
+        Add or remove FOREIGN_AUTHOR_ID as a follower of AUTHOR_ID
+        """
         data = request.data
         print("cac", data)
         auth = Node.objects.get(url = data["object"]["host"])
@@ -157,6 +160,9 @@ class FollowerView(APIView):
     
     # this put is for the notifications page for when you click accept it should go here
     def put(self, request, author_id, follower_id):
+        """
+        Accept or decline a follow request from FOREIGN_AUTHOR_ID to AUTHOR_ID
+        """
         data = request.data
         print("boblb", data)
         auth = Node.objects.get(url = data["actor"]["host"])

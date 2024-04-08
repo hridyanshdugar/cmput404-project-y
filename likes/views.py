@@ -20,6 +20,9 @@ class PostLikesViewPK2(APIView):
      permission_classes = [ SessionAuthenticated ]
      
      def get(self, request, author_id, post_id):
+        """
+        Get the likes on a specific post by a specific user
+        """
         user = get_object_or_404(User, id=author_id)
         if user.host == Node.objects.get(is_self=True).url:
             print("hihihi 1", author_id, post_id)
@@ -48,6 +51,9 @@ class PostLikesViewPK(APIView):
      permission_classes = [ RemoteOrSessionAuthenticated ]
      
      def get(self, request, author_id, post_id):
+        """
+        Get the likes on a specific post by a specific user
+        """
         print("hihihi 1", author_id, post_id)
         Likes = PostLike.objects.filter(author__id=author_id,post__id=post_id)
         print("hihihi 2")
@@ -59,6 +65,9 @@ class PostLikesViewPK(APIView):
      PUT /authors/{id}/posts/ and /posts/
      '''
      def put(self, request, author_id, post_id):
+        """
+        Send a like to the inbox of a specific user
+        """
         body = copy.deepcopy(request.body)
         auth = Node.objects.get(url = request.data["author"]["host"])
         res = requests.post(str(request.data["author"]["host"]) + "api/authors/" + author_id + "/inbox", data = body, auth=HTTPBasicAuth(auth.username, auth.password))
@@ -70,6 +79,9 @@ class PostLikesViewPK(APIView):
      DELETE /authors/{id}/posts/ and /posts/
      '''
      def delete(self, request, author_id, post_id):
+        """
+        Unlike a specific post by a specific user
+        """
         Like = get_object_or_404(PostLike,author__id=author_id,post__id=post_id)
         Like.delete()
         return Response({"Title": "Successfully Deleted","Message": "Successfully Deleted"}, status = status.HTTP_200_OK)
@@ -78,6 +90,9 @@ class PostLikesView(APIView):
      permission_classes = [ RemoteOrSessionAuthenticated ]
      
      def get(self, request, author_id):
+        """
+        Get all the likes on a post 
+        """
         Likes = PostLike.objects.filter(author__id=author_id)
         serializer = PostLikeSerializer(Likes, many=True)
         return Response(serializer.data, status = status.HTTP_200_OK)

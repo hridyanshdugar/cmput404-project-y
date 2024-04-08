@@ -14,6 +14,9 @@ from base64 import b64decode
 @api_view(['GET'])
 @authentication_classes([IsAuthenticated])
 def getNodeDetails(request):
+    """
+    Get node details
+    """
     pk = request.query_params.get('pk', None)
     if not pk:
         return Response({"error": "Missing 'pk' query parameter"}, status=status.HTTP_400_BAD_REQUEST)
@@ -24,6 +27,9 @@ def getNodeDetails(request):
 @api_view(['GET'])
 @authentication_classes([IsAuthenticated])
 def getAllNodeDetails(request):
+    """
+    Get all the node details
+    """
     nodes = Node.objects.all()
     serializer = NodeSerializer(nodes)
     

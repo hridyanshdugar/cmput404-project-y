@@ -16,6 +16,9 @@ from django.contrib.auth.hashers import check_password
 @authentication_classes([])
 @permission_classes((AllowAny,))
 def login(request):
+    """
+    This is the login endpoint
+    """
     # print(request.data)
     if 'password' not in request.data or 'displayName' not in request.data:
         return Response(status=status.HTTP_400_BAD_REQUEST,data={'title': 'Missing Fields','message': 'A password and displayName is required for logging in'})
@@ -51,6 +54,9 @@ def login(request):
 @authentication_classes([])
 @permission_classes((AllowAny,))
 def signup(request):
+    """
+    This is the signup endpoint
+    """
     if 'password' not in request.data or 'displayName' not in request.data:
         return Response(status=status.HTTP_400_BAD_REQUEST,data={'title': 'No Password','message': 'A password is required for signing up'})
     if User.objects.filter(displayName=request.data['displayName']).first():

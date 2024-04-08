@@ -14,6 +14,9 @@ class ImageViewPK(APIView):
      GET /images
      '''
      def get(self, request,pk):
+        """
+        Get the images of id pk
+        """
         image = get_object_or_404(Image,image=pk)
         serializer = ImageSerializer(image,context={'request': request})
         return Response(serializer.data, status = status.HTTP_200_OK)
@@ -22,6 +25,9 @@ class ImageViewPK(APIView):
      POST /images
      '''
      def post(self, request,pk):
+        """
+        Add an image
+        """
         image = get_object_or_404(Image,image=pk)
         serializer = ImageSerializer(image,data = request.data, partial=True)
         if serializer.is_valid():
@@ -34,6 +40,9 @@ class ImageViewPK(APIView):
      delete /images
      '''
      def delete(self, request,pk):
+        """
+        Delete an image of id pk
+        """
         user = get_object_or_404(Image,image=pk)
         user.delete()
         return Response({"title": "Successfully Deleted", "message": "Image was deleted"}, status = status.HTTP_200_OK)
@@ -44,6 +53,9 @@ class ImageView(APIView):
      POST /images
      '''
      def post(self, request):
+        """
+        Upload an image
+        """
         serializer = ImageSerializer(data = request.data)
         if serializer.is_valid():
             serializer.save()

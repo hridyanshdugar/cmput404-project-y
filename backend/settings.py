@@ -61,7 +61,16 @@ INSTALLED_APPS = [
     'nodes',
     'whitenoise.runserver_nostatic',
     'django_extensions',
+    'drf_yasg'
 ]
+
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'Basic': {
+            'type': 'basic'
+        }
+    }
+}
 
 MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',

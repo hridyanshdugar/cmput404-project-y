@@ -29,6 +29,9 @@ from users.views import download_profile, download_profileBack
 from comments.serializers import CommentSerializer, EditCommentSerializer
 
 def get_foreign_user(data):
+    """
+    Get a foreign user
+    """
     print("beacon 1")
     response_data = copy.deepcopy(data)
     response_data['id'] = response_data['id'].split("/")[-1]
@@ -87,6 +90,9 @@ class InboxView(APIView):
      GET /authors/{id}/inbox
      '''
      def get(self, request, pk):
+        """
+        Get the inbox of a specific user
+        """
         # print(pk)
         hi_user = User.objects.get(id=pk)
         post = Inbox.objects.get_or_create(author=hi_user)[0]
@@ -98,6 +104,9 @@ class InboxView(APIView):
      POST /authors/{id}/inbox
      '''
      def post(self, request, pk):
+        """
+        Send something to the inbox of a specific user
+        """
     
         print("cuudddt 1")
         hi_user = User.objects.get(id=pk)
@@ -244,6 +253,9 @@ class InboxView(APIView):
      DELETE /authors/{id}/inbox
      '''
      def delete(self, request, pk):
+        """
+        Delete something from the inbox of a specific user
+        """
         JWT_authenticator = JWTAuthentication()
         response = JWT_authenticator.authenticate(request)
         post = get_object_or_404(Post, id=pk)

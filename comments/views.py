@@ -32,7 +32,9 @@ class CommentsViewPK(APIView):
      GET /authors/{id}/posts/{id}/comments/{id}
      '''
      def get(self, request, author_id, fk, pk):
-        
+        """
+        Get a specific comment on a specific post by a specific user
+        """
         comment = get_object_or_404(Comment, id=pk)
         requestAuthor = User.objects.get(id=author_id)
 
@@ -51,6 +53,9 @@ class CommentsViewPK(APIView):
      PUT /authors/{id}/posts/{id}/comments/{id}
      '''
      def put(self, request, author_id, fk, pk):
+        """
+        Post a comment on a specific post by a specific user
+        """
         comment = get_object_or_404(Comment, id=pk)
         requestAuthor = User.objects.get(id=author_id)
         try:
@@ -84,6 +89,9 @@ class CommentsViewPK(APIView):
      DELETE /authors/{id}/posts/{id}/comments/{id}
      '''
      def delete(self, request, author_id, fk, pk):
+        """
+        Delete a specific comment by a specific user on a specific post
+        """
         JWT_authenticator = JWTAuthentication()
         response = JWT_authenticator.authenticate(request)
         comment = get_object_or_404(Comment, id=pk)
@@ -102,6 +110,9 @@ class CommentsView2(APIView):
      GET /authors/{id}/posts/{id}/comments/ 
      '''
      def get(self, request, author_id, fk):
+        """
+        Get a specific comment on a specific post by a specific user
+        """
         user = get_object_or_404(User, id=author_id)
         if user.host == Node.objects.get(is_self=True).url:
             comments=None
@@ -149,6 +160,9 @@ class CommentsView(APIView):
      GET /authors/{id}/posts/{id}/comments/ 
      '''
      def get(self, request, author_id, fk):
+        """
+        get all the comments on a specific post by a specific user
+        """
         comments=None
 
         friends = []
@@ -175,6 +189,9 @@ class CommentsView(APIView):
      POST /authors/{id}/posts/{id}/comments/
      '''
      def post(self, request, author_id, fk):
+        """
+        Add a comment to a specific post by a specific user
+        """
         body = request.body
         print("BODY: ", body)
         data = json.loads(body)

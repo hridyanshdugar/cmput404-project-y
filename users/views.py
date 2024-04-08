@@ -88,6 +88,7 @@ def get_foreign_user(data):
 class AllUsersViewPK(APIView):
     permission_classes = [ SessionAuthenticated ]
     def get(self, request,pk):
+        """Get the user from the server if it exists"""
         user_auth = get_object_or_404(Node,is_self=True).username
         pass_auth = get_object_or_404(Node,is_self=True).password
         response = None
@@ -131,6 +132,7 @@ class UsersViewPK(APIView):
     GET /authors/id
     '''
     def get(self, request,pk):
+        """Get specific author from the server"""
         # I am getting a 403 error if I send a request to the server with basicauth how to fix this?
         
         user = get_object_or_404(User,id=pk)
@@ -141,6 +143,7 @@ class UsersViewPK(APIView):
     POST /authors
     '''
     def post(self, request,pk):
+        """Add author to a server"""
         user = get_object_or_404(User,id=pk)
         serializer = UserSerializer(user,data = request.data, partial=True)
         if serializer.is_valid():
@@ -152,11 +155,12 @@ class UsersViewPK(APIView):
     delete /authors
     '''
     def delete(self, request,pk):
+        """Delete a specific author from the server"""
         user = get_object_or_404(User,id=pk)
         user.delete()
         return Response({"title": "Successfully Deleted", "message": "User was deleted"}, status = status.HTTP_200_OK)
 
-class UsersView(APIView):     
+class UsersView(APIView): 
      
      permission_classes = [ RemoteOrSessionAuthenticated ]
      pagination = Pager()
@@ -164,6 +168,7 @@ class UsersView(APIView):
      GET /authors
      '''
      def get(self, request):
+        """retrieve all profiles on the server (paginated)"""    
         try:
             users = User.objects.filter(approved=True, host=Node.objects.get(is_self=True).url)
         except:
@@ -186,6 +191,7 @@ class UsersView(APIView):
      POST /authors
      '''
      def post(self, request):
+        """Add user profile to the server"""
         serializer = UserSerializer(data = request.data)
         if serializer.is_valid():
             serializer.save()
@@ -197,6 +203,7 @@ class AllUsersView(APIView):
     pagination = Pager()
     
     def get(self, request):
+        """Get all the user profiles"""
         nodes = Node.objects.filter(is_self=False)
 
         users = User.objects.filter(approved=True)

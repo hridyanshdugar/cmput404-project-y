@@ -33,6 +33,9 @@ class PostsViewPK(APIView):
      GET /authors/{id}/posts/{id}
      '''
      def get(self, request, author_id, post_id):
+        """
+        Get a specific post by a specific user
+        """
         # add logs incrementing number by 1 each time
         print(post_id)
         print(" hi 3")
@@ -64,6 +67,9 @@ class PostsViewPK(APIView):
      PUT /authors/{id}/posts/{id} and /posts/{id}
      '''
      def put(self, request, author_id, post_id):
+        """
+        Update a post by a specific user
+        """
         post = get_object_or_404(Post, id=post_id)
         try:
             author = User.objects.get(id=request.data.get("author"))
@@ -90,6 +96,9 @@ class PostsViewPK(APIView):
      DELETE /authors/{id}/posts/{id} and /posts/{id}
      '''
      def delete(self, request, author_id, post_id):
+        """
+        Delete a specific post by a specific user
+        """
         post = get_object_or_404(Post, id=post_id)
         post.delete()
         return Response({"title": "Successfully Deleted", "message": "Post was deleted"}, status = status.HTTP_200_OK)
@@ -98,6 +107,9 @@ class PostsViewPK(APIView):
      PATCH /authors/{id}/posts/{id} and /posts/{id}
      '''
      def patch(self, request, author_id, post_id):
+        """
+        Edit a specific post by a specific user
+        """
         post = get_object_or_404(Post, id=post_id)
         serializer = PostEditSerializer(post, partial=True,data = request.data)
         if serializer.is_valid():
@@ -113,6 +125,9 @@ class AllPostsView2(APIView):
      GET /authors/{id}/posts2/
      '''
      def get(self, request, author_id):
+        """
+        Get all the posts by a specific author (used internally by the same node)
+        """
         print("bbbdffffffffffffffffffffffff", author_id)
         author = User.objects.get(id=author_id)
         print("bbbdffffffffffffffffffffffff 2", author)
@@ -144,6 +159,9 @@ class AllPostsView(APIView):
      GET /authors/{id}/posts/
      '''
      def get(self, request, author_id):
+        """
+        Get all the posts of an author
+        """
         if User.objects.filter(id=author_id,host=Node.objects.get(is_self=True).url).exists():
             posts = Post.objects.filter(Q(visibility="PUBLIC", author=author_id)).order_by('-published') 
             page_number = request.GET.get('page') or 1
@@ -183,6 +201,9 @@ class PostsView(APIView):
      GET /authors/{id}/posts/ and /posts/
      '''
      def get(self, request, author_id):
+        """
+        Get all posts of a specific author
+        """
         posts = Post.objects.filter(visibility="PUBLIC", author__id=author_id)
         if User.objects.filter(id=author_id,host=Node.objects.get(is_self=True).url).exists():
             serializer = PostSerializer(posts, many=True, context={'request': request})
@@ -197,6 +218,9 @@ class PostsView(APIView):
      POST /authors/{id}/posts/
      '''
      def post(self, request, author_id=None):
+        """
+        Add posts by a specific author
+        """
         author = None
         try:
             author = User.objects.get(id=author_id)
