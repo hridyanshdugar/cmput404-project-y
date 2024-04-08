@@ -178,7 +178,7 @@ class AllUsersView(APIView):
 
         users = User.objects.filter(approved=True)
         serializer = AuthorSerializer(users,many=True,context={'request': request})
-        node_responses = serializer.data
+        node_responses = json.loads(json.dumps(serializer.data))
 
         for node in nodes:
             print(node.url + "api/authors/ ffjjff")
@@ -187,7 +187,7 @@ class AllUsersView(APIView):
                 
                 if response.status_code == 200:
                     try:
-                        response_data = json.loads(response.json())
+                        response_data = response.json()
                         print(response_data)
                         if "items" in response_data:
                             response_data = response_data["items"]
