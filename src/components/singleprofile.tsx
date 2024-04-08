@@ -8,7 +8,7 @@ import { faRepeat } from "@fortawesome/free-solid-svg-icons";
 import { faComment } from "@fortawesome/free-regular-svg-icons";
 import { faHeart } from "@fortawesome/free-regular-svg-icons";
 import React, { useEffect, useState } from "react";
-import { Badge, Card, Spinner } from "react-bootstrap";
+import { Badge, Card } from "react-bootstrap";
 import Dropdown from "./dropdowns/dropdown";
 import { getFrontend, navigate } from "../utils/utils";
 import MarkdownPreview from "@uiw/react-markdown-preview";
@@ -36,14 +36,13 @@ const SingleProfile: React.FC<Props> = (props) => {
 	useEffect(() => {
 		const cookies = new Cookies();
 		const user = cookies.get("user");
-        setuser(user);
-        console.log("ffdisdfisdjif333333333333333333333333333333", props);
+		setuser(user);
 	}, []);
 
     return (
         <>
-            {props.host ? <>
-                <div
+
+<div
 			className={style.overflow}
 			onClick={onClickF}
 			style={{ cursor: "default" }}
@@ -77,10 +76,6 @@ const SingleProfile: React.FC<Props> = (props) => {
 				</div>
 			</div>
 		</div>        
-            </> : <></>}
-            <Spinner animation="border" role="status">
-                        <span className="visually-hidden">Loading...</span>
-                      </Spinner>
         </>
 		
 	);
