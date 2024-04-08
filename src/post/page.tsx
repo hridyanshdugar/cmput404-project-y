@@ -61,7 +61,7 @@ export default function Post() {
 					// const Data = await result?.json();
 					// console.log(Data);
 				});
-			getPostComments(user.host, page, size, auth, user.id, postId)
+			getPostComments(user.host, page, size, auth, userId, postId)
 				.then(async (result: any) => {
 					console.log(result, "post comments");
 					const d = await result.json();
