@@ -158,7 +158,7 @@ class AllPostsView(APIView):
             nodes = Node.objects.filter(is_self=False)
 
             for node in nodes:
-                print(node.url + "api/authors/" + str(author_id) + "/posts")
+                print(node.url + "api/authors/" + str(author_id) + "/posts/")
                 try:
                     response = requests.get(node.url + "api/authors/" + str(author_id) + "/posts/", timeout=20, auth=HTTPBasicAuth(node.username, node.password))
                     

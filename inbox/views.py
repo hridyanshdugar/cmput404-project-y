@@ -28,33 +28,7 @@ import copy
 from users.views import download_profile, download_profileBack
 from comments.serializers import CommentSerializer, EditCommentSerializer
 
-
-class Pager(PageNumberPagination):
-    page_size = 10
-    page_size_query_param = 'size'
-
-# Create your views here.
-class InboxView(APIView):
-     permission_classes = [ RemoteOrSessionAuthenticated ]
-
-     pagination = Pager()
-
-     '''
-     GET /authors/{id}/inbox
-     '''
-     def get(self, request, pk):
-        # print(pk)
-        hi_user = User.objects.get(id=pk)
-        post = Inbox.objects.get_or_create(author=hi_user)[0]
-        serializer = InboxSerializer(post)
-        print("SERIALIZED", serializer.data)
-        return Response(serializer.data, status = status.HTTP_200_OK)
-
-     '''
-     POST /authors/{id}/inbox
-     '''
-     def post(self, request, pk):
-        def get_foreign_user(data):
+def get_foreign_user(data):
             print("beacon 1")
             response_data = copy.deepcopy(data)
             response_data['id'] = response_data['id'].split("/")[-1]
@@ -98,8 +72,33 @@ class InboxView(APIView):
                     print(f"Invalid data from : {serializer.errors}")
 
                 print("beacon 5")
-            
+                
+class Pager(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'size'
 
+# Create your views here.
+class InboxView(APIView):
+     permission_classes = [ RemoteOrSessionAuthenticated ]
+
+     pagination = Pager()
+
+     '''
+     GET /authors/{id}/inbox
+     '''
+     def get(self, request, pk):
+        # print(pk)
+        hi_user = User.objects.get(id=pk)
+        post = Inbox.objects.get_or_create(author=hi_user)[0]
+        serializer = InboxSerializer(post)
+        print("SERIALIZED", serializer.data)
+        return Response(serializer.data, status = status.HTTP_200_OK)
+
+     '''
+     POST /authors/{id}/inbox
+     '''
+     def post(self, request, pk):
+    
         print("cuudddt 1")
         hi_user = User.objects.get(id=pk)
         print("cuudddt 2")

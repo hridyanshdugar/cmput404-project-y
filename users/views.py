@@ -7,6 +7,8 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
+
+from inbox.views import get_foreign_user
 from .models import User
 from .serializers import UserSerializer, AuthorSerializer, RemoteUserSerializer, download_image
 from django.shortcuts import get_object_or_404
@@ -61,42 +63,16 @@ class AllUsersViewPK(APIView):
                             print("bob22323232 ", response_data, node.url )
                             
                             if node.url == response_data["host"]:
-                                hasPfp = False
-                                hasPfpBack = False
-                                if "profileImage" in response_data:
-                                    hasPfp = response_data.pop("profileImage")
-                                if "profileBackgroundImage" in response_data:
-                                    hasPfpBack = response_data.pop("profileBackgroundImage")
-                                print(response_data)
-                                user = None
-                                serializer = None
-                                try:
-                                    user = User.objects.get(id=pk)
-                                    serializer = RemoteUserSerializer(user,data=response_data,partial=True)
-                                except Exception as e:
-                                    print(e)                              
-                                    serializer = RemoteUserSerializer(data=response_data)
-                                if serializer.is_valid():
-                                    user = serializer.save()
-                                    if hasPfp:
-                                        download_profile(user, hasPfp)
-                                        response_data['profileImage'] = hasPfp
-                                    if hasPfpBack:
-                                        download_profileBack(user, hasPfpBack)
-                                        response_data['profileBackgroundImage'] = hasPfpBack
-                                    user = User.objects.get(id=pk)
-                                    serializer = AuthorSerializer(user)
-                                    print("yoyogaba 1", serializer.data)
-                                    return JsonResponse(response_data2)
-                                else:
-                                    print(f"Invalid data from {node.url}: {serializer.errors}")
+                                print("bob22323232 1")
+                                get_foreign_user(response_data)
+                                print("bob22323232 2")
                                 return JsonResponse(response_data2)
                         except JSONDecodeError:
-                            print(f"Invalid JSON response from {node.url}: {response.text}")
+                            print(f"I44nvalid JSON response from {node.url}: {response.text}")
                     else:
-                        print(f"Request to {node.url} failed with status code: {response.status_code}")
-                except requests.exceptions.RequestException as e:
-                    print(f"Request to {node.url} failed: {e}")
+                        print(f"R33equest to {node.url} failed with status code: {response.status_code}")
+                except Exception as e:
+                    print(f"R22equest to {node.url} failed: {e}")
         return Response({"title": "No User Found", "message": "No user found"}, status = status.HTTP_400_BAD_REQUEST)
 
 class UsersViewPK(APIView):
