@@ -79,7 +79,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     profileImage=models.ImageField(null=True,upload_to=pfp_upload_path)
     profileBackgroundImage=models.ImageField(null=True,upload_to=profilebackground_upload_path)
-    github=models.TextField(blank=True,default='')
+    github=models.TextField(null=True, blank=True,default='')
     approved=models.BooleanField(default=False)
     creation_date = models.DateTimeField(auto_now_add=True)
 
