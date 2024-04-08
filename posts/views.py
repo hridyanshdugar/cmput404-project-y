@@ -3,6 +3,8 @@ import requests
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
+
+from backend.permissions import RemoteOrSessionAuthenticated, SessionAuthenticated
 from .models import Post
 from nodes.models import Node
 from rest_framework.pagination import PageNumberPagination
@@ -25,22 +27,13 @@ class Pager(PageNumberPagination):
     page_size_query_param = 'size'
 
 class PostsViewPK(APIView):
-     def perform_authentication(self, request):
-        if is_basicAuth(request):
-            if not basicAuth(request):
-                return Response(status=status.HTTP_401_UNAUTHORIZED)
-        if 'HTTP_AUTHORIZATION' in request.META:
-            request.META.pop('HTTP_AUTHORIZATION')
+     permission_classes = [ RemoteOrSessionAuthenticated ]
 
      '''
      GET /authors/{id}/posts/{id}
      '''
      def get(self, request, author_id, post_id):
         # add logs incrementing number by 1 each time
-        print(" hi 1")
-        user_auth = get_object_or_404(Node,is_self=True).username
-        print(" hi 2")
-        pass_auth = get_object_or_404(Node,is_self=True).password
         print(post_id)
         print(" hi 3")
         user = get_object_or_404(User, id=author_id)
@@ -55,13 +48,14 @@ class PostsViewPK(APIView):
             try:
                 print(" hi 7")
                 url = user.host + "api/authors/" + str(author_id) + "/posts/" + str(post_id)
-                response = requests.get(url, timeout=20,auth=HTTPBasicAuth(user_auth, pass_auth))
+                auth = Node.objects.get(url = user.host)
+                response = requests.get(url, timeout=20, auth=HTTPBasicAuth(auth.username, auth.password))
                 if response.status_code == 200:
                     rbody = response.json()
                     print("Response Body: ", rbody)
                     return Response(data = rbody, status = status.HTTP_200_OK)
                 else:
-                    print(f"Request to {user.host} failed with status code: {response.status_code} : {url}")
+                    print(f"1Request to {user.host} failed with status code: {response.status_code} : {url} : {response.content}")
                 print(" hi 8")
             except requests.exceptions.RequestException as e:
                 print(f"Request to {user.host} failed: {e}")
@@ -112,12 +106,7 @@ class PostsViewPK(APIView):
         return Response({"title": "Bad Request", "message": "Invalid Request Sent"}, status = status.HTTP_400_BAD_REQUEST)
 
 class AllPostsView2(APIView):
-     def perform_authentication(self, request):
-        if is_basicAuth(request):
-            if not basicAuth(request):
-                return Response(status=status.HTTP_401_UNAUTHORIZED)
-        if 'HTTP_AUTHORIZATION' in request.META:
-            request.META.pop('HTTP_AUTHORIZATION')
+     permission_classes = [ SessionAuthenticated ]
 
      pagination = Pager()
      '''
@@ -148,12 +137,7 @@ class AllPostsView2(APIView):
 
 
 class AllPostsView(APIView):
-     def perform_authentication(self, request):
-        if is_basicAuth(request):
-            if not basicAuth(request):
-                return Response(status=status.HTTP_401_UNAUTHORIZED)
-        if 'HTTP_AUTHORIZATION' in request.META:
-            request.META.pop('HTTP_AUTHORIZATION')
+     permission_classes = [ RemoteOrSessionAuthenticated ]
 
      pagination = Pager()
      '''
@@ -171,14 +155,12 @@ class AllPostsView(APIView):
             else:
                 return Response("hi", status = status.HTTP_400_BAD_REQUEST)
         else:
-            user_auth = get_object_or_404(Node,is_self=True).username
-            pass_auth = get_object_or_404(Node,is_self=True).password
             nodes = Node.objects.filter(is_self=False)
 
             for node in nodes:
                 print(node.url + "api/authors/" + str(author_id) + "/posts/")
                 try:
-                    response = requests.get(node.url + "api/authors/" + str(author_id) + "/posts/", timeout=20,auth=HTTPBasicAuth(user_auth, pass_auth))
+                    response = requests.get(node.url + "api/authors/" + str(author_id) + "/posts/", timeout=20, auth=HTTPBasicAuth(node.username, node.password))
                     
                     if response.status_code == 200:
                         try:
@@ -188,18 +170,13 @@ class AllPostsView(APIView):
                         except JSONDecodeError:
                             print(f"Invalid JSON response from {node.url}: {response.text}")
                     else:
-                        print(f"Request to {node.url} failed with status code: {response.status_code}")
+                        print(f"2Request to {node.url} failed with status code: {response.status_code}")
                 except requests.exceptions.RequestException as e:
                     print(f"Request to {node.url} failed: {e}")
             return Response(status=status.HTTP_404_NOT_FOUND)
 
 class PostsView(APIView):
-     def perform_authentication(self, request):
-        if is_basicAuth(request):
-            if not basicAuth(request):
-                return Response(status=status.HTTP_401_UNAUTHORIZED)
-        if 'HTTP_AUTHORIZATION' in request.META:
-            request.META.pop('HTTP_AUTHORIZATION')
+     permission_classes = [ RemoteOrSessionAuthenticated ]
     
      pagination = Pager()
      '''
@@ -209,7 +186,9 @@ class PostsView(APIView):
         posts = Post.objects.filter(visibility="PUBLIC", author__id=author_id)
         if User.objects.filter(id=author_id,host=Node.objects.get(is_self=True).url).exists():
             serializer = PostSerializer(posts, many=True, context={'request': request})
-            data = serializer.data
+            data = dict()
+            data["items"] = serializer.data
+            data["type"] = "posts"
             return Response(data, status = status.HTTP_200_OK)
         else:
             return Response("BAD", status = status.HTTP_400_BAD_REQUEST)
@@ -242,16 +221,18 @@ class PostsView(APIView):
                 print("dsfhsdif", serializer.data)
                 if request.data.get("visibility") == "PUBLIC":
                     for i in FollowStatus.objects.filter(obj__id=author_id, complete=True):
-                        print("Sending to: ", str(i.actor.host) + "api/authors/" + str(i.actor.id) + "/inbox/")
+                        print("Sending to: ", str(i.actor.host) + "api/authors/" + str(i.actor.id.split("/")[-1]) + "/inbox/")
                         # make request post json data to the inbox of the follower
-                        requests.post(str(i.actor.host) + "api/authors/" + str(i.actor.id) + "/inbox/", data = json.dumps(serializer.data), headers={'Content-Type': 'application/json'})
+                        auth = Node.objects.get(url = i.actor.host)
+                        requests.post(str(i.actor.host) + "api/authors/" + str(i.actor.id.split("/")[-1]) + "/inbox", data = json.dumps(serializer.data), headers={'Content-Type': 'application/json'}, auth=HTTPBasicAuth(auth.username, auth.password))
 
                 if request.data.get("visibility") == "FRIENDS":
-                    for follower in FollowSerializer(FollowStatus.objects.filter(obj__id=author_id, complete=True)).data:
-                        for follow in FollowSerializer(FollowStatus.objects.filter(actor__id=author_id, complete=True)).data:
+                    for follower in FollowSerializer(FollowStatus.objects.filter(obj__id=author_id, complete=True), many=True).data:
+                        for follow in FollowSerializer(FollowStatus.objects.filter(actor__id=author_id, complete=True), many=True).data:
                             if follower["actor"]["id"] == follow["object"]["id"]:
-                                print("Sending to2: ", follower["object"]["host"] + "api/authors/" + str(follower["object"]["id"]) + "/inbox/")
-                                requests.post(follower["object"]["host"] + "api/authors/" + str(follower["object"]["id"]) + "/inbox/", data = json.dumps(serializer.data), headers={'Content-Type': 'application/json'})    
+                                print("Sending to2: ", follower["actor"]["host"] + "api/authors/" + str(follower["actor"]["id"].split("/")[-1]) + "/inbox")
+                                auth = Node.objects.get(url = follower["actor"]["host"])
+                                requests.post(follower["actor"]["host"] + "api/authors/" + str(follower["actor"]["id"].split("/")[-1]) + "/inbox", data = json.dumps(serializer.data), headers={'Content-Type': 'application/json'}, auth=HTTPBasicAuth(auth.username, auth.password))    
                 return Response(serializer.data, status = status.HTTP_200_OK)
         else:
             return Response({"title": "Invalid Fields", "message": serializer.errors}, status = status.HTTP_400_BAD_REQUEST)

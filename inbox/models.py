@@ -1,6 +1,11 @@
+import copy
 from django.db import models
 from posts.models import Post
 import uuid
+
+from users.models import User
+from users.serializers import RemoteUserSerializer
+from users.views import download_profile
 
 TEXT_MAX_LENGTH = 300
 class Inbox(models.Model):

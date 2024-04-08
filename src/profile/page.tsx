@@ -44,7 +44,7 @@ export default function Profiles() {
 			.then(async (result: any) => {
 				const Data = await result.json();
 				console.log(Data);
-				setPosts(Data);
+				setPosts(Data["items"]);
 			})
 			.catch(async (result: any) => {
 				console.log(result);
@@ -59,7 +59,7 @@ export default function Profiles() {
 						posts.length === 0 ? (
 							<>There are no posts available</>
 						) : (
-							posts.map((item: any, index: any) =>
+							posts.sort((a: { published: string; }, b: { published: string; }) => b.published.localeCompare(a.published)).map((item: any, index: any) =>
 								true ? (
 									<SinglePost
 										post={item}

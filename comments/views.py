@@ -1,7 +1,10 @@
+from urllib.request import HTTPBasicAuthHandler
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
+from requests.auth import HTTPBasicAuth
 
+from backend.permissions import RemoteOrSessionAuthenticated, SessionAuthenticated
 from nodes.models import Node
 from .models import Comment
 from rest_framework.pagination import PageNumberPagination
@@ -23,12 +26,7 @@ class Pager(PageNumberPagination):
     page_size_query_param = 'size'
 
 class CommentsViewPK(APIView):
-     def perform_authentication(self, request):
-        if is_basicAuth(request):
-            if not basicAuth(request):
-                return Response(status=status.HTTP_401_UNAUTHORIZED)
-        if 'HTTP_AUTHORIZATION' in request.META:
-            request.META.pop('HTTP_AUTHORIZATION')
+     permission_classes = [ RemoteOrSessionAuthenticated ]
 
      '''
      GET /authors/{id}/posts/{id}/comments/{id}
@@ -97,12 +95,7 @@ class CommentsViewPK(APIView):
         return Response({"title": "Unauthorized", "message": "You are not authorized to delete this comment"}, status = status.HTTP_401_UNAUTHORIZED)
 
 class CommentsView2(APIView):
-     def perform_authentication(self, request):
-        if is_basicAuth(request):
-            if not basicAuth(request):
-                return Response(status=status.HTTP_401_UNAUTHORIZED)
-        if 'HTTP_AUTHORIZATION' in request.META:
-            request.META.pop('HTTP_AUTHORIZATION')
+     permission_classes = [ SessionAuthenticated ]
     
      pagination = Pager()
      '''
@@ -135,8 +128,9 @@ class CommentsView2(APIView):
         else:
             try:
                 print(" hi 7")
-                url = user.host + "api/authors/" + str(author_id) + "/posts/" + str(fk) + "/comments/"
-                response = requests.get(url, timeout=20)
+                url = user.host + "api/authors/" + str(author_id) + "/posts/" + str(fk) + "/comments"
+                auth = Node.objects.get(url = user.host)
+                response = requests.get(url, timeout=20, auth=HTTPBasicAuth(auth.username, auth.password))
                 if response.status_code == 200:
                     rbody = response.json()
                     print("Response Body: ", rbody)
@@ -148,12 +142,7 @@ class CommentsView2(APIView):
                 print(f"Request to {user.host} failed: {e}")     
 
 class CommentsView(APIView):
-     def perform_authentication(self, request):
-        if is_basicAuth(request):
-            if not basicAuth(request):
-                return Response(status=status.HTTP_401_UNAUTHORIZED)
-        if 'HTTP_AUTHORIZATION' in request.META:
-            request.META.pop('HTTP_AUTHORIZATION')
+     permission_classes = [ RemoteOrSessionAuthenticated ]
     
      pagination = Pager()
      '''
@@ -190,5 +179,7 @@ class CommentsView(APIView):
         print("BODY: ", body)
         data = json.loads(body)
         print("DATA: ", data)
-        res = requests.post(str(data["author"]["host"]) + "api/authors/" + str(data["author"]["id"].split("/")[-1]) + "/inbox/", data = body)
+        user = User.objects.get(id=author_id)
+        auth = Node.objects.get(url = user.host)
+        res = requests.post(str(user.host) + "api/authors/" + author_id + "/inbox", data = body, auth=HTTPBasicAuth(auth.username, auth.password))
         return Response(res, status = res.status_code)

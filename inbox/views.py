@@ -1,6 +1,9 @@
+from urllib.request import HTTPBasicAuthHandler
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
+
+from backend.permissions import RemoteOrSessionAuthenticated
 from .models import Inbox, Post
 from comments.models import Comment
 from rest_framework.pagination import PageNumberPagination
@@ -25,6 +28,50 @@ import copy
 from users.views import download_profile, download_profileBack
 from comments.serializers import CommentSerializer, EditCommentSerializer
 
+def get_foreign_user(data):
+    print("beacon 1")
+    response_data = copy.deepcopy(data)
+    response_data['id'] = response_data['id'].split("/")[-1]
+    # updates existing user
+    try:
+        obj_user = User.objects.get(id=response_data["id"].split("/")[-1])
+        print("beacon supreme", obj_user)
+        hasPfp = False
+        if "profileImage" in response_data:
+            hasPfp = response_data.pop("profileImage")
+        if "profileBackgroundImage" in response_data:
+            ffff = response_data.pop("profileBackgroundImage")
+
+        
+        serializer = RemoteUserSerializer(obj_user,data=response_data,partial=True)
+        if serializer.is_valid():
+            user = serializer.save()
+            if hasPfp:
+                download_profile(user, hasPfp)
+                response_data['profileImage'] = hasPfp
+        else:
+            print(f"Invalid data from : {serializer.errors}")
+    # downloads new user
+    except Exception as e:
+        print("beacon 2,e", e)
+
+        hasPfp = False
+        if "profileImage" in response_data:
+            hasPfp = response_data.pop("profileImage")
+        if "profileBackgroundImage" in response_data:
+                ffff = response_data.pop("profileImage")                    
+        print("beacon 3", response_data)
+        serializer = RemoteUserSerializer(data=response_data)
+        print("beacon 4")
+        if serializer.is_valid():
+            user = serializer.save()
+            if hasPfp:
+                download_profile(user, hasPfp)
+                response_data['profileImage'] = hasPfp
+        else:
+            print(f"Invalid data from : {serializer.errors}")
+
+        print("beacon 5")
 
 class Pager(PageNumberPagination):
     page_size = 10
@@ -32,12 +79,7 @@ class Pager(PageNumberPagination):
 
 # Create your views here.
 class InboxView(APIView):
-     def perform_authentication(self, request):
-        if is_basicAuth(request):
-            if not basicAuth(request):
-                return Response(status=status.HTTP_401_UNAUTHORIZED)
-        if 'HTTP_AUTHORIZATION' in request.META:
-            request.META.pop('HTTP_AUTHORIZATION')
+     permission_classes = [ RemoteOrSessionAuthenticated ]
 
      pagination = Pager()
 
@@ -56,38 +98,7 @@ class InboxView(APIView):
      POST /authors/{id}/inbox
      '''
      def post(self, request, pk):
-        def get_foreign_user(data):
-            response_data = copy.deepcopy(data)
-            try:
-                obj_user = User.objects.get(id=response_data["id"].split("/")[-1])
-            except:
-                hasPfp = False
-                hasPfpBack = False
-                if "profileImage" in response_data:
-                    hasPfp = response_data.pop("profileImage")
-                if "profileBackgroundImage" in response_data:
-                    hasPfpBack = response_data.pop("profileBackgroundImage")
-                print(response_data)
-                user = None
-                serializer = None
-                try:
-                    user = User.objects.get(id=pk)
-                    serializer = RemoteUserSerializer(user,data=response_data,partial=True)
-                except Exception as e:
-                    print(e)  
-
-                    serializer = RemoteUserSerializer(data=response_data)
-                if serializer.is_valid():
-                    user = serializer.save()
-                    if hasPfp:
-                        download_profile(user, hasPfp)
-                        response_data['profileImage'] = hasPfp
-                    if hasPfpBack:
-                        download_profileBack(user, hasPfpBack)
-                        response_data['profileBackgroundImage'] = hasPfpBack
-                else:
-                    print(f"Invalid data from : {serializer.errors}")
-
+    
         print("cuudddt 1")
         hi_user = User.objects.get(id=pk)
         print("cuudddt 2")
@@ -146,16 +157,15 @@ class InboxView(APIView):
             except:
                 print("DATA:",data)
                 print("abc : 4")
-                user_auth = get_object_or_404(Node,is_self=True).username
-                pass_auth = get_object_or_404(Node,is_self=True).password
-                response = requests.get(str(data["author"]["host"]) + "api/authors/" + data["author"]["id"].split("/")[-1] + "/posts/" + str(data["id"].split("/")[-1]), auth=HTTPBasicAuth(user_auth, pass_auth))
+                auth = Node.objects.get(url = data["author"]["host"])
+                response = requests.get(str(data["author"]["host"]) + "api/authors/" + data["author"]["id"].split("/")[-1] + "/posts/" + str(data["id"].split("/")[-1]), auth=HTTPBasicAuth(auth.username, auth.password))
                 print("abc : 5")
                 if response.status_code == 200:
                     print("abc : 6")
                     try:
                         bob = response.json()
                         print("abc : 7", bob)
-                        serializer = RemotePostSerializer(data={"id": bob["id"].split("/")[-1], "host": bob["host"], "content": bob["content"], "contentType": bob["contentType"], "published": data["published"], "visibility": data["visibility"], "origin": data["origin"], "source": data["source"], "description": bob["description"], "author": bob["author"]["id"]})
+                        serializer = RemotePostSerializer(data={"id": bob["id"].split("/")[-1], "content": bob["content"], "contentType": bob["contentType"], "published": data["published"], "visibility": data["visibility"], "origin": data["origin"], "source": data["source"], "description": bob["description"], "author": bob["author"]["id"].split("/")[-1]})
                         print("abc : 8")
                         if serializer.is_valid():
                             print("abc : 9")

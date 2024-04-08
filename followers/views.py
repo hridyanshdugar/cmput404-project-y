@@ -1,10 +1,12 @@
 from json import JSONDecodeError
+from urllib.request import HTTPBasicAuthHandler
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse, Http404
 from django.views.decorators.csrf import csrf_exempt
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
 from django.db.models import Q
+from backend.permissions import RemoteOrSessionAuthenticated
 from users.models import User
 from rest_framework.views import APIView
 from urllib.parse import unquote
@@ -62,12 +64,11 @@ def getFollowers(request, author_id=None):
                 "friends": friends
             })
         else:
-            user_auth = get_object_or_404(Node,is_self=True).username
-            pass_auth = get_object_or_404(Node,is_self=True).password
             followers = None
             response = None
             try:
-                response = requests.get(user.host + "api/authors/" + author_id + "/followers/",timeout=3, auth=HTTPBasicAuth(user_auth, pass_auth))
+                auth = Node.objects.get(url = user.host)
+                response = requests.get(user.host + "api/authors/" + author_id + "/followers",timeout=3, auth=HTTPBasicAuth(auth.username, auth.password))
             except Exception as e:
                 print(e)
             if response != None and response.status_code == 200:
@@ -100,12 +101,7 @@ def getFriends(request, author_id):
     return JsonResponse(friends, safe=False)
 
 class FollowerView(APIView):
-    def perform_authentication(self, request):
-        if is_basicAuth(request):
-            if not basicAuth(request):
-                return Response(status=status.HTTP_401_UNAUTHORIZED)
-        if 'HTTP_AUTHORIZATION' in request.META:
-            request.META.pop('HTTP_AUTHORIZATION')
+    permission_classes = [ RemoteOrSessionAuthenticated ]
 
     def get(self, request, author_id, follower_id):
         """
@@ -120,10 +116,9 @@ class FollowerView(APIView):
                 print("GOT HERE", author_id, follower_id)
                 ff = FollowSerializer(get_object_or_404(FollowStatus,actor__id=follower_id,obj__id=author_id)).data
             else:
-                user_auth = get_object_or_404(Node,is_self=True).username
-                pass_auth = get_object_or_404(Node,is_self=True).password
+                auth = Node.objects.get(url = user.host)
                 try:
-                    response = requests.get(user.host + "api/authors/" + author_id + "/followers/" + follower_id + "/",timeout=3, auth=HTTPBasicAuth(user_auth, pass_auth))
+                    response = requests.get(user.host + "api/authors/" + author_id + "/followers/" + follower_id,timeout=3, auth=HTTPBasicAuth(auth.username, auth.password))
                 except Exception as e:
                     print(e, "wwhy")
                 if response != None and response.status_code == 200:
@@ -141,9 +136,10 @@ class FollowerView(APIView):
             return HttpResponseBadRequest("Something went wrong!") 
 
     def post(self, request, author_id, follower_id):
-        data = json.loads(request.body)
+        data = request.data
         print("cac", data)
-        res = requests.request(method="POST", url=data["object"]["host"] + "api/authors/" + str(author_id) + "/inbox/",data=request.body)
+        auth = Node.objects.get(url = data["object"]["host"])
+        res = requests.request(method="POST", url=data["object"]["host"] + "api/authors/" + str(author_id) + "/inbox",data=json.dumps(data), auth=HTTPBasicAuth(auth.username, auth.password))
         print(res, "IDK")
         if res.status_code == 200:
             if data["type"] == "Follow":
@@ -161,9 +157,10 @@ class FollowerView(APIView):
     
     # this put is for the notifications page for when you click accept it should go here
     def put(self, request, author_id, follower_id):
-        data = json.loads(request.body)
+        data = request.data
         print("boblb", data)
-        res = requests.request(method="POST", url=request.data["actor"]["host"] + "api/authors/" + str(follower_id) + "/inbox/",data=request.body)
+        auth = Node.objects.get(url = data["actor"]["host"])
+        res = requests.request(method="POST", url=request.data["actor"]["host"] + "api/authors/" + str(follower_id) + "/inbox",data=json.dumps(data), auth=HTTPBasicAuth(auth.username, auth.password))
         if res.status_code == 200:
             print("sent to actor inbox")
             req = get_object_or_404(FollowStatus,actor__id=follower_id,obj__id=author_id)

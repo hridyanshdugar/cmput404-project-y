@@ -1183,7 +1183,7 @@ paths:
                 type: object
                 additionalProperties: {}
           description: ''
-  /api/users/:
+  /api/authors/:
     get:
       operationId: users_retrieve
       tags:
@@ -1206,7 +1206,7 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/users/{id}:
+  /api/authors/{id}:
     get:
       operationId: users_retrieve_2
       description: GET /users
@@ -1264,7 +1264,7 @@ paths:
       responses:
         '204':
           description: No response body
-  /api/users/all:
+  /api/authors/all:
     get:
       operationId: users_all_retrieve
       tags:
