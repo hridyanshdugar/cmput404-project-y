@@ -198,5 +198,5 @@ class AllUsersView(APIView):
                     print(f"Request to {node.url} failed with status code: {response.status_code}")
             except requests.exceptions.RequestException as e:
                 print(f"Request to {node.url} failed: {e}")
-        print("elphant 1", node_responses)
+        print("elphant 1", node_responses, type(node_responses))
         return JsonResponse(node_responses)
