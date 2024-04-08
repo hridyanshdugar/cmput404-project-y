@@ -59,7 +59,7 @@ export default function Profiles() {
 						posts.length === 0 ? (
 							<>There are no posts available</>
 						) : (
-							posts.map((item: any, index: any) =>
+							posts.sort((a: { published: string; }, b: { published: string; }) => b.published.localeCompare(a.published)).map((item: any, index: any) =>
 								true ? (
 									<SinglePost
 										post={item}
