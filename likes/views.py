@@ -32,7 +32,7 @@ class PostLikesViewPK2(APIView):
             try:
                 print(" hi 7")
                 url = user.host + "api/authors/" + str(author_id) + "/posts/" + str(post_id) + "/likes"
-                auth = Node.objects.get(host = user.host)
+                auth = Node.objects.get(url = user.host)
                 response = requests.get(url, timeout=20, auth=HTTPBasicAuth(auth.username, auth.password))
                 if response.status_code == 200:
                     rbody = response.json()
