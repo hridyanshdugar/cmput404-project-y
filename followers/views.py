@@ -136,11 +136,10 @@ class FollowerView(APIView):
             return HttpResponseBadRequest("Something went wrong!") 
 
     def post(self, request, author_id, follower_id):
-        bbody = request.body
-        data = json.loads(bbody)
+        data = request.data
         print("cac", data)
         auth = Node.objects.get(url = data["object"]["host"])
-        res = requests.request(method="POST", url=data["object"]["host"] + "api/authors/" + str(author_id) + "/inbox",data=bbody, auth=HTTPBasicAuth(auth.username, auth.password))
+        res = requests.request(method="POST", url=data["object"]["host"] + "api/authors/" + str(author_id) + "/inbox",data=json.dumps(data), auth=HTTPBasicAuth(auth.username, auth.password))
         print(res, "IDK")
         if res.status_code == 200:
             if data["type"] == "Follow":
@@ -158,11 +157,10 @@ class FollowerView(APIView):
     
     # this put is for the notifications page for when you click accept it should go here
     def put(self, request, author_id, follower_id):
-        bbody = request.body
-        data = json.loads(bbody)
+        data = request.data
         print("boblb", data)
         auth = Node.objects.get(url = data["actor"]["host"])
-        res = requests.request(method="POST", url=request.data["actor"]["host"] + "api/authors/" + str(follower_id) + "/inbox",data=bbody, auth=HTTPBasicAuth(auth.username, auth.password))
+        res = requests.request(method="POST", url=request.data["actor"]["host"] + "api/authors/" + str(follower_id) + "/inbox",data=json.dumps(data), auth=HTTPBasicAuth(auth.username, auth.password))
         if res.status_code == 200:
             print("sent to actor inbox")
             req = get_object_or_404(FollowStatus,actor__id=follower_id,obj__id=author_id)
