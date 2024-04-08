@@ -2,6 +2,7 @@ import copy
 import uuid
 from django.http import JsonResponse
 from django.shortcuts import render
+from rest_framework.permissions import IsAuthenticated
 
 from rest_framework.response import Response
 from rest_framework import status
@@ -38,15 +39,7 @@ def download_profileBack(instance, url):
     return False
 
 class AllUsersViewPK(APIView):
-
-    def perform_authentication(self, request):
-        if is_basicAuth(request):
-            if not basicAuth(request):
-                return Response(status=status.HTTP_401_UNAUTHORIZED)
-        if 'HTTP_AUTHORIZATION' in request.META:
-            request.META.pop('HTTP_AUTHORIZATION')
-
-    
+    permission_classes = [ IsAuthenticated ]
     def get(self, request,pk):
         user_auth = get_object_or_404(Node,is_self=True).username
         pass_auth = get_object_or_404(Node,is_self=True).password
@@ -146,14 +139,8 @@ class UsersViewPK(APIView):
         return Response({"title": "Successfully Deleted", "message": "User was deleted"}, status = status.HTTP_200_OK)
 
 class UsersView(APIView):     
-    #  def perform_authentication(self, request):
-    #     if is_basicAuth(request):
-    #         if not basicAuth(request):
-    #             return Response(status=status.HTTP_401_UNAUTHORIZED)
-    #     if 'HTTP_AUTHORIZATION' in request.META:
-    #         request.META.pop('HTTP_AUTHORIZATION')
+     
      permission_classes = [ RemoteOrSessionAuthenticated ]
-
      pagination = Pager()
      '''
      GET /authors
@@ -200,7 +187,7 @@ class AllUsersView(APIView):
         for node in nodes:
             print(node.url + "api/authors/ ffjjff")
             try:
-                response = requests.get(node.url + "api/authors", timeout=3,auth=HTTPBasicAuth(user_auth, pass_auth + "dd"))
+                response = requests.get(node.url + "api/authors", timeout=3,auth=HTTPBasicAuth(user_auth, pass_auth))
                 
                 if response.status_code == 200:
                     try:

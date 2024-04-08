@@ -291,7 +291,7 @@ const SinglePost: React.FC<Props> = (props) => {
                             <div>
                                 <Dropdown
                                     icon={faEllipsis}
-                                    options={(props.post.author.id.split("/").at(-1) === user?.id
+                                    options={(props.post.author.id.split("/").at(-1) === user?.id && !props.parentId
                                         ? ["Delete", "Edit"]
                                         : []
                                     ).concat(["Copy Link"])}
