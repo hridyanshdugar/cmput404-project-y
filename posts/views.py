@@ -225,8 +225,8 @@ class PostsView(APIView):
                         requests.post(str(i.actor.host) + "api/authors/" + str(i.actor.id) + "/inbox", data = json.dumps(serializer.data), headers={'Content-Type': 'application/json'}, auth=HTTPBasicAuth(auth.username, auth.password))
 
                 if request.data.get("visibility") == "FRIENDS":
-                    for follower in FollowSerializer(FollowStatus.objects.filter(obj__id=author_id, complete=True)).data:
-                        for follow in FollowSerializer(FollowStatus.objects.filter(actor__id=author_id, complete=True)).data:
+                    for follower in FollowSerializer(FollowStatus.objects.filter(obj__id=author_id, complete=True), many=True).data:
+                        for follow in FollowSerializer(FollowStatus.objects.filter(actor__id=author_id, complete=True), many=True).data:
                             if follower["actor"]["id"] == follow["object"]["id"]:
                                 print("Sending to2: ", follower["object"]["host"] + "api/authors/" + str(follower["object"]["id"]) + "/inbox")
                                 auth = Node.objects.get(url = follower["object"]["host"])
