@@ -172,7 +172,7 @@ class FollowerView(APIView):
         print("boblb 1")
         res = requests.request(method="POST", headers={'Content-Type': 'application/json'}, url=data["object"]["host"] + "api/authors/" + str(follower_id) + "/inbox",data=json.dumps(data), auth=HTTPBasicAuth(auth.username, auth.password))
         print("boblb 2")
-        if res.status_code == 200:
+        if res.status_code == 200 or res.status_code == 201:
             print("sent to actor inbox")
             req = get_object_or_404(FollowStatus,actor__id=follower_id,obj__id=author_id)
             hi_user = User.objects.get(id=author_id)
