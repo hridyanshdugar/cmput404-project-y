@@ -178,7 +178,7 @@ class AllUsersView(APIView):
 
         users = User.objects.filter(approved=True)
         serializer = AuthorSerializer(users,many=True,context={'request': request})
-        node_responses = json.dumps(serializer.data)
+        node_responses = serializer.data
 
         for node in nodes:
             print(node.url + "api/authors/ ffjjff")
@@ -191,12 +191,13 @@ class AllUsersView(APIView):
                         print(response_data)
                         if "items" in response_data:
                             response_data = response_data["items"]
-                        node_responses.extend(response_data)
+                        node_responses.extend(json.loads(response_data))
                     except JSONDecodeError:
                         print(f"Invalid JSON response from {node.url}: {response.text}")
                 else:
                     print(f"Request to {node.url} failed with status code: {response.status_code}")
             except requests.exceptions.RequestException as e:
                 print(f"Request to {node.url} failed: {e}")
+        node_responses = json.dumps(node_responses)
         print("elphant 1", node_responses)
         return Response(node_responses, status=status.HTTP_200_OK)
