@@ -8,7 +8,6 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 
-from inbox.models import get_foreign_user
 
 from .models import User
 from .serializers import UserSerializer, AuthorSerializer, RemoteUserSerializer, download_image
@@ -40,6 +39,51 @@ def download_profileBack(instance, url):
         instance.profileBackgroundImage.save(name=f"pfp_{uuid.uuid4()}.jpg", content=ContentFile(response.content), save=True)
         return True
     return False
+
+def get_foreign_user(data):
+    print("beacon 1")
+    response_data = copy.deepcopy(data)
+    response_data['id'] = response_data['id'].split("/")[-1]
+    # updates existing user
+    try:
+        obj_user = User.objects.get(id=response_data["id"].split("/")[-1])
+        print("beacon supreme", obj_user)
+        hasPfp = False
+        if "profileImage" in response_data:
+            hasPfp = response_data.pop("profileImage")
+        if "profileBackgroundImage" in response_data:
+            ffff = response_data.pop("profileBackgroundImage")
+
+        
+        serializer = RemoteUserSerializer(obj_user,data=response_data,partial=True)
+        if serializer.is_valid():
+            user = serializer.save()
+            if hasPfp:
+                download_profile(user, hasPfp)
+                response_data['profileImage'] = hasPfp
+        else:
+            print(f"Invalid data from : {serializer.errors}")
+    # downloads new user
+    except Exception as e:
+        print("beacon 2,e", e)
+
+        hasPfp = False
+        if "profileImage" in response_data:
+            hasPfp = response_data.pop("profileImage")
+        if "profileBackgroundImage" in response_data:
+                ffff = response_data.pop("profileImage")                    
+        print("beacon 3", response_data)
+        serializer = RemoteUserSerializer(data=response_data)
+        print("beacon 4")
+        if serializer.is_valid():
+            user = serializer.save()
+            if hasPfp:
+                download_profile(user, hasPfp)
+                response_data['profileImage'] = hasPfp
+        else:
+            print(f"Invalid data from : {serializer.errors}")
+
+        print("beacon 5")
 
 class AllUsersViewPK(APIView):
     permission_classes = [ SessionAuthenticated ]
