@@ -36,7 +36,8 @@ const SingleProfile: React.FC<Props> = (props) => {
 	useEffect(() => {
 		const cookies = new Cookies();
 		const user = cookies.get("user");
-		setuser(user);
+        setuser(user);
+        console.log("ffdisdfisdjif333333333333333333333333333333", props);
 	}, []);
 
     return (
