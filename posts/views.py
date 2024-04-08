@@ -55,7 +55,7 @@ class PostsViewPK(APIView):
                     print("Response Body: ", rbody)
                     return Response(data = rbody, status = status.HTTP_200_OK)
                 else:
-                    print(f"Request to {user.host} failed with status code: {response.status_code} : {url}")
+                    print(f"1Request to {user.host} failed with status code: {response.status_code} : {url} : {response.content}")
                 print(" hi 8")
             except requests.exceptions.RequestException as e:
                 print(f"Request to {user.host} failed: {e}")
@@ -170,7 +170,7 @@ class AllPostsView(APIView):
                         except JSONDecodeError:
                             print(f"Invalid JSON response from {node.url}: {response.text}")
                     else:
-                        print(f"Request to {node.url} failed with status code: {response.status_code}")
+                        print(f"2Request to {node.url} failed with status code: {response.status_code}")
                 except requests.exceptions.RequestException as e:
                     print(f"Request to {node.url} failed: {e}")
             return Response(status=status.HTTP_404_NOT_FOUND)
