@@ -59,7 +59,7 @@ class AllUsersViewPK(APIView):
             for node in Node.objects.filter(is_self=False):
                 print(node.url + "api/authors/" + str(pk))
                 try:
-                    response = requests.get(node.url + "api/authors/" + str(pk), timeout=3, auth=HTTPBasicAuth(user_auth, pass_auth))
+                    response = requests.get(node.url + "api/authors/" + str(pk), timeout=3, auth=HTTPBasicAuth(user_auth, pass_auth + "dd"))
                     
                     if response.status_code == 200:
                         try:
