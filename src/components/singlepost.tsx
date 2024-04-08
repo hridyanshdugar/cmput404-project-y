@@ -163,17 +163,8 @@ const SinglePost: React.FC<Props> = (props) => {
 		const cookies = new Cookies();
 		const user = cookies.get("user");
 		const auth = cookies.get("auth");
-		setuser(user);
-        getLikePost(props.post.author.id.split("/").at(-1), props.post.id.split("/").at(-1), auth["access"])
-        		.then(async (result: any) => {
-                    const Data = await result.json();
-                    console.log("shared post", Data)
-            			setLikes(Data.items.length);
-            		})
-            		.catch(async (result: any) => {
-            			console.log("shared post error", result);
-            		});
-		if (props.post.origin !== props.post.source && !props.embedParentId) {
+        setuser(user);
+        if (props.post.origin !== props.post.source && !props.embedParentId) {
 			//Get shared post information
 			console.log("shared post1", props.post.source.split("/").slice(-1)[0], props.post.source.split("/").slice(-3)[0]);
 			getPost(auth["access"], props.post.source.split("/").slice(-1)[0], props.post.source.split("/").slice(-3)[0])
@@ -189,7 +180,39 @@ const SinglePost: React.FC<Props> = (props) => {
 				}).catch(async (result: any) => { 
 					console.log("shared post error", result);
 				});
-		}
+        }
+
+        if (props.post.author.host.split(".")[0].split("/").slice(-1) !== getAPIEndpoint().split(".")[0].split("/").slice(-1)) {
+            getPost(auth, props.post.id.split("/").at(-1), props.post.author.id.split("/").at(-1))
+            .then(async (result: any) => {
+                console.log("error burgerddd2");
+                if (result.status === 200) {
+                    console.log("error burgerddd3", result );
+                    const Data = await result.json();
+                    console.log("error burgerddd4", Data);
+                    props.post = Data;
+                    console.log("error burgerddd7");
+                } else {
+                    console.log("error burgerddd", result);
+                    // navigate("/home");
+                }
+            })
+            .catch(async (result: any) => {
+                // navigate("/home");
+                // const Data = await result?.json();
+                // console.log(Data);
+            });
+
+        }
+        getLikePost(props.post.author.id.split("/").at(-1), props.post.id.split("/").at(-1), auth["access"])
+        		.then(async (result: any) => {
+                    const Data = await result.json();
+                    console.log("shared post", Data)
+            			setLikes(Data.items.length);
+            		})
+            		.catch(async (result: any) => {
+            			console.log("shared post error", result);
+            		});
 	}, [props.post.id, props.post.contentType, props.post.content]);
 
 	const onPostOptionSelect = (selection: string | null) => {

@@ -285,7 +285,7 @@ export async function getAuthorPosts(host: string, page:number, size: number , a
   return await fetch(getAPIEndpoint() + `/authors/all/${id}/posts?page=${page}&size=${size}&host=${host}`, options);
 }
 
-export async function getPostComments(host: string, page:number, size: number , auth: string, userId:string, postId:string) {
+export async function getPostComments(page:number, size: number , auth: string, userId:string, postId:string) {
   const options: RequestInit = {
     method: 'GET',
     headers: {
@@ -293,7 +293,7 @@ export async function getPostComments(host: string, page:number, size: number , 
       'Authorization': `Bearer ${auth}`,
     }
   };
-  return await fetch(getAPIEndpoint() + `/authors/${userId}/posts/${postId}/comments2?page=${page}&size=${size}&host=${host}&id=${userId}`, options);
+  return await fetch(getAPIEndpoint() + `/authors/${userId}/posts/${postId}/comments2?page=${page}&size=${size}`, options);
 }
 
 export async function getPost(auth: string, postId:string, user_id:string) {
