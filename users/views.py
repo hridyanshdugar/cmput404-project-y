@@ -51,7 +51,7 @@ class AllUsersViewPK(APIView):
             for node in Node.objects.filter(is_self=False):
                 print(node.url + "api/authors/" + str(pk))
                 try:
-                    response = requests.get(node.url + "api/authors/" + str(pk), timeout=3, auth=HTTPBasicAuth(user_auth, pass_auth))
+                    response = requests.get(node.url + "api/authors/" + str(pk), timeout=3, auth=HTTPBasicAuth(node.username, node.password))
                     
                     if response.status_code == 200:
                         try:
@@ -170,8 +170,6 @@ class AllUsersView(APIView):
     pagination = Pager()
     
     def get(self, request):
-        user_auth = get_object_or_404(Node,is_self=True).username
-        pass_auth = get_object_or_404(Node,is_self=True).password
         nodes = Node.objects.filter(is_self=False)
 
         users = User.objects.filter(approved=True)
@@ -181,7 +179,7 @@ class AllUsersView(APIView):
         for node in nodes:
             print(node.url + "api/authors/ ffjjff")
             try:
-                response = requests.get(node.url + "api/authors", timeout=3,auth=HTTPBasicAuth(user_auth, pass_auth))
+                response = requests.get(node.url + "api/authors", timeout=3, auth=HTTPBasicAuth(node.username, node.password))
                 
                 if response.status_code == 200:
                     try:

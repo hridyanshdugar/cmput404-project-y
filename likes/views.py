@@ -60,7 +60,8 @@ class PostLikesViewPK(APIView):
      '''
      def put(self, request, author_id, post_id):
         body = copy.deepcopy(request.body)
-        res = requests.post(str(request.data["author"]["host"]) + "api/authors/" + author_id + "/inbox", data = body)
+        auth = Node.objects.get(url = request.data["author"]["host"])
+        res = requests.post(str(request.data["author"]["host"]) + "api/authors/" + author_id + "/inbox", data = body, auth=HTTPBasicAuth(auth.username, auth.password))
         print("hihihi 5")
         return Response(res.json(), status = status.HTTP_200_OK)
 

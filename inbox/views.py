@@ -1,3 +1,4 @@
+from urllib.request import HTTPBasicAuthHandler
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
@@ -157,9 +158,8 @@ class InboxView(APIView):
             except:
                 print("DATA:",data)
                 print("abc : 4")
-                user_auth = get_object_or_404(Node,is_self=True).username
-                pass_auth = get_object_or_404(Node,is_self=True).password
-                response = requests.get(str(data["author"]["host"]) + "api/authors/" + data["author"]["id"].split("/")[-1] + "/posts/" + str(data["id"].split("/")[-1]), auth=HTTPBasicAuth(user_auth, pass_auth))
+                auth = Node.objects.get(url = data["author"]["host"])
+                response = requests.get(str(data["author"]["host"]) + "api/authors/" + data["author"]["id"].split("/")[-1] + "/posts/" + str(data["id"].split("/")[-1]), auth=HTTPBasicAuth(auth.username, auth.password))
                 print("abc : 5")
                 if response.status_code == 200:
                     print("abc : 6")

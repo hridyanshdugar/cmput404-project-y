@@ -34,10 +34,6 @@ class PostsViewPK(APIView):
      '''
      def get(self, request, author_id, post_id):
         # add logs incrementing number by 1 each time
-        print(" hi 1")
-        user_auth = get_object_or_404(Node,is_self=True).username
-        print(" hi 2")
-        pass_auth = get_object_or_404(Node,is_self=True).password
         print(post_id)
         print(" hi 3")
         user = get_object_or_404(User, id=author_id)
@@ -52,7 +48,8 @@ class PostsViewPK(APIView):
             try:
                 print(" hi 7")
                 url = user.host + "api/authors/" + str(author_id) + "/posts/" + str(post_id)
-                response = requests.get(url, timeout=20,auth=HTTPBasicAuth(user_auth, pass_auth))
+                auth = Node.objects.get(url = user.host)
+                response = requests.get(url, timeout=20, auth=HTTPBasicAuth(auth.username, auth.password))
                 if response.status_code == 200:
                     rbody = response.json()
                     print("Response Body: ", rbody)
@@ -158,14 +155,12 @@ class AllPostsView(APIView):
             else:
                 return Response("hi", status = status.HTTP_400_BAD_REQUEST)
         else:
-            user_auth = get_object_or_404(Node,is_self=True).username
-            pass_auth = get_object_or_404(Node,is_self=True).password
             nodes = Node.objects.filter(is_self=False)
 
             for node in nodes:
                 print(node.url + "api/authors/" + str(author_id) + "/posts")
                 try:
-                    response = requests.get(node.url + "api/authors/" + str(author_id) + "/posts", timeout=20,auth=HTTPBasicAuth(user_auth, pass_auth))
+                    response = requests.get(node.url + "api/authors/" + str(author_id) + "/posts", timeout=20, auth=HTTPBasicAuth(node.username, node.password))
                     
                     if response.status_code == 200:
                         try:
@@ -226,14 +221,16 @@ class PostsView(APIView):
                     for i in FollowStatus.objects.filter(obj__id=author_id, complete=True):
                         print("Sending to: ", str(i.actor.host) + "api/authors/" + str(i.actor.id) + "/inbox/")
                         # make request post json data to the inbox of the follower
-                        requests.post(str(i.actor.host) + "api/authors/" + str(i.actor.id) + "/inbox", data = json.dumps(serializer.data), headers={'Content-Type': 'application/json'})
+                        auth = Node.objects.get(url = i.actor.host)
+                        requests.post(str(i.actor.host) + "api/authors/" + str(i.actor.id) + "/inbox", data = json.dumps(serializer.data), headers={'Content-Type': 'application/json'}, auth=HTTPBasicAuth(auth.username, auth.password))
 
                 if request.data.get("visibility") == "FRIENDS":
                     for follower in FollowSerializer(FollowStatus.objects.filter(obj__id=author_id, complete=True)).data:
                         for follow in FollowSerializer(FollowStatus.objects.filter(actor__id=author_id, complete=True)).data:
                             if follower["actor"]["id"] == follow["object"]["id"]:
                                 print("Sending to2: ", follower["object"]["host"] + "api/authors/" + str(follower["object"]["id"]) + "/inbox")
-                                requests.post(follower["object"]["host"] + "api/authors/" + str(follower["object"]["id"]) + "/inbox", data = json.dumps(serializer.data), headers={'Content-Type': 'application/json'})    
+                                auth = Node.objects.get(url = follower["object"]["host"])
+                                requests.post(follower["object"]["host"] + "api/authors/" + str(follower["object"]["id"]) + "/inbox", data = json.dumps(serializer.data), headers={'Content-Type': 'application/json'}, auth=HTTPBasicAuth(auth.username, auth.password))    
                 return Response(serializer.data, status = status.HTTP_200_OK)
         else:
             return Response({"title": "Invalid Fields", "message": serializer.errors}, status = status.HTTP_400_BAD_REQUEST)

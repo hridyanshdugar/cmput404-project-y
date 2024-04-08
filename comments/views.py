@@ -1,6 +1,8 @@
+from urllib.request import HTTPBasicAuthHandler
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
+from requests.auth import HTTPBasicAuth
 
 from backend.permissions import RemoteOrSessionAuthenticated, SessionAuthenticated
 from nodes.models import Node
@@ -127,7 +129,8 @@ class CommentsView2(APIView):
             try:
                 print(" hi 7")
                 url = user.host + "api/authors/" + str(author_id) + "/posts/" + str(fk) + "/comments"
-                response = requests.get(url, timeout=20)
+                auth = Node.objects.get(url = user.host)
+                response = requests.get(url, timeout=20, auth=HTTPBasicAuth(auth.username, auth.password))
                 if response.status_code == 200:
                     rbody = response.json()
                     print("Response Body: ", rbody)
@@ -177,5 +180,6 @@ class CommentsView(APIView):
         data = json.loads(body)
         print("DATA: ", data)
         user = User.objects.get(id=author_id)
-        res = requests.post(str(user.host) + "api/authors/" + author_id + "/inbox", data = body)
+        auth = Node.objects.get(url = user.host)
+        res = requests.post(str(user.host) + "api/authors/" + author_id + "/inbox", data = body, auth=HTTPBasicAuth(auth.username, auth.password))
         return Response(res, status = res.status_code)
