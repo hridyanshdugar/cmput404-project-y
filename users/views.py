@@ -107,7 +107,7 @@ class AllUsersViewPK(APIView):
                             response_data2 = copy.deepcopy(response.json())
                             print("bob22323232 ", response_data, node.url, response_data["host"] )
                             
-                            # response_data["host"] = response_data["host"] if (response_data["host"][-1] == "/") else response_data["host"] + "/"
+                            response_data["host"] = response_data["host"] if (response_data["host"][-1] == "/") else response_data["host"] + "/"
                             print("bugg22222222", node.url, response_data["host"])
                             if node.url == response_data["host"]:
                                 print("bob22323232 1")
