@@ -50,7 +50,7 @@ class AllUsersViewPK(APIView):
             return Response(serializer.data, status = status.HTTP_200_OK)
         else:
             for node in Node.objects.filter(is_self=False):
-                print("bigbibibibibigggggggg", node.url + "api/authors/" + str(pk))
+                print("bigbibibibibigggggggg", node.url + "api/authors/" + str(pk) + "/")
                 try:
                     response = requests.get(node.url + "api/authors/" + str(pk) + "/", timeout=3, auth=HTTPBasicAuth(node.username, node.password))
                     
@@ -58,7 +58,7 @@ class AllUsersViewPK(APIView):
                         try:
                             response_data = response.json()
                             response_data2 = copy.deepcopy(response.json())
-                            print(response_data, node.url)
+                            print("bob22323232 ", response_data, node.url )
                             
                             if node.url == response_data["host"]:
                                 hasPfp = False
