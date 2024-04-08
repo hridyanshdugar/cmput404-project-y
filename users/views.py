@@ -194,12 +194,5 @@ class AllUsersView(APIView):
                     print(f"Request to {node.url} failed with status code: {response.status_code}")
             except requests.exceptions.RequestException as e:
                 print(f"Request to {node.url} failed: {e}")
-
-        page_number = request.GET.get('page') or 1
-
-        page = self.pagination.paginate_queryset(node_responses, request, view=self)
-        if page is not None:
-            return Response(page, status=status.HTTP_200_OK)
-        else:
-            # Adjusted to prevent ReferenceError if `page` is None
-            return Response({"error": "Bad request or empty page."}, status=status.HTTP_400_BAD_REQUEST)
+        print("elphant 1", node_responses)
+        return Response(node_responses, status=status.HTTP_200_OK)
