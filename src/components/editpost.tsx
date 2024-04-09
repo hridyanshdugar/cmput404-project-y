@@ -174,7 +174,7 @@ const EditPostt: React.FC<EditPostProps> = (props) => {
 					<img
 						className={style.img}
 						src={`${
-							user ? getMediaEndpoint() + user.profileImage?.split("?")[0] : ""
+							user ? user.profileImage?.split("?")[0] : ""
 						}`}
 						style={{ width: "40px", height: "40px" }}
 					/>

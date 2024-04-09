@@ -219,23 +219,25 @@ const SinglePost: React.FC<Props> = (props) => {
                 // console.log(Data);
             });
         }
-        getLikePost(post.author.id.split("/").at(-1), (post.type === "post" ? post.source : post.id).split("/").slice(-1)[0], auth["access"])
-        		.then(async (result: any) => {
-						const Data = await result.json();
-						console.log("like post", Data)
-						Data.items.every((dataLike : {"author" : {"id" : string}}) => {
-							console.log("like author id", dataLike.author.id.split("/").at(-1))
-							if (dataLike.author.id.split("/").at(-1) === user?.id) {
-								console.log("already liked this")
-								setLikable(false);
-							}
-							return likable
+		if (!props.parentId) {
+			getLikePost(post.author.id.split("/").at(-1), (post.type === "post" ? post.source : post.id).split("/").slice(-1)[0], auth["access"])
+					.then(async (result: any) => {
+							const Data = await result.json();
+							console.log("like post", Data)
+							Data.items.every((dataLike : {"author" : {"id" : string}}) => {
+								console.log("like author id", dataLike.author.id.split("/").at(-1))
+								if (dataLike.author.id.split("/").at(-1) === user?.id) {
+									console.log("already liked this")
+									setLikable(false);
+								}
+								return likable
+							});
+							setLikes(Data.items.length);
+						})
+						.catch(async (result: any) => {
+							console.log("shared post error", result);
 						});
-            			setLikes(Data.items.length);
-            		})
-            		.catch(async (result: any) => {
-            			console.log("shared post error", result);
-            		});
+		}
 	}, [post.id, post.contentType, post.content]);
 
 	const onPostOptionSelect = (selection: string | null) => {
@@ -339,7 +341,9 @@ const SinglePost: React.FC<Props> = (props) => {
                                 <Dropdown
                                     icon={faEllipsis}
                                     options={(post.author.id.split("/").at(-1) === user?.id && !props.parentId
-                                        ? ["Delete", "Edit"]
+                                        ? post.origin !== post.source
+										? ["Delete"]
+										: ["Delete", "Edit"]
                                         : []
                                     ).concat(["Copy Link"])}
                                     onChange={onPostOptionSelect}

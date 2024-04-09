@@ -145,7 +145,10 @@ class CommentsView2(APIView):
                 if response.ok:
                     rbody = response.json()
                     print("big builder 321", rbody)
-                    rbody = rbody["comments"]
+                    if "comments" in rbody:
+                        rbody = rbody["comments"]
+                    if "items" in rbody:
+                        rbody = rbody["items"]                        
                     print("Response Body: ", rbody)
                     return Response(data = rbody, status = status.HTTP_200_OK)
                 else:
