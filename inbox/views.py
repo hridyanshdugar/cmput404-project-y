@@ -169,7 +169,7 @@ class InboxView(APIView):
                 auth = Node.objects.get(url = data["author"]["host"])
                 response = requests.get(str(data["author"]["host"]) + "api/authors/" + data["author"]["id"].split("/")[-1] + "/posts/" + str(data["id"].split("/")[-1]), auth=HTTPBasicAuth(auth.username, auth.password))
                 print("abc : 5")
-                if response.status_code == 200:
+                if response.ok:
                     print("abc : 6")
                     try:
                         bob = response.json()

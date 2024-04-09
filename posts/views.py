@@ -53,7 +53,7 @@ class PostsViewPK(APIView):
                 url = user.host + "api/authors/" + str(author_id) + "/posts/" + str(post_id)
                 auth = Node.objects.get(url = user.host)
                 response = requests.get(url, timeout=20, auth=HTTPBasicAuth(auth.username, auth.password))
-                if response.status_code == 200:
+                if response.ok:
                     rbody = response.json()
                     print("Response Body: ", rbody)
                     return Response(data = rbody, status = status.HTTP_200_OK)
@@ -182,7 +182,7 @@ class AllPostsView(APIView):
                 try:
                     response = requests.get(node.url + "api/authors/" + str(author_id) + "/posts/", timeout=20, auth=HTTPBasicAuth(node.username, node.password))
                     
-                    if response.status_code == 200:
+                    if response.ok:
                         try:
                             response_data = response.json()
                             print("GOT DATA: ",response_data)

@@ -28,14 +28,14 @@ class Pager(PageNumberPagination):
 
 def download_profile(instance, url):
     response = requests.get(url)
-    if response.status_code == 200:
+    if response.ok:
         instance.profileImage.save(name=f"pfp_{uuid.uuid4()}.jpg", content=ContentFile(response.content), save=True)
         return True
     return False
 
 def download_profileBack(instance, url):
     response = requests.get(url)
-    if response.status_code == 200:
+    if response.ok:
         instance.profileBackgroundImage.save(name=f"pfp_{uuid.uuid4()}.jpg", content=ContentFile(response.content), save=True)
         return True
     return False
@@ -102,7 +102,7 @@ class AllUsersViewPK(APIView):
                 try:
                     response = requests.get(node.url + "api/authors/" + str(pk) + "/", timeout=3, auth=HTTPBasicAuth(node.username, node.password))
                     
-                    if response.status_code == 200:
+                    if response.ok:
                         try:
                             response_data = response.json()
                             response_data2 = copy.deepcopy(response.json())
@@ -215,7 +215,7 @@ class AllUsersView(APIView):
             try:
                 response = requests.get(node.url + "api/authors", timeout=3, auth=HTTPBasicAuth(node.username, node.password))
                 
-                if response.status_code == 200:
+                if response.ok:
                     try:
                         response_data = response.json()
                         print(response_data)

@@ -2,7 +2,7 @@
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import style from "./singlepost.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
+import { faEllipsis, faHeart as faHeartSolid } from "@fortawesome/free-solid-svg-icons";
 import { faArrowUpFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { faRepeat } from "@fortawesome/free-solid-svg-icons";
 import { faComment } from "@fortawesome/free-regular-svg-icons";
@@ -106,6 +106,7 @@ const SinglePost: React.FC<Props> = (props) => {
 	const [sharedPost, setSharedPost] = useState<any>({});
 	const [popupOpen, setPopupOpen] = useState(false);
 	const [likes, setLikes] = useState<number>(-2);
+	const [likable, setLikable] = useState<boolean>(true);
 	const share = () => {
 		if (post.origin === post.source) {
 			if (post.visibility === "PUBLIC") {
@@ -137,36 +138,40 @@ const SinglePost: React.FC<Props> = (props) => {
 
 	const onClickLike = (event: any) => {
 		console.log("CLICKED");
-		const cookies = new Cookies();
-		const user = cookies.get("user");
-        const auth = cookies.get("auth");
-		console.log("THING", post.author)
-		let author = {
-			type: "author",
-			id: post.author["id"],
-			url: post.author["url"],
-			host: post.author["host"],
-			displayName: post.author["displayName"],
-			github: post.author["github"],
-			profileImage: post.author["profileImage"],
-		};
-
-		likePost(
-			author,
-			getAPIEndpoint() + "/authors/"+author.id.split("/").at(-1)+"/posts/" + (post.type === "post" ? post.source : post.id).split("/").slice(-1)[0],
-			auth["access"]
-		)
-		.then(async (result: any) => {
-			console.log(result, "sent like");
-			const d = await result.json();
-			if (result.status === 200) {
-				console.log("d", d);
-				setLikes(likes + 1);
-			}
-		})
-		.catch(async (result: any) => {
-			console.log("like failed");
-		});
+		if (likable) {
+			console.log("likable");
+			const cookies = new Cookies();
+			const user = cookies.get("user");
+			const auth = cookies.get("auth");
+			console.log("THING", post.author)
+			let author = {
+				type: "author",
+				id: post.author["id"],
+				url: post.author["url"],
+				host: post.author["host"],
+				displayName: post.author["displayName"],
+				github: post.author["github"],
+				profileImage: post.author["profileImage"],
+			};
+	
+			likePost(
+				author,
+				getAPIEndpoint() + "/authors/"+author.id.split("/").at(-1)+"/posts/" + (post.type === "post" ? post.source : post.id).split("/").slice(-1)[0],
+				auth["access"]
+			)
+			.then(async (result: any) => {
+				console.log(result, "sent like");
+				const d = await result.json();
+				if (result.status === 200) {
+					console.log("d", d);
+					setLikes(likes + 1);
+					setLikable(false);
+				}
+			})
+			.catch(async (result: any) => {
+				console.log("like failed");
+			});
+		}
 		event.stopPropagation();
 	};
 
@@ -216,8 +221,14 @@ const SinglePost: React.FC<Props> = (props) => {
         }
         getLikePost(post.author.id.split("/").at(-1), (post.type === "post" ? post.source : post.id).split("/").slice(-1)[0], auth["access"])
         		.then(async (result: any) => {
-                    const Data = await result.json();
-                    console.log("shared post", Data)
+						const Data = await result.json();
+						console.log("like post", Data)
+						Data.items.every((dataLike : {"author" : {"id" : string}}) => {
+							if (dataLike.author.id.split("/").at(-1) === user?.id) {
+								setLikable(false);
+							}
+							return likable
+						});
             			setLikes(Data.items.length);
             		})
             		.catch(async (result: any) => {
@@ -402,7 +413,7 @@ const SinglePost: React.FC<Props> = (props) => {
 
 						{! props.parentId && <div className={style.flexItemLike}>
 							<FontAwesomeIcon
-								icon={faHeart}
+								icon={likable ? faHeart : faHeartSolid}
 								fixedWidth
 								onClick={onClickLike}
 							/>{" "}

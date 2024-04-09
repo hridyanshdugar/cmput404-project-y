@@ -72,7 +72,7 @@ def getFollowers(request, author_id=None):
                 response = requests.get(user.host + "api/authors/" + author_id + "/followers",timeout=3, auth=HTTPBasicAuth(auth.username, auth.password))
             except Exception as e:
                 print(e)
-            if response != None and response.status_code == 200:
+            if response != None and response.ok:
                 try:
                     followers = response.json()
                     print(followers)
@@ -123,7 +123,7 @@ class FollowerView(APIView):
             #     except Exception as e:
             #         print(e, "wwhy")
             #     print(response, "response")
-            #     if response != None and response.status_code == 200:
+            #     if response != None and response.ok:
             #         print("this hit")
             #         try:
             #             ff = response.json()
@@ -146,7 +146,7 @@ class FollowerView(APIView):
         auth = Node.objects.get(url = data["object"]["host"])
         res = requests.request(method="POST", headers={'Content-Type': 'application/json'}, url=data["object"]["host"] + "api/authors/" + str(author_id) + "/inbox",data=json.dumps(data), auth=HTTPBasicAuth(auth.username, auth.password))
         print(res, "IDK")
-        if res.status_code == 200:
+        if res.ok:
             if data["type"] == "Follow":
                 if not FollowStatus.objects.filter(actor__id=follower_id,obj__id=author_id).exists():
                     serializer = SaveFollowSerializer(data={"actor":follower_id,"obj":author_id , "complete": False})
@@ -173,7 +173,7 @@ class FollowerView(APIView):
         print("boblb 1")
         res = requests.request(method="POST", headers={'Content-Type': 'application/json'}, url=data["object"]["host"] + "api/authors/" + str(follower_id) + "/inbox",data=json.dumps(data), auth=HTTPBasicAuth(auth.username, auth.password))
         print("boblb 2")
-        if res.status_code == 200 or res.status_code == 201:
+        if res.ok:
             print("sent to actor inbox")
             req = get_object_or_404(FollowStatus,actor__id=follower_id,obj__id=author_id)
             hi_user = User.objects.get(id=author_id)
