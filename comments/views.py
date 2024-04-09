@@ -1,3 +1,4 @@
+import copy
 from urllib.request import HTTPBasicAuthHandler
 import uuid
 from rest_framework.response import Response
@@ -200,8 +201,10 @@ class CommentsView(APIView):
         """
         user = User.objects.get(id=author_id)
         auth = Node.objects.get(url = user.host)
-        if "depresso" in auth.url:
-            request.data['id'] += "/comments/" + str(uuid.uuid4())
-        print("buhdafugbhfduiui33483883", request.data['id'])
-        res = requests.post(str(user.host) + "api/authors/" + author_id + "/inbox", headers={'Content-Type': 'application/json'},  data = json.dumps(request.data), auth=HTTPBasicAuth(auth.username, auth.password))
+        response = copy.deepcopy(request.data)
+        print("burger222", user.host)
+        if "depresso" in user.host:
+            response['id'] = response['id'] + "/comments/" + str(uuid.uuid4())
+        print("buhdafugbhfduiui33483883", response)
+        res = requests.post(str(user.host) + "api/authors/" + author_id + "/inbox", headers={'Content-Type': 'application/json'},  data = json.dumps(response), auth=HTTPBasicAuth(auth.username, auth.password))
         return Response(res, status = res.status_code)
