@@ -188,7 +188,10 @@ class CommentsView(APIView):
         page = self.pagination.paginate_queryset(comments, request, view=self)
         if page is not None:
             serializer = CommentSerializer(page, many=True, context={'request': request})
-            return Response(serializer.data, status = status.HTTP_200_OK)
+            data = dict()
+            data["comments"] = serializer.data
+            data["type"] = "comments"
+            return Response(data, status = status.HTTP_200_OK)
         else:
             return Response(serializer.data, status = status.HTTP_400_BAD_REQUEST)
 
