@@ -143,7 +143,9 @@ class CommentsView2(APIView):
                 auth = Node.objects.get(url = user.host)
                 response = requests.get(url, timeout=20, auth=HTTPBasicAuth(auth.username, auth.password))
                 if response.ok:
-                    rbody = response.json()["comments"]
+                    rbody = response.json()
+                    print("big builder 321", rbody)
+                    rbody = rbody["comments"]
                     print("Response Body: ", rbody)
                     return Response(data = rbody, status = status.HTTP_200_OK)
                 else:
