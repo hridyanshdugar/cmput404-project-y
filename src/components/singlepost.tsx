@@ -224,7 +224,9 @@ const SinglePost: React.FC<Props> = (props) => {
 						const Data = await result.json();
 						console.log("like post", Data)
 						Data.items.every((dataLike : {"author" : {"id" : string}}) => {
+							console.log("like author id", dataLike.author.id.split("/").at(-1))
 							if (dataLike.author.id.split("/").at(-1) === user?.id) {
+								console.log("already liked this")
 								setLikable(false);
 							}
 							return likable
