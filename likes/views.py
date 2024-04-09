@@ -26,7 +26,7 @@ class PostLikesViewPK2(APIView):
         user = get_object_or_404(User, id=author_id)
         if user.host == Node.objects.get(is_self=True).url:
             print("hihihi 1", author_id, post_id)
-            Likes = PostLike.objects.filter(author__id=author_id,post__id=post_id)
+            Likes = PostLike.objects.filter(post__id=post_id)
             print("hihihi 2")
             serializer = PostLikeSerializer(Likes, many=True)
             print("hihihi 3")
