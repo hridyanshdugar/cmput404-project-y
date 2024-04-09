@@ -146,12 +146,12 @@ const SinglePost: React.FC<Props> = (props) => {
 			console.log("THING", post.author)
 			let author = {
 				type: "author",
-				id: post.author["id"],
-				url: post.author["url"],
-				host: post.author["host"],
-				displayName: post.author["displayName"],
-				github: post.author["github"],
-				profileImage: post.author["profileImage"],
+				id: user.id,
+				url: user.url,
+				host: user.host,
+				displayName: user.displayName,
+				github: user.github,
+				profileImage: user.profileImage,
 			};
 	
 			likePost(
