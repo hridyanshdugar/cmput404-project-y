@@ -143,7 +143,7 @@ class FollowerView(APIView):
         data = request.data
         print("cac", data)
         auth = Node.objects.get(url = data["object"]["host"])
-        res = requests.request(method="POST", url=data["object"]["host"] + "api/authors/" + str(author_id) + "/inbox",data=json.dumps(data), auth=HTTPBasicAuth(auth.username, auth.password))
+        res = requests.request(method="POST", headers={'Content-Type': 'application/json'}, url=data["object"]["host"] + "api/authors/" + str(author_id) + "/inbox",data=json.dumps(data), auth=HTTPBasicAuth(auth.username, auth.password))
         print(res, "IDK")
         if res.status_code == 200:
             if data["type"] == "Follow":

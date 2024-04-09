@@ -30,7 +30,7 @@ class PostLikesViewPK2(APIView):
             print("hihihi 2")
             serializer = PostLikeSerializer(Likes, many=True)
             print("hihihi 3")
-            return Response({"type": "Liked", "items": serializer.data}, status = status.HTTP_200_OK)
+            return Response({"type": "liked", "items": serializer.data}, status = status.HTTP_200_OK)
         else:
             try:
                 print(" hi 7")
@@ -39,7 +39,7 @@ class PostLikesViewPK2(APIView):
                 response = requests.get(url, timeout=20, auth=HTTPBasicAuth(auth.username, auth.password))
                 if response.status_code == 200:
                     rbody = response.json()
-                    print("Response Body: ", rbody)
+                    print("3434Response Body: ", rbody, url)
                     return Response(data = rbody, status = status.HTTP_200_OK)
                 else:
                     print(f"Request to {user.host} failed with status code: {response.status_code} : {url}")
