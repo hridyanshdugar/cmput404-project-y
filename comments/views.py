@@ -192,11 +192,7 @@ class CommentsView(APIView):
         """
         Add a comment to a specific post by a specific user
         """
-        body = request.body
-        print("BODY: ", body)
-        data = json.loads(body)
-        print("DATA: ", data)
         user = User.objects.get(id=author_id)
         auth = Node.objects.get(url = user.host)
-        res = requests.post(str(user.host) + "api/authors/" + author_id + "/inbox", headers={'Content-Type': 'application/json'},  data = body, auth=HTTPBasicAuth(auth.username, auth.password))
+        res = requests.post(str(user.host) + "api/authors/" + author_id + "/inbox", headers={'Content-Type': 'application/json'},  data = json.dumps(request.data), auth=HTTPBasicAuth(auth.username, auth.password))
         return Response(res, status = res.status_code)
