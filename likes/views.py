@@ -50,7 +50,7 @@ class PostLikesViewPK2(APIView):
 class PostLikesViewPK(APIView):
      permission_classes = [ RemoteOrSessionAuthenticated ]
      '''
-     GET /authors/{id}/posts/{post_id}/likes/{like_id}
+     GET /authors/{id}/posts/{post_id}/likes
      '''
      def get(self, request, author_id, post_id):
         """
@@ -61,10 +61,10 @@ class PostLikesViewPK(APIView):
         print("hihihi 2")
         serializer = PostLikeSerializer(Likes, many=True)
         print("hihihi 3")
-        return Response({"type": "Liked", "items": serializer.data}, status = status.HTTP_200_OK)
+        return Response({"type": "liked", "items": serializer.data}, status = status.HTTP_200_OK)
 
      '''
-     PUT /authors/{id}/posts/{post_id}/likes/{like_id}
+     PUT /authors/{id}/posts/{post_id}/likes
      '''
      def put(self, request, author_id, post_id):
         """
@@ -72,13 +72,14 @@ class PostLikesViewPK(APIView):
         """
         body = copy.deepcopy(request.body)
         auth = Node.objects.get(url = request.data["author"]["host"])
-        res = requests.post(str(request.data["author"]["host"]) + "api/authors/" + author_id + "/inbox", data = body, auth=HTTPBasicAuth(auth.username, auth.password))
+        res = requests.post(str(request.data["author"]["host"]) + "api/authors/" + author_id + "/inbox", headers={'Content-Type': 'application/json'},
+ data = body, auth=HTTPBasicAuth(auth.username, auth.password))
         print("hihihi 5")
         return Response(res.json(), status = status.HTTP_200_OK)
 
      
      '''
-     DELETE /authors/{id}/posts/{post_id}/likes/{l}
+     DELETE /authors/{id}/posts/{post_id}/likes
      '''
      def delete(self, request, author_id, post_id):
         """

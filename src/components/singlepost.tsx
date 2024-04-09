@@ -157,7 +157,7 @@ const SinglePost: React.FC<Props> = (props) => {
 			auth["access"]
 		)
 		.then(async (result: any) => {
-			console.log(result, "post comments");
+			console.log(result, "sent like");
 			const d = await result.json();
 			if (result.status === 200) {
 				console.log("d", d);
