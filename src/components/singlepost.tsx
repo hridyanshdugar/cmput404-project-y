@@ -153,10 +153,10 @@ const SinglePost: React.FC<Props> = (props) => {
 				github: user.github,
 				profileImage: user.profileImage,
 			};
-	
+            console.log("sal3", post)
 			likePost(
 				author,
-				getAPIEndpoint() + "/authors/"+(post.type === "post" ? post.source : post.id).split("/").slice(-3)[0]+"/posts/" + (post.type === "post" ? post.source : post.id).split("/").slice(-1)[0],
+				getAPIEndpoint() + "/authors/"+(post.type === "post" ? post.origin : post.id).split("/").slice(-3)[0]+"/posts/" + (post.type === "post" ? post.origin : post.id).split("/").slice(-1)[0],
 				auth["access"]
 			)
 			.then(async (result: any) => {

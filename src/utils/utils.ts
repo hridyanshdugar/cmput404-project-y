@@ -275,7 +275,7 @@ export async function likePost(author: any, object: string, auth:string) {
     },
     body: JSON.stringify({"type": "Like", "author": author, "object": object})
   };
-  return await fetch2(getAPIEndpoint() + `/authors/${author.id.split("/").at(-1)}/posts/${object.split("/").at(-1)}/likes`, options);
+  return await fetch2(getAPIEndpoint() + `/authors/${object.split("/").at(-3)}/posts/${object.split("/").at(-1)}/likes`, options);
 }
 
 export async function getHomePosts(host: string, page:number, size: number , auth: string, id:string) {
