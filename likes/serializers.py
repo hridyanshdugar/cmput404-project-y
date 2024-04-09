@@ -17,7 +17,7 @@ class PostLikeSerializer(serializers.ModelSerializer):
       author = serializers.SerializerMethodField(read_only=True)
       class Meta:
          model = PostLike
-         fields = ["summary","type", "author", "object"]
+         fields = ["summary","type", "author"]
       
       def get_author(self, obj):
          return AuthorSerializer(obj.author, context={'exclude_comments': True}).data
