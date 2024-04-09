@@ -113,25 +113,25 @@ class FollowerView(APIView):
         if User.objects.filter(id=author_id).exists():
             user = User.objects.get(id=author_id)
             print(user, user.host, "guy")
-            if user.host == Node.objects.get(is_self=True).url:
-                print("GOT HERE", author_id, follower_id)
-                ff = FollowSerializer(get_object_or_404(FollowStatus,actor__id=follower_id,obj__id=author_id)).data
-            else:
-                auth = Node.objects.get(url = user.host)
-                try:
-                    response = requests.get(user.host + "api/authors/" + author_id + "/followers/" + follower_id,timeout=3, auth=HTTPBasicAuth(auth.username, auth.password))
-                except Exception as e:
-                    print(e, "wwhy")
-                print(response, "response")
-                if response != None and response.status_code == 200:
-                    print("this hit")
-                    try:
-                        ff = response.json()
-                        print(ff, "help me")
-                    except JSONDecodeError:
-                        print(f"Invalid JSON response from {user.host}: {response.text}")
-                else:
-                    print(f"Request to {user.host} failed")
+            ff = FollowSerializer(get_object_or_404(FollowStatus,actor__id=follower_id,obj__id=author_id)).data
+            # if user.host == Node.objects.get(is_self=True).url:
+            #     print("GOT HERE", author_id, follower_id)
+            # else:
+            #     auth = Node.objects.get(url = user.host)
+            #     try:
+            #         response = requests.get(user.host + "api/authors/" + author_id + "/followers/" + follower_id,timeout=3, auth=HTTPBasicAuth(auth.username, auth.password))
+            #     except Exception as e:
+            #         print(e, "wwhy")
+            #     print(response, "response")
+            #     if response != None and response.status_code == 200:
+            #         print("this hit")
+            #         try:
+            #             ff = response.json()
+            #             print(ff, "help me")
+            #         except JSONDecodeError:
+            #             print(f"Invalid JSON response from {user.host}: {response.text}")
+            #     else:
+            #         print(f"Request to {user.host} failed")
         if ff:
             return Response(ff,status=status.HTTP_200_OK)
         else:

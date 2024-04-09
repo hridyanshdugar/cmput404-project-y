@@ -153,10 +153,20 @@ const SinglePost: React.FC<Props> = (props) => {
 
 		likePost(
 			author,
-			getAPIEndpoint() + "/authors/"+author.id.split("/").at(-1)+"/posts/" + (post.type === "post" ? post.source : post.id).split("/").slice(-3)[0],
+			getAPIEndpoint() + "/authors/"+author.id.split("/").at(-1)+"/posts/" + (post.type === "post" ? post.source : post.id).split("/").slice(-1)[0],
 			auth["access"]
-		);
-		setLikes(likes + 1);
+		)
+		.then(async (result: any) => {
+			console.log(result, "post comments");
+			const d = await result.json();
+			if (result.status === 200) {
+				console.log("d", d);
+				setLikes(likes + 1);
+			}
+		})
+		.catch(async (result: any) => {
+			console.log("like failed");
+		});
 		event.stopPropagation();
 	};
 
@@ -204,7 +214,7 @@ const SinglePost: React.FC<Props> = (props) => {
                 // console.log(Data);
             });
         }
-        getLikePost(post.author.id.split("/").at(-1), (post.type === "post" ? post.source : post.id).split("/").slice(-3)[0], auth["access"])
+        getLikePost(post.author.id.split("/").at(-1), (post.type === "post" ? post.source : post.id).split("/").slice(-1)[0], auth["access"])
         		.then(async (result: any) => {
                     const Data = await result.json();
                     console.log("shared post", Data)
@@ -220,14 +230,14 @@ const SinglePost: React.FC<Props> = (props) => {
 		const auth = cookies.get("auth")["access"];
 		if (selection === "Delete") {
 			if (props.parentId) {
-				deleteComment(auth, props.parentId, (post.type === "post" ? post.source : post.id).split("/").slice(-3)[0], post.author.id.split("/").at(-1))
+				deleteComment(auth, props.parentId, (post.type === "post" ? post.source : post.id).split("/").slice(-1)[0], post.author.id.split("/").at(-1))
 					.then(async (result: any) => {
 						const Data = await result.json();
 						console.log(Data);
 
 						if (result.status === 200) {
 							setReplies(
-								replies.filter((post: any) => (post.type === "post" ? post.source : post.id).split("/").slice(-3)[0] !== (post.type === "post" ? post.source : post.id).split("/").slice(-3)[0])
+								replies.filter((post: any) => (post.type === "post" ? post.source : post.id).split("/").slice(-1)[0] !== (post.type === "post" ? post.source : post.id).split("/").slice(-3)[0])
 							);
 							setPosts(
 								posts.map((post: any) => ({ ...post, count: post.count - 1 }))
@@ -238,14 +248,14 @@ const SinglePost: React.FC<Props> = (props) => {
 						console.log(result);
 					});
 			} else {
-				deletePost(auth, (post.type === "post" ? post.source : post.id).split("/").slice(-3)[0], post.author.id.split("/").at(-1))
+				deletePost(auth, (post.type === "post" ? post.source : post.id).split("/").slice(-1)[0], post.author.id.split("/").at(-1))
 					.then(async (result: any) => {
 						const Data = await result.json();
 						console.log(Data);
 
 						if (result.status === 200) {
 							console.log(posts);
-							setPosts(posts.filter((post: any) => (post.type === "post" ? post.source : post.id).split("/").slice(-3)[0] !== (post.type === "post" ? post.source : post.id).split("/").slice(-3)[0]));
+							setPosts(posts.filter((post: any) => (post.type === "post" ? post.source : post.id).split("/").slice(-1)[0] !== (post.type === "post" ? post.source : post.id).split("/").slice(-3)[0]));
 							console.log(posts);
 						}
 					})
@@ -259,7 +269,7 @@ const SinglePost: React.FC<Props> = (props) => {
 			document.body.style.overflow = "hidden";
 		} else if (selection === "Copy Link") {
 			console.log("copy link");
-			navigator.clipboard.writeText(getFrontend() + "/post/" + (post.type === "post" ? post.source : post.id).split("/").slice(-3)[0]);
+			navigator.clipboard.writeText(getFrontend() + "/post/" + (post.type === "post" ? post.source : post.id).split("/").slice(-1)[0]);
 		}
 	};
 	const date = new Date(0);
@@ -270,7 +280,7 @@ const SinglePost: React.FC<Props> = (props) => {
 	return (
 		<>
 			{popupOpen && (
-				<EditPopupPanel setPopupOpen={setPopupOpen} postId={(post.type === "post" ? post.source : post.id).split("/").slice(-3)[0]} />
+				<EditPopupPanel setPopupOpen={setPopupOpen} postId={(post.type === "post" ? post.source : post.id).split("/").slice(-1)[0]} />
 			)}
 			<div
 				className={style.overflow}
@@ -330,7 +340,7 @@ const SinglePost: React.FC<Props> = (props) => {
 							) : (
 									<SinglePost
 										post={sharedPost}
-										embedParentId={(post.type === "post" ? post.source : post.id).split("/").slice(-3)[0]}
+										embedParentId={(post.type === "post" ? post.source : post.id).split("/").slice(-1)[0]}
 									/>
 							)}
 						</Card>
@@ -370,14 +380,14 @@ const SinglePost: React.FC<Props> = (props) => {
 								{post.origin !== post.source  && !props.embedParentId ? (
 									<div
                                     className={style.flexItemShare}
-                                    id={"sharePost" + (post.type === "post" ? post.source : post.id).split("/").slice(-3)[0]}
+                                    id={"sharePost" + (post.type === "post" ? post.source : post.id).split("/").slice(-1)[0]}
                                     onClick={onClickShare}
                                 >
                                 </div>
 								) : (
 									<div
 										className={style.flexItemShare}
-										id={"sharePost" + (post.type === "post" ? post.source : post.id).split("/").slice(-3)[0]}
+										id={"sharePost" + (post.type === "post" ? post.source : post.id).split("/").slice(-1)[0]}
 										onClick={onClickShare}
 									>
 										<FontAwesomeIcon

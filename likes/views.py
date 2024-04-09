@@ -49,7 +49,9 @@ class PostLikesViewPK2(APIView):
 
 class PostLikesViewPK(APIView):
      permission_classes = [ RemoteOrSessionAuthenticated ]
-     
+     '''
+     GET /authors/{id}/posts/{post_id}/likes/{like_id}
+     '''
      def get(self, request, author_id, post_id):
         """
         Get the likes on a specific post by a specific user
@@ -62,7 +64,7 @@ class PostLikesViewPK(APIView):
         return Response({"type": "Liked", "items": serializer.data}, status = status.HTTP_200_OK)
 
      '''
-     PUT /authors/{id}/posts/ and /posts/
+     PUT /authors/{id}/posts/{post_id}/likes/{like_id}
      '''
      def put(self, request, author_id, post_id):
         """
@@ -76,7 +78,7 @@ class PostLikesViewPK(APIView):
 
      
      '''
-     DELETE /authors/{id}/posts/ and /posts/
+     DELETE /authors/{id}/posts/{post_id}/likes/{l}
      '''
      def delete(self, request, author_id, post_id):
         """
