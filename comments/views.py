@@ -199,5 +199,6 @@ class CommentsView(APIView):
         """
         user = User.objects.get(id=author_id)
         auth = Node.objects.get(url = user.host)
+        request.data["id"].replace(Node.objects.get(is_self=True).url, auth.url)
         res = requests.post(str(user.host) + "api/authors/" + author_id + "/inbox", headers={'Content-Type': 'application/json'},  data = json.dumps(request.data), auth=HTTPBasicAuth(auth.username, auth.password))
         return Response(res, status = res.status_code)

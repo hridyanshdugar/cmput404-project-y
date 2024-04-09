@@ -30,6 +30,7 @@ interface CreatePostProps {
 	style?: React.CSSProperties;
 	postId?: string | undefined;
 	postAuthorId ?: string | undefined;
+	postAuthorHost ?: string | undefined;
 	setPopupOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 	updatePosts: (State: any) => void;
 }

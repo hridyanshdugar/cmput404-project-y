@@ -249,7 +249,7 @@ export async function createComment(contentType: string, comment: string, auth: 
     body: JSON.stringify({
       "type": "comment", "comment": comment,
       "published": new Date().toISOString(), "contentType": contentType, "author": author,
-      "id": getAPIEndpoint() + `/authors/${author.id.split("/").at(-1)}/posts/${postId}`
+      "id": getAPIEndpoint() + `/authors/${postAuthorId}/posts/${postId}`
     })
   };
   return await fetch2(getAPIEndpoint() + `/authors/${postAuthorId}/posts/${postId}/comments`, options);
