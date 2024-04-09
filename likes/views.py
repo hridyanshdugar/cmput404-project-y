@@ -71,8 +71,9 @@ class PostLikesViewPK(APIView):
         Send a like to the inbox of a specific user
         """
         body = copy.deepcopy(request.body)
-        auth = Node.objects.get(url = request.data["author"]["host"])
-        res = requests.post(str(request.data["author"]["host"]) + "api/authors/" + author_id + "/inbox", headers={'Content-Type': 'application/json'},
+        user = get_object_or_404(User, id=author_id)
+        auth = Node.objects.get(url = user["host"])
+        res = requests.post(str(user["host"]) + "api/authors/" + author_id + "/inbox", headers={'Content-Type': 'application/json'},
  data = body, auth=HTTPBasicAuth(auth.username, auth.password))
         print("hihihi 5")
         return Response(res.json(), status = res.status_code)
