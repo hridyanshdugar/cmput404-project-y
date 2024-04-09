@@ -72,8 +72,8 @@ class PostLikesViewPK(APIView):
         """
         body = copy.deepcopy(request.body)
         user = get_object_or_404(User, id=author_id)
-        auth = Node.objects.get(url = user["host"])
-        res = requests.post(str(user["host"]) + "api/authors/" + author_id + "/inbox", headers={'Content-Type': 'application/json'},
+        auth = Node.objects.get(url = user.host)
+        res = requests.post(str(user.host) + "api/authors/" + author_id + "/inbox", headers={'Content-Type': 'application/json'},
  data = body, auth=HTTPBasicAuth(auth.username, auth.password))
         print("hihihi 5")
         return Response(res.json(), status = res.status_code)

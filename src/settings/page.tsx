@@ -149,6 +149,13 @@ export default function Settings() {
 				console.log(Data);
 			});
 	};
+
+	const handleLogout = () => {
+		cookies.remove("auth");
+		cookies.remove("user");
+		navigate("/");
+	};
+
 	return (
 		<>
 			<div className={"main"}>
@@ -241,6 +248,9 @@ export default function Settings() {
 								value="Save"
 							></input>
 						</form>
+						<div className={styles.logout}>
+							<Button onClick={handleLogout} text="Logout" type="tertiary"/>
+						</div>
 					</div>
 				</div>
 			</div>
