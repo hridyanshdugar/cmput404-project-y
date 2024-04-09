@@ -122,6 +122,7 @@ class FollowerView(APIView):
                     response = requests.get(user.host + "api/authors/" + author_id + "/followers/" + follower_id,timeout=3, auth=HTTPBasicAuth(auth.username, auth.password))
                 except Exception as e:
                     print(e, "wwhy")
+                print(response, "response")
                 if response != None and response.status_code == 200:
                     print("this hit")
                     try:
