@@ -65,7 +65,7 @@ export default function Home() {
 		if (selectedSection === "forYou") {
 			getHomePosts(host, page, size, auth, userId)
 				.then(async (result: any) => {
-					if (result.status === 200) {
+					if (result.ok) {
 						const Data = await result.json();
 						console.log(Data);
 						setPosts(Data);
@@ -80,7 +80,7 @@ export default function Home() {
 		else {
 			getInbox(user.id, auth)
 			.then(async (result: any) => {
-				if (result.status === 200) {
+				if (result.ok) {
 					const Data = await result.json();
 					console.log("Inbox");
 					console.log(Data);

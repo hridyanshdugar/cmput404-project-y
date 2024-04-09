@@ -127,7 +127,7 @@ export default function Settings() {
 					const githubActivity = await fetch(
 						`https://api.github.com/users/${githubUsername}/events`
 					);
-					if (githubActivity.status === 200) {
+					if (githubActivity.ok) {
 						const githubActivityData = await githubActivity.json();
 						githubActivityData.forEach((event: any) => {
 							console.log(event);

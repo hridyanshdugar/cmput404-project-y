@@ -123,7 +123,7 @@ const SinglePost: React.FC<Props> = (props) => {
 					user.id,
 					post.origin
 				).then(async (result: any) => {
-					if (result.status === 200) {
+					if (result.ok) {
 						window.location.reload();
 					} else {throw new Error("Error sharing post")}
 				}).catch(async (result: any) => {
@@ -162,7 +162,7 @@ const SinglePost: React.FC<Props> = (props) => {
 			.then(async (result: any) => {
 				console.log(result, "sent like");
 				const d = await result.json();
-				if (result.status === 200) {
+				if (result.ok) {
 					console.log("d", d);
 					setLikes(likes + 1);
 					setLikable(false);
@@ -186,13 +186,13 @@ const SinglePost: React.FC<Props> = (props) => {
 			console.log("shared post1", post.origin.split("/").slice(-1)[0], post.origin.split("/").slice(-3)[0]);
 			getPost(auth["access"], post.origin.split("/").slice(-1)[0], post.origin.split("/").slice(-3)[0])
 				.then(async (result: any) => {
-					if (result.status !== 200) {
+					const Data = await result.json();
+					if (result.ok) {
+						console.log("shared post", Data)
+						setSharedPost(Data);
+					} else {
 						console.log("shared post error", result);
 						throw new Error("Error fetching shared post");
-					} else {
-					const Data = await result.json();
-					console.log("shared post", Data)
-					setSharedPost(Data);
 					}
 				}).catch(async (result: any) => { 
 					console.log("shared post error", result);
@@ -264,7 +264,7 @@ const SinglePost: React.FC<Props> = (props) => {
 						const Data = await result.json();
 						console.log(Data);
 
-						if (result.status === 200) {
+						if (result.ok) {
 							console.log(posts);
 							setPosts(posts.filter((post: any) => (post.type === "post" ? post.source : post.id).split("/").slice(-1)[0] !== (post.type === "post" ? post.source : post.id).split("/").slice(-3)[0]));
 							console.log(posts);

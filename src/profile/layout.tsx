@@ -50,7 +50,7 @@ export default function ProfileLayout() {
 
 			getFollowers(userId)
 				.then(async (result) => {
-					if (result.status === 200) {
+					if (result.ok) {
 						const data = await result.json();
 						setFollowersNumber(data.items.length);
 						setFollowingNumber(data.following.length);

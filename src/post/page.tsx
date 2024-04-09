@@ -45,7 +45,7 @@ export default function Post() {
 			getPost(auth, postId, userId)
 				.then(async (result: any) => {
 					console.log("error burgerddd2");
-					if (result.status === 200) {
+					if (result.ok) {
 						console.log("error burgerddd3", result );
 						const Data = await result.json();
 						console.log("error burgerddd4", Data);
@@ -65,7 +65,7 @@ export default function Post() {
 				.then(async (result: any) => {
 					console.log(result, "post comments");
 					const d = await result.json();
-					if (result.status === 200) {
+					if (result.ok) {
 						console.log("d", d);
 						setReplies(d);
 						console.log(d, replies, "replies");

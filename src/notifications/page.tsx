@@ -25,7 +25,7 @@ export default function Notifications() {
     
     getInbox(user.id, auth)
     .then(async (result: any) => {
-      if (result.status === 200) {
+      if (result.ok) {
         const Data = await result.json();
         console.log("Inbox");
         console.log(Data);
