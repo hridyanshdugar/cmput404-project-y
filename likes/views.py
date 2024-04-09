@@ -75,7 +75,7 @@ class PostLikesViewPK(APIView):
         res = requests.post(str(request.data["author"]["host"]) + "api/authors/" + author_id + "/inbox", headers={'Content-Type': 'application/json'},
  data = body, auth=HTTPBasicAuth(auth.username, auth.password))
         print("hihihi 5")
-        return Response(res.json(), status = status.HTTP_200_OK)
+        return Response(res.json(), status = res.status_code)
 
      
      '''
