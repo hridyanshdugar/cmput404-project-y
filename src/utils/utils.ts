@@ -248,7 +248,7 @@ export async function createComment(contentType: string, comment: string, auth: 
     },
     body: JSON.stringify({
       "type": "comment", "comment": comment,
-      "published": new Date(Math.round(+new Date() / 1000)).toISOString(), "contentType": contentType, "author": author,
+      "published": new Date().toISOString(), "contentType": contentType, "author": author,
       "id": getAPIEndpoint() + `/authors/${author.id.split("/").at(-1)}/posts/${postId}`
     })
   };
