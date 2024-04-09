@@ -202,14 +202,14 @@ const SinglePost: React.FC<Props> = (props) => {
             getPost(auth["access"], (post.type === "post" ? post.source : post.id).split("/").slice(-1)[0], (post.type === "post" ? post.source : post.id).split("/").slice(-3)[0])
             .then(async (result: any) => {
                 console.log("error burgerddd2");
-                if (result.status === 200) {
+                if (result.ok) {
                     console.log("error burgerddd3", result );
                     const Data = await result.json();
                     console.log("error burgerddd4", Data);
                     setPost(Data);
                     console.log("error burgerddd7");
                 } else {
-                    console.log("error burgerddd", result);
+                    console.log("error burgerddd not ok", result);
                     // navigate("/home");
                 }
             })
@@ -246,7 +246,7 @@ const SinglePost: React.FC<Props> = (props) => {
 						const Data = await result.json();
 						console.log(Data);
 
-						if (result.status === 200) {
+						if (result.ok) {
 							setReplies(
 								replies.filter((post: any) => (post.type === "post" ? post.source : post.id).split("/").slice(-1)[0] !== (post.type === "post" ? post.source : post.id).split("/").slice(-3)[0])
 							);
@@ -271,6 +271,7 @@ const SinglePost: React.FC<Props> = (props) => {
 						}
 					})
 					.catch(async (result: any) => {
+						console.log("not ok")
 						console.log(result);
 					});
 			}
