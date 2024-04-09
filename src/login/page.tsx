@@ -35,11 +35,11 @@ export default function Login() {
                     cookies.set("user", Data["user"], { path: "/" });
                     navigate("/home");
                 } else {
-                    alert("Invalid Login Credentials:" + result)
+                    alert("Invalid Login Credentials:" + result.text())
                 }
 			})
 			.catch(async (result: any) => {
-				alert("Server error:" + result)
+				alert("Server error:" + result.text())
 			});
 	};
 

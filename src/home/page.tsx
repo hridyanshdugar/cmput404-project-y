@@ -62,6 +62,7 @@ export default function Home() {
 		userId: string,
 		selectedSection: string
 	) => {
+		setPosts([])
 		if (selectedSection === "forYou") {
 			getHomePosts(host, page, size, auth, userId)
 				.then(async (result: any) => {
