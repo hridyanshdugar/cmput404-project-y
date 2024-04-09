@@ -6,7 +6,6 @@ import Input from "../components/inputs/input";
 import React, { useState } from 'react';
 import { signup, login, navigate } from "../utils/utils";
 import WarningModal from "../components/modals/warning";
-import Cookies from 'universal-cookie';
 
 export default function Signup() {
   const [WarningData, setWarningData] = useState<any>(null);

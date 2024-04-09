@@ -27,18 +27,19 @@ export default function Login() {
 
 	const handleLogin = async () => {
 		login(displayName, Password)
-			.then(async (result: any) => {
-				const cookies = new Cookies();
-				const Data = await result.json();
-				cookies.set("auth", Data["auth"], { path: "/" });
-				cookies.set("user", Data["user"], { path: "/" });
-				navigate("/home");
+            .then(async (result: any) => {
+                if (result.ok) {
+                    const cookies = new Cookies();
+                    const Data = await result.json();
+                    cookies.set("auth", Data["auth"], { path: "/" });
+                    cookies.set("user", Data["user"], { path: "/" });
+                    navigate("/home");
+                } else {
+                    alert("Invalid Login Credentials:" + result)
+                }
 			})
 			.catch(async (result: any) => {
-				console.log(result);
-				const Data = await result.json();
-				console.log(Data);
-				setWarningData({ title: Data?.title, message: Data?.message });
+				alert("Server error:" + result)
 			});
 	};
 
