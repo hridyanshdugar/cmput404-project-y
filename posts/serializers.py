@@ -43,7 +43,7 @@ class PostSerializer(serializers.ModelSerializer):
         print("fat stacks4", instance)
         data = super().to_representation(instance)
         print("fat stacks3", data)
-        data["id"] = data["origin"]
+        data["id"] = data["source"]
         print("fat stacks5", data)
         return data
 
