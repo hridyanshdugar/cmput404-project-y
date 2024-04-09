@@ -217,6 +217,7 @@ class InboxView(APIView):
                 print(serializer.errors)
             return Response({"Title": "Unsuccessfully Added","Message": "Unsuccessfully Added"}, status = status.HTTP_400_BAD_REQUEST)
         if data["type"] == "Like":
+            get_foreign_user(data["author"])
             # add print statements with incremental numbers for debbuing
             print("dfaiadsfudasod :  1")
             print("bisfdagihjshjbi", data)
