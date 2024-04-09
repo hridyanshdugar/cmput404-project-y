@@ -42,10 +42,10 @@ class PostLikesViewPK2(APIView):
                     print("3434Response Body: ", rbody, url)
                     return Response(data = rbody, status = status.HTTP_200_OK)
                 else:
-                    print(f"Request to {user.host} failed with status code: {response.status_code} : {url}")
-                print(" hi 8")
+                    print(f"Requ45est to {user.host} failed with status code: {response.status_code} : {url}")
+                print(" hi 8", response.text)
             except requests.exceptions.RequestException as e:
-                print(f"Request to {user.host} failed: {e}")     
+                print(f"Req3est to {user.host} failed: {e}")     
 
 class PostLikesViewPK(APIView):
      permission_classes = [ RemoteOrSessionAuthenticated ]
@@ -76,7 +76,7 @@ class PostLikesViewPK(APIView):
         print("name", user.displayName)
         print("url", str(user.host) + "api/authors/" + author_id + "/inbox")
         res = requests.post(str(user.host) + "api/authors/" + author_id + "/inbox", headers={'Content-Type': 'application/json'},
- data = body, auth=HTTPBasicAuth(auth.username, auth.password))
+        data = body, auth=HTTPBasicAuth(auth.username, auth.password))
         print("hihihi 5")
         return Response(res.json(), status = res.status_code)
 
