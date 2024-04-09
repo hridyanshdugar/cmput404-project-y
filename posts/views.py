@@ -168,7 +168,9 @@ class AllPostsView(APIView):
             posts = self.pagination.paginate_queryset(posts, request, view=self)
             if posts is not None:
                 serializer = PostSerializer(posts, many=True, context={'request': request})
-                data = serializer.data
+                data = dict()
+                data["items"] = serializer.data
+                data["type"] = "posts"
                 return Response(data, status = status.HTTP_200_OK)
             else:
                 return Response("hi", status = status.HTTP_400_BAD_REQUEST)
