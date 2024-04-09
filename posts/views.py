@@ -245,10 +245,10 @@ class PostsView(APIView):
                 print("dsfhsdif", serializer.data)
                 if request.data.get("visibility") == "PUBLIC":
                     for i in FollowStatus.objects.filter(obj__id=author_id, complete=True):
-                        print("Sending to: ", str(i.actor.host) + "api/authors/" + str(i.actor.id.split("/")[-1]) + "/inbox/")
+                        print("Sending to: ", str(i.actor.host) + "api/authors/" + str(i.actor.id) + "/inbox/")
                         # make request post json data to the inbox of the follower
                         auth = Node.objects.get(url = i.actor.host)
-                        requests.post(str(i.actor.host) + "api/authors/" + str(i.actor.id.split("/")[-1]) + "/inbox", data = json.dumps(serializer.data), headers={'Content-Type': 'application/json'}, auth=HTTPBasicAuth(auth.username, auth.password))
+                        requests.post(str(i.actor.host) + "api/authors/" + str(i.actor.id) + "/inbox", data = json.dumps(serializer.data), headers={'Content-Type': 'application/json'}, auth=HTTPBasicAuth(auth.username, auth.password))
 
                 if request.data.get("visibility") == "FRIENDS":
                     for follower in FollowSerializer(FollowStatus.objects.filter(obj__id=author_id, complete=True), many=True).data:

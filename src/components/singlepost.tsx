@@ -202,7 +202,6 @@ const SinglePost: React.FC<Props> = (props) => {
                 // const Data = await result?.json();
                 // console.log(Data);
             });
-
         }
         getLikePost(props.post.author.id.split("/").at(-1), props.post.id.split("/").at(-1), auth["access"])
         		.then(async (result: any) => {
