@@ -57,7 +57,7 @@ class PostLikesViewPK(APIView):
         Get the likes on a specific post by a specific user
         """
         print("hihihi 1", author_id, post_id)
-        Likes = PostLike.objects.filter(author__id=author_id,post__id=post_id)
+        Likes = PostLike.objects.filter(post__id=post_id)
         print("hihihi 2")
         serializer = PostLikeSerializer(Likes, many=True)
         print("hihihi 3")
