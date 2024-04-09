@@ -127,7 +127,7 @@ export async function createPost(title:string, description:string, contentType:s
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${auth}`,
     },
-    body: JSON.stringify({ "title": title, "description": description, "contentType": contentType, "content": content, "author": id, "visibility": visibility})
+    body: JSON.stringify({ "title": "Tweet", "description": "Posted from Y", "contentType": contentType, "content": content, "author": id, "visibility": visibility})
   };
   return await fetch2(getAPIEndpoint() + `/authors/${id}/posts`, options);
 }
@@ -140,8 +140,8 @@ export async function createSharedPost(title:string, description:string, content
       'Authorization': `Bearer ${auth}`,
     },
     body: JSON.stringify({
-      "title": title,
-      "description": description,
+      "title": "Tweet",
+      "description": "Shared from Y",
       "contentType": contentType,
       "content": content,
       "author": id,
