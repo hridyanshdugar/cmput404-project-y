@@ -250,7 +250,7 @@ const SinglePost: React.FC<Props> = (props) => {
 					.then(async (result: any) => {
 						const Data = await result.json();
 						if (result.ok) {
-							setPosts(posts.filter((post: any) => (post.type === "post" ? post.source : post.id).split("/").slice(-1)[0] !== (post.type === "post" ? post.source : post.id).split("/").slice(-3)[0]));
+							setPosts(posts.filter((newPost: any) => (newPost.id.split("/").at(-1) === post.id.split("/").at(-1))))
 						}
 					})
 					.catch(async (result: any) => {
@@ -401,10 +401,11 @@ const SinglePost: React.FC<Props> = (props) => {
 								onClick={onClickLike}
 							/>{" "}
 							{likes}
-						</div>}
-						<div className={style.flexItem2} onClick={onBUTClick}>
-							<FontAwesomeIcon icon={faArrowUpFromBracket} fixedWidth />
-						</div>
+                            </div>}
+                            {!props.parentId ?
+                                <div className={style.flexItem2} onClick={onBUTClick}>
+                                    <FontAwesomeIcon icon={faArrowUpFromBracket} fixedWidth />
+                                </div> : <></>}
 					</div>
                 </>}
                 </div> 
