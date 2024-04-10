@@ -146,8 +146,9 @@ class CommentsView2(APIView):
                 auth = Node.objects.get(url = user.host)
                 if "web-wizard" in user.host:
                     url = user.host + "api/authors/" + str(author_id) + "/posts/" + str(fk) + "/comments"
-            
-                response = requests.get(url, timeout=20, auth=HTTPBasicAuth(auth.username, auth.password))
+                    response = requests.get(url, timeout=20)
+                else:
+                    response = requests.get(url, timeout=20, auth=HTTPBasicAuth(auth.username, auth.password))
                 if response.ok:
                     rbody = response.json()
                     print("big builder 321", rbody)
@@ -159,9 +160,11 @@ class CommentsView2(APIView):
                     return Response(data = rbody, status = status.HTTP_200_OK)
                 else:
                     print(f"Request to {user.host} failed with status code: {response.status_code} : {url}")
+                    return Response(data = response.json(), status = response.status_code)
                 print(" hi 8")
             except requests.exceptions.RequestException as e:
                 print(f"Request to {user.host} failed: {e}")     
+                return Response(data = response.json(), status = response.status_code)
 
 class CommentsView(APIView):
      permission_classes = [ RemoteOrSessionAuthenticated ]
