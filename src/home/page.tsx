@@ -52,7 +52,7 @@ export default function Home() {
 		setauth(auth);
 
 		fetchContent(user.host, page, size, auth, user.id, selectedSection);
-	}, [selectedSection]);
+	}, [selectedSection, posts]);
 
 	const fetchContent = (
 		host: string,
@@ -96,7 +96,8 @@ export default function Home() {
 	};
 
 	const updatePosts = (State: any) => {
-		setPosts((posts: any[]) => [State, ...posts]);
+		const newPosts = [...posts, State];
+		setPosts(newPosts);
 		console.log(posts);
 	};
 

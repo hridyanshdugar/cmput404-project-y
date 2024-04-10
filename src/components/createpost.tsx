@@ -166,6 +166,7 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 						console.log("failed createComment", Data);
 					});
 			} else {
+				console.log("create post started");
 				createPost(
 					title,
 					description,
