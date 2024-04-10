@@ -32,7 +32,7 @@ export default function Home() {
 	const [page, setPage] = useState<number>(1);
 	const [size, setSize] = useState<number>(100); // Temporary
 
-	const [posts, setPosts] = useContext(PostContext);
+	const [posts, setPosts] = useState<any>([]);
 
 	const [user, setuser] = useState<any>(null);
 	const [auth, setauth] = useState<any>(null);
