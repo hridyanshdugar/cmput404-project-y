@@ -135,7 +135,7 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 				var contentTypeF = "text/plain";
 				contentToSend = content;
 			}
-			console.log(props.postId, "id");
+			console.log(props.postId, props.postAuthorId, "id 23232");
 			if (props.postId && props.postAuthorId) {
 				let author = {
 					type: "author",
@@ -201,7 +201,7 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 					})
 					.catch(async (result: any) => {
 						const Data = await result.json();
-						console.log(Data);
+						console.log("killa", Data);
 					});
 			}
 		} else {
