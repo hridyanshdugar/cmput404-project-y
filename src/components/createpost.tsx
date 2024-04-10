@@ -320,18 +320,18 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
                         </label>
                     </div>
             </>: <></>}
-				<div className={style.flexItem2}>
+				<div className={ props.postId ? [style.flexItem2, style.replyButton].join(" ") : [style.flexItem2].join(" ")}>
 					<Button
 						onClick={onSubmit}
 						text={props.postId ? "Reply" : "Post"}
 						type="tertiary"
-						size="small"
+                        size="small"
 						roundness="very"
 						style={{
 							fontSize: "1.1rem",
 							height: "45px",
 							width: "85px",
-							fontWeight: "bold",
+                            fontWeight: "bold",
 						}}
 					/>
 				</div>
