@@ -142,11 +142,13 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 					displayName: user["displayName"],
 					github: user["github"],
 					profileImage: user["profileImage"],
-				};
+                };
+                console.log("create comment started")
 				createComment(contentTypeF, contentToSend, auth, author, props.postId, props.postAuthorId)
 					.then(async (result: any) => {
 						const Data = await result.json();
                         if (result.ok) {
+                            console.log("createdComment", Data)
                             props.updatePosts(Data);
                             if (props.setPopupOpen) {
                                 props.setPopupOpen(false);
