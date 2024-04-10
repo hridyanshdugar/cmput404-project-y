@@ -213,7 +213,7 @@ class AllUsersView(APIView):
         for node in nodes:
             print(node.url + "api/authors/ ffjjff")
             try:
-                response = requests.get(node.url + "api/authors", timeout=3, auth=HTTPBasicAuth(node.username, node.password))
+                response = requests.get(node.url + "api/authors/", timeout=3, auth=HTTPBasicAuth(node.username, node.password))
                 
                 if response.ok:
                     try:

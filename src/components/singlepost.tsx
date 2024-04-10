@@ -127,7 +127,7 @@ const SinglePost: React.FC<Props> = (props) => {
 						window.location.reload();
 					} else {throw new Error("Error sharing post")}
 				}).catch(async (result: any) => {
-					console.log("create shared post error", result);
+					console.log("create shared post error");
 				});
 				console.log("shared post");
 			} else {
@@ -153,7 +153,6 @@ const SinglePost: React.FC<Props> = (props) => {
 				github: user.github,
 				profileImage: user.profileImage,
 			};
-            console.log("sal3", post)
 			likePost(
 				author,
 				getAPIEndpoint() + "/authors/"+(post.type === "post" ? post.source : post.id).split("/").slice(-3)[0]+"/posts/" + (post.type === "post" ? post.source : post.id).split("/").slice(-1)[0],
@@ -163,7 +162,7 @@ const SinglePost: React.FC<Props> = (props) => {
 				console.log(result, "sent like");
 				const d = await result.json();
 				if (result.ok) {
-					console.log("d", d);
+					console.log("Liked", d);
 					setLikes(likes + 1);
 					setLikable(false);
 				}
@@ -203,13 +202,10 @@ const SinglePost: React.FC<Props> = (props) => {
             .then(async (result: any) => {
                 console.log("error burgerddd2");
                 if (result.ok) {
-                    console.log("error burgerddd3", result );
                     const Data = await result.json();
-                    console.log("error burgerddd4", Data);
                     setPost(Data);
-                    console.log("error burgerddd7");
                 } else {
-                    console.log("error burgerddd not ok", result);
+                    console.log("error updating");
                     // navigate("/home");
                 }
             })
@@ -269,7 +265,6 @@ const SinglePost: React.FC<Props> = (props) => {
 						console.log(Data);
 
 						if (result.ok) {
-							console.log(posts);
 							setPosts(posts.filter((post: any) => (post.type === "post" ? post.source : post.id).split("/").slice(-1)[0] !== (post.type === "post" ? post.source : post.id).split("/").slice(-3)[0]));
 							console.log(posts);
 						}
@@ -418,7 +413,7 @@ const SinglePost: React.FC<Props> = (props) => {
 							</>
 						)}
 
-						{! props.parentId && <div className={style.flexItemLike}>
+						{! props.parentId && <div className={likable ? style.flexItemLike : [style.flexItem, style.flexItemLikeActive].join(" ")}>
 							<FontAwesomeIcon
 								icon={likable ? faHeart : faHeartSolid}
 								fixedWidth
