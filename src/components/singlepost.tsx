@@ -312,7 +312,7 @@ const SinglePost: React.FC<Props> = (props) => {
                             </div>
 						</div>
                         <div className={style.separator} />
-                        {props.embedParentId ? <></> : <>
+                        {props.embedParentId || props.parentId ? <></> : <>
                             <div>
                                 <Dropdown
                                     icon={faEllipsis}
