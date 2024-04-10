@@ -108,7 +108,7 @@ export default function Post() {
                     replies.map((item: any, index: any) => (
 						<SinglePost
 						post={item}
-							key={index}
+							key={post.id}
 							parentId={post.id.split("/").at(-1)}
 						/>
 					))
