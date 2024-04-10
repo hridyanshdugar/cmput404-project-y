@@ -35,7 +35,7 @@ export default function Signup() {
         navigate('/')
       }).catch(async (result: any) => {
         const Data = await result.json();
-        console.log(Data);
+        console.log("handleSignUp error", Data);
       })
     }
   };

@@ -40,12 +40,11 @@ export default function ProfileLayout() {
 					}
 				})
 				.catch((error) => {
-					console.log(error);
+					console.log("getUserLocalInfo", error);
 					//   navigate('/');
 				})
 				.then((data) => {
 					setUserInformation(data);
-					//console.log(data);
 				});
 
 			getFollowers(userId)
@@ -60,7 +59,7 @@ export default function ProfileLayout() {
 					}
 				})
 				.catch((error) => {
-					console.log(error);
+					console.log("getFollowers err", error);
 				});
 			}
 			
@@ -72,15 +71,10 @@ export default function ProfileLayout() {
 			}
 			
 			if (!activeUser) {
-				console.log("them: ", userId, " me: ", userIdCookie)
 				checkFollowingStatus(userIdCookie, userId, allcookies.auth.access)
 				.then(async (result: any) => {
-					console.log(result, "status1");
 					result = await result.json();
-					console.log(result, "status2");
-					console.log(result.complete, result.complete === true, result.complete == true, "status222");
 					if (result.complete === true) {
-						console.log("HIT")
 						setFollowingStatus("Following");
 					} else if (result.complete === false) {	 
 						setFollowingStatus("Requested");
@@ -89,9 +83,7 @@ export default function ProfileLayout() {
 					}
 				})
 				.catch((error) => {
-                    console.log(error);
                     setFollowingStatus("Notfollowing");
-					console.log(followingStatus, "status4");
 				});
 			}
 		}, []);

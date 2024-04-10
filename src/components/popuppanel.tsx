@@ -21,7 +21,6 @@ const PopupPanel: React.FC<PopupPanelProps> = (props) => {
 		const currentPath = window.location.pathname;
 		if (currentPath.startsWith("/post")) return;
 		setPosts((posts: any[]) => [State, ...posts]);
-		console.log(posts);
 	};
 	return (
 		<div className={style.overlay} style={props.style}>

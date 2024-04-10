@@ -35,7 +35,6 @@ export default function Profiles() {
 		const cookies = new Cookies();
 		const auth = cookies.get("auth")["access"];
 		const user = cookies.get("user");
-		console.log("TESTED CHANGE");
 		setUserId(outletObject.userId);
 		setuser(user);
 		setauth(auth);
@@ -43,11 +42,10 @@ export default function Profiles() {
 		getAuthorPosts(user.host, page, size, auth, id)
 			.then(async (result: any) => {
 				const Data = await result.json();
-				console.log(Data);
 				setPosts(Data["items"]);
 			})
 			.catch(async (result: any) => {
-				console.log(result);
+				console.log("getAuthorPosts2 err",result);
 			});
 	}, []);
 

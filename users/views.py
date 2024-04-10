@@ -133,7 +133,6 @@ class UsersViewPK(APIView):
     '''
     def get(self, request,pk):
         """Get specific author from the server"""
-        # I am getting a 403 error if I send a request to the server with basicauth how to fix this?
         
         user = get_object_or_404(User,id=pk)
         serializer = AuthorSerializer(user,context={'request': request})

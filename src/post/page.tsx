@@ -40,42 +40,31 @@ export default function Post() {
 		const user = userCookie;
 		setAuth(auth);
 		setUser(user);
-		console.log("big mac postId", postId, userId);
 		if (postId && userId) {
 			getPost(auth, postId, userId)
 				.then(async (result: any) => {
-					console.log("error burgerddd2");
 					if (result.ok) {
-						console.log("error burgerddd3", result );
 						const Data = await result.json();
-						console.log("error burgerddd4", Data);
 						setPost(Data);
-						console.log("error burgerddd7");
 					} else {
-						console.log("error burgerddd", result);
+						console.log("error", result);
 						// navigate("/home");
 					}
 				})
 				.catch(async (result: any) => {
-					// navigate("/home");
-					// const Data = await result?.json();
-					// console.log(Data);
+					console.log("getPostFailed on post", result);
 				});
 			getPostComments(page, size, auth, userId, postId)
 				.then(async (result: any) => {
-					console.log(result, "post comments");
 					const d = await result.json();
 					d.sort((a: { published: string; }, b: { published: string; }) => b.published.localeCompare(a.published))
 					if (result.ok) {
-						console.log("d", d);
 						setReplies(d);
-						console.log(d, replies, "replies");
 					}
 				})
 				.catch(async (result: any) => {
-					console.log("lol");
+					console.log("getPostComments", result);
 				});
-			console.log("LOADING DONE")
 			setLoading(true);
 		} else {
 			// navigate("/home");
@@ -83,9 +72,7 @@ export default function Post() {
 	}, []);
 
 	const updateReplies = (State: any) => {
-		console.log("Stat4r3w43243", replies);
 		setReplies((replies: any[]) => [State, ...replies]);
-		console.log("Stat4r3w43243", replies);
 	};
 
 	return (

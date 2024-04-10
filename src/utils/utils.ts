@@ -161,7 +161,6 @@ export async function sendFollow(actor:any, object:any, auth: string) {
       },
       body: JSON.stringify({"type": "Follow", "actor": actor, "object": object})
   };
-  console.log("big boss: ", JSON.stringify({"type": "Follow", "actor": actor, "object": object}))
   return await fetch2(getAPIEndpoint() + `/authors/${object.id.split("/").at(-1)}/followers/${actor.id.split("/").at(-1)}`, options);
 }
 
@@ -225,7 +224,6 @@ export async function getRemoteUsers(auth: string) {
 }
 
 export async function EditPost(payload: any, auth: string, id:string, user_id:string) {
-  console.log("editing post: ", payload)
   const options: RequestInit = {
     method: 'PATCH',
     headers: {
@@ -234,7 +232,6 @@ export async function EditPost(payload: any, auth: string, id:string, user_id:st
     },
     body: JSON.stringify(payload)
   };
-    console.log("hi p: ", payload, auth, id)
   return await fetch2(getAPIEndpoint() + `/authors/${user_id}/posts/${id}`, options);
 }
 

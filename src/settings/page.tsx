@@ -39,8 +39,6 @@ export default function Settings() {
 		getUserLocalInfo(auth, id)
 			.then(async (result: any) => {
 				const Data = await result.json();
-				console.log(Data, Data?.displayName);
-
 				setName(Data?.displayName || "");
 				setGithub(Data?.github || "");
 				setPFPurl(Data?.profileImage ? Data?.profileImage : "");
@@ -50,7 +48,7 @@ export default function Settings() {
 			})
 			.catch(async (result: any) => {
 				const Data = await result?.json();
-				console.log(Data);
+				console.log("getUserLocalInfo erer4", Data);
 				setWarningData({ title: Data?.title, message: Data?.message });
 			});
 	}, []);
@@ -111,7 +109,7 @@ export default function Settings() {
 			})
 			.catch(async (result: any) => {
 				const Data = await result?.json();
-				console.log(Data);
+				console.log("saveSettings", Data);
 				setWarningData({ title: Data?.title, message: Data?.message });
 			});
 	};
@@ -130,7 +128,6 @@ export default function Settings() {
 					if (githubActivity.ok) {
 						const githubActivityData = await githubActivity.json();
 						githubActivityData.forEach((event: any) => {
-							console.log(event);
 							createPost(
 								"",
 								"",
@@ -146,7 +143,7 @@ export default function Settings() {
 			})
 			.catch(async (result: any) => {
 				const Data = await result?.json();
-				console.log(Data);
+				console.log("getUserLocalInfoeerrre 33", Data);
 			});
 	};
 

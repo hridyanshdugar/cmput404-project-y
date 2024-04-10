@@ -71,7 +71,6 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 			const fileReader = new FileReader();
 			fileReader.onload = () => {
 				setPFPbackgroundurl(fileReader.result as string);
-				console.log(fileReader.result);
 			};
 			fileReader.readAsDataURL(file);
 		}
@@ -84,7 +83,6 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 	};
 
 	const handleVisibilityChange = (newSelection: string | null) => {
-		console.log(newSelection);
 		setvisibility(newSelection || "Everyone");
 	};
 
@@ -135,7 +133,6 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 				var contentTypeF = "text/plain";
 				contentToSend = content;
 			}
-			console.log(props.postId, props.postAuthorId, "id 23232");
 			if (props.postId && props.postAuthorId) {
 				let author = {
 					type: "author",
@@ -146,34 +143,27 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 					github: user["github"],
 					profileImage: user["profileImage"],
 				};
-				console.log("author", author)
 				createComment(contentTypeF, contentToSend, auth, author, props.postId, props.postAuthorId)
 					.then(async (result: any) => {
 						const Data = await result.json();
-						console.log(Data, "check data")
-						console.log(Data[0], "check data")
-						
-						if (result.ok) {
-							console.log("HIT")
-							console.log("prro")
-							if (props.setPopupOpen) {
-								props.setPopupOpen(false);
-							}
-							if (contentTypeMinimal === "plain") {
-								setcontent("");
-							} else if (contentTypeMinimal === "markdown") {
-								setMarkdownValue("");
-							} else if (contentTypeMinimal === "picture") {
-								setPFPbackgroundurl("");
-							}
-							console.log("big boss");
-							window.location.reload();
-						}
+                        if (result.ok) {
+                            if (props.setPopupOpen) {
+                                props.setPopupOpen(false);
+                            }
+                            if (contentTypeMinimal === "plain") {
+                                setcontent("");
+                            } else if (contentTypeMinimal === "markdown") {
+                                setMarkdownValue("");
+                            } else if (contentTypeMinimal === "picture") {
+                                setPFPbackgroundurl("");
+                                window.location.reload();
+                            }
+                        }
 						
 					})
 					.catch(async (result: any) => {
 						const Data = await result.json();
-						console.log(Data);
+						console.log("failed createComment", Data);
 					});
 			} else {
 				createPost(
@@ -210,9 +200,6 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 			console.log("Empty post");
 		}
 	};
-
-	console.log(contentTypeMinimal);
-	// src={`${pfp ? getAPIEndpoint() + pfp : ''}`}
 	return (
 		<div style={props.style}>
 			<div className={style.createPost} onClick={onCreateClick}>

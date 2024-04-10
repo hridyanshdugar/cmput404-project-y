@@ -37,7 +37,6 @@ const Dropdown: React.FC<DropdownProps> = ({
 		const target = event.target as HTMLButtonElement;
 		setSelectedOption(target.textContent);
 		setIsOpen(false);
-		console.log(option);
 		onChange(option);
 	};
 

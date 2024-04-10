@@ -38,7 +38,6 @@ const Profile: React.FC<Props> = (props: Props) => {
 	const [followStatus, setFollowStatus] = React.useState<string>("Follow");
 
 	useEffect(() => {
-		console.log(props.followingStatus, FollowStatusMap[props.followingStatus], "CHECK")
         setFollowStatus(FollowStatusMap[props.followingStatus])
 	}, [props.followingStatus])
 	

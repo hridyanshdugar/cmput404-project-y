@@ -68,14 +68,13 @@ export default function Home() {
 				.then(async (result: any) => {
 					if (result.ok) {
 						const Data = await result.json();
-						console.log(Data);
 						setPosts(Data);
 					} else {
 						throw new Error("Error fetching posts");
 					}
 			})
 			.catch(error => {
-				console.log(error);
+				console.log("getHomePosts failed", error);
 			});
 		}
 		else {
@@ -83,14 +82,12 @@ export default function Home() {
 			.then(async (result: any) => {
 				if (result.ok) {
 					const Data = await result.json();
-					console.log("Inbox");
-					console.log(Data);
 					setPosts(Data.posts);
 				} else {
 					throw new Error("Error fetching inbox");
 				}
 			}).catch(error => {
-				console.log(error);
+				console.log("getInbox failed", error);
 			});
 			//get following users
 			//get posts from following users

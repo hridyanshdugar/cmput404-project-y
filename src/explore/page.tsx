@@ -55,13 +55,11 @@ export default function Home() {
         getRemoteUsers(auth)
             .then(async (result: any) => {
                 const Data = await result.json();
-                console.log(Data);
-
                 setPosts(Data);
             })
             .catch(async (result: any) => {
                 const Data = await result.json();
-                console.log(Data);
+                console.log("getRemoteUsers failed", Data);
             });
 	};
 
