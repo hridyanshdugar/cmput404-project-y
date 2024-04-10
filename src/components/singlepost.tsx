@@ -92,7 +92,11 @@ const SinglePost: React.FC<Props> = (props) => {
 	const onClickShare = (event: any) => {
 		share();
 		event.stopPropagation();
-	};
+    };
+	const onBUTClick = (event: any) => {
+        navigator.clipboard.writeText(getFrontend() + "profile/"+post.author.id.split("/").at(-1)+"/post/" + (post.type === "post" ? post.source : post.id).split("/")[0]);
+		event.stopPropagation();
+	};    
 	const onClickPost = (event: any) => {
 		if (!props.parentId) {
 			navigate("/profile/"+post.author.id.split("/").at(-1)+"/post/" + post.source.split("/").slice(-1)[0]);
@@ -257,7 +261,7 @@ const SinglePost: React.FC<Props> = (props) => {
 			setPopupOpen(true);
 			document.body.style.overflow = "hidden";
 		} else if (selection === "Copy Link") {
-			navigator.clipboard.writeText(getFrontend() + "/post/" + (post.type === "post" ? post.source : post.id).split("/").slice(-1)[0]);
+			navigator.clipboard.writeText(getFrontend() + "profile/"+post.author.id.split("/").at(-1)+"/post/" + (post.type === "post" ? post.source : post.id).split("/")[0]);
 		}
 	};
 	const date = new Date(0);
@@ -398,7 +402,7 @@ const SinglePost: React.FC<Props> = (props) => {
 							/>{" "}
 							{likes}
 						</div>}
-						<div className={style.flexItem2}>
+						<div className={style.flexItem2} onClick={onBUTClick}>
 							<FontAwesomeIcon icon={faArrowUpFromBracket} fixedWidth />
 						</div>
 					</div>
