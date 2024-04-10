@@ -134,7 +134,7 @@ class UsersViewPK(APIView):
     def get(self, request,pk):
         """Get specific author from the server"""
         
-        user = get_object_or_404(User,id=pk)
+        user = get_object_or_404(User,id=pk, host=Node.objects.get(is_self=True).url)
         serializer = AuthorSerializer(user,context={'request': request})
         return Response(serializer.data, status = status.HTTP_200_OK)
 
