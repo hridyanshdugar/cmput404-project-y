@@ -147,6 +147,7 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 					.then(async (result: any) => {
 						const Data = await result.json();
                         if (result.ok) {
+                            props.updatePosts(Data);
                             if (props.setPopupOpen) {
                                 props.setPopupOpen(false);
                             }
