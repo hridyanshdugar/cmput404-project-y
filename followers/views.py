@@ -160,6 +160,7 @@ class FollowerView(APIView):
                 return Response(status=status.HTTP_200_OK)
         return Response("NOPE",status=status.HTTP_400_BAD_REQUEST)
     
+    
     # this put is for the notifications page for when you click accept it should go here
     def put(self, request, author_id, follower_id):
         """
