@@ -163,7 +163,7 @@ class AllPostsView(APIView):
         Get all the posts of an author
         """
         if User.objects.filter(id=author_id,host=Node.objects.get(is_self=True).url).exists():
-            posts = Post.objects.filter(Q(visibility="PUBLIC", author=author_id)).order_by('-published') 
+            posts = Post.objects.filter(Q(author=author_id)).order_by('-published') 
             page_number = request.GET.get('page') or 1
             posts = self.pagination.paginate_queryset(posts, request, view=self)
             if posts is not None:

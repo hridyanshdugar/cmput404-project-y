@@ -10,6 +10,7 @@ import {
 	getAPIEndpoint,
 	getFrontend,
 	getAuthorPosts,
+	getFollowers,
 	getMediaEndpoint,
 } from "../utils/utils";
 import Cookies from "universal-cookie";
@@ -22,7 +23,6 @@ export default function Profiles() {
 	const [size, setSize] = useState<number>(100); // Temporary
 
 	const [posts, setPosts] = useState<any>([]);
-
 	const [userId, setUserId] = useState<any>(null);
 	const [user, setuser] = useState<any>(null);
 	const [auth, setauth] = useState<any>(null);
@@ -35,18 +35,48 @@ export default function Profiles() {
 		const cookies = new Cookies();
 		const auth = cookies.get("auth")["access"];
 		const user = cookies.get("user");
+		let friend = false;
 		setUserId(outletObject.userId);
 		setuser(user);
 		setauth(auth);
-
-		getAuthorPosts(user.host, page, size, auth, id)
-			.then(async (result: any) => {
-				const Data = await result.json();
-				setPosts(Data["items"]);
+		getFollowers(user.id)
+			.then(async (result1: any) => {
+				if (result1.ok) {
+					const data = await result1.json();
+					console.log("their id", id)
+					data["friends"].every((currFriend : {"id" : string}) => {
+						friend = currFriend.id.split("/").at(-1) === id;
+						return !friend
+					})
+				}
+				getAuthorPosts(user.host, page, size, auth, id)
+					.then(async (result: any) => {
+						const Data = await result.json();
+						console.log("posts before filter",Data["items"])
+						if (id !== user.id) {
+							if (!friend) {
+								console.log("I am not friends with this user")
+								Data["items"] = Data["items"].filter((item: any) => {
+									return item.visibility === "PUBLIC";
+								})
+							} else {
+								console.log("I am friends with this user")
+								Data["items"] = Data["items"].filter((item: any) => {
+									return item.visibility === "PUBLIC" || item.visibility === "FRIENDS";
+								})
+							}
+						}
+						console.log("filtered posts",Data["items"])
+						setPosts(Data["items"]);
+					})
+					.catch(async (result: any) => {
+						console.log("getAuthorPosts2 err",result);
+					});
 			})
-			.catch(async (result: any) => {
-				console.log("getAuthorPosts2 err",result);
-			});
+			.catch((result1: any) => {
+				console.log("getFollowers err",result1);
+			})
+			
 	}, []);
 
 	return (
