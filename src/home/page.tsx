@@ -32,7 +32,7 @@ export default function Home() {
 	const [page, setPage] = useState<number>(1);
 	const [size, setSize] = useState<number>(100); // Temporary
 
-	const [posts, setPosts] = useState<any>([]);
+	const [posts, setPosts] = useContext(PostContext);
 
 	const [user, setuser] = useState<any>(null);
 	const [auth, setauth] = useState<any>(null);
@@ -125,7 +125,7 @@ export default function Home() {
 						posts.sort((a: { published: string; }, b: { published: string; }) => b.published.localeCompare(a.published)).map((item: any, index: any) => (
 							<SinglePost
 								post={item}
-                                key={index}
+                                key={item.id}
 							/>
 						))
 					)

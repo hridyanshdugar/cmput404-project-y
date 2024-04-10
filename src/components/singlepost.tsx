@@ -130,7 +130,7 @@ const SinglePost: React.FC<Props> = (props) => {
 						window.location.reload();
 					} else {throw new Error("Error sharing post")}
 				}).catch(async (result: any) => {
-					console.log("create shared post error", result.text());
+					console.log("create shared post error", result);
 				});
 			} else {
 				alert("You can only share public posts");
@@ -165,7 +165,7 @@ const SinglePost: React.FC<Props> = (props) => {
 				}
 			})
 			.catch(async (result: any) => {
-				console.log("like failed", result.text());
+				console.log("like failed", result);
 			});
 		}
 		event.stopPropagation();
@@ -188,7 +188,7 @@ const SinglePost: React.FC<Props> = (props) => {
 						throw new Error("Error fetching shared post");
 					}
 				}).catch(async (result: any) => { 
-					console.log("shared post error", result.text());
+					console.log("shared post error", result);
 				});
         }
         if (post.author.host.split(".")[0].split("/").slice(-1) !== getAPIEndpoint().split(".")[0].split("/").slice(-1) && !props.parentId) {
@@ -220,7 +220,7 @@ const SinglePost: React.FC<Props> = (props) => {
 							setLikes(Data.items.length);
 						})
 						.catch(async (result: any) => {
-							console.log("shared post error", result.text());
+							console.log("shared post error", result);
 						});
 		}
 	}, []);
@@ -243,7 +243,7 @@ const SinglePost: React.FC<Props> = (props) => {
 						}
 					})
 					.catch(async (result: any) => {
-						console.log("failed to delete comment", result.text());
+						console.log("failed to delete comment", result);
 					});
 			} else {
 				deletePost(auth, (post.type === "post" ? post.source : post.id).split("/").slice(-1)[0], post.author.id.split("/").at(-1))
@@ -258,7 +258,7 @@ const SinglePost: React.FC<Props> = (props) => {
 						
 					})
 					.catch(async (result: any) => {
-						console.log("error deleting post", result.text());
+						console.log("error deleting post", result);
 					});
 			}
 		} else if (selection === "Edit") {
