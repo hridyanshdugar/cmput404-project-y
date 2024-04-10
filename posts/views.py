@@ -53,7 +53,7 @@ class PostsViewPK(APIView):
                 url = user.host + "api/authors/" + str(author_id) + "/posts/" + str(post_id)
                 auth = Node.objects.get(url = user.host)
                 response = requests.get(url, timeout=20, auth=HTTPBasicAuth(auth.username, auth.password))
-                if response.status_code == 200:
+                if response.ok:
                     rbody = response.json()
                     print("Response Body: ", rbody)
                     return Response(data = rbody, status = status.HTTP_200_OK)
@@ -168,7 +168,9 @@ class AllPostsView(APIView):
             posts = self.pagination.paginate_queryset(posts, request, view=self)
             if posts is not None:
                 serializer = PostSerializer(posts, many=True, context={'request': request})
-                data = serializer.data
+                data = dict()
+                data["items"] = serializer.data
+                data["type"] = "posts"
                 return Response(data, status = status.HTTP_200_OK)
             else:
                 return Response("hi", status = status.HTTP_400_BAD_REQUEST)
@@ -180,7 +182,7 @@ class AllPostsView(APIView):
                 try:
                     response = requests.get(node.url + "api/authors/" + str(author_id) + "/posts/", timeout=20, auth=HTTPBasicAuth(node.username, node.password))
                     
-                    if response.status_code == 200:
+                    if response.ok:
                         try:
                             response_data = response.json()
                             print("GOT DATA: ",response_data)
@@ -204,6 +206,12 @@ class PostsView(APIView):
         """
         Get all posts of a specific author
         """
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0]
+        else:
+            ip = request.META.get('REMOTE_ADDR')
+        print("who the is this", ip)
         posts = Post.objects.filter(visibility="PUBLIC", author__id=author_id)
         if User.objects.filter(id=author_id,host=Node.objects.get(is_self=True).url).exists():
             serializer = PostSerializer(posts, many=True, context={'request': request})
@@ -245,10 +253,10 @@ class PostsView(APIView):
                 print("dsfhsdif", serializer.data)
                 if request.data.get("visibility") == "PUBLIC":
                     for i in FollowStatus.objects.filter(obj__id=author_id, complete=True):
-                        print("Sending to: ", str(i.actor.host) + "api/authors/" + str(i.actor.id.split("/")[-1]) + "/inbox/")
+                        print("Sending to: ", str(i.actor.host) + "api/authors/" + str(i.actor.id) + "/inbox/")
                         # make request post json data to the inbox of the follower
                         auth = Node.objects.get(url = i.actor.host)
-                        requests.post(str(i.actor.host) + "api/authors/" + str(i.actor.id.split("/")[-1]) + "/inbox", data = json.dumps(serializer.data), headers={'Content-Type': 'application/json'}, auth=HTTPBasicAuth(auth.username, auth.password))
+                        requests.post(str(i.actor.host) + "api/authors/" + str(i.actor.id) + "/inbox", data = json.dumps(serializer.data), headers={'Content-Type': 'application/json'}, auth=HTTPBasicAuth(auth.username, auth.password))
 
                 if request.data.get("visibility") == "FRIENDS":
                     for follower in FollowSerializer(FollowStatus.objects.filter(obj__id=author_id, complete=True), many=True).data:

@@ -24,7 +24,7 @@ export default function Post() {
 
 	const [auth, setAuth] = useState<any>(null);
 	const [post, setPost] = useState<any>(null);
-	const [replies, setReplies] = useState<any>([]);
+	const [replies, setReplies] = useContext(PostContext);
 	const [user, setUser] = useState<any>(null);
 	const [loading, setLoading] = useState<boolean>(false);
 	const { userId, postId } = useParams();
@@ -40,51 +40,48 @@ export default function Post() {
 		const user = userCookie;
 		setAuth(auth);
 		setUser(user);
-		console.log("big mac postId", postId, userId);
 		if (postId && userId) {
 			getPost(auth, postId, userId)
 				.then(async (result: any) => {
-					console.log("error burgerddd2");
-					if (result.status === 200) {
-						console.log("error burgerddd3", result );
+					if (result.ok) {
 						const Data = await result.json();
-						console.log("error burgerddd4", Data);
 						setPost(Data);
-						console.log("error burgerddd7");
 					} else {
-						console.log("error burgerddd", result);
+						console.log("error", result);
 						// navigate("/home");
 					}
 				})
 				.catch(async (result: any) => {
-					// navigate("/home");
-					// const Data = await result?.json();
-					// console.log(Data);
+					console.log("getPostFailed on post", result);
 				});
 			getPostComments(page, size, auth, userId, postId)
 				.then(async (result: any) => {
-					console.log(result, "post comments");
 					const d = await result.json();
-					if (result.status === 200) {
-						console.log("d", d);
+					d.sort((a: { published: string; }, b: { published: string; }) => b.published.localeCompare(a.published))
+					if (result.ok) {
 						setReplies(d);
-						console.log(d, replies, "replies");
 					}
 				})
 				.catch(async (result: any) => {
-					console.log("lol");
+					console.log("getPostComments", result);
 				});
-			console.log("LOADING DONE")
 			setLoading(true);
 		} else {
 			// navigate("/home");
 		}
 	}, []);
 
-	const updateReplies = (State: any) => {
-		console.log("Stat4r3w43243", replies);
-		setReplies((replies: any[]) => [State, ...replies]);
-		console.log("Stat4r3w43243", replies);
+    const updateReplies = (State: any) => {
+        const hi = [State].concat(replies);
+        setReplies(hi);
+        console.log("updatesReplies", hi);
+
+        console.log("posteest", post)
+				setPost({
+					...post,
+					count: post.count + 1
+				});
+				console.log("clark after kms", post);
 	};
 
 	return (
@@ -120,7 +117,7 @@ export default function Post() {
                     replies.map((item: any, index: any) => (
 						<SinglePost
 						post={item}
-							key={index}
+							key={item.published}
 							parentId={post.id.split("/").at(-1)}
 						/>
 					))

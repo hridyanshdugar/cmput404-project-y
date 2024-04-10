@@ -62,12 +62,11 @@ const EditPostt: React.FC<EditPostProps> = (props) => {
 				}
 			})
 			.catch((error) => {
-				console.log(error);
+				console.log(" getPostFailed on edit post", error);
 				//   navigate('/');
 			})
 			.then((data) => {
 				setPostInformation(data);
-				console.log(data);
 				setcontent(data.content);
 				setMarkdownValue(data.content);
 				setPFPbackgroundurl(data.content);
@@ -75,17 +74,13 @@ const EditPostt: React.FC<EditPostProps> = (props) => {
 	}, []);
 
 	const handlePFPbackgroundf = (event: ChangeEvent<HTMLInputElement>) => {
-		console.log("1start");
 		if (event.target.files && event.target.files[0]) {
 			const file = event.target.files[0];
 			setPFPbackground(file);
 
 			const fileReader = new FileReader();
-			console.log("start");
 			fileReader.onload = () => {
 				setPFPbackgroundurl(fileReader.result as string);
-				console.log(fileReader.result);
-				console.log("bob");
 			};
 			fileReader.readAsDataURL(file);
 		}
@@ -98,7 +93,6 @@ const EditPostt: React.FC<EditPostProps> = (props) => {
 	};
 
 	const handleVisibilityChange = (newSelection: string | null) => {
-		console.log(newSelection);
 		setvisibility(newSelection || "Everyone");
 	};
 
@@ -174,7 +168,7 @@ const EditPostt: React.FC<EditPostProps> = (props) => {
 					<img
 						className={style.img}
 						src={`${
-							user ? getMediaEndpoint() + user.profileImage?.split("?")[0] : ""
+							user ? user.profileImage?.split("?")[0] : ""
 						}`}
 						style={{ width: "40px", height: "40px" }}
 					/>

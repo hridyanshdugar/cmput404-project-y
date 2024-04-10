@@ -9,3 +9,6 @@ class PostLike(models.Model):
     summary = models.CharField(max_length=TEXT_MAX_LENGTH,blank=True)
     post = models.ForeignKey('posts.Post', on_delete=models.CASCADE)
     author = models.ForeignKey('users.User', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"Author (displayName: {self.author.displayName})"    

@@ -25,6 +25,7 @@ import json
 val = URLValidator()
 from users.serializers import AuthorSerializer
 from users.models import User
+import copy 
 
 def getFollowers(request, author_id=None):
     # user = list(User.objects.filter(id=author_id).values())[0]
@@ -71,7 +72,7 @@ def getFollowers(request, author_id=None):
                 response = requests.get(user.host + "api/authors/" + author_id + "/followers",timeout=3, auth=HTTPBasicAuth(auth.username, auth.password))
             except Exception as e:
                 print(e)
-            if response != None and response.status_code == 200:
+            if response != None and response.ok:
                 try:
                     followers = response.json()
                     print(followers)
@@ -112,24 +113,25 @@ class FollowerView(APIView):
         if User.objects.filter(id=author_id).exists():
             user = User.objects.get(id=author_id)
             print(user, user.host, "guy")
-            if user.host == Node.objects.get(is_self=True).url:
-                print("GOT HERE", author_id, follower_id)
-                ff = FollowSerializer(get_object_or_404(FollowStatus,actor__id=follower_id,obj__id=author_id)).data
-            else:
-                auth = Node.objects.get(url = user.host)
-                try:
-                    response = requests.get(user.host + "api/authors/" + author_id + "/followers/" + follower_id,timeout=3, auth=HTTPBasicAuth(auth.username, auth.password))
-                except Exception as e:
-                    print(e, "wwhy")
-                if response != None and response.status_code == 200:
-                    print("this hit")
-                    try:
-                        ff = response.json()
-                        print(ff, "help me")
-                    except JSONDecodeError:
-                        print(f"Invalid JSON response from {user.host}: {response.text}")
-                else:
-                    print(f"Request to {user.host} failed")
+            ff = FollowSerializer(get_object_or_404(FollowStatus,actor__id=follower_id,obj__id=author_id)).data
+            # if user.host == Node.objects.get(is_self=True).url:
+            #     print("GOT HERE", author_id, follower_id)
+            # else:
+            #     auth = Node.objects.get(url = user.host)
+            #     try:
+            #         response = requests.get(user.host + "api/authors/" + author_id + "/followers/" + follower_id,timeout=3, auth=HTTPBasicAuth(auth.username, auth.password))
+            #     except Exception as e:
+            #         print(e, "wwhy")
+            #     print(response, "response")
+            #     if response != None and response.ok:
+            #         print("this hit")
+            #         try:
+            #             ff = response.json()
+            #             print(ff, "help me")
+            #         except JSONDecodeError:
+            #             print(f"Invalid JSON response from {user.host}: {response.text}")
+            #     else:
+            #         print(f"Request to {user.host} failed")
         if ff:
             return Response(ff,status=status.HTTP_200_OK)
         else:
@@ -142,9 +144,9 @@ class FollowerView(APIView):
         data = request.data
         print("cac", data)
         auth = Node.objects.get(url = data["object"]["host"])
-        res = requests.request(method="POST", url=data["object"]["host"] + "api/authors/" + str(author_id) + "/inbox",data=json.dumps(data), auth=HTTPBasicAuth(auth.username, auth.password))
+        res = requests.request(method="POST", headers={'Content-Type': 'application/json'}, url=data["object"]["host"] + "api/authors/" + str(author_id) + "/inbox",data=json.dumps(data), auth=HTTPBasicAuth(auth.username, auth.password))
         print(res, "IDK")
-        if res.status_code == 200:
+        if res.ok:
             if data["type"] == "Follow":
                 if not FollowStatus.objects.filter(actor__id=follower_id,obj__id=author_id).exists():
                     serializer = SaveFollowSerializer(data={"actor":follower_id,"obj":author_id , "complete": False})
@@ -158,22 +160,27 @@ class FollowerView(APIView):
                 return Response(status=status.HTTP_200_OK)
         return Response("NOPE",status=status.HTTP_400_BAD_REQUEST)
     
+    
     # this put is for the notifications page for when you click accept it should go here
     def put(self, request, author_id, follower_id):
         """
         Accept or decline a follow request from FOREIGN_AUTHOR_ID to AUTHOR_ID
         """
-        data = request.data
+        data = copy.deepcopy(request.data)
+        data["actor"] = request.data["object"]
+        data["object"] = request.data["actor"]
         print("boblb", data)
-        auth = Node.objects.get(url = data["actor"]["host"])
-        res = requests.request(method="POST", url=request.data["actor"]["host"] + "api/authors/" + str(follower_id) + "/inbox",data=json.dumps(data), auth=HTTPBasicAuth(auth.username, auth.password))
-        if res.status_code == 200:
+        auth = Node.objects.get(url = data["object"]["host"])
+        print("boblb 1")
+        res = requests.request(method="POST", headers={'Content-Type': 'application/json'}, url=data["object"]["host"] + "api/authors/" + str(follower_id) + "/inbox",data=json.dumps(data), auth=HTTPBasicAuth(auth.username, auth.password))
+        print("boblb 2")
+        if res.ok:
             print("sent to actor inbox")
             req = get_object_or_404(FollowStatus,actor__id=follower_id,obj__id=author_id)
             hi_user = User.objects.get(id=author_id)
             inbox = Inbox.objects.get_or_create(author=hi_user)[0]
             inbox.followRequest.remove(req)
-            inbox.save()            
+            inbox.save()         
             if data["accepted"]:
                 print("accepted")
                 serializer = FollowSerializer(req,data={"complete":True},partial=True)
@@ -185,4 +192,5 @@ class FollowerView(APIView):
                 print("declined")
                 req.delete()
                 return Response(status=status.HTTP_200_OK)
+        print("boblb 55 ", res.text)
         return Response(status=status.HTTP_400_BAD_REQUEST)

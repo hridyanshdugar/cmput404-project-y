@@ -25,6 +25,7 @@ def login(request):
     user = User.objects.filter(displayName=request.data['displayName'],approved=True).first()
     inbox = Inbox.objects.get_or_create(author=user)[0]
     inbox.save()
+    print("login user", user)
     if not user:
         return Response(status=status.HTTP_400_BAD_REQUEST,data={'title': 'Non-Existant Account','message': 'No account with this displayName exists'})
     input_password = request.data['password']

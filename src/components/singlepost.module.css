@@ -94,6 +94,10 @@
 	width: calc(100% + 12px);
 }
 
+.flexItemLikeActive {
+	color: rgb(186, 0, 0) !important;
+}
+
 .flexItemShare:hover {
 	color: rgba(0, 186, 124, 0.5) !important;
 }

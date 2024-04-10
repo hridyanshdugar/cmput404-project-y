@@ -91,3 +91,12 @@
 	border: none;
 	cursor: pointer;
 }
+
+.logout {
+	font-size: 1.5rem;
+	padding: 0.5rem 1rem;
+	border-radius: 5px;
+	color: white;
+	border: none;
+	cursor: pointer;
+}

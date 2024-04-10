@@ -30,6 +30,7 @@ interface CreatePostProps {
 	style?: React.CSSProperties;
 	postId?: string | undefined;
 	postAuthorId ?: string | undefined;
+	postAuthorHost ?: string | undefined;
 	setPopupOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 	updatePosts: (State: any) => void;
 }
@@ -70,7 +71,6 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 			const fileReader = new FileReader();
 			fileReader.onload = () => {
 				setPFPbackgroundurl(fileReader.result as string);
-				console.log(fileReader.result);
 			};
 			fileReader.readAsDataURL(file);
 		}
@@ -83,7 +83,6 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 	};
 
 	const handleVisibilityChange = (newSelection: string | null) => {
-		console.log(newSelection);
 		setvisibility(newSelection || "Everyone");
 	};
 
@@ -116,7 +115,7 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 	};
 
 	const onSubmit = () => {
-		if (content !== "" && !(/^\s*$/.test(content))) {
+		if (contentTypeMinimal === "picture" || contentTypeMinimal === "markdown" || (content !== "" && !(/^\s*$/.test(content)))) {
 			const VisibilityMap: { [key: string]: string } = {
 				Everyone: "PUBLIC",
 				Unlisted: "UNLISTED",
@@ -134,7 +133,6 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 				var contentTypeF = "text/plain";
 				contentToSend = content;
 			}
-			console.log(props.postId, "id");
 			if (props.postId && props.postAuthorId) {
 				let author = {
 					type: "author",
@@ -144,37 +142,36 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 					displayName: user["displayName"],
 					github: user["github"],
 					profileImage: user["profileImage"],
-				};
-				console.log("author", author)
+                };
+                console.log("create comment started")
 				createComment(contentTypeF, contentToSend, auth, author, props.postId, props.postAuthorId)
 					.then(async (result: any) => {
 						const Data = await result.json();
-						console.log(Data, "check data")
-						console.log(Data[0], "check data")
-						
-						if (Data[0] === '{"Title":"Done"}') {
-							console.log("HIT")
-							console.log("prro")
-							if (props.setPopupOpen) {
-								props.setPopupOpen(false);
-							}
-							if (contentTypeMinimal === "plain") {
-								setcontent("");
-							} else if (contentTypeMinimal === "markdown") {
-								setMarkdownValue("");
-							} else if (contentTypeMinimal === "picture") {
-								setPFPbackgroundurl("");
-							}
-							console.log("big boss");
-							window.location.reload();
-						}
+                        if (result.ok) {
+                            props.updatePosts({
+                                "type": "comment", "comment": contentToSend,
+                                "published": new Date().toISOString(), "contentType": contentTypeF, "author": author,
+                                "id": getAPIEndpoint() + `/authors/${props.postAuthorId}/posts/${props.postId}`
+                              });
+                            if (props.setPopupOpen) {
+                                props.setPopupOpen(false);
+                            }
+                            if (contentTypeMinimal === "plain") {
+                                setcontent("");
+                            } else if (contentTypeMinimal === "markdown") {
+                                setMarkdownValue("");
+                            } else if (contentTypeMinimal === "picture") {
+                                setPFPbackgroundurl("");
+                                window.location.reload();
+                            }
+                        }
 						
 					})
 					.catch(async (result: any) => {
-						const Data = await result.json();
-						console.log(Data);
+						console.log("failed createComment", result);
 					});
 			} else {
+				console.log("create post started");
 				createPost(
 					title,
 					description,
@@ -183,9 +180,11 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 					VisibilityMap[visibility],
 					auth,
 					user.id
+                    
 				)
 					.then(async (result: any) => {
 						const Data = await result.json();
+						console.log("createdPost", Data);
 						props.updatePosts(Data);
 						if (props.setPopupOpen) {
 							props.setPopupOpen(false);
@@ -200,16 +199,13 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 					})
 					.catch(async (result: any) => {
 						const Data = await result.json();
-						console.log(Data);
+						console.log("killa", Data);
 					});
 			}
 		} else {
 			console.log("Empty post");
 		}
 	};
-
-	console.log(contentTypeMinimal);
-	// src={`${pfp ? getAPIEndpoint() + pfp : ''}`}
 	return (
 		<div style={props.style}>
 			<div className={style.createPost} onClick={onCreateClick}>
@@ -273,66 +269,68 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 				className={style.horizontalLine}
 				ref={horizontalLineRef}
 				style={{ display: "none" }}
-			></hr>
-			<div className={style.flexContainer}>
-				<div className={style.flexItem}>
-					<FontAwesomeIcon
-						icon={faFileLines}
-						fixedWidth
-						className={contentTypeMinimal === "plain" ? style.selectItem : ""}
-						onClick={() => {
-							setcontentTypeMinimal("plain");
-						}}
-					/>
-				</div>
-				<div className={style.flexItem}>
-					<FontAwesomeIcon
-						icon={faMarkdown}
-						fixedWidth
-						className={
-							contentTypeMinimal === "markdown" ? style.selectItem : ""
-						}
-						onClick={() => {
-							setcontentTypeMinimal("markdown");
-						}}
-					/>
-				</div>
-				<div className={style.flexItem}>
-					<input
-						onChange={handlePFPbackground}
-						type="file"
-						id="createpostimage"
-						name="PFP"
-						accept="image/*"
-						style={{ display: "none" }}
-					/>
-					<label
-						onClick={() => {
-							setcontentTypeMinimal("picture");
-						}}
-						htmlFor="createpostimage"
-					>
-						<FontAwesomeIcon
-							icon={faImage}
-							fixedWidth
-							className={
-								contentTypeMinimal === "picture" ? style.selectItem : ""
-							}
-						/>
-					</label>
-				</div>
-				<div className={style.flexItem2}>
+            ></hr>
+                <div className={style.flexContainer}>
+            {!props.postId ? <>
+                    <div className={style.flexItem}>
+                        <FontAwesomeIcon
+                            icon={faFileLines}
+                            fixedWidth
+                            className={contentTypeMinimal === "plain" ? style.selectItem : ""}
+                            onClick={() => {
+                                setcontentTypeMinimal("plain");
+                            }}
+                        />
+                    </div>
+                    <div className={style.flexItem}>
+                        <FontAwesomeIcon
+                            icon={faMarkdown}
+                            fixedWidth
+                            className={
+                                contentTypeMinimal === "markdown" ? style.selectItem : ""
+                            }
+                            onClick={() => {
+                                setcontentTypeMinimal("markdown");
+                            }}
+                        />
+                    </div>
+                    <div className={style.flexItem}>
+                        <input
+                            onChange={handlePFPbackground}
+                            type="file"
+                            id="createpostimage"
+                            name="PFP"
+                            accept="image/*"
+                            style={{ display: "none" }}
+                        />
+                        <label
+                            onClick={() => {
+                                setcontentTypeMinimal("picture");
+                            }}
+                            htmlFor="createpostimage"
+                        >
+                            <FontAwesomeIcon
+                                icon={faImage}
+                                fixedWidth
+                                className={
+                                    contentTypeMinimal === "picture" ? style.selectItem : ""
+                                }
+                            />
+                        </label>
+                    </div>
+            </>: <></>}
+				<div className={ props.postId ? [style.flexItem2, style.replyButton].join(" ") : [style.flexItem2].join(" ")}>
 					<Button
 						onClick={onSubmit}
 						text={props.postId ? "Reply" : "Post"}
 						type="tertiary"
-						size="small"
+                        size="small"
 						roundness="very"
 						style={{
 							fontSize: "1.1rem",
 							height: "45px",
 							width: "85px",
-							fontWeight: "bold",
+                            fontWeight: "bold",
 						}}
 					/>
 				</div>

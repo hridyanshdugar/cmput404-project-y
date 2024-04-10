@@ -6,7 +6,6 @@ import Input from "../components/inputs/input";
 import React, { useState } from 'react';
 import { signup, login, navigate } from "../utils/utils";
 import WarningModal from "../components/modals/warning";
-import Cookies from 'universal-cookie';
 
 export default function Signup() {
   const [WarningData, setWarningData] = useState<any>(null);
@@ -36,7 +35,7 @@ export default function Signup() {
         navigate('/')
       }).catch(async (result: any) => {
         const Data = await result.json();
-        console.log(Data);
+        console.log("handleSignUp error", Data);
       })
     }
   };

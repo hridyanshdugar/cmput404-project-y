@@ -127,7 +127,7 @@ export async function createPost(title:string, description:string, contentType:s
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${auth}`,
     },
-    body: JSON.stringify({ "title": title, "description": description, "contentType": contentType, "content": content, "author": id, "visibility": visibility})
+    body: JSON.stringify({ "title": "Tweet", "description": "Posted from Y", "contentType": contentType, "content": content, "author": id, "visibility": visibility})
   };
   return await fetch2(getAPIEndpoint() + `/authors/${id}/posts`, options);
 }
@@ -140,13 +140,13 @@ export async function createSharedPost(title:string, description:string, content
       'Authorization': `Bearer ${auth}`,
     },
     body: JSON.stringify({
-      "title": title,
-      "description": description,
+      "title": "Tweet",
+      "description": "Shared from Y",
       "contentType": contentType,
       "content": content,
       "author": id,
       "visibility": visibility,
-      "source": source
+      "origin": source
     })
   };
   return await fetch2(getAPIEndpoint() + `/authors/${id}/posts`, options);
@@ -161,7 +161,6 @@ export async function sendFollow(actor:any, object:any, auth: string) {
       },
       body: JSON.stringify({"type": "Follow", "actor": actor, "object": object})
   };
-  console.log("big boss: ", JSON.stringify({"type": "Follow", "actor": actor, "object": object}))
   return await fetch2(getAPIEndpoint() + `/authors/${object.id.split("/").at(-1)}/followers/${actor.id.split("/").at(-1)}`, options);
 }
 
@@ -225,7 +224,6 @@ export async function getRemoteUsers(auth: string) {
 }
 
 export async function EditPost(payload: any, auth: string, id:string, user_id:string) {
-  console.log("editing post: ", payload)
   const options: RequestInit = {
     method: 'PATCH',
     headers: {
@@ -234,7 +232,6 @@ export async function EditPost(payload: any, auth: string, id:string, user_id:st
     },
     body: JSON.stringify(payload)
   };
-    console.log("hi p: ", payload, auth, id)
   return await fetch2(getAPIEndpoint() + `/authors/${user_id}/posts/${id}`, options);
 }
 
@@ -248,8 +245,8 @@ export async function createComment(contentType: string, comment: string, auth: 
     },
     body: JSON.stringify({
       "type": "comment", "comment": comment,
-      "published": Math.round(+new Date() / 1000), "contentType": contentType, "author": author,
-      "id": getAPIEndpoint() + `/authors/${author.id.split("/").at(-1)}/posts/${postId}`
+      "published": new Date().toISOString(), "contentType": contentType, "author": author,
+      "id": getAPIEndpoint() + `/authors/${postAuthorId}/posts/${postId}`
     })
   };
   return await fetch2(getAPIEndpoint() + `/authors/${postAuthorId}/posts/${postId}/comments`, options);
@@ -275,7 +272,7 @@ export async function likePost(author: any, object: string, auth:string) {
     },
     body: JSON.stringify({"type": "Like", "author": author, "object": object})
   };
-  return await fetch2(getAPIEndpoint() + `/authors/${author.id.split("/").at(-1)}/posts/${object.split("/").at(-1)}/likes`, options);
+  return await fetch2(getAPIEndpoint() + `/authors/${object.split("/").at(-3)}/posts/${object.split("/").at(-1)}/likes`, options);
 }
 
 export async function getHomePosts(host: string, page:number, size: number , auth: string, id:string) {

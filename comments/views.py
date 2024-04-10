@@ -1,4 +1,6 @@
+import copy
 from urllib.request import HTTPBasicAuthHandler
+import uuid
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
@@ -139,18 +141,30 @@ class CommentsView2(APIView):
         else:
             try:
                 print(" hi 7")
-                url = user.host + "api/authors/" + str(author_id) + "/posts/" + str(fk) + "/comments"
+
+                url = user.host + "api/authors/" + str(author_id) + "/posts/" + str(fk) + "/comments?page=1&size=100"
                 auth = Node.objects.get(url = user.host)
-                response = requests.get(url, timeout=20, auth=HTTPBasicAuth(auth.username, auth.password))
-                if response.status_code == 200:
+                if "web-wizard" in user.host:
+                    url = user.host + "api/authors/" + str(author_id) + "/posts/" + str(fk) + "/comments"
+                    response = requests.get(url, timeout=20)
+                else:
+                    response = requests.get(url, timeout=20, auth=HTTPBasicAuth(auth.username, auth.password))
+                if response.ok:
                     rbody = response.json()
+                    print("big builder 321", rbody)
+                    if "comments" in rbody:
+                        rbody = rbody["comments"]
+                    if "items" in rbody:
+                        rbody = rbody["items"]                        
                     print("Response Body: ", rbody)
                     return Response(data = rbody, status = status.HTTP_200_OK)
                 else:
                     print(f"Request to {user.host} failed with status code: {response.status_code} : {url}")
+                    return Response(data = response.json(), status = response.status_code)
                 print(" hi 8")
             except requests.exceptions.RequestException as e:
                 print(f"Request to {user.host} failed: {e}")     
+                return Response(data = response.json(), status = response.status_code)
 
 class CommentsView(APIView):
      permission_classes = [ RemoteOrSessionAuthenticated ]
@@ -181,7 +195,10 @@ class CommentsView(APIView):
         page = self.pagination.paginate_queryset(comments, request, view=self)
         if page is not None:
             serializer = CommentSerializer(page, many=True, context={'request': request})
-            return Response(serializer.data, status = status.HTTP_200_OK)
+            data = dict()
+            data["comments"] = serializer.data
+            data["type"] = "comments"
+            return Response(data, status = status.HTTP_200_OK)
         else:
             return Response(serializer.data, status = status.HTTP_400_BAD_REQUEST)
 
@@ -192,11 +209,12 @@ class CommentsView(APIView):
         """
         Add a comment to a specific post by a specific user
         """
-        body = request.body
-        print("BODY: ", body)
-        data = json.loads(body)
-        print("DATA: ", data)
         user = User.objects.get(id=author_id)
         auth = Node.objects.get(url = user.host)
-        res = requests.post(str(user.host) + "api/authors/" + author_id + "/inbox", data = body, auth=HTTPBasicAuth(auth.username, auth.password))
+        response = copy.deepcopy(request.data)
+        print("burger222", user.host)
+        if "depresso" in user.host:
+            response['id'] = response['id'] + "/comments/" + str(uuid.uuid4())
+        print("buhdafugbhfduiui33483883", response)
+        res = requests.post(str(user.host) + "api/authors/" + author_id + "/inbox", headers={'Content-Type': 'application/json'},  data = json.dumps(response), auth=HTTPBasicAuth(auth.username, auth.password))
         return Response(res, status = res.status_code)

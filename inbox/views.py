@@ -146,12 +146,13 @@ class InboxView(APIView):
             return Response({"Title":"Done"}, status = status.HTTP_200_OK)
         if data["type"] == "FollowResponse":
             get_foreign_user(data["actor"])
+            print("this is follow response", data, data["accepted"])
             if data["accepted"]:
-                req = get_object_or_404(FollowStatus,actor=data["actor"]["id"].split("/")[-1],obj=data["object"]["id"].split("/")[-1])
+                req = get_object_or_404(FollowStatus,obj=data["actor"]["id"].split("/")[-1],actor=data["object"]["id"].split("/")[-1])
                 req.complete = True
                 req.save()
             else:
-                req = get_object_or_404(FollowStatus,actor=data["actor"]["id"].split("/")[-1],obj=data["object"]["id"].split("/")[-1])
+                req = get_object_or_404(FollowStatus,obj=data["actor"]["id"].split("/")[-1],actor=data["object"]["id"].split("/")[-1])
                 req.delete()
 
 
@@ -169,7 +170,7 @@ class InboxView(APIView):
                 auth = Node.objects.get(url = data["author"]["host"])
                 response = requests.get(str(data["author"]["host"]) + "api/authors/" + data["author"]["id"].split("/")[-1] + "/posts/" + str(data["id"].split("/")[-1]), auth=HTTPBasicAuth(auth.username, auth.password))
                 print("abc : 5")
-                if response.status_code == 200:
+                if response.ok:
                     print("abc : 6")
                     try:
                         bob = response.json()
@@ -198,11 +199,14 @@ class InboxView(APIView):
             # add print statements with incremental numbers for debbuing
             get_foreign_user(data["author"])
             user = get_object_or_404(User,id=data["author"]["id"].split("/")[-1])
-            post = get_object_or_404(Post,id=data["id"].split("/")[-1])
+            key = data["id"].split("/")[-1]
+            if "espresso" in data["author"]["host"]:
+                key = data["id"].split("/")[-3]
+            post = get_object_or_404(Post,id=key)
 
             new_data = data.copy()
             new_data["author"] = data["author"]["id"].split("/")[-1]
-            new_data['post'] = data["id"].split("/")[-1]
+            new_data['post'] = key
             new_data.pop("id")
 
             print("dfaiadsfudasod :  4", new_data)
@@ -217,6 +221,7 @@ class InboxView(APIView):
                 print(serializer.errors)
             return Response({"Title": "Unsuccessfully Added","Message": "Unsuccessfully Added"}, status = status.HTTP_400_BAD_REQUEST)
         if data["type"] == "Like":
+            get_foreign_user(data["author"])
             # add print statements with incremental numbers for debbuing
             print("dfaiadsfudasod :  1")
             print("bisfdagihjshjbi", data)

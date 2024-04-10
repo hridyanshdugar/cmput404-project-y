@@ -62,34 +62,32 @@ export default function Home() {
 		userId: string,
 		selectedSection: string
 	) => {
+		setPosts([])
 		if (selectedSection === "forYou") {
 			getHomePosts(host, page, size, auth, userId)
 				.then(async (result: any) => {
-					if (result.status === 200) {
+					if (result.ok) {
 						const Data = await result.json();
-						console.log(Data);
 						setPosts(Data);
 					} else {
 						throw new Error("Error fetching posts");
 					}
 			})
 			.catch(error => {
-				console.log(error);
+				console.log("getHomePosts failed", error);
 			});
 		}
 		else {
 			getInbox(user.id, auth)
 			.then(async (result: any) => {
-				if (result.status === 200) {
+				if (result.ok) {
 					const Data = await result.json();
-					console.log("Inbox");
-					console.log(Data);
 					setPosts(Data.posts);
 				} else {
 					throw new Error("Error fetching inbox");
 				}
 			}).catch(error => {
-				console.log(error);
+				console.log("getInbox failed", error);
 			});
 			//get following users
 			//get posts from following users
@@ -98,7 +96,9 @@ export default function Home() {
 	};
 
 	const updatePosts = (State: any) => {
-		setPosts((posts: any[]) => [State, ...posts]);
+        console.log("new post", State)
+        const hi = [State].concat(posts);
+		setPosts(hi);
 		console.log(posts);
 	};
 
@@ -125,7 +125,7 @@ export default function Home() {
 						posts.sort((a: { published: string; }, b: { published: string; }) => b.published.localeCompare(a.published)).map((item: any, index: any) => (
 							<SinglePost
 								post={item}
-                                key={index}
+                                key={item.id}
 							/>
 						))
 					)
@@ -136,7 +136,7 @@ export default function Home() {
 						posts.map((item: any, index: any) => (
 							<SinglePost
 								post={item}
-								key={index}
+								key={item.id}
 							/>
 						))
 					)

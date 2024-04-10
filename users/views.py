@@ -28,14 +28,14 @@ class Pager(PageNumberPagination):
 
 def download_profile(instance, url):
     response = requests.get(url)
-    if response.status_code == 200:
+    if response.ok:
         instance.profileImage.save(name=f"pfp_{uuid.uuid4()}.jpg", content=ContentFile(response.content), save=True)
         return True
     return False
 
 def download_profileBack(instance, url):
     response = requests.get(url)
-    if response.status_code == 200:
+    if response.ok:
         instance.profileBackgroundImage.save(name=f"pfp_{uuid.uuid4()}.jpg", content=ContentFile(response.content), save=True)
         return True
     return False
@@ -102,7 +102,7 @@ class AllUsersViewPK(APIView):
                 try:
                     response = requests.get(node.url + "api/authors/" + str(pk) + "/", timeout=3, auth=HTTPBasicAuth(node.username, node.password))
                     
-                    if response.status_code == 200:
+                    if response.ok:
                         try:
                             response_data = response.json()
                             response_data2 = copy.deepcopy(response.json())
@@ -133,9 +133,8 @@ class UsersViewPK(APIView):
     '''
     def get(self, request,pk):
         """Get specific author from the server"""
-        # I am getting a 403 error if I send a request to the server with basicauth how to fix this?
         
-        user = get_object_or_404(User,id=pk)
+        user = get_object_or_404(User,id=pk, host=Node.objects.get(is_self=True).url)
         serializer = AuthorSerializer(user,context={'request': request})
         return Response(serializer.data, status = status.HTTP_200_OK)
 
@@ -213,9 +212,9 @@ class AllUsersView(APIView):
         for node in nodes:
             print(node.url + "api/authors/ ffjjff")
             try:
-                response = requests.get(node.url + "api/authors", timeout=3, auth=HTTPBasicAuth(node.username, node.password))
+                response = requests.get(node.url + "api/authors/?size=100", timeout=3, auth=HTTPBasicAuth(node.username, node.password))
                 
-                if response.status_code == 200:
+                if response.ok:
                     try:
                         response_data = response.json()
                         print(response_data)

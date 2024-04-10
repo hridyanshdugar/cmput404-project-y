@@ -106,3 +106,7 @@
 .separator {
 	flex-grow: 1;
 }
+
+.replyButton {
+    height: 40px!important;
+}

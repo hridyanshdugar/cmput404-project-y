@@ -39,8 +39,6 @@ export default function Settings() {
 		getUserLocalInfo(auth, id)
 			.then(async (result: any) => {
 				const Data = await result.json();
-				console.log(Data, Data?.displayName);
-
 				setName(Data?.displayName || "");
 				setGithub(Data?.github || "");
 				setPFPurl(Data?.profileImage ? Data?.profileImage : "");
@@ -50,7 +48,7 @@ export default function Settings() {
 			})
 			.catch(async (result: any) => {
 				const Data = await result?.json();
-				console.log(Data);
+				console.log("getUserLocalInfo erer4", Data);
 				setWarningData({ title: Data?.title, message: Data?.message });
 			});
 	}, []);
@@ -111,7 +109,7 @@ export default function Settings() {
 			})
 			.catch(async (result: any) => {
 				const Data = await result?.json();
-				console.log(Data);
+				console.log("saveSettings", Data);
 				setWarningData({ title: Data?.title, message: Data?.message });
 			});
 	};
@@ -127,10 +125,9 @@ export default function Settings() {
 					const githubActivity = await fetch(
 						`https://api.github.com/users/${githubUsername}/events`
 					);
-					if (githubActivity.status === 200) {
+					if (githubActivity.ok) {
 						const githubActivityData = await githubActivity.json();
 						githubActivityData.forEach((event: any) => {
-							console.log(event);
 							createPost(
 								"",
 								"",
@@ -146,9 +143,16 @@ export default function Settings() {
 			})
 			.catch(async (result: any) => {
 				const Data = await result?.json();
-				console.log(Data);
+				console.log("getUserLocalInfoeerrre 33", Data);
 			});
 	};
+
+	const handleLogout = () => {
+		cookies.remove("auth");
+		cookies.remove("user");
+		navigate("/");
+	};
+
 	return (
 		<>
 			<div className={"main"}>
@@ -241,6 +245,9 @@ export default function Settings() {
 								value="Save"
 							></input>
 						</form>
+						<div className={styles.logout}>
+							<Button onClick={handleLogout} text="Logout" type="tertiary"/>
+						</div>
 					</div>
 				</div>
 			</div>
