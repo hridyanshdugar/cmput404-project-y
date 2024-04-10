@@ -187,7 +187,7 @@ const SinglePost: React.FC<Props> = (props) => {
 					console.log("shared post error", result.text());
 				});
         }
-        if (post.author.host.split(".")[0].split("/").slice(-1) !== getAPIEndpoint().split(".")[0].split("/").slice(-1)) {
+        if (post.author.host.split(".")[0].split("/").slice(-1) !== getAPIEndpoint().split(".")[0].split("/").slice(-1) && !props.parentId) {
             getPost(auth["access"], (post.type === "post" ? post.source : post.id).split("/").slice(-1)[0], (post.type === "post" ? post.source : post.id).split("/").slice(-3)[0])
             .then(async (result: any) => {
                 if (result.ok) {
