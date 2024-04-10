@@ -76,14 +76,25 @@ export default function Post() {
         setReplies(hi);
         console.log("updatesReplies", hi);
 
-        let bob = Object.assign({}, post);
-        console.log("bob", bob);
-        // setPost(bob);
-				// setPost({
-				// 	...post,
-				// 	count: post.count + 1
-				// });
-				setPost((post: any) => Object.assign({}, post, { count: post.count + 1 }));
+        console.log("posteest", post)
+        const clark = {
+            type: post.type,
+            title: post.title,
+            id: post.id,
+            source: post.source,
+            origin: post.origin,
+            description: post.description,
+            contentType: post.contentType,
+            content: post.content,
+            author: post.author,
+            count: post.count + 1,
+            comments: post.comments,
+            commentsSrc: post.commentsSrc,
+            published: post.published,
+            visibility: post.visibility
+        };
+				setPost(clark);
+				console.log("clark after kms", clark);
 	};
 
 	return (
