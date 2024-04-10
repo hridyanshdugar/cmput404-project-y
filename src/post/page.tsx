@@ -80,11 +80,12 @@ export default function Post() {
         console.log("bob", bob);
         bob.count.set(bob.count + 1);
         console.log("bob2", bob);
-        setPost(bob);
+        // setPost(bob);
 				// setPost({
 				// 	...post,
 				// 	count: post.count + 1
 				// });
+				setPost((post: any) => Object.assign({}, post, { count: post.count + 1 }));
 	};
 
 	return (

@@ -168,8 +168,7 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 						
 					})
 					.catch(async (result: any) => {
-						const Data = await result.json();
-						console.log("failed createComment", Data);
+						console.log("failed createComment", result);
 					});
 			} else {
 				console.log("create post started");
