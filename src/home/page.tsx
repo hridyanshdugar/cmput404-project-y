@@ -100,7 +100,9 @@ export default function Home() {
 	};
 
 	const updatePosts = (State: any) => {
-		const newPosts = [State, ...posts];
+		console.log("new post", State)
+		const newPosts = structuredClone(posts);
+		newPosts.unshift(State);
 		setPosts(newPosts);
 		console.log(posts);
 	};

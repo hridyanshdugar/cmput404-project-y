@@ -223,7 +223,7 @@ const SinglePost: React.FC<Props> = (props) => {
 							console.log("shared post error", result.text());
 						});
 		}
-	}, [post]);
+	}, [post, props.post]);
 
 	const onPostOptionSelect = (selection: string | null) => {
 		const cookies = new Cookies();
