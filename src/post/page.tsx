@@ -79,7 +79,7 @@ export default function Post() {
         console.log("posteest", post)
 				setPost({
 					...post,
-					count: post.count + 1
+					count: post.count + 1, published: new Date().toISOString()
 				});
 				console.log("clark after kms", post);
 	};
@@ -117,7 +117,7 @@ export default function Post() {
                     replies.map((item: any, index: any) => (
 						<SinglePost
 						post={item}
-							key={item.id}
+							key={item.published}
 							parentId={post.id.split("/").at(-1)}
 						/>
 					))
