@@ -71,8 +71,9 @@ export default function Post() {
 		}
 	}, []);
 
-	const updateReplies = (State: any) => {
-		setReplies((replies: any[]) => [State, ...replies]);
+    const updateReplies = (State: any) => {
+        const hi = [State].concat(replies);
+		setReplies(hi);
 	};
 
 	return (
