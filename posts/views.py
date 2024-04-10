@@ -62,6 +62,7 @@ class PostsViewPK(APIView):
                 print(" hi 8")
             except requests.exceptions.RequestException as e:
                 print(f"Request to {user.host} failed: {e}")
+        return Response({"title": "Post not found.","message": "This post were not found"}, status=status.HTTP_404_NOT_FOUND)
 
      '''
      PUT /authors/{id}/posts/{id} and /posts/{id}

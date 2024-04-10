@@ -46,6 +46,7 @@ class PostLikesViewPK2(APIView):
                 print(" hi 8", response.text)
             except requests.exceptions.RequestException as e:
                 print(f"Req3est to {user.host} failed: {e}")     
+            return Response({"title": "Likes not found.","message": "Likes for the post were not found"}, status=status.HTTP_404_NOT_FOUND)
 
 class PostLikesViewPK(APIView):
      permission_classes = [ RemoteOrSessionAuthenticated ]
