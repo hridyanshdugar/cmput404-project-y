@@ -7,7 +7,10 @@ from nodes.models import Node
 
 class RemoteNodeAuthentication(BaseAuthentication):
   def authenticate(self, request: HttpRequest):
-    our_node = Node.objects.get(is_self=True)
+    try:
+      our_node = Node.objects.get(is_self=True) 
+    except Exception as e:
+      our_node = "localhost" # This should ony work locally
 
     ad = get_authorization_header(request).split()
     request.iii = False

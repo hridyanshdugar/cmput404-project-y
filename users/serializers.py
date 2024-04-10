@@ -77,7 +77,10 @@ class AuthorSerializer(serializers.ModelSerializer):
     
     def to_representation(self, instance):
         data = super().to_representation(instance)
-        id = Node.objects.get(is_self=True).url + "api/authors/" + str(data["id"])
+        try:
+            id = Node.objects.get(is_self=True).url + "api/authors/" + str(data["id"])
+        except:
+            id = data["id"] # This should ony work locally
         data["id"] = id
         return data
 

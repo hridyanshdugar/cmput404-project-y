@@ -72,7 +72,10 @@ class PostSerializer(serializers.ModelSerializer):
         validated_data["id"] = uuid.uuid4()
         print("hi 12", validated_data)
         #     "origin":"<http://domain_z>/api/authors/<author_id_z>/posts/<post_id_z>",
-        source = Node.objects.get(is_self=True).url + "api/authors/" + str(validated_data["author"].id) + "/posts/" + str(validated_data["id"])
+        try:
+            source = Node.objects.get(is_self=True).url + "api/authors/" + str(validated_data["author"].id) + "/posts/" + str(validated_data["id"])
+        except:
+            source = "localhost" # This should ony work locally
         print("hi 13", source)
         validated_data["source"] = source
         if "origin" not in validated_data:
