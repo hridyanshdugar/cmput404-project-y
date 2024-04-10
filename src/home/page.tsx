@@ -52,7 +52,11 @@ export default function Home() {
 		setauth(auth);
 
 		fetchContent(user.host, page, size, auth, user.id, selectedSection);
-	}, [selectedSection, posts.length]);
+	}, [selectedSection]);
+
+	useEffect(() => {
+		console.log("Posts value change", posts);
+	}, [posts ? posts.length : 0]);
 
 	const fetchContent = (
 		host: string,
