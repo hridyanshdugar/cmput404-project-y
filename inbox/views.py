@@ -146,6 +146,7 @@ class InboxView(APIView):
             return Response({"Title":"Done"}, status = status.HTTP_200_OK)
         if data["type"] == "FollowResponse":
             get_foreign_user(data["actor"])
+            print("this is follow response", data, data["accepted"])
             if data["accepted"]:
                 req = get_object_or_404(FollowStatus,obj=data["actor"]["id"].split("/")[-1],actor=data["object"]["id"].split("/")[-1])
                 req.complete = True

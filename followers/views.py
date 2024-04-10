@@ -179,7 +179,7 @@ class FollowerView(APIView):
             hi_user = User.objects.get(id=author_id)
             inbox = Inbox.objects.get_or_create(author=hi_user)[0]
             inbox.followRequest.remove(req)
-            inbox.save()            
+            inbox.save()         
             if data["accepted"]:
                 print("accepted")
                 serializer = FollowSerializer(req,data={"complete":True},partial=True)
