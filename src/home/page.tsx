@@ -136,7 +136,7 @@ export default function Home() {
 						posts.map((item: any, index: any) => (
 							<SinglePost
 								post={item}
-								key={index}
+								key={item.id}
 							/>
 						))
 					)
