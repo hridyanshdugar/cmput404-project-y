@@ -54,10 +54,6 @@ export default function Home() {
 		fetchContent(user.host, page, size, auth, user.id, selectedSection);
 	}, [selectedSection]);
 
-	useEffect(() => {
-		console.log("Posts value change", posts);
-	}, [posts ? posts.length : 0]);
-
 	const fetchContent = (
 		host: string,
 		page: number,
