@@ -77,9 +77,9 @@ export default function Post() {
         console.log("updatesReplies", hi);
 
         // let bob = Object.assign({}, post);
-        setPost(Object.assign({
+        setPost(Object.assign(post, {
 					count: post.count + 1
-				}, post));
+				}));
 	};
 
 	return (
