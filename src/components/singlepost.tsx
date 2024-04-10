@@ -250,7 +250,7 @@ const SinglePost: React.FC<Props> = (props) => {
 					.then(async (result: any) => {
 						const Data = await result.json();
 						if (result.ok) {
-							setPosts(posts.filter((newPost: any) => (newPost.id.split("/").at(-1) === post.id.split("/").at(-1))))
+							setPosts(posts.filter((newPost: any) => (newPost.id.split("/").at(-1) !== post.id.split("/").at(-1))))
 						}
 					})
 					.catch(async (result: any) => {
