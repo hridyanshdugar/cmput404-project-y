@@ -79,7 +79,7 @@ export default function Post() {
         console.log("posteest", post)
 				setPost({
 					...post,
-					count: post.count + 1, published: new Date().toISOString()
+					count: post.count + 1
 				});
 				console.log("clark after kms", post);
 	};
