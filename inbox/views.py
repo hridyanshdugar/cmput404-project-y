@@ -199,11 +199,14 @@ class InboxView(APIView):
             # add print statements with incremental numbers for debbuing
             get_foreign_user(data["author"])
             user = get_object_or_404(User,id=data["author"]["id"].split("/")[-1])
-            post = get_object_or_404(Post,id=data["id"].split("/")[-1])
+            key = data["id"].split("/")[-1]
+            if "espresso" in data["author"]["host"]:
+                key = data["id"].split("/")[-3]
+            post = get_object_or_404(Post,id=key)
 
             new_data = data.copy()
             new_data["author"] = data["author"]["id"].split("/")[-1]
-            new_data['post'] = data["id"].split("/")[-1]
+            new_data['post'] = key
             new_data.pop("id")
 
             print("dfaiadsfudasod :  4", new_data)
