@@ -275,54 +275,56 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 				className={style.horizontalLine}
 				ref={horizontalLineRef}
 				style={{ display: "none" }}
-			></hr>
-			<div className={style.flexContainer}>
-				<div className={style.flexItem}>
-					<FontAwesomeIcon
-						icon={faFileLines}
-						fixedWidth
-						className={contentTypeMinimal === "plain" ? style.selectItem : ""}
-						onClick={() => {
-							setcontentTypeMinimal("plain");
-						}}
-					/>
-				</div>
-				<div className={style.flexItem}>
-					<FontAwesomeIcon
-						icon={faMarkdown}
-						fixedWidth
-						className={
-							contentTypeMinimal === "markdown" ? style.selectItem : ""
-						}
-						onClick={() => {
-							setcontentTypeMinimal("markdown");
-						}}
-					/>
-				</div>
-				<div className={style.flexItem}>
-					<input
-						onChange={handlePFPbackground}
-						type="file"
-						id="createpostimage"
-						name="PFP"
-						accept="image/*"
-						style={{ display: "none" }}
-					/>
-					<label
-						onClick={() => {
-							setcontentTypeMinimal("picture");
-						}}
-						htmlFor="createpostimage"
-					>
-						<FontAwesomeIcon
-							icon={faImage}
-							fixedWidth
-							className={
-								contentTypeMinimal === "picture" ? style.selectItem : ""
-							}
-						/>
-					</label>
-				</div>
+            ></hr>
+                <div className={style.flexContainer}>
+            {!props.postId ? <>
+                    <div className={style.flexItem}>
+                        <FontAwesomeIcon
+                            icon={faFileLines}
+                            fixedWidth
+                            className={contentTypeMinimal === "plain" ? style.selectItem : ""}
+                            onClick={() => {
+                                setcontentTypeMinimal("plain");
+                            }}
+                        />
+                    </div>
+                    <div className={style.flexItem}>
+                        <FontAwesomeIcon
+                            icon={faMarkdown}
+                            fixedWidth
+                            className={
+                                contentTypeMinimal === "markdown" ? style.selectItem : ""
+                            }
+                            onClick={() => {
+                                setcontentTypeMinimal("markdown");
+                            }}
+                        />
+                    </div>
+                    <div className={style.flexItem}>
+                        <input
+                            onChange={handlePFPbackground}
+                            type="file"
+                            id="createpostimage"
+                            name="PFP"
+                            accept="image/*"
+                            style={{ display: "none" }}
+                        />
+                        <label
+                            onClick={() => {
+                                setcontentTypeMinimal("picture");
+                            }}
+                            htmlFor="createpostimage"
+                        >
+                            <FontAwesomeIcon
+                                icon={faImage}
+                                fixedWidth
+                                className={
+                                    contentTypeMinimal === "picture" ? style.selectItem : ""
+                                }
+                            />
+                        </label>
+                    </div>
+            </>: <></>}
 				<div className={style.flexItem2}>
 					<Button
 						onClick={onSubmit}

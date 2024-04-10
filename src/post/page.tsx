@@ -65,6 +65,7 @@ export default function Post() {
 				.then(async (result: any) => {
 					console.log(result, "post comments");
 					const d = await result.json();
+					d.sort((a: { published: string; }, b: { published: string; }) => b.published.localeCompare(a.published))
 					if (result.ok) {
 						console.log("d", d);
 						setReplies(d);

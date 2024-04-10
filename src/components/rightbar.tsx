@@ -7,7 +7,7 @@ import { Card, Form, InputGroup } from 'react-bootstrap'
 
 export default function Rightbar() {
     return <>
-        <div className={"main"}>
+        {/* <div className={"main"}>
             <div className={style.borderContainer}>
             <nav className={style.rightnav}>
                 <InputGroup className={["mr-sm-2", style.bottomMargin, style.topMargin].join(' ')}>
@@ -28,6 +28,6 @@ export default function Rightbar() {
     </Card>
             </nav>   
             </div>            
-        </div>
+        </div> */}
     </>;
 }
