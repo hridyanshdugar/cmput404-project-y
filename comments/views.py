@@ -141,8 +141,12 @@ class CommentsView2(APIView):
         else:
             try:
                 print(" hi 7")
+
                 url = user.host + "api/authors/" + str(author_id) + "/posts/" + str(fk) + "/comments?page=1&size=100"
                 auth = Node.objects.get(url = user.host)
+                if "web-wizard" in user.host:
+                    url = user.host + "api/authors/" + str(author_id) + "/posts/" + str(fk) + "/comments"
+            
                 response = requests.get(url, timeout=20, auth=HTTPBasicAuth(auth.username, auth.password))
                 if response.ok:
                     rbody = response.json()
