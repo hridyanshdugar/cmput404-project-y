@@ -94,7 +94,7 @@ const SinglePost: React.FC<Props> = (props) => {
 		event.stopPropagation();
     };
 	const onBUTClick = (event: any) => {
-        navigator.clipboard.writeText(getFrontend() + "profile/"+post.author.id.split("/").at(-1)+"/post/" + (post.type === "post" ? post.source : post.id).split("/")[0]);
+        navigator.clipboard.writeText(getFrontend() + "profile/"+post.author.id.split("/").at(-1)+"/post/" + (post.type === "post" ? post.source : post.id).split("/").at(-1));
 		event.stopPropagation();
 	};    
 	const onClickPost = (event: any) => {
@@ -261,7 +261,7 @@ const SinglePost: React.FC<Props> = (props) => {
 			setPopupOpen(true);
 			document.body.style.overflow = "hidden";
 		} else if (selection === "Copy Link") {
-			navigator.clipboard.writeText(getFrontend() + "profile/"+post.author.id.split("/").at(-1)+"/post/" + (post.type === "post" ? post.source : post.id).split("/")[0]);
+			navigator.clipboard.writeText(getFrontend() + "profile/"+post.author.id.split("/").at(-1)+"/post/" + (post.type === "post" ? post.source : post.id).split("/").at(-1));
 		}
 	};
 	const date = new Date(0);
