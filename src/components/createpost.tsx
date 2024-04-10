@@ -148,8 +148,11 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 					.then(async (result: any) => {
 						const Data = await result.json();
                         if (result.ok) {
-                            console.log("createdComment", Data)
-                            props.updatePosts(Data);
+                            props.updatePosts({
+                                "type": "comment", "comment": contentToSend,
+                                "published": new Date().toISOString(), "contentType": contentToSend, "author": author,
+                                "id": getAPIEndpoint() + `/authors/${props.postAuthorId}/posts/${props.postId}`
+                              });
                             if (props.setPopupOpen) {
                                 props.setPopupOpen(false);
                             }
