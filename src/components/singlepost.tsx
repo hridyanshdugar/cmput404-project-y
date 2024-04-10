@@ -249,9 +249,13 @@ const SinglePost: React.FC<Props> = (props) => {
 				deletePost(auth, (post.type === "post" ? post.source : post.id).split("/").slice(-1)[0], post.author.id.split("/").at(-1))
 					.then(async (result: any) => {
 						const Data = await result.json();
+						console.log("delete post ok?", result.ok)
 						if (result.ok) {
+							console.log(post.id, "posts before :", posts)
 							setPosts(posts.filter((newPost: any) => (newPost.id.split("/").at(-1) !== post.id.split("/").at(-1))))
+							console.log(post.id, "posts after:", posts)
 						}
+						
 					})
 					.catch(async (result: any) => {
 						console.log("error deleting post", result.text());
