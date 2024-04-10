@@ -94,7 +94,7 @@ export default function Post() {
             visibility: post.visibility
         };
 				setPost(clark);
-				console.log("clark after kms", clark);
+				console.log("clark after kms", post);
 	};
 
 	return (
