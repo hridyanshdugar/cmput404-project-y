@@ -184,6 +184,7 @@ const CreatePost: React.FC<CreatePostProps> = (props) => {
 					VisibilityMap[visibility],
 					auth,
 					user.id
+                    
 				)
 					.then(async (result: any) => {
 						const Data = await result.json();
