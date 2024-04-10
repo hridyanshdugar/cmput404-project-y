@@ -75,6 +75,10 @@ export default function Post() {
         const hi = [State].concat(replies);
         setReplies(hi);
         console.log("updatesReplies", hi);
+
+        let bob = post;
+        bob.count += 1;
+        setPost(bob);
 	};
 
 	return (
