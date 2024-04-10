@@ -104,12 +104,18 @@ const SinglePost: React.FC<Props> = (props) => {
 		event.stopPropagation();
 	};
 
-
 	const [post, setPost] = useState<any>(props.post);
 	const [sharedPost, setSharedPost] = useState<any>({});
 	const [popupOpen, setPopupOpen] = useState(false);
 	const [likes, setLikes] = useState<number>(-2);
 	const [likable, setLikable] = useState<boolean>(true);
+
+	useEffect(() => {
+		if (props.post.count !== post.count) {
+			setPost(props.post);
+		}
+	}, [props.post, post]);
+
 	const share = () => {
 		if (post.origin === post.source) {
 			if (post.visibility === "PUBLIC") {
@@ -223,7 +229,7 @@ const SinglePost: React.FC<Props> = (props) => {
 							console.log("shared post error", result);
 						});
 		}
-	}, [props]);
+	}, []);
 
 	const onPostOptionSelect = (selection: string | null) => {
 		const cookies = new Cookies();
