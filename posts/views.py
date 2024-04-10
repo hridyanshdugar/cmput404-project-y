@@ -206,6 +206,12 @@ class PostsView(APIView):
         """
         Get all posts of a specific author
         """
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0]
+        else:
+            ip = request.META.get('REMOTE_ADDR')
+        print("who the is this", ip)
         posts = Post.objects.filter(visibility="PUBLIC", author__id=author_id)
         if User.objects.filter(id=author_id,host=Node.objects.get(is_self=True).url).exists():
             serializer = PostSerializer(posts, many=True, context={'request': request})

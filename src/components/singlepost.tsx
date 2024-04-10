@@ -90,7 +90,6 @@ const SinglePost: React.FC<Props> = (props) => {
 		event.stopPropagation();
 	};
 	const onClickShare = (event: any) => {
-		console.log("Share Clicked");
 		share();
 		event.stopPropagation();
 	};
@@ -127,9 +126,8 @@ const SinglePost: React.FC<Props> = (props) => {
 						window.location.reload();
 					} else {throw new Error("Error sharing post")}
 				}).catch(async (result: any) => {
-					console.log("create shared post error");
+					console.log("create shared post error", result.text());
 				});
-				console.log("shared post");
 			} else {
 				alert("You can only share public posts");
 			}
@@ -137,13 +135,10 @@ const SinglePost: React.FC<Props> = (props) => {
 	};
 
 	const onClickLike = (event: any) => {
-		console.log("CLICKED");
 		if (likable) {
-			console.log("likable");
 			const cookies = new Cookies();
 			const user = cookies.get("user");
 			const auth = cookies.get("auth");
-			console.log("THING", post.author)
 			let author = {
 				type: "author",
 				id: user.id,
@@ -159,16 +154,14 @@ const SinglePost: React.FC<Props> = (props) => {
 				auth["access"]
 			)
 			.then(async (result: any) => {
-				console.log(result, "sent like");
 				const d = await result.json();
 				if (result.ok) {
-					console.log("Liked", d);
 					setLikes(likes + 1);
 					setLikable(false);
 				}
 			})
 			.catch(async (result: any) => {
-				console.log("like failed");
+				console.log("like failed", result.text());
 			});
 		}
 		event.stopPropagation();
@@ -182,30 +175,25 @@ const SinglePost: React.FC<Props> = (props) => {
         setuser(user);
         if (post.origin !== post.source && !props.embedParentId) {
 			//Get shared post information
-			console.log("shared post1", post.origin.split("/").slice(-1)[0], post.origin.split("/").slice(-3)[0]);
 			getPost(auth["access"], post.origin.split("/").slice(-1)[0], post.origin.split("/").slice(-3)[0])
 				.then(async (result: any) => {
 					const Data = await result.json();
 					if (result.ok) {
-						console.log("shared post", Data)
 						setSharedPost(Data);
 					} else {
-						console.log("shared post error", result);
 						throw new Error("Error fetching shared post");
 					}
 				}).catch(async (result: any) => { 
-					console.log("shared post error", result);
+					console.log("shared post error", result.text());
 				});
         }
         if (post.author.host.split(".")[0].split("/").slice(-1) !== getAPIEndpoint().split(".")[0].split("/").slice(-1)) {
             getPost(auth["access"], (post.type === "post" ? post.source : post.id).split("/").slice(-1)[0], (post.type === "post" ? post.source : post.id).split("/").slice(-3)[0])
             .then(async (result: any) => {
-                console.log("error burgerddd2");
                 if (result.ok) {
                     const Data = await result.json();
                     setPost(Data);
                 } else {
-                    console.log("error updating");
                     // navigate("/home");
                 }
             })
@@ -219,11 +207,8 @@ const SinglePost: React.FC<Props> = (props) => {
 			getLikePost(post.author.id.split("/").at(-1), (post.type === "post" ? post.source : post.id).split("/").slice(-1)[0], auth["access"])
 					.then(async (result: any) => {
 							const Data = await result.json();
-							console.log("like post", Data)
 							Data.items.every((dataLike : {"author" : {"id" : string}}) => {
-								console.log("like author id", dataLike.author.id.split("/").at(-1))
 								if (dataLike.author.id.split("/").at(-1) === user?.id) {
-									console.log("already liked this")
 									setLikable(false);
 								}
 								return likable
@@ -231,7 +216,7 @@ const SinglePost: React.FC<Props> = (props) => {
 							setLikes(Data.items.length);
 						})
 						.catch(async (result: any) => {
-							console.log("shared post error", result);
+							console.log("shared post error", result.text());
 						});
 		}
 	}, [post.id, post.contentType, post.content]);
@@ -244,8 +229,6 @@ const SinglePost: React.FC<Props> = (props) => {
 				deleteComment(auth, props.parentId, (post.type === "post" ? post.source : post.id).split("/").slice(-1)[0], post.author.id.split("/").at(-1))
 					.then(async (result: any) => {
 						const Data = await result.json();
-						console.log(Data);
-
 						if (result.ok) {
 							setReplies(
 								replies.filter((post: any) => (post.type === "post" ? post.source : post.id).split("/").slice(-1)[0] !== (post.type === "post" ? post.source : post.id).split("/").slice(-3)[0])
@@ -256,30 +239,24 @@ const SinglePost: React.FC<Props> = (props) => {
 						}
 					})
 					.catch(async (result: any) => {
-						console.log(result);
+						console.log("failed to delete comment", result.text());
 					});
 			} else {
 				deletePost(auth, (post.type === "post" ? post.source : post.id).split("/").slice(-1)[0], post.author.id.split("/").at(-1))
 					.then(async (result: any) => {
 						const Data = await result.json();
-						console.log(Data);
-
 						if (result.ok) {
 							setPosts(posts.filter((post: any) => (post.type === "post" ? post.source : post.id).split("/").slice(-1)[0] !== (post.type === "post" ? post.source : post.id).split("/").slice(-3)[0]));
-							console.log(posts);
 						}
 					})
 					.catch(async (result: any) => {
-						console.log("not ok")
-						console.log(result);
+						console.log("error deleting post", result.text());
 					});
 			}
 		} else if (selection === "Edit") {
-			console.log("edit");
 			setPopupOpen(true);
 			document.body.style.overflow = "hidden";
 		} else if (selection === "Copy Link") {
-			console.log("copy link");
 			navigator.clipboard.writeText(getFrontend() + "/post/" + (post.type === "post" ? post.source : post.id).split("/").slice(-1)[0]);
 		}
 	};
