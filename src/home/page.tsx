@@ -52,7 +52,7 @@ export default function Home() {
 		setauth(auth);
 
 		fetchContent(user.host, page, size, auth, user.id, selectedSection);
-	}, [selectedSection, posts]);
+	}, [selectedSection]);
 
 	const fetchContent = (
 		host: string,
