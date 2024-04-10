@@ -24,7 +24,7 @@ export default function Post() {
 
 	const [auth, setAuth] = useState<any>(null);
 	const [post, setPost] = useState<any>(null);
-	const [replies, setReplies] = useState<any>([]);
+	const [replies, setReplies] = useContext(PostContext);
 	const [user, setUser] = useState<any>(null);
 	const [loading, setLoading] = useState<boolean>(false);
 	const { userId, postId } = useParams();
