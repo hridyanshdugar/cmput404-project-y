@@ -89,7 +89,7 @@ const Profile: React.FC<Props> = (props: Props) => {
 			//API follow request !!NEEDED!!
 			let actor = {
 				type: "author",
-				id: user["id"],
+				id: user["host"] + "/api/authors/" + user["id"],
 				url: user["url"],
 				host: user["host"],
 				displayName: user["displayName"],
@@ -98,7 +98,7 @@ const Profile: React.FC<Props> = (props: Props) => {
 			};
 			let object = {
 				type: "author",
-				id: props.userid,
+				id: props.host + "/api/authors/" + props.userid,
 				host: props.host,
 				displayName: props.name,
 				url: props.url,
